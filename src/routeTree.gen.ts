@@ -9,38 +9,149 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedMahasiswaRouteImport } from './routes/_authenticated/mahasiswa'
+import { Route as AuthenticatedLaporanRouteImport } from './routes/_authenticated/laporan'
+import { Route as AuthenticatedKegiatanRouteImport } from './routes/_authenticated/kegiatan'
+import { Route as AuthenticatedJadwalSayaRouteImport } from './routes/_authenticated/jadwal-saya'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedKegiatanIdRouteImport } from './routes/_authenticated/kegiatan.$id'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedMahasiswaRoute = AuthenticatedMahasiswaRouteImport.update({
+  id: '/mahasiswa',
+  path: '/mahasiswa',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLaporanRoute = AuthenticatedLaporanRouteImport.update({
+  id: '/laporan',
+  path: '/laporan',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedKegiatanRoute = AuthenticatedKegiatanRouteImport.update({
+  id: '/kegiatan',
+  path: '/kegiatan',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedJadwalSayaRoute = AuthenticatedJadwalSayaRouteImport.update({
+  id: '/jadwal-saya',
+  path: '/jadwal-saya',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedKegiatanIdRoute = AuthenticatedKegiatanIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedKegiatanRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/jadwal-saya': typeof AuthenticatedJadwalSayaRoute
+  '/kegiatan': typeof AuthenticatedKegiatanRouteWithChildren
+  '/laporan': typeof AuthenticatedLaporanRoute
+  '/mahasiswa': typeof AuthenticatedMahasiswaRoute
+  '/kegiatan/$id': typeof AuthenticatedKegiatanIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/jadwal-saya': typeof AuthenticatedJadwalSayaRoute
+  '/kegiatan': typeof AuthenticatedKegiatanRouteWithChildren
+  '/laporan': typeof AuthenticatedLaporanRoute
+  '/mahasiswa': typeof AuthenticatedMahasiswaRoute
+  '/kegiatan/$id': typeof AuthenticatedKegiatanIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/jadwal-saya': typeof AuthenticatedJadwalSayaRoute
+  '/_authenticated/kegiatan': typeof AuthenticatedKegiatanRouteWithChildren
+  '/_authenticated/laporan': typeof AuthenticatedLaporanRoute
+  '/_authenticated/mahasiswa': typeof AuthenticatedMahasiswaRoute
+  '/_authenticated/kegiatan/$id': typeof AuthenticatedKegiatanIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/jadwal-saya'
+    | '/kegiatan'
+    | '/laporan'
+    | '/mahasiswa'
+    | '/kegiatan/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/jadwal-saya'
+    | '/kegiatan'
+    | '/laporan'
+    | '/mahasiswa'
+    | '/kegiatan/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/jadwal-saya'
+    | '/_authenticated/kegiatan'
+    | '/_authenticated/laporan'
+    | '/_authenticated/mahasiswa'
+    | '/_authenticated/kegiatan/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +159,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/mahasiswa': {
+      id: '/_authenticated/mahasiswa'
+      path: '/mahasiswa'
+      fullPath: '/mahasiswa'
+      preLoaderRoute: typeof AuthenticatedMahasiswaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/laporan': {
+      id: '/_authenticated/laporan'
+      path: '/laporan'
+      fullPath: '/laporan'
+      preLoaderRoute: typeof AuthenticatedLaporanRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/kegiatan': {
+      id: '/_authenticated/kegiatan'
+      path: '/kegiatan'
+      fullPath: '/kegiatan'
+      preLoaderRoute: typeof AuthenticatedKegiatanRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/jadwal-saya': {
+      id: '/_authenticated/jadwal-saya'
+      path: '/jadwal-saya'
+      fullPath: '/jadwal-saya'
+      preLoaderRoute: typeof AuthenticatedJadwalSayaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/kegiatan/$id': {
+      id: '/_authenticated/kegiatan/$id'
+      path: '/$id'
+      fullPath: '/kegiatan/$id'
+      preLoaderRoute: typeof AuthenticatedKegiatanIdRouteImport
+      parentRoute: typeof AuthenticatedKegiatanRoute
+    }
   }
 }
 
+interface AuthenticatedKegiatanRouteChildren {
+  AuthenticatedKegiatanIdRoute: typeof AuthenticatedKegiatanIdRoute
+}
+
+const AuthenticatedKegiatanRouteChildren: AuthenticatedKegiatanRouteChildren = {
+  AuthenticatedKegiatanIdRoute: AuthenticatedKegiatanIdRoute,
+}
+
+const AuthenticatedKegiatanRouteWithChildren =
+  AuthenticatedKegiatanRoute._addFileChildren(
+    AuthenticatedKegiatanRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedJadwalSayaRoute: typeof AuthenticatedJadwalSayaRoute
+  AuthenticatedKegiatanRoute: typeof AuthenticatedKegiatanRouteWithChildren
+  AuthenticatedLaporanRoute: typeof AuthenticatedLaporanRoute
+  AuthenticatedMahasiswaRoute: typeof AuthenticatedMahasiswaRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedJadwalSayaRoute: AuthenticatedJadwalSayaRoute,
+  AuthenticatedKegiatanRoute: AuthenticatedKegiatanRouteWithChildren,
+  AuthenticatedLaporanRoute: AuthenticatedLaporanRoute,
+  AuthenticatedMahasiswaRoute: AuthenticatedMahasiswaRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
