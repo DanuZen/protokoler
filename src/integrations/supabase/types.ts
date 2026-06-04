@@ -14,16 +14,253 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      kegiatan: {
+        Row: {
+          bentuk: Database["public"]["Enums"]["bentuk_kegiatan"]
+          created_at: string
+          created_by: string | null
+          deskripsi: string | null
+          id: string
+          jam_mulai: string
+          jam_selesai: string
+          lokasi: string
+          nama_kegiatan: string
+          status: Database["public"]["Enums"]["kegiatan_status"]
+          tanggal: string
+          updated_at: string
+        }
+        Insert: {
+          bentuk?: Database["public"]["Enums"]["bentuk_kegiatan"]
+          created_at?: string
+          created_by?: string | null
+          deskripsi?: string | null
+          id?: string
+          jam_mulai: string
+          jam_selesai: string
+          lokasi: string
+          nama_kegiatan: string
+          status?: Database["public"]["Enums"]["kegiatan_status"]
+          tanggal: string
+          updated_at?: string
+        }
+        Update: {
+          bentuk?: Database["public"]["Enums"]["bentuk_kegiatan"]
+          created_at?: string
+          created_by?: string | null
+          deskripsi?: string | null
+          id?: string
+          jam_mulai?: string
+          jam_selesai?: string
+          lokasi?: string
+          nama_kegiatan?: string
+          status?: Database["public"]["Enums"]["kegiatan_status"]
+          tanggal?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mahasiswa: {
+        Row: {
+          angkatan: number
+          created_at: string
+          email: string | null
+          foto_url: string | null
+          id: string
+          nama_lengkap: string
+          nim: string
+          no_hp: string | null
+          prodi: string
+          status: Database["public"]["Enums"]["mahasiswa_status"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          angkatan: number
+          created_at?: string
+          email?: string | null
+          foto_url?: string | null
+          id?: string
+          nama_lengkap: string
+          nim: string
+          no_hp?: string | null
+          prodi: string
+          status?: Database["public"]["Enums"]["mahasiswa_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          angkatan?: number
+          created_at?: string
+          email?: string | null
+          foto_url?: string | null
+          id?: string
+          nama_lengkap?: string
+          nim?: string
+          no_hp?: string | null
+          prodi?: string
+          status?: Database["public"]["Enums"]["mahasiswa_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      penugasan: {
+        Row: {
+          catatan: string | null
+          created_at: string
+          id: string
+          kegiatan_id: string
+          mahasiswa_id: string
+          peran: Database["public"]["Enums"]["peran_penugasan"]
+          status_konfirmasi: Database["public"]["Enums"]["konfirmasi_status"]
+          updated_at: string
+        }
+        Insert: {
+          catatan?: string | null
+          created_at?: string
+          id?: string
+          kegiatan_id: string
+          mahasiswa_id: string
+          peran: Database["public"]["Enums"]["peran_penugasan"]
+          status_konfirmasi?: Database["public"]["Enums"]["konfirmasi_status"]
+          updated_at?: string
+        }
+        Update: {
+          catatan?: string | null
+          created_at?: string
+          id?: string
+          kegiatan_id?: string
+          mahasiswa_id?: string
+          peran?: Database["public"]["Enums"]["peran_penugasan"]
+          status_konfirmasi?: Database["public"]["Enums"]["konfirmasi_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "penugasan_kegiatan_id_fkey"
+            columns: ["kegiatan_id"]
+            isOneToOne: false
+            referencedRelation: "kegiatan"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "penugasan_mahasiswa_id_fkey"
+            columns: ["mahasiswa_id"]
+            isOneToOne: false
+            referencedRelation: "mahasiswa"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          nama_lengkap: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          nama_lengkap: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          nama_lengkap?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tamu: {
+        Row: {
+          created_at: string
+          id: string
+          instansi: string | null
+          jabatan: string | null
+          jumlah_rombongan: number | null
+          kegiatan_id: string
+          nama_tamu: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instansi?: string | null
+          jabatan?: string | null
+          jumlah_rombongan?: number | null
+          kegiatan_id: string
+          nama_tamu: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instansi?: string | null
+          jabatan?: string | null
+          jumlah_rombongan?: number | null
+          kegiatan_id?: string
+          nama_tamu?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tamu_kegiatan_id_fkey"
+            columns: ["kegiatan_id"]
+            isOneToOne: false
+            referencedRelation: "kegiatan"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "mahasiswa" | "pimpinan"
+      bentuk_kegiatan:
+        | "wisuda"
+        | "kunjungan"
+        | "seminar"
+        | "pelantikan"
+        | "rapat_resmi"
+        | "lainnya"
+      kegiatan_status: "draft" | "terkonfirmasi" | "selesai" | "batal"
+      konfirmasi_status: "pending" | "dikonfirmasi" | "ditolak"
+      mahasiswa_status: "aktif" | "tidak_aktif" | "cuti"
+      peran_penugasan: "lo" | "protokoler"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +387,20 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "mahasiswa", "pimpinan"],
+      bentuk_kegiatan: [
+        "wisuda",
+        "kunjungan",
+        "seminar",
+        "pelantikan",
+        "rapat_resmi",
+        "lainnya",
+      ],
+      kegiatan_status: ["draft", "terkonfirmasi", "selesai", "batal"],
+      konfirmasi_status: ["pending", "dikonfirmasi", "ditolak"],
+      mahasiswa_status: ["aktif", "tidak_aktif", "cuti"],
+      peran_penugasan: ["lo", "protokoler"],
+    },
   },
 } as const
