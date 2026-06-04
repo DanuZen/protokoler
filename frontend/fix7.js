@@ -1,0 +1,14 @@
+const fs = require('fs');
+let content = fs.readFileSync('app/(authenticated)/jadwal-saya/page.tsx', 'utf8');
+content = content.replace(/import \{ createFileRoute.*?\} from "@tanstack\/react-router";/g, 'import Link from "next/link";');
+content = content.replace(/export const Route = createFileRoute.*?\(\{ component: Page \}\);/s, '');
+content = content.replace(/function Page\(\)/g, 'export default function Page()');
+content = content.replace(/to="\/kegiatan\/\"/g, 'href={/kegiatan/}');
+content = content.replace(/params=\{\{ id: k\.id \}\}/g, '');
+content = content.replace(/params=\{\{ id: p\.kegiatan\.id \}\}/g, '');
+content = content.replace(/@frontend\/components/g, '@/components');
+content = content.replace(/@frontend\/hooks/g, '@/hooks');
+content = content.replace(/@backend\/integrations\/supabase\/client/g, '@/lib/supabase');
+content = '"use client";\n' + content;
+fs.writeFileSync('app/(authenticated)/jadwal-saya/page.tsx', content, 'utf8');
+console.log("Fixed jadwal-saya");

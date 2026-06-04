@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id           String   @id @db.Uuid
+  nama_lengkap String
+  email        String?
+  created_at   DateTime @default(now()) @db.Timestamptz()
+  updated_at   DateTime @default(now()) @updatedAt @db.Timestamptz()
+
+  @@map("profiles")
+}
+
+model UserRole {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String   @db.Uuid
+  role       AppRole
+  created_at DateTime @default(now()) @db.Timestamptz()
+
+  @@unique([user_id, role])
+  @@map("user_roles")
+}
+
+model Mahasiswa {
+  id           String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String?         @db.Uuid
+  nim          String          @unique
+  nama_lengkap String
+  prodi        String
+  angkatan     Int
+  no_hp        String?
+  email        String?
+  foto_url     String?
+  status       MahasiswaStatus @default(aktif)
+  created_at   DateTime        @default(now()) @db.Timestamptz()
+  updated_at   DateTime        @default(now()) @updatedAt @db.Timestamptz()
+
+  penugasan Penugasan[]
+
+  @@map("mahasiswa")
+}
+
+model Kegiatan {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nama_kegiatan String
+  bentuk        BentukKegiatan  @default(lainnya)
+  tanggal       DateTime        @db.Date
+  jam_mulai     DateTime        @db.Time()
+  jam_selesai   DateTime        @db.Time()
+  lokasi        String
+  deskripsi     String?
+  status        KegiatanStatus  @default(draft)
+  created_by    String?         @db.Uuid
+  created_at    DateTime        @default(now()) @db.Timestamptz()
+  updated_at    DateTime        @default(now()) @updatedAt @db.Timestamptz()
+
+  tamu      Tamu[]
+  penugasan Penugasan[]
+
+  @@map("kegiatan")
+}
+
+model Tamu {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kegiatan_id      String   @db.Uuid
+  nama_tamu        String
+  jabatan          String?
+  instansi         String?
+  jumlah_rombongan Int      @default(1)
+  created_at       DateTime @default(now()) @db.Timestamptz()
+
+  kegiatan Kegiatan @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
+
+  @@map("tamu")
+}
+
+model Penugasan {
+  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kegiatan_id        String           @db.Uuid
+  mahasiswa_id       String           @db.Uuid
+  peran              PeranPenugasan
+  status_konfirmasi  KonfirmasiStatus @default(pending)
+  catatan            String?
+  created_at         DateTime         @default(now()) @db.Timestamptz()
+  updated_at         DateTime         @default(now()) @updatedAt @db.Timestamptz()
+
+  kegiatan  Kegiatan  @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
+  mahasiswa Mahasiswa @relation(fields: [mahasiswa_id], references: [id], onDelete: Cascade)
+
+  @@unique([kegiatan_id, mahasiswa_id])
+  @@map("penugasan")
+}
+
+enum AppRole {
+  admin
+  mahasiswa
+  pimpinan
+}
+
+enum MahasiswaStatus {
+  aktif
+  tidak_aktif
+  cuti
+}
+
+enum BentukKegiatan {
+  wisuda
+  kunjungan
+  seminar
+  pelantikan
+  rapat_resmi
+  lainnya
+}
+
+enum KegiatanStatus {
+  draft
+  terkonfirmasi
+  selesai
+  batal
+}
+
+enum PeranPenugasan {
+  lo
+  protokoler
+}
+
+enum KonfirmasiStatus {
+  pending
+  dikonfirmasi
+  ditolak
+}
