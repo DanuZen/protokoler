@@ -43,10 +43,10 @@ export default function Page() {
   const confirmed = (data ?? []).filter((p: any) => p.status_konfirmasi === "dikonfirmasi").length;
 
   return (
-    <div className="space-y-8">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <h1 className="text-3xl md:text-4xl font-display font-extrabold text-slate-900 tracking-tight">Jadwal Tugas Saya</h1>
-        <p className="mt-2 text-slate-500 text-base">Daftar penugasan kegiatan yang ditugaskan kepada Anda.</p>
+    <div className="space-y-12 max-w-[1000px]">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="pb-6 border-b border-slate-200/60">
+        <h1 className="text-4xl md:text-5xl font-display font-extrabold text-slate-900 tracking-tight">Jadwal Tugas Saya</h1>
+        <p className="mt-3 text-slate-500 text-lg">Daftar penugasan kegiatan yang ditugaskan kepada Anda.</p>
       </motion.div>
 
       {/* Summary chips */}
@@ -71,10 +71,10 @@ export default function Page() {
 
       {/* Empty state */}
       {!isLoading && !data?.length && (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="rounded-3xl border border-slate-100 bg-white p-16 text-center shadow-sm">
-          <CalendarDays className="h-14 w-14 mx-auto mb-4 text-slate-200" />
-          <h3 className="font-bold text-slate-700 text-xl mb-2">Belum ada penugasan</h3>
-          <p className="text-slate-400 text-sm max-w-sm mx-auto">Pastikan akun Anda sudah terhubung ke data mahasiswa oleh admin, atau tunggu penugasan dari administrator.</p>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="py-20 text-center">
+          <CalendarDays className="h-16 w-16 mx-auto mb-6 text-slate-200" />
+          <h3 className="font-bold text-slate-900 text-2xl mb-3">Belum ada penugasan</h3>
+          <p className="text-slate-500 text-base max-w-sm mx-auto">Pastikan akun Anda sudah terhubung ke data mahasiswa oleh admin, atau tunggu penugasan dari administrator.</p>
         </motion.div>
       )}
 
@@ -96,62 +96,60 @@ export default function Page() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ delay: i * 0.06 }}
-              className={cn(
-                "rounded-2xl border bg-white shadow-sm overflow-hidden transition-shadow hover:shadow-md",
-                p.status_konfirmasi === "pending" ? "border-amber-200" : "border-slate-100"
-              )}
             >
-              <div className="p-6 flex flex-wrap items-start justify-between gap-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-8 border-b border-slate-200/60 hover:bg-slate-50/80 transition-colors px-4 -mx-4 rounded-xl">
                 <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <Badge className="uppercase text-xs tracking-wider font-bold bg-primary/10 text-primary border-primary/20">
+                  <div className="flex flex-wrap items-center gap-3 mb-3">
+                    <span className="uppercase text-xs tracking-wider font-extrabold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                       {p.peran}
-                    </Badge>
+                    </span>
                     <span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold", statusConfig[p.status_konfirmasi as keyof typeof statusConfig]?.color)}>
                       {statusConfig[p.status_konfirmasi as keyof typeof statusConfig]?.label ?? p.status_konfirmasi}
                     </span>
                   </div>
                   <Link href={`/kegiatan/${p.kegiatan.id}`}>
-                    <h3 className="text-xl font-bold text-slate-900 hover:text-primary transition-colors mb-3 leading-tight">{p.kegiatan.nama_kegiatan}</h3>
+                    <h3 className="text-2xl font-bold text-slate-900 hover:text-blue-600 transition-colors mb-3 leading-tight">{p.kegiatan.nama_kegiatan}</h3>
                   </Link>
-                  <div className="flex flex-wrap gap-4 text-sm text-slate-500">
-                    <span className="flex items-center gap-1.5">
+                  <div className="flex flex-col md:flex-row flex-wrap md:items-center gap-2 md:gap-4 text-base text-slate-500">
+                    <span className="flex items-center gap-2">
                       <CalendarDays className="h-4 w-4 text-slate-400 shrink-0" />
                       {new Date(p.kegiatan.tanggal).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                     </span>
-                    <span className="flex items-center gap-1.5">
+                    <span className="hidden md:inline text-slate-300">•</span>
+                    <span className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-slate-400 shrink-0" />
                       {p.kegiatan.jam_mulai?.slice(0,5)} – {p.kegiatan.jam_selesai?.slice(0,5)} WIB
                     </span>
-                    <span className="flex items-center gap-1.5">
+                    <span className="hidden md:inline text-slate-300">•</span>
+                    <span className="flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-slate-400 shrink-0" />
                       {p.kegiatan.lokasi}
                     </span>
                   </div>
                 </div>
-              </div>
 
-              {p.status_konfirmasi === "pending" && (
-                <div className="px-6 pb-6 pt-0 flex gap-3 border-t border-amber-100 bg-amber-50/40">
-                  <Button
-                    size="sm"
-                    className="h-9 rounded-lg gap-2 bg-emerald-600 hover:bg-emerald-700"
-                    onClick={() => konfirmasi.mutate({ id: p.id, status: "dikonfirmasi" })}
-                    disabled={konfirmasi.isPending}
-                  >
-                    <Check className="h-4 w-4" /> Konfirmasi Kehadiran
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-9 rounded-lg gap-2 border-red-200 text-red-500 hover:bg-red-50"
-                    onClick={() => konfirmasi.mutate({ id: p.id, status: "ditolak" })}
-                    disabled={konfirmasi.isPending}
-                  >
-                    <X className="h-4 w-4" /> Tidak Bisa Hadir
-                  </Button>
-                </div>
-              )}
+                {p.status_konfirmasi === "pending" && (
+                  <div className="flex flex-col gap-3 md:w-[220px] shrink-0 mt-4 md:mt-0 border-t md:border-t-0 md:border-l border-slate-200/60 pt-4 md:pt-0 md:pl-6">
+                    <Button
+                      size="sm"
+                      className="h-10 rounded-full gap-2 bg-emerald-600 hover:bg-emerald-700 w-full"
+                      onClick={() => konfirmasi.mutate({ id: p.id, status: "dikonfirmasi" })}
+                      disabled={konfirmasi.isPending}
+                    >
+                      <Check className="h-4 w-4" /> Konfirmasi Hadir
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-10 rounded-full gap-2 border-slate-200 text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 w-full"
+                      onClick={() => konfirmasi.mutate({ id: p.id, status: "ditolak" })}
+                      disabled={konfirmasi.isPending}
+                    >
+                      <X className="h-4 w-4" /> Tidak Bisa
+                    </Button>
+                  </div>
+                )}
+              </div>
             </motion.div>
           ))}
         </AnimatePresence>

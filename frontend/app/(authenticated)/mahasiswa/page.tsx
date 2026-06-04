@@ -69,11 +69,11 @@ export default function Page() {
   const tidakAktifCount = (data ?? []).filter(m => m.status === "tidak_aktif").length;
 
   return (
-    <div className="space-y-8">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-wrap items-start justify-between gap-4">
+    <div className="space-y-12 max-w-[1400px]">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-wrap items-end justify-between gap-6 pb-6 border-b border-slate-200/60">
         <div>
-          <h1 className="text-3xl md:text-4xl font-display font-extrabold text-slate-900 tracking-tight">Database Mahasiswa</h1>
-          <p className="mt-2 text-slate-500 text-base">Pusat data anggota tim protokoler universitas.</p>
+          <h1 className="text-4xl md:text-5xl font-display font-extrabold text-slate-900 tracking-tight">Database Mahasiswa</h1>
+          <p className="mt-3 text-slate-500 text-lg">Pusat data anggota tim protokoler universitas.</p>
         </div>
         {isAdmin && (
           <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setEditing(null); }}>
@@ -87,46 +87,43 @@ export default function Page() {
         )}
       </motion.div>
 
-      {/* Stats Row */}
-      <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-3 gap-4">
+      {/* Stats Row - Flat Modern Style */}
+      <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {[
-          { label: "Mahasiswa Aktif", value: aktifCount, icon: UserCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
-          { label: "Sedang Cuti", value: cutiCount, icon: Users, color: "text-amber-600", bg: "bg-amber-50" },
-          { label: "Tidak Aktif", value: tidakAktifCount, icon: UserX, color: "text-slate-500", bg: "bg-slate-100" },
+          { label: "Mahasiswa Aktif", value: aktifCount, icon: UserCheck, color: "text-slate-900" },
+          { label: "Sedang Cuti", value: cutiCount, icon: Users, color: "text-amber-600" },
+          { label: "Tidak Aktif", value: tidakAktifCount, icon: UserX, color: "text-slate-500" },
         ].map((s) => (
-          <motion.div key={s.label} variants={fadeUp} className="rounded-2xl border border-slate-100 bg-white p-5 flex items-center gap-4 shadow-sm">
-            <div className={`${s.bg} h-11 w-11 rounded-xl flex items-center justify-center`}>
-              <s.icon className={`h-5 w-5 ${s.color}`} />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-slate-900">{s.value}</div>
-              <div className="text-xs font-medium text-slate-500">{s.label}</div>
+          <motion.div key={s.label} variants={fadeUp} className="group border-l-2 border-slate-200/60 pl-6 hover:border-slate-900 transition-colors">
+            <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">{s.label}</div>
+            <div className={`text-6xl font-display font-light tracking-tighter ${s.color}`}>
+              {s.value}
             </div>
           </motion.div>
         ))}
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="rounded-2xl border border-slate-100 bg-white shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-3">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <Input className="pl-10 bg-slate-50 border-slate-200 rounded-xl h-10" placeholder="Cari nama, NIM, prodi..." value={search} onChange={(e) => setSearch(e.target.value)} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="pt-4">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <Input className="pl-12 bg-transparent border-slate-300 rounded-full h-12 text-base focus-visible:ring-slate-900" placeholder="Cari nama, NIM, prodi..." value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
-          <Badge variant="outline" className="text-slate-500 font-medium">
-            {filtered.length} dari {data?.length ?? 0} data
-          </Badge>
+          <div className="text-sm font-semibold text-slate-500">
+            Menampilkan {filtered.length} hasil
+          </div>
         </div>
 
-        <Table>
+        <Table className="text-base">
           <TableHeader>
-            <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
-              <TableHead className="font-bold text-slate-600 pl-6">NIM</TableHead>
-              <TableHead className="font-bold text-slate-600">Nama</TableHead>
-              <TableHead className="font-bold text-slate-600">Prodi</TableHead>
-              <TableHead className="font-bold text-slate-600">Angkatan</TableHead>
-              <TableHead className="font-bold text-slate-600">Kontak</TableHead>
-              <TableHead className="font-bold text-slate-600">Status</TableHead>
-              {isAdmin && <TableHead className="font-bold text-slate-600 text-right pr-6">Aksi</TableHead>}
+            <TableRow className="border-b-2 border-slate-900 hover:bg-transparent">
+              <TableHead className="font-bold text-slate-900 py-4 w-[120px]">NIM</TableHead>
+              <TableHead className="font-bold text-slate-900 py-4">Nama Lengkap</TableHead>
+              <TableHead className="font-bold text-slate-900 py-4">Program Studi</TableHead>
+              <TableHead className="font-bold text-slate-900 py-4">Angkatan</TableHead>
+              <TableHead className="font-bold text-slate-900 py-4">Kontak</TableHead>
+              <TableHead className="font-bold text-slate-900 py-4">Status</TableHead>
+              {isAdmin && <TableHead className="font-bold text-slate-900 text-right py-4">Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -153,22 +150,22 @@ export default function Page() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: i * 0.03 }}
-                className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"
+                className="border-b border-slate-200/60 hover:bg-slate-100/50 transition-colors"
               >
-                <TableCell className="font-mono text-xs text-slate-500 pl-6">{m.nim}</TableCell>
-                <TableCell className="font-semibold text-slate-800">{m.nama_lengkap}</TableCell>
-                <TableCell className="text-slate-600">{m.prodi}</TableCell>
-                <TableCell className="text-slate-600">{m.angkatan}</TableCell>
-                <TableCell className="text-sm text-slate-500">{m.no_hp ?? m.email ?? "—"}</TableCell>
-                <TableCell><StatusBadge status={m.status} /></TableCell>
+                <TableCell className="font-mono text-sm text-slate-500 py-5">{m.nim}</TableCell>
+                <TableCell className="font-bold text-slate-900 text-lg py-5">{m.nama_lengkap}</TableCell>
+                <TableCell className="text-slate-600 py-5">{m.prodi}</TableCell>
+                <TableCell className="text-slate-600 font-medium py-5">{m.angkatan}</TableCell>
+                <TableCell className="text-slate-600 py-5">{m.no_hp ?? m.email ?? "—"}</TableCell>
+                <TableCell className="py-5"><StatusBadge status={m.status} /></TableCell>
                 {isAdmin && (
-                  <TableCell className="text-right pr-6">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600" onClick={() => { setEditing(m); setOpen(true); }}>
-                        <Pencil className="h-3.5 w-3.5" />
+                  <TableCell className="text-right py-5">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button size="icon" variant="ghost" className="rounded-full hover:bg-slate-200" onClick={() => { setEditing(m); setOpen(true); }}>
+                        <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-red-50 hover:text-red-500" onClick={() => { if (confirm(`Hapus ${m.nama_lengkap}?`)) del.mutate(m.id); }}>
-                        <Trash2 className="h-3.5 w-3.5" />
+                      <Button size="icon" variant="ghost" className="rounded-full hover:bg-red-50 hover:text-red-500" onClick={() => { if (confirm(`Hapus ${m.nama_lengkap}?`)) del.mutate(m.id); }}>
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>

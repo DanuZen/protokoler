@@ -52,11 +52,11 @@ export default function Page() {
   });
 
   return (
-    <div className="space-y-8">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-start justify-between gap-4">
+    <div className="space-y-12 max-w-[1400px]">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-end justify-between gap-6 pb-6 border-b border-slate-200/60">
         <div>
-          <h1 className="text-3xl md:text-4xl font-display font-extrabold text-slate-900 tracking-tight">Manajemen Kegiatan</h1>
-          <p className="mt-2 text-slate-500 text-base">Daftar kegiatan protokoler universitas.</p>
+          <h1 className="text-4xl md:text-5xl font-display font-extrabold text-slate-900 tracking-tight">Manajemen Kegiatan</h1>
+          <p className="mt-3 text-slate-500 text-lg">Daftar kegiatan protokoler universitas.</p>
         </div>
         {isAdmin && (
           <Dialog open={open} onOpenChange={setOpen}>
@@ -71,18 +71,18 @@ export default function Page() {
       </motion.div>
 
       {/* Search + count */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex items-center gap-3">
-        <div className="relative max-w-sm w-full">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input className="pl-10 bg-white border-slate-200 rounded-xl h-10" placeholder="Cari kegiatan, lokasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex items-center gap-4 pt-4">
+        <div className="relative max-w-md w-full">
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <Input className="pl-12 bg-transparent border-slate-300 rounded-full h-12 text-base focus-visible:ring-slate-900" placeholder="Cari kegiatan, lokasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <span className="text-sm text-slate-400 font-medium shrink-0">{filtered.length} kegiatan</span>
+        <span className="text-sm font-semibold text-slate-500 shrink-0">Menampilkan {filtered.length} hasil</span>
       </motion.div>
 
       {isLoading && (
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-48 rounded-2xl bg-slate-100 animate-pulse" />
+        <div className="space-y-6">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-24 w-full rounded-xl bg-slate-100 animate-pulse" />
           ))}
         </div>
       )}
@@ -95,28 +95,37 @@ export default function Page() {
         </motion.div>
       )}
 
-      <motion.div initial="hidden" animate="visible" variants={stagger} className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <motion.div initial="hidden" animate="visible" variants={stagger} className="flex flex-col">
         {filtered.map((k) => (
           <motion.div key={k.id} variants={cardAnim}>
-            <Link href={`/kegiatan/${k.id}`} className="block h-full">
-              <div className="group h-full rounded-2xl border border-slate-100 bg-white p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/20 transition-all duration-300">
-                <div className="flex items-start justify-between gap-3 mb-4">
-                  <div className="text-3xl">{bentukIcon[k.bentuk]}</div>
-                  <span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize", statusConfig[k.status].color)}>
-                    {statusConfig[k.status].label}
-                  </span>
-                </div>
-                <h3 className="font-bold text-slate-900 text-lg leading-snug mb-2 group-hover:text-primary transition-colors">{k.nama_kegiatan}</h3>
-                <Badge variant="outline" className="text-xs capitalize mb-4">{k.bentuk.replace("_", " ")}</Badge>
-                <div className="space-y-1.5 text-sm text-slate-500">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                    {new Date(k.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })} · {k.jam_mulai.slice(0,5)}–{k.jam_selesai.slice(0,5)}
+            <Link href={`/kegiatan/${k.id}`} className="block group">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6 border-b border-slate-200/60 hover:bg-slate-50/80 transition-colors px-4 -mx-4 rounded-xl">
+                <div className="flex flex-col gap-2 flex-1">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{bentukIcon[k.bentuk]}</span>
+                    <Badge variant="outline" className="text-xs uppercase tracking-wider font-bold text-slate-500 border-slate-300">
+                      {k.bentuk.replace("_", " ")}
+                    </Badge>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                  <h3 className="font-bold text-slate-900 text-2xl group-hover:text-blue-600 transition-colors mt-1">{k.nama_kegiatan}</h3>
+                </div>
+                
+                <div className="flex flex-col gap-1.5 min-w-[200px]">
+                  <div className="flex items-center gap-2 text-slate-600 text-base">
+                    <Clock className="h-4 w-4 text-slate-400 shrink-0" />
+                    <span className="font-medium">{new Date(k.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</span>
+                    <span className="text-slate-400">· {k.jam_mulai.slice(0,5)}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-slate-500 text-sm">
+                    <MapPin className="h-4 w-4 shrink-0 opacity-70" />
                     {k.lokasi}
                   </div>
+                </div>
+
+                <div className="flex items-center gap-4 justify-end md:w-[140px]">
+                  <span className={cn("inline-flex items-center rounded-full px-3 py-1 text-sm font-bold capitalize", statusConfig[k.status].color)}>
+                    {statusConfig[k.status].label}
+                  </span>
                 </div>
               </div>
             </Link>
