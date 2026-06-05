@@ -71,13 +71,13 @@ export default function AuthPage() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.5, ease: "easeOut" }}
-        className="absolute top-0 right-0 w-96 h-96 bg-blue-400/10 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none"
+        className="absolute top-0 right-0 w-96 h-96 bg-blue-400/10 rounded-none blur-[100px] -mr-20 -mt-20 pointer-events-none"
       />
       <motion.div 
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
-        className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] -ml-40 -mb-40 pointer-events-none"
+        className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/20 rounded-none blur-[120px] -ml-40 -mb-40 pointer-events-none"
       />
 
       <div className="w-full max-w-md z-10 relative">
@@ -87,7 +87,7 @@ export default function AuthPage() {
           transition={{ duration: 0.5 }}
           className="mb-8 flex flex-col items-center text-primary-foreground"
         >
-          <div className="relative h-20 w-20 mb-4 bg-white/10 rounded-2xl p-2 backdrop-blur-sm shadow-xl border border-white/20 overflow-hidden">
+          <div className="relative h-20 w-20 mb-4 bg-white/10 rounded-none p-2 backdrop-blur-sm shadow-xl border border-white/20 overflow-hidden">
             <Image 
               src="/logo protokoler.png" 
               alt="Logo Protokoler" 
@@ -97,20 +97,20 @@ export default function AuthPage() {
               priority
             />
           </div>
-          <h1 className="font-display text-4xl font-bold tracking-tight">SiProto</h1>
-          <p className="text-sm text-primary-foreground/80 mt-1 font-medium">Sistem Informasi Protokoler Universitas</p>
+          <h1 className="font-display text-4xl font-bold tracking-tight">PROTOKOLER</h1>
+          <p className="text-sm text-primary-foreground/80 mt-1 font-medium">UNIVERSITAS NEGERI PADANG</p>
         </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="rounded-3xl border border-white/50 bg-white/95 backdrop-blur-xl p-8 shadow-2xl"
+          className="rounded-none border border-white/50 bg-white/95 backdrop-blur-xl p-8 shadow-2xl"
         >
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 rounded-xl bg-slate-100 p-1 mb-6">
-              <TabsTrigger value="signin" className="rounded-lg">Masuk</TabsTrigger>
-              <TabsTrigger value="signup" className="rounded-lg">Daftar</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 rounded-none bg-slate-100 p-1 mb-6">
+              <TabsTrigger value="signin" className="rounded-none">Masuk</TabsTrigger>
+              <TabsTrigger value="signup" className="rounded-none">Daftar</TabsTrigger>
             </TabsList>
 
             <AnimatePresence mode="wait">
@@ -126,13 +126,13 @@ export default function AuthPage() {
                     <form onSubmit={signIn} className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="email-in" className="text-slate-700">Email</Label>
-                        <Input id="email-in" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nama@kampus.ac.id" className="rounded-lg bg-slate-50/50" />
+                        <Input id="email-in" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nama@kampus.ac.id" className="rounded-none bg-slate-50/50" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="pw-in" className="text-slate-700">Password</Label>
-                        <Input id="pw-in" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="rounded-lg bg-slate-50/50" />
+                        <Input id="pw-in" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="rounded-none bg-slate-50/50" />
                       </div>
-                      <Button type="submit" disabled={loading} className="w-full h-11 rounded-lg shadow-sm font-semibold mt-2">
+                      <Button type="submit" disabled={loading} className="w-full h-11 rounded-none shadow-sm font-semibold mt-2">
                         {loading ? "Memproses..." : "Masuk ke Dashboard"}
                       </Button>
                     </form>
@@ -152,17 +152,17 @@ export default function AuthPage() {
                     <form onSubmit={signUp} className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="nama" className="text-slate-700">Nama Lengkap</Label>
-                        <Input id="nama" required value={nama} onChange={(e) => setNama(e.target.value)} className="rounded-lg bg-slate-50/50" />
+                        <Input id="nama" required value={nama} onChange={(e) => setNama(e.target.value)} className="rounded-none bg-slate-50/50" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email-up" className="text-slate-700">Email</Label>
-                        <Input id="email-up" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-lg bg-slate-50/50" />
+                        <Input id="email-up" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-none bg-slate-50/50" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="pw-up" className="text-slate-700">Password</Label>
-                        <Input id="pw-up" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="rounded-lg bg-slate-50/50" />
+                        <Input id="pw-up" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="rounded-none bg-slate-50/50" />
                       </div>
-                      <Button type="submit" disabled={loading} className="w-full h-11 rounded-lg shadow-sm font-semibold mt-2">
+                      <Button type="submit" disabled={loading} className="w-full h-11 rounded-none shadow-sm font-semibold mt-2">
                         {loading ? "Memproses..." : "Daftar Sekarang"}
                       </Button>
                     </form>
@@ -178,7 +178,7 @@ export default function AuthPage() {
             <div className="h-px flex-1 bg-slate-300" />
           </div>
 
-          <Button variant="outline" type="button" onClick={google} className="w-full h-11 rounded-lg bg-white">
+          <Button variant="outline" type="button" onClick={google} className="w-full h-11 rounded-none bg-white">
             <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
               <path fill="currentColor" d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.1,4.73 12.2,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.1,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.25,22C17.6,22 21.5,18.33 21.5,12.91C21.5,11.76 21.35,11.1 21.35,11.1V11.1Z" />
             </svg>

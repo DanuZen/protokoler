@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
-  title: "SiProto – Sistem Informasi Protokoler Universitas",
+  title: "PROTOKOLER – UNIVERSITAS NEGERI PADANG",
   description: "Platform digital untuk mengelola tim protokoler universitas dengan efisien dan transparan.",
 };
 

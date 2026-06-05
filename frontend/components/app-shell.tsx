@@ -37,7 +37,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen bg-slate-50/50 text-slate-900 font-sans">
       <aside className="hidden w-[280px] flex-col bg-slate-900 text-slate-100 md:flex z-20 border-r border-slate-800">
         <div className="flex h-20 items-center gap-3 px-8 border-b border-slate-800/60">
-          <div className="relative h-10 w-10 overflow-hidden bg-white/10 rounded-lg p-1">
+          <div className="relative h-10 w-10 overflow-hidden bg-white/10 rounded-none p-1">
             <Image 
               src="/logo protokoler.png" 
               alt="Logo Protokoler" 
@@ -47,8 +47,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             />
           </div>
           <div>
-            <div className="font-display text-xl font-bold tracking-tight text-white">SiProto</div>
-            <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Protokoler Universitas</div>
+            <div className="font-display text-xl font-bold tracking-tight text-white">PROTOKOLER</div>
+            <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">UNIVERSITAS NEGERI PADANG</div>
           </div>
         </div>
         <nav className="flex-1 space-y-1.5 p-4">
@@ -64,7 +64,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   whileHover={{ x: 4 }}
                   whileTap={{ scale: 0.98 }}
                   className={cn(
-                    "flex items-center gap-3.5 rounded-xl px-4 py-3 text-[15px] transition-colors relative",
+                    "flex items-center gap-3.5 rounded-none px-4 py-3 text-[15px] transition-colors relative",
                     active
                       ? "text-white font-bold"
                       : "text-slate-400 hover:bg-slate-800 hover:text-white font-medium",
@@ -73,7 +73,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {active && (
                     <motion.div 
                       layoutId="active-nav" 
-                      className="absolute inset-0 bg-blue-600 rounded-lg"
+                      className="absolute inset-0 bg-blue-600 rounded-none"
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
                   )}
@@ -95,7 +95,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="relative h-8 w-8">
               <Image src="/logo protokoler.png" alt="Logo" fill sizes="32px" className="object-contain" />
             </div>
-            <span className="font-display text-lg font-bold text-primary">SiProto</span>
+            <span className="font-display text-lg font-bold text-primary">PROTOKOLER</span>
           </div>
           {/* Search bar */}
           <div className="hidden md:flex items-center gap-3 flex-1 max-w-sm">
@@ -104,19 +104,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <input
                 type="text"
                 placeholder="Cari kegiatan, mahasiswa..."
-                className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
+                className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
               />
             </div>
           </div>
           <div className="hidden md:flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-100 rounded-full">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-100 rounded-none">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
               <span className="text-xs font-bold text-green-600 capitalize">{role ?? "..."}</span>
             </div>
-            <button className="relative h-9 w-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors">
+            <button className="relative h-9 w-9 rounded-none bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors">
               <Bell className="h-4 w-4" />
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 border border-white"></span>
             </button>
@@ -129,7 +129,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="hidden lg:block text-xs font-bold text-slate-700">{user?.email || "Memuat..."}</div>
             </div>
 
-            <Button variant="ghost" size="sm" onClick={signOut} className="text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-xl px-4 gap-2">
+            <Button variant="ghost" size="sm" onClick={signOut} className="text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-none px-4 gap-2">
               <LogOut className="h-4 w-4" /> Keluar
             </Button>
           </div>
