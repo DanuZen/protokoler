@@ -1,6 +1,6 @@
 # PROJECT PLAN
-## Sistem Manajemen Staff Protokoler Universitas
-**Versi 1.0 | Juni 2025**
+## SiProto – Sistem Informasi Protokoler Universitas
+**Versi 1.2 | Juni 2025**
 
 ---
 
@@ -8,38 +8,39 @@
 |------|--------|
 | **Nama Proyek** | SiProto – Sistem Informasi Protokoler Universitas |
 | **Institusi** | Universitas (Lingkup Internal Kampus) |
-| **Versi Dokumen** | 1.0 |
+| **Versi Dokumen** | 1.2 |
 | **Tanggal Dibuat** | Juni 2025 |
 | **Platform Target** | Web App & Mobile App (Android/iOS) |
 | **Target Durasi** | 1 – 2 Bulan |
 | **Tim Pengembang** | Tim Internal Kampus |
+| **Referensi** | Indikator Lomba Anugerah Protokol 2026 + Dokumen Alur Sistem v1.0 |
 
 ---
 
 ## 1. Latar Belakang
 
-Unit Protokoler di lingkungan universitas berperan penting dalam mendukung kelancaran berbagai kegiatan resmi kampus, seperti wisuda, kunjungan tamu penting, seminar, pelantikan pejabat, dan acara-acara institusional lainnya. Mahasiswa anggota tim protokoler bertugas sebagai Liaison Officer (LO) maupun staf protokoler pada setiap kegiatan tersebut.
+Unit Protokoler di lingkungan universitas berperan penting dalam mendukung kelancaran berbagai kegiatan resmi kampus. Saat ini seluruh proses — dari pendaftaran anggota, penugasan, absensi, hingga evaluasi — masih dilakukan secara manual, menimbulkan berbagai permasalahan:
 
-Namun saat ini pengelolaan masih dilakukan secara manual, sehingga menimbulkan berbagai tantangan:
+- Tidak ada verifikasi formal keanggotaan tim protokoler
+- Penugasan dilakukan ad-hoc tanpa sistem yang terstruktur
+- Tidak ada bukti kehadiran digital saat pelaksanaan kegiatan
+- Tidak ada mekanisme evaluasi kegiatan yang terdokumentasi
+- Tidak ada rekam jejak pencapaian dan sertifikat bagi anggota
 
-- Tidak ada rekam jejak yang jelas mengenai mahasiswa mana yang sudah bertugas dan kapan
-- Penugasan LO dan staf protokoler dilakukan secara ad-hoc tanpa sistem yang terstruktur
-- Tidak tersedia jadwal tugas terpusat yang dapat diakses oleh semua pihak
-- Sulitnya menghasilkan laporan kegiatan dan rekapitulasi jam tugas mahasiswa
-- Koordinasi antara admin protokol dan mahasiswa yang bertugas masih bersifat manual
-
-Atas dasar tersebut, dibutuhkan sebuah sistem informasi yang mampu mengintegrasikan pengelolaan data mahasiswa protokoler, manajemen kegiatan, penugasan, dan pelaporan dalam satu platform digital yang mudah digunakan.
+SiProto dibangun sebagai solusi transformasi digital yang menjawab seluruh tantangan tersebut, sekaligus selaras dengan **4 indikator Lomba Anugerah Protokol 2026** dan mengacu pada **Dokumen Alur Sistem Aplikasi Protokol v1.0**.
 
 ---
 
 ## 2. Tujuan Proyek
 
-- Membangun sistem digital untuk manajemen mahasiswa anggota tim protokoler universitas
-- Menyediakan fitur manajemen kegiatan lengkap (jadwal, jenis, tamu, tempat, dan waktu)
-- Memudahkan penugasan mahasiswa sebagai LO atau staf protokoler pada setiap kegiatan
-- Menghasilkan jadwal tugas, rekap jam tugas, dan laporan kegiatan secara otomatis
-- Memberikan notifikasi dan reminder kepada mahasiswa yang bertugas
-- Menyediakan dasbor monitoring bagi admin dan pimpinan
+- Membangun sistem pendaftaran akun anggota protokoler dengan verifikasi admin
+- Menyediakan manajemen kegiatan lengkap (persiapan, pendaftaran, pelaksanaan, pasca kegiatan)
+- Mengimplementasikan absensi selfie digital saat pelaksanaan kegiatan
+- Mengotomatisasi penerbitan surat tugas dan sertifikat digital
+- Menyediakan angket evaluasi, form testimoni tamu, dan feedback admin
+- Membangun sistem rekap pencapaian anggota dengan gamifikasi tingkatan sertifikat
+- Mengimplementasikan checklist 3 Tata Protokol per kegiatan
+- Menyediakan laporan dan dashboard monitoring bagi admin dan pimpinan
 
 ---
 
@@ -47,21 +48,37 @@ Atas dasar tersebut, dibutuhkan sebuah sistem informasi yang mampu mengintegrasi
 
 ### 3.1 Dalam Lingkup (In Scope)
 
-- Manajemen data mahasiswa anggota protokoler (database anggota)
-- Manajemen kegiatan: nama kegiatan, bentuk, tanggal, jam, lokasi, dan data tamu
-- Penugasan mahasiswa per kegiatan (sebagai LO atau protokoler)
-- Notifikasi dan reminder jadwal tugas
-- Laporan kegiatan per periode
-- Rekap jam tugas dan frekuensi tugas tiap mahasiswa
-- Dasbor untuk Admin dan Pimpinan
-- Aplikasi mobile untuk mahasiswa
+**Indikator 1 – Pendahuluan:**
+- Pendaftaran & verifikasi akun anggota protokoler (dengan upload foto)
+- Repositori regulasi dan dasar hukum keprotokolan
+- Manajemen kategori dan jenis kegiatan protokoler
+
+**Indikator 2 – Pelaksanaan:**
+- Pembuatan kegiatan (Draf/Publik) dengan detail VVIP, keynote, rundown
+- Pendaftaran mandiri protokoler + seleksi (Diterima/Ditolak/Dialihkan)
+- Penerbitan surat tugas/izin kuliah otomatis
+- Absensi selfie digital saat pelaksanaan kegiatan
+- Checklist 3 Tata Protokol per kegiatan
+- Upload dokumentasi kegiatan (foto & dokumen)
+
+**Indikator 3 – Evaluasi:**
+- Angket evaluasi protokoler (wajib 1×24 jam pasca kegiatan)
+- Form testimoni tamu (tanpa batas waktu)
+- Feedback evaluasi admin/pembina
+- Penerbitan sertifikat digital berbasis penyelesaian angket
+- Laporan evaluasi dan rekap kegiatan per periode
+
+**Indikator 4 – Inovasi:**
+- Gamifikasi pencapaian: Perak / Silver / Gold berdasarkan akumulasi kegiatan
+- Dashboard inovasi & rekap dampak transformasi digital
+- SiProto sebagai produk inovasi layanan keprotokolan kampus
 
 ### 3.2 Di Luar Lingkup (Out of Scope)
 
 - Integrasi dengan sistem akademik / SIAKAD
-- Sistem penilaian dan sertifikasi mahasiswa (dapat dikembangkan pada fase berikutnya)
-- Manajemen keuangan atau honor mahasiswa
-- Fitur e-learning atau pelatihan protokoler online
+- Manajemen keuangan atau anggaran kegiatan
+- Fitur QR Code untuk absensi (dikembangkan fase berikutnya)
+- Notifikasi via WhatsApp Gateway (dikembangkan fase berikutnya)
 
 ---
 
@@ -69,9 +86,10 @@ Atas dasar tersebut, dibutuhkan sebuah sistem informasi yang mampu mengintegrasi
 
 | Stakeholder | Peran | Kepentingan |
 |-------------|-------|-------------|
-| Admin / Staf Protokol | Primary User | Mengelola data, kegiatan, dan penugasan |
-| Mahasiswa Protokoler | Secondary User | Melihat jadwal tugas & menerima notifikasi |
-| Pimpinan / Manajemen | Viewer / Approver | Monitoring kegiatan & laporan rekapitulasi |
+| Admin / Pembina | Primary User | Mengelola seluruh siklus kegiatan dan anggota protokoler |
+| Mahasiswa / Protokoler | Secondary User | Mendaftar, bertugas, absensi, evaluasi, dan kumpulkan sertifikat |
+| Tamu Undangan | Tertiary User | Mengisi form testimoni pasca kegiatan |
+| Pimpinan / Manajemen | Viewer | Monitoring dashboard, laporan kegiatan, dan rekap evaluasi |
 
 ---
 
@@ -81,10 +99,10 @@ Target pengembangan: **1 – 2 bulan (8 minggu)**
 
 | Fase | Milestone | Deliverable | Durasi |
 |------|-----------|-------------|--------|
-| Fase 1 | Perencanaan & Desain | PRD final, desain UI/UX wireframe, arsitektur sistem | Minggu 1 – 2 |
-| Fase 2 | Development Backend | Database, API: manajemen anggota, kegiatan, penugasan | Minggu 2 – 4 |
-| Fase 3 | Development Frontend | Web dashboard (Admin & Pimpinan), Mobile App (Mahasiswa) | Minggu 3 – 6 |
-| Fase 4 | Integrasi & Testing | Integrasi frontend-backend, UAT bersama user | Minggu 6 – 7 |
+| Fase 1 | Perencanaan & Desain | PRD final, wireframe UI/UX (6 fase alur), arsitektur sistem & database | Minggu 1 – 2 |
+| Fase 2 | Development Backend | API: auth & akun, kegiatan, pendaftaran, absensi, evaluasi, sertifikat | Minggu 2 – 4 |
+| Fase 3 | Development Frontend | Web dashboard Admin & Pimpinan, Mobile App Protokoler & Tamu | Minggu 3 – 6 |
+| Fase 4 | Integrasi & Testing | Integrasi end-to-end, UAT 6 fase alur bersama user | Minggu 6 – 7 |
 | Fase 5 | Deploy & Go-Live | Server deployment, pelatihan user, go-live | Minggu 8 |
 
 ---
@@ -94,29 +112,56 @@ Target pengembangan: **1 – 2 bulan (8 minggu)**
 | Layer | Teknologi Rekomendasi | Keterangan |
 |-------|-----------------------|------------|
 | Frontend Web | React.js / Next.js | Dashboard Admin & Pimpinan |
-| Mobile App | Flutter / React Native | Aplikasi mahasiswa (Android & iOS) |
-| Backend API | Node.js + Express / Laravel | REST API untuk semua modul |
+| Mobile App | Flutter / React Native | Aplikasi Protokoler & Tamu (Android & iOS) |
+| Backend API | Node.js + Express / Laravel | REST API untuk semua modul (6 fase alur) |
 | Database | PostgreSQL / MySQL | Penyimpanan data utama |
-| Notifikasi | Firebase Cloud Messaging | Push notification ke mahasiswa |
+| File Storage | MinIO / S3 | Foto profil, selfie absensi, foto kegiatan, sertifikat |
+| Notifikasi | Firebase Cloud Messaging | Push notification penugasan, reminder, batas waktu angket |
+| Sertifikat Generator | PDF Library (PDFKit/TCPDF) | Generate sertifikat digital otomatis |
 | Hosting | Server kampus / VPS | Deployment internal kampus |
 
 ---
 
-## 7. Risiko Proyek
+## 7. Pemetaan Modul ke Indikator Lomba Anugerah Protokol 2026
+
+| Indikator | Sub-indikator | Modul SiProto | Fase Alur |
+|-----------|---------------|---------------|-----------|
+| **1. Pendahuluan** | Peraturan | Repositori Regulasi | Lintas Fase |
+| | Pengelolaan SDM | Pendaftaran Akun + Rekap Anggota | Fase ⓪ + ⑤ |
+| | Jenis Acara | Manajemen Kegiatan & Kategori | Fase ① |
+| **2. Pelaksanaan** | Penerapan 3 Tata | Checklist 3 Tata Protokol | Fase ① + ③ |
+| | Alur Persiapan & Pelaksanaan | Persiapan + Pendaftaran + Absensi | Fase ① + ② + ③ |
+| | Dokumentasi Kegiatan | Upload Foto + Surat Tugas Otomatis | Fase ② + ③ |
+| **3. Evaluasi** | Mekanisme Evaluasi | Angket + Testimoni Tamu + Feedback | Fase ④ |
+| | Hasil & Tindak Lanjut | Rekap Evaluasi + Laporan | Fase ④ + ⑤ |
+| **4. Inovasi** | Inovasi Layanan | Absensi Selfie + Sertifikat Digital + Gamifikasi | Fase ③ + ④ + ⑤ |
+| | Transformasi Digital | SiProto sebagai produk inovasi | Keseluruhan |
+
+---
+
+## 8. Risiko Proyek
 
 | Risiko | Level | Mitigasi |
 |--------|-------|----------|
-| Ketersediaan tim pengembang terbatas | Tinggi | Prioritaskan fitur inti (MVP) dulu, fitur tambahan di fase 2 |
+| Ketersediaan tim pengembang terbatas | Tinggi | Prioritaskan fitur inti MVP dulu (Fase ⓪–③), fitur lanjutan di Fase ④–⑤ |
 | Perubahan kebutuhan di tengah pengembangan | Sedang | Kunci scope di PRD, perubahan lewat proses formal |
-| Adopsi pengguna rendah | Sedang | Libatkan user dalam UAT & adakan sesi pelatihan |
+| Adopsi pengguna rendah | Sedang | Libatkan user dalam UAT & adakan sesi pelatihan per role |
+| Absensi selfie tidak diisi / di-bypass | Sedang | Sistem tidak mencatat kehadiran tanpa selfie; enforce di UI |
+| Angket evaluasi tidak diisi dalam 1×24 jam | Sedang | Reminder H+0 dan H+12 jam otomatis via push notification |
+| Masalah upload foto (ukuran, format) | Sedang | Batasi ukuran file, kompresi otomatis, validasi format di frontend |
 | Masalah performa di mobile | Rendah | Testing multi-device sebelum go-live |
 
 ---
 
-## 8. Kriteria Keberhasilan
+## 9. Kriteria Keberhasilan
 
-- Semua modul inti berjalan tanpa error kritis pada saat go-live
-- Admin dapat mengelola kegiatan dan penugasan dalam waktu < 5 menit per entri
-- Mahasiswa menerima notifikasi tugas paling lambat 24 jam sebelum kegiatan
-- Laporan kegiatan dan rekap jam tugas dapat dihasilkan otomatis dalam format yang dapat diekspor
+- Semua 6 fase alur sistem berjalan tanpa error kritis pada saat go-live
+- Akun protokoler dapat diverifikasi admin dalam < 24 jam setelah pendaftaran
+- Admin dapat membuat kegiatan dan mempublikasikannya dalam < 10 menit
+- Surat tugas diterbitkan otomatis dalam < 1 menit setelah seleksi pendaftaran
+- Absensi selfie berhasil tersimpan dan tercatat sebagai bukti kehadiran
+- Angket evaluasi terisi > 90% dalam batas waktu 1×24 jam (setelah sistem berjalan 1 bulan)
+- Sertifikat diterbitkan dan dapat diunduh dalam < 5 menit setelah angket terisi
+- Laporan kegiatan dan rekap jam tugas dapat dihasilkan dan diunduh PDF/Excel
 - Tingkat adopsi user minimal 80% dalam 30 hari pertama setelah go-live
+- Sistem siap digunakan sebagai bukti inovasi pada Lomba Anugerah Protokol 2026
