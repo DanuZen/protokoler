@@ -1,167 +1,206 @@
 # PRODUCT REQUIREMENTS DOCUMENT (PRD)
 ## SiProto – Sistem Informasi Protokoler Universitas
-**Versi 1.0 | Juni 2025**
+**Versi 1.2 | Juni 2025**
 
 ---
 
 | Info | Detail |
 |------|--------|
 | **Nama Produk** | SiProto |
-| **Versi** | 1.0 – MVP |
+| **Versi** | 1.2 – MVP |
 | **Status** | Draft |
 | **Platform** | Web App + Mobile App |
-| **Target Pengguna** | Admin Protokol, Mahasiswa, Pimpinan |
+| **Target Pengguna** | Admin / Pembina, Protokoler (Mahasiswa), Tamu |
+| **Referensi** | Indikator Lomba Anugerah Protokol 2026 + Dokumen Alur Sistem v1.0 |
 
 ---
 
 ## 1. Ringkasan Produk
 
-SiProto adalah sistem informasi berbasis web dan mobile yang dirancang untuk membantu unit protokoler universitas dalam mengelola seluruh siklus kegiatan protokoler, mulai dari pendataan mahasiswa anggota, perencanaan kegiatan, penugasan staf, hingga pelaporan. Sistem ini menggantikan proses manual yang selama ini mengandalkan spreadsheet dan komunikasi verbal/chat, sehingga meningkatkan efisiensi, transparansi, dan akuntabilitas tim protokoler.
+SiProto adalah sistem informasi berbasis web dan mobile yang dirancang untuk membantu unit protokoler universitas dalam mengelola seluruh siklus kegiatan protokoler: dari pendaftaran akun anggota, pembuatan kegiatan, seleksi & penugasan, absensi, evaluasi pasca kegiatan, hingga penerbitan sertifikat dan rekap pencapaian anggota.
+
+Sistem dirancang selaras dengan **4 indikator Laporan Manajemen Keprotokolan** pada Lomba Anugerah Protokol 2026 (Pendahuluan, Pelaksanaan, Evaluasi, Inovasi) dan mengacu pada **Dokumen Alur Sistem Aplikasi Protokol v1.0**.
 
 ---
 
-## 2. Masalah yang Dipecahkan
+## 2. Role Pengguna
+
+| Role | Deskripsi & Tanggung Jawab |
+|------|---------------------------|
+| **Admin / Pembina** | Membuat & mengelola kegiatan, memverifikasi akun protokoler, menyeleksi pendaftar, memberikan feedback evaluasi, memantau seluruh aktivitas sistem |
+| **Protokoler** | Mendaftarkan akun, mendaftar ke kegiatan, absensi selfie saat kegiatan, mengisi angket evaluasi pasca kegiatan, mengumpulkan sertifikat sebagai rekam jejak |
+| **Tamu** | Peserta/tamu undangan kegiatan yang dapat mengisi form testimoni setelah kegiatan berlangsung |
+
+---
+
+## 3. Masalah yang Dipecahkan
 
 | Masalah Saat Ini | Solusi di SiProto |
 |------------------|-------------------|
-| Tidak ada rekam jejak mahasiswa bertugas | Modul riwayat tugas per mahasiswa dengan filter kegiatan & periode |
-| Penugasan dilakukan manual / via chat | Fitur penugasan digital dengan konfirmasi otomatis & notifikasi |
-| Tidak ada jadwal terpusat | Kalender kegiatan terintegrasi yang dapat diakses semua pihak |
-| Laporan dibuat manual | Laporan dan rekap otomatis yang dapat diekspor (PDF/Excel) |
+| Pendaftaran anggota manual & tidak terverifikasi | Modul pendaftaran akun dengan verifikasi admin & upload foto |
+| Tidak ada rekam jejak mahasiswa bertugas | Riwayat tugas, sertifikat, dan rekap pencapaian per anggota |
+| Penugasan dilakukan manual / via chat | Penugasan digital + seleksi (diterima/ditolak/dialihkan) |
+| Tidak ada bukti kehadiran saat kegiatan | Absensi selfie saat pelaksanaan kegiatan |
+| Tidak ada mekanisme evaluasi terstruktur | Angket evaluasi 1×24 jam + feedback admin + testimoni tamu |
+| Tidak ada dokumentasi & laporan terpusat | Laporan otomatis, sertifikat digital, dan ekspor PDF/Excel |
 
 ---
 
-## 3. User Persona
+## 4. User Persona
 
-### 3.1 Admin / Staf Protokol
-- **Kebutuhan:** Mengelola data mahasiswa, membuat kegiatan, menentukan penugasan
-- **Pain point:** Proses manual memakan waktu, rawan kesalahan, tidak terpusat
-- **Goal:** Dapat mengelola semua protokoler dari satu dashboard yang efisien
+### 4.1 Admin / Pembina
+- **Kebutuhan:** Mengelola data anggota, membuat kegiatan, menyeleksi peserta, monitoring evaluasi
+- **Pain point:** Proses manual memakan waktu, tidak ada rekap terpusat, sulit memantau anggota
+- **Goal:** Satu dashboard untuk semua kebutuhan manajemen protokoler
 
-### 3.2 Mahasiswa Anggota Protokoler
-- **Kebutuhan:** Mengetahui jadwal tugas, detail kegiatan, dan perannya (LO/protokoler)
-- **Pain point:** Sering lupa jadwal, informasi tugas tidak konsisten
-- **Goal:** Mendapat notifikasi tepat waktu dan akses mudah ke detail penugasan
+### 4.2 Protokoler (Mahasiswa)
+- **Kebutuhan:** Daftar akun, lihat & daftar kegiatan, absensi, evaluasi, kumpulkan sertifikat
+- **Pain point:** Informasi kegiatan tidak konsisten, tidak ada bukti partisipasi resmi
+- **Goal:** Akses mudah ke semua kegiatan dan rekam jejak pencapaian yang terdokumentasi
 
-### 3.3 Pimpinan / Manajemen
-- **Kebutuhan:** Melihat ringkasan kegiatan dan performa mahasiswa
-- **Pain point:** Tidak ada data agregat yang mudah dibaca
-- **Goal:** Dashboard monitoring yang informatif tanpa perlu operasional harian
+### 4.3 Tamu
+- **Kebutuhan:** Memberikan umpan balik terhadap kegiatan yang dihadiri
+- **Pain point:** Tidak ada saluran resmi untuk menyampaikan testimoni
+- **Goal:** Form testimoni yang mudah diakses kapan saja
 
 ---
 
-## 4. Fitur & Persyaratan Fungsional
+## 5. Fitur & Persyaratan Fungsional
 
-### 4.1 Modul Database Mahasiswa Protokoler
+> Fitur dikelompokkan berdasarkan **6 Fase Alur Sistem** + **4 Indikator Lomba Anugerah Protokol 2026**
 
-Modul ini adalah pusat data seluruh anggota tim protokoler universitas.
+---
+
+### FASE ⓪ — Pendaftaran Akun Protokoler
+*(Indikator 1: Pengelolaan SDM)*
 
 | No | Fitur | Deskripsi | Prioritas |
 |----|-------|-----------|-----------|
-| 1 | Tambah / Edit / Hapus Mahasiswa | Form input: NIM, nama, prodi, angkatan, nomor HP, email, foto | HIGH |
-| 2 | Filter & Pencarian | Cari berdasarkan nama, NIM, prodi, atau angkatan | HIGH |
-| 3 | Status Keaktifan | Tandai mahasiswa aktif / tidak aktif / cuti dari tim | MEDIUM |
-| 4 | Riwayat Tugas | Lihat daftar kegiatan yang pernah diikuti beserta perannya | HIGH |
-| 5 | Ekspor Data | Ekspor daftar mahasiswa ke format Excel/PDF | MEDIUM |
+| 1 | Form Pendaftaran Akun | Input data: nama lengkap, NIM, prodi, departemen, fakultas | HIGH |
+| 2 | Upload Foto Profil | Upload foto setengah badan dan foto full body | HIGH |
+| 3 | Verifikasi Admin | Admin menyetujui atau menolak pendaftaran akun | HIGH |
+| 4 | Notifikasi Status Akun | Protokoler mendapat notifikasi jika akun disetujui atau ditolak | HIGH |
+| 5 | Revisi & Daftar Ulang | Jika ditolak, protokoler dapat memperbaiki data dan mengajukan ulang | MEDIUM |
+| 6 | Kelola Profil Anggota | Edit data diri, ganti foto, perbarui status keanggotaan | MEDIUM |
 
 ---
 
-### 4.2 Modul Manajemen Kegiatan
-
-Modul pencatatan dan pengelolaan seluruh kegiatan protokoler universitas.
+### FASE ① — Persiapan Kegiatan
+*(Indikator 1: Jenis Acara + Indikator 2: Alur Persiapan)*
 
 | No | Fitur | Deskripsi | Prioritas |
 |----|-------|-----------|-----------|
-| 1 | Buat Kegiatan Baru | Form: nama kegiatan, bentuk/jenis kegiatan, tanggal, jam mulai & selesai, lokasi, deskripsi | HIGH |
-| 2 | Data Tamu / Peserta | Input informasi tamu VIP: nama, jabatan, instansi, jumlah rombongan | HIGH |
-| 3 | Kategori / Bentuk Kegiatan | Dropdown: Wisuda, Kunjungan Tamu, Seminar, Pelantikan, Rapat Resmi, Lainnya | HIGH |
-| 4 | Kalender Kegiatan | Tampilan kalender bulanan yang menampilkan semua kegiatan terjadwal | HIGH |
-| 5 | Status Kegiatan | Tandai kegiatan: Draft, Terkonfirmasi, Selesai, Dibatalkan | MEDIUM |
-| 6 | Lampiran Rundown | Upload file susunan acara / rundown kegiatan (PDF/Word) | LOW |
+| 1 | Buat Kegiatan Baru | Form: nama kegiatan, tanggal, tempat, jam mulai & selesai | HIGH |
+| 2 | Detail Kegiatan | Audience, tamu VVIP internal/eksternal, keynote, rundown acara | HIGH |
+| 3 | Kategori / Bentuk Kegiatan | Dropdown: Wisuda, Kunjungan, Seminar, Pelantikan, Rapat Resmi, Lainnya | HIGH |
+| 4 | Penentuan Kebutuhan SDM | Dropdown jumlah protokoler & LO + fitur search nama protokoler | HIGH |
+| 5 | Status Kegiatan | Simpan sebagai Draf (tidak publik) atau Publik (open pendaftaran) | HIGH |
+| 6 | Kalender Kegiatan | Tampilan kalender bulanan seluruh kegiatan terjadwal | HIGH |
+| 7 | Checklist 3 Tata Protokol | Daftar periksa: Tata Tempat, Tata Upacara, Tata Penghormatan | HIGH |
+| 8 | Upload Rundown & Dokumen | Upload file susunan acara, surat undangan, dan dokumen pendukung | MEDIUM |
 
 ---
 
-### 4.3 Modul Penugasan Mahasiswa
-
-Modul inti untuk menentukan dan mengelola penugasan mahasiswa per kegiatan.
+### FASE ② — Pendaftaran Kegiatan
+*(Indikator 2: Alur Pelaksanaan)*
 
 | No | Fitur | Deskripsi | Prioritas |
 |----|-------|-----------|-----------|
-| 1 | Assign Mahasiswa ke Kegiatan | Admin memilih mahasiswa dari database lalu menentukan perannya: LO atau Protokoler | HIGH |
-| 2 | Multi-peran per Kegiatan | Satu kegiatan dapat memiliki banyak mahasiswa dengan peran berbeda | HIGH |
-| 3 | Cek Konflik Jadwal | Sistem memperingatkan jika mahasiswa sudah ditugaskan di kegiatan lain di waktu bersamaan | HIGH |
-| 4 | Notifikasi Penugasan | Mahasiswa mendapat push notification & email saat ditugaskan pada kegiatan | HIGH |
-| 5 | Reminder Kegiatan | Notifikasi otomatis H-1 dan H-0 (pagi hari) sebelum kegiatan berlangsung | HIGH |
-| 6 | Konfirmasi Kehadiran | Mahasiswa mengkonfirmasi kesediaan bertugas via aplikasi mobile | MEDIUM |
+| 1 | Pendaftaran Mandiri Protokoler | Protokoler mendaftarkan diri pada kegiatan yang dipublikasikan | HIGH |
+| 2 | Seleksi Pendaftaran | Admin meninjau dan memutuskan: Diterima / Ditolak / Dialihkan ke kegiatan lain | HIGH |
+| 3 | Cek Konflik Jadwal | Sistem memperingatkan jika protokoler sudah terdaftar di kegiatan lain waktu bersamaan | HIGH |
+| 4 | Penerbitan Surat Tugas | Sistem otomatis menerbitkan surat izin kuliah / surat tugas untuk seluruh tim yang diterima | HIGH |
+| 5 | Notifikasi Hasil Seleksi | Protokoler mendapat notifikasi hasil seleksi (diterima/ditolak/dialihkan) | HIGH |
+| 6 | Penugasan Langsung oleh Admin | Admin dapat langsung menugaskan protokoler tertentu tanpa menunggu pendaftaran mandiri | MEDIUM |
 
 ---
 
-### 4.4 Modul Laporan & Rekap
-
-Modul pelaporan untuk kebutuhan monitoring dan evaluasi.
+### FASE ③ — Pelaksanaan Kegiatan
+*(Indikator 2: Penerapan 3 Tata + Dokumentasi)*
 
 | No | Fitur | Deskripsi | Prioritas |
 |----|-------|-----------|-----------|
-| 1 | Laporan Kegiatan per Periode | Daftar semua kegiatan dalam rentang waktu tertentu beserta detailnya | HIGH |
-| 2 | Rekap Jam Tugas Mahasiswa | Total jam dan jumlah kegiatan yang diikuti tiap mahasiswa dalam periode tertentu | HIGH |
-| 3 | Jadwal Tugas Per Mahasiswa | Tampilan jadwal individu mahasiswa yang bisa difilter per bulan | HIGH |
-| 4 | Ekspor Laporan | Unduh laporan dalam format PDF dan Excel | HIGH |
-| 5 | Dashboard Statistik | Grafik ringkasan: total kegiatan, mahasiswa teraktif, distribusi peran | MEDIUM |
+| 1 | Absensi Selfie | Protokoler melakukan absensi dengan selfie saat kegiatan berlangsung | HIGH |
+| 2 | Verifikasi Kehadiran | Sistem menyimpan dan memvalidasi foto absensi sebagai bukti kehadiran fisik | HIGH |
+| 3 | Status Checklist 3 Tata | Admin/protokoler menandai penyelesaian item checklist 3 Tata saat pelaksanaan | HIGH |
+| 4 | Upload Dokumentasi | Upload foto dokumentasi kegiatan selama atau setelah kegiatan berlangsung | HIGH |
+| 5 | Galeri Kegiatan | Tampilan galeri foto per kegiatan yang dapat diakses admin dan pimpinan | MEDIUM |
 
 ---
 
-## 5. Persyaratan Non-Fungsional
+### FASE ④ — Pasca Kegiatan
+*(Indikator 3: Evaluasi)*
+
+| No | Fitur | Deskripsi | Prioritas |
+|----|-------|-----------|-----------|
+| 1 | Angket Evaluasi Protokoler | Form evaluasi kegiatan + refleksi diri, wajib diisi dalam 1×24 jam | HIGH |
+| 2 | Form Testimoni Tamu | Tamu mengisi form testimoni kapan saja tanpa batas waktu | HIGH |
+| 3 | Feedback Admin / Pembina | Admin memberikan feedback terhadap kegiatan dan kinerja tim protokoler | HIGH |
+| 4 | Penerbitan Sertifikat Otomatis | Sertifikat diterbitkan sistem jika angket evaluasi telah diisi dalam batas waktu | HIGH |
+| 5 | Mekanisme Tindak Lanjut | Admin mencatat tindak lanjut hasil evaluasi dan memantau status penyelesaiannya | HIGH |
+| 6 | Riwayat Evaluasi | Rekap seluruh hasil evaluasi kegiatan yang dapat difilter per periode | MEDIUM |
+
+---
+
+### FASE ⑤ — Rekap & Pencapaian Anggota
+*(Indikator 1: Pengelolaan SDM + Indikator 4: Inovasi)*
+
+| No | Fitur | Deskripsi | Prioritas |
+|----|-------|-----------|-----------|
+| 1 | Rekap Otomatis Per Anggota | Sistem memperbarui jumlah kegiatan, status aktif, dan koleksi sertifikat setiap anggota | HIGH |
+| 2 | Kategorisasi Sertifikat | Otomatis: Perak (1–10 kegiatan), Silver (11–29 kegiatan), Gold (30+ kegiatan) | HIGH |
+| 3 | Profil Pencapaian Anggota | Halaman profil anggota menampilkan rekap kegiatan, sertifikat, dan tingkatan | HIGH |
+| 4 | Download Sertifikat | Anggota dapat mengunduh sertifikat digital masing-masing | HIGH |
+| 5 | Rekap Jam Tugas | Total jam dan frekuensi tugas tiap protokoler dalam periode tertentu | HIGH |
+
+---
+
+### Fitur Lintas Fase
+*(Indikator 1: Peraturan + Indikator 3: Laporan + Indikator 4: Inovasi)*
+
+| No | Fitur | Deskripsi | Prioritas |
+|----|-------|-----------|-----------|
+| 1 | Repositori Regulasi | Upload & akses dokumen peraturan keprotokolan (UU, Perpres, SOP, Pedoman) | HIGH |
+| 2 | Laporan Kegiatan Per Periode | Daftar semua kegiatan, detail, evaluasi, dan rekap dalam rentang waktu tertentu | HIGH |
+| 3 | Ekspor Laporan | Unduh laporan dalam format PDF dan Excel | HIGH |
+| 4 | Dashboard Statistik | Grafik: total kegiatan, protokoler teraktif, distribusi peran, tren evaluasi | MEDIUM |
+| 5 | Dashboard Inovasi | Ringkasan transformasi digital: perbandingan sebelum/sesudah SiProto | MEDIUM |
+| 6 | Notifikasi & Reminder | Push notification untuk penugasan, reminder H-1 & H-0 kegiatan, batas waktu angket | HIGH |
+
+---
+
+## 6. Persyaratan Non-Fungsional
 
 | Aspek | Persyaratan |
 |-------|-------------|
 | **Performa** | Halaman utama & dashboard load dalam < 3 detik pada koneksi 4G |
-| **Keamanan** | Autentikasi berbasis JWT, role-based access control (Admin, Mahasiswa, Pimpinan) |
-| **Ketersediaan** | Sistem tersedia 99% uptime pada jam kerja (07.00 – 22.00 WIB) |
-| **Skalabilitas** | Mendukung minimal 500 mahasiswa aktif dan 100 kegiatan per tahun |
-| **Kemudahan Pakai** | Pengguna baru dapat menyelesaikan tugas utama tanpa pelatihan khusus > 1 jam |
+| **Keamanan** | Autentikasi JWT, role-based access control (Admin, Protokoler, Tamu) |
+| **Ketersediaan** | 99% uptime pada jam kerja (07.00 – 22.00 WIB) |
+| **Skalabilitas** | Minimal 500 anggota aktif dan 100 kegiatan per tahun |
+| **Kemudahan Pakai** | Pengguna baru dapat menyelesaikan tugas utama tanpa pelatihan > 1 jam |
 | **Kompatibilitas** | Web: Chrome, Firefox, Edge terbaru. Mobile: Android 8+ dan iOS 13+ |
-
----
-
-## 6. Alur Sistem Utama
-
-### Alur 1: Admin Membuat Kegiatan dan Menugaskan Mahasiswa
-1. Admin login ke dashboard web
-2. Admin membuat kegiatan baru: mengisi nama, bentuk, tanggal, jam, lokasi, dan data tamu
-3. Admin membuka tab Penugasan pada kegiatan tersebut
-4. Admin memilih mahasiswa dari database dan menentukan peran (LO / Protokoler)
-5. Sistem mengecek konflik jadwal – jika ada, admin mendapat peringatan
-6. Admin menyimpan penugasan → sistem mengirim notifikasi otomatis ke mahasiswa yang ditugaskan
-
-### Alur 2: Mahasiswa Menerima dan Mengkonfirmasi Penugasan
-1. Mahasiswa menerima push notification di aplikasi mobile
-2. Mahasiswa membuka detail kegiatan: nama acara, waktu, lokasi, tamu, dan perannya
-3. Mahasiswa mengkonfirmasi kesediaan bertugas (Konfirmasi / Minta Pengganti)
-4. Mahasiswa mendapat reminder otomatis H-1 dan H-0 sebelum kegiatan
-
-### Alur 3: Pimpinan Melihat Laporan
-1. Pimpinan login ke dashboard web dengan role Viewer
-2. Pimpinan memilih periode laporan yang ingin dilihat
-3. Sistem menampilkan ringkasan kegiatan, mahasiswa paling aktif, dan statistik tugas
-4. Pimpinan dapat mengekspor laporan dalam format PDF atau Excel
 
 ---
 
 ## 7. Model Data Utama
 
-### 7.1 Entitas Mahasiswa
+### 7.1 Entitas Mahasiswa (Protokoler)
 
 | Field | Tipe | Keterangan |
 |-------|------|------------|
 | id | UUID | Primary key |
 | nim | String | Nomor Induk Mahasiswa (unik) |
-| nama_lengkap | String | Nama lengkap mahasiswa |
+| nama_lengkap | String | Nama lengkap |
 | prodi | String | Program studi |
-| angkatan | Integer | Tahun angkatan masuk |
+| departemen | String | Departemen |
+| fakultas | String | Fakultas |
 | no_hp | String | Nomor WhatsApp aktif |
-| email | String | Email kampus mahasiswa |
-| foto_url | String | URL foto profil |
-| status | Enum | aktif / tidak_aktif / cuti |
+| email | String | Email kampus |
+| foto_setengah_badan_url | String | URL foto setengah badan |
+| foto_full_body_url | String | URL foto full body |
+| status_akun | Enum | pending / aktif / ditolak / tidak_aktif |
+| total_kegiatan | Integer | Akumulasi jumlah kegiatan yang diikuti |
+| kategori_sertifikat | Enum | perak / silver / gold |
 
 ### 7.2 Entitas Kegiatan
 
@@ -169,71 +208,167 @@ Modul pelaporan untuk kebutuhan monitoring dan evaluasi.
 |-------|------|------------|
 | id | UUID | Primary key |
 | nama_kegiatan | String | Judul / nama acara |
-| bentuk_kegiatan | Enum | Wisuda / Kunjungan / Seminar / dll |
+| bentuk_kegiatan | Enum | Wisuda / Kunjungan / Seminar / Pelantikan / dll |
 | tanggal | Date | Tanggal pelaksanaan |
-| jam_mulai | Time | Jam mulai kegiatan |
-| jam_selesai | Time | Jam selesai kegiatan |
-| lokasi | String | Tempat kegiatan berlangsung |
-| status | Enum | draft / terkonfirmasi / selesai / batal |
+| jam_mulai | Time | Jam mulai |
+| jam_selesai | Time | Jam selesai |
+| lokasi | String | Tempat kegiatan |
+| audience | Text | Deskripsi peserta |
+| keynote | String | Narasumber utama |
+| status | Enum | draf / publik / selesai / batal |
+| jumlah_protokoler | Integer | Kuota protokoler |
+| jumlah_lo | Integer | Kuota LO |
 
-### 7.3 Entitas Penugasan (Assignment)
-
-| Field | Tipe | Keterangan |
-|-------|------|------------|
-| id | UUID | Primary key |
-| kegiatan_id | FK → Kegiatan | Referensi ke kegiatan terkait |
-| mahasiswa_id | FK → Mahasiswa | Referensi ke mahasiswa yang bertugas |
-| peran | Enum | LO (Liaison Officer) / Protokoler |
-| status_konfirmasi | Enum | pending / dikonfirmasi / ditolak |
-| catatan | Text | Catatan tambahan dari admin atau mahasiswa |
-
-### 7.4 Entitas Tamu
+### 7.3 Entitas Tamu VVIP
 
 | Field | Tipe | Keterangan |
 |-------|------|------------|
 | id | UUID | Primary key |
-| kegiatan_id | FK → Kegiatan | Referensi ke kegiatan terkait |
-| nama_tamu | String | Nama lengkap tamu VIP |
-| jabatan | String | Jabatan / posisi tamu |
-| instansi | String | Asal instansi / lembaga |
+| kegiatan_id | FK → Kegiatan | Referensi kegiatan |
+| nama_tamu | String | Nama lengkap tamu |
+| jabatan | String | Jabatan / posisi |
+| instansi | String | Asal instansi |
+| tipe | Enum | internal / eksternal |
 | jumlah_rombongan | Integer | Jumlah orang dalam rombongan |
+
+### 7.4 Entitas Pendaftaran (Registrasi Kegiatan)
+
+| Field | Tipe | Keterangan |
+|-------|------|------------|
+| id | UUID | Primary key |
+| kegiatan_id | FK → Kegiatan | Referensi kegiatan |
+| protokoler_id | FK → Protokoler | Referensi anggota |
+| peran | Enum | LO / Protokoler |
+| status | Enum | pending / diterima / ditolak / dialihkan |
+| kegiatan_dialihkan_id | FK → Kegiatan | Jika dialihkan, referensi ke kegiatan lain |
+| surat_tugas_url | String | URL surat tugas yang diterbitkan |
+
+### 7.5 Entitas Absensi
+
+| Field | Tipe | Keterangan |
+|-------|------|------------|
+| id | UUID | Primary key |
+| kegiatan_id | FK → Kegiatan | Referensi kegiatan |
+| protokoler_id | FK → Protokoler | Referensi anggota |
+| foto_selfie_url | String | URL foto selfie absensi |
+| waktu_absen | Timestamp | Waktu absensi dilakukan |
+| status | Enum | hadir / tidak_hadir |
+
+### 7.6 Entitas Evaluasi Kegiatan
+
+| Field | Tipe | Keterangan |
+|-------|------|------------|
+| id | UUID | Primary key |
+| kegiatan_id | FK → Kegiatan | Referensi kegiatan |
+| protokoler_id | FK → Protokoler | Referensi anggota yang mengisi |
+| evaluasi_kegiatan | Text | Evaluasi terhadap pelaksanaan kegiatan |
+| refleksi_diri | Text | Refleksi kinerja pribadi |
+| waktu_pengisian | Timestamp | Waktu angket diisi |
+| dalam_batas_waktu | Boolean | Apakah diisi dalam 1×24 jam |
+
+### 7.7 Entitas Testimoni Tamu
+
+| Field | Tipe | Keterangan |
+|-------|------|------------|
+| id | UUID | Primary key |
+| kegiatan_id | FK → Kegiatan | Referensi kegiatan |
+| nama_tamu | String | Nama pengisi testimoni |
+| isi_testimoni | Text | Isi feedback dari tamu |
+| waktu_pengisian | Timestamp | Waktu testimoni diisi |
+
+### 7.8 Entitas Sertifikat
+
+| Field | Tipe | Keterangan |
+|-------|------|------------|
+| id | UUID | Primary key |
+| protokoler_id | FK → Protokoler | Referensi anggota |
+| kegiatan_id | FK → Kegiatan | Referensi kegiatan |
+| kategori | Enum | perak / silver / gold |
+| tanggal_terbit | Date | Tanggal sertifikat diterbitkan |
+| file_url | String | URL file sertifikat digital |
 
 ---
 
 ## 8. Role & Hak Akses
 
-| Fitur | Admin | Mahasiswa | Pimpinan |
-|-------|:-----:|:---------:|:--------:|
-| Kelola data mahasiswa | ✅ | ❌ | ❌ |
+| Fitur | Admin | Protokoler | Tamu |
+|-------|:-----:|:----------:|:----:|
+| Verifikasi akun protokoler | ✅ | ❌ | ❌ |
 | Buat & edit kegiatan | ✅ | ❌ | ❌ |
-| Assign penugasan | ✅ | ❌ | ❌ |
+| Publikasi kegiatan | ✅ | ❌ | ❌ |
+| Seleksi pendaftaran kegiatan | ✅ | ❌ | ❌ |
+| Daftar ke kegiatan | ❌ | ✅ | ❌ |
+| Absensi selfie | ❌ | ✅ | ❌ |
+| Checklist 3 Tata Protokol | ✅ | ✅ | ❌ |
+| Upload dokumentasi kegiatan | ✅ | ✅ | ❌ |
+| Isi angket evaluasi (1×24 jam) | ❌ | ✅ | ❌ |
+| Isi form testimoni | ❌ | ❌ | ✅ |
+| Feedback evaluasi admin | ✅ | ❌ | ❌ |
+| Terbitkan sertifikat | ⬜ Otomatis | ❌ | ❌ |
+| Download sertifikat | ✅ | ✅ | ❌ |
+| Lihat semua kegiatan | ✅ | ❌ | ❌ |
 | Lihat jadwal tugas sendiri | ✅ | ✅ | ❌ |
-| Konfirmasi kehadiran | ❌ | ✅ | ❌ |
-| Lihat semua kegiatan | ✅ | ❌ | ✅ |
-| Akses laporan & rekap | ✅ | ❌ | ✅ |
-| Ekspor laporan | ✅ | ❌ | ✅ |
-| Dashboard statistik | ✅ | ❌ | ✅ |
-| Kelola akun pengguna | ✅ | ❌ | ❌ |
+| Akses laporan & rekap | ✅ | ❌ | ❌ |
+| Lihat laporan evaluasi | ✅ | ❌ | ❌ |
+| Akses regulasi (baca) | ✅ | ✅ | ❌ |
+| Kelola regulasi | ✅ | ❌ | ❌ |
+| Dashboard inovasi | ✅ | ❌ | ❌ |
+| Ekspor laporan | ✅ | ❌ | ❌ |
 
 ---
 
-## 9. Acceptance Criteria
+## 9. Aturan Bisnis
+
+| No | Aturan | Dampak |
+|----|--------|--------|
+| 1 | Akun protokoler hanya aktif setelah diverifikasi admin | Tidak bisa mendaftar kegiatan sebelum akun aktif |
+| 2 | Kegiatan hanya bisa didaftari jika statusnya Publik | Kegiatan Draf tidak tampil untuk protokoler |
+| 3 | Admin bisa menolak atau mengalihkan pendaftar | Protokoler yang ditolak tidak masuk tim kegiatan |
+| 4 | Absensi selfie wajib dilakukan saat kegiatan berlangsung | Kehadiran tanpa selfie tidak tercatat di sistem |
+| 5 | Angket evaluasi wajib diisi dalam 1×24 jam pasca kegiatan | Melebihi batas waktu = tidak mendapat sertifikat |
+| 6 | Sertifikat dikategorikan otomatis oleh sistem | Kategori berdasarkan akumulasi jumlah kegiatan |
+| 7 | Testimoni tamu tidak memiliki batas waktu | Bisa diisi kapan saja setelah kegiatan selesai |
+
+---
+
+## 10. Acceptance Criteria
 
 | Fitur | Kriteria Penerimaan |
 |-------|---------------------|
-| Database Mahasiswa | Admin dapat menambah, mengedit, menonaktifkan mahasiswa. Data tersimpan dan dapat dicari. |
-| Manajemen Kegiatan | Admin dapat membuat kegiatan dengan semua field wajib terisi. Kegiatan muncul di kalender. |
-| Penugasan Mahasiswa | Mahasiswa dapat ditugaskan sebagai LO atau Protokoler. Sistem mencegah konflik jadwal. |
-| Notifikasi | Mahasiswa menerima notifikasi dalam < 5 menit setelah penugasan dan reminder H-1. |
-| Laporan | Laporan kegiatan dan rekap jam tugas dapat digenerate dan diunduh dalam format PDF/Excel. |
+| Pendaftaran Akun | Protokoler dapat mendaftar dan upload foto. Admin dapat approve/reject. Notifikasi terkirim. |
+| Manajemen Kegiatan | Kegiatan dapat dibuat, disimpan sebagai draf, dan dipublikasikan. Tampil di kalender. |
+| Pendaftaran Kegiatan | Protokoler dapat mendaftar. Admin dapat seleksi. Surat tugas diterbitkan otomatis. |
+| Absensi Selfie | Protokoler dapat upload selfie saat kegiatan. Sistem menyimpan sebagai bukti kehadiran. |
+| Checklist 3 Tata | Semua item 3 Tata dapat diisi dan direkap. Status tampil di detail kegiatan. |
+| Evaluasi | Angket dapat diisi dalam 1×24 jam. Sertifikat terbit otomatis jika angket terisi. |
+| Testimoni Tamu | Tamu dapat mengisi form testimoni tanpa batas waktu. Data tersimpan di sistem. |
+| Sertifikat & Rekap | Sertifikat diterbitkan dan dikategorikan otomatis. Anggota dapat unduh sertifikat. |
+| Laporan | Laporan kegiatan dan rekap jam tugas dapat digenerate dan diunduh PDF/Excel. |
 
 ---
 
-## 10. Ketentuan Pengembangan Selanjutnya (Future Scope)
+## 11. Pemetaan Fitur ke Indikator Lomba Anugerah Protokol 2026
 
-- Sistem penilaian dan feedback performa mahasiswa protokoler per kegiatan
-- Manajemen tingkatan / level mahasiswa (junior, senior) berdasarkan akumulasi tugas
-- Modul sertifikasi dan pelatihan protokoler terintegrasi
+| Indikator | Sub-indikator | Modul SiProto |
+|-----------|---------------|---------------|
+| **1. Pendahuluan** | Peraturan | Repositori Regulasi & Dasar Hukum |
+| | Pengelolaan SDM | Pendaftaran Akun + Verifikasi + Rekap Anggota |
+| | Jenis Acara | Manajemen Kegiatan & Kategori |
+| **2. Pelaksanaan** | Penerapan 3 Tata | Checklist 3 Tata Protokol |
+| | Alur Persiapan & Pelaksanaan | Persiapan Kegiatan + Pendaftaran + Absensi |
+| | Dokumentasi Kegiatan | Upload Foto + Surat Tugas Otomatis |
+| **3. Evaluasi** | Mekanisme Evaluasi | Angket Evaluasi + Testimoni Tamu + Feedback Admin |
+| | Hasil & Tindak Lanjut | Rekap Evaluasi + Laporan Periodik + Tindak Lanjut |
+| **4. Inovasi** | Inovasi Layanan | Absensi Selfie + Sertifikat Digital + Gamifikasi |
+| | Transformasi Digital | SiProto sebagai produk inovasi digital keprotokolan |
+
+---
+
+## 12. Ketentuan Pengembangan Selanjutnya (Future Scope)
+
 - Integrasi dengan sistem akademik (SIAKAD) untuk validasi data mahasiswa
-- Fitur self-service mahasiswa untuk mengajukan diri sebagai relawan kegiatan
-- Laporan analitik lanjutan dan prediksi kebutuhan staf berdasarkan tren kegiatan
+- Sistem penilaian performa mahasiswa protokoler per kegiatan
+- Modul anggaran kegiatan protokoler
+- Laporan analitik lanjutan dan prediksi kebutuhan SDM
+- Fitur QR Code untuk absensi selain selfie
+- Notifikasi WhatsApp Gateway selain push notification
