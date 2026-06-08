@@ -52,13 +52,20 @@ export default function Page() {
   };
 
   return (
-    <div className="space-y-12 max-w-[1400px]">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="pb-6 border-b border-slate-200/60 flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-display font-extrabold text-slate-900 tracking-tight">Laporan & Rekap</h1>
-          <p className="mt-3 text-slate-500 text-lg">Laporan kegiatan dan rekap penugasan mahasiswa per periode.</p>
-        </div>
-      </motion.div>
+    <div className="min-h-screen bg-transparent">
+      {/* ─── Hero Banner ─── */}
+      <div className="relative px-6 md:px-10 pt-24 pb-32 overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-end justify-between gap-6 relative z-10">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight">Laporan & Rekap</h1>
+            <p className="mt-3 text-slate-300 text-lg">Laporan kegiatan dan rekap penugasan mahasiswa per periode.</p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ─── Main Content ─── */}
+      <div className="bg-slate-50 min-h-screen pt-4">
+        <div className="px-6 md:px-10 -mt-24 relative z-10 space-y-12 max-w-[1400px] mx-auto">
 
       {/* Filter */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col gap-4 bg-slate-100/50 p-6 rounded-2xl">
@@ -187,6 +194,8 @@ export default function Page() {
           </TableBody>
         </Table>
       </motion.div>
+      </div>
+    </div>
     </div>
   );
 }
