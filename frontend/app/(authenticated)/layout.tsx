@@ -10,6 +10,13 @@ export default function AuthenticatedLayout({ children }: { children: React.Reac
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Demo Mode Support
+    const demoRole = localStorage.getItem("demo_role");
+    if (demoRole) {
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getUser().then(({ data, error }) => {
       if (error || !data.user) {
         router.replace("/auth");
@@ -24,7 +31,7 @@ export default function AuthenticatedLayout({ children }: { children: React.Reac
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => subscription?.unsubscribe();
   }, [router]);
 
   if (loading) return null; // or a loading spinner
