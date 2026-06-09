@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Bell, Search } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+// supabase import removed — frontend demo mode active
 import { Button } from "@/components/ui/button";
 import { useAuth, useRole } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
@@ -88,11 +88,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const path = usePathname();
 
-  const signOut = async () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("demo_role");
-    }
-    await supabase.auth.signOut();
+  const signOut = () => {
+    // Demo Mode: langsung redirect ke halaman utama
     router.push("/");
   };
 

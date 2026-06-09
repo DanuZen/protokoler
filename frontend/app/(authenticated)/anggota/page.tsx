@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { BadgeStatus } from "@/components/BadgeStatus";
 import { BadgeKategori } from "@/components/BadgeKategori";
+import { cn } from "@/lib/utils";
 
 type Protokoler = {
   id: string;
@@ -92,33 +93,36 @@ export default function AnggotaPage() {
       </div>
 
       {/* ─── Main Content ─── */}
-      <div className="bg-slate-50 min-h-screen pt-4">
-        <div className="px-6 md:px-10 -mt-24 relative z-10 space-y-8 max-w-[1400px] mx-auto">
+      <div className="bg-slate-50 min-h-screen pt-4 pb-12">
+        <div className="px-6 md:px-10 -mt-24 relative z-10 space-y-6">
 
       {/* Stats Row */}
-      <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-slate-200 shadow-xl">
         {[
           { label: "Menunggu Verifikasi", value: pendingCount, icon: ShieldCheck, color: "text-orange-500" },
           { label: "Protokoler Aktif", value: aktifCount, icon: UserCheck, color: "text-emerald-600" },
           { label: "Total Terdaftar", value: allData.length, icon: Users, color: "text-slate-900" },
-        ].map((s) => (
-          <motion.div key={s.label} variants={fadeUp} className="bg-white/50 backdrop-blur-md border border-slate-200/50 p-6 shadow-sm">
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">{s.label}</div>
-                <div className={`text-5xl font-display font-light ${s.color}`}>{s.value}</div>
-              </div>
-              <s.icon className={`h-8 w-8 opacity-20 ${s.color}`} />
+        ].map((s, i) => (
+          <motion.div key={s.label} variants={fadeUp} className={cn(
+            "bg-white p-6 flex justify-between items-center hover:bg-slate-50 transition-colors",
+            i < 2 && "border-b md:border-b-0 md:border-r border-slate-200"
+          )}>
+            <div>
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1">{s.label}</div>
+              <div className={`text-4xl font-display font-extrabold leading-none ${s.color}`}>{s.value}</div>
+            </div>
+            <div className="flex-shrink-0 h-12 w-12 bg-slate-900 flex items-center justify-center rounded-none">
+              <s.icon className="h-5 w-5 text-[#C9A84C]" />
             </div>
           </motion.div>
         ))}
       </motion.div>
 
       {/* Main Content Area */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/50 backdrop-blur-md border border-slate-200/50 shadow-sm p-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white border border-slate-200 shadow-sm rounded-none overflow-hidden">
         
         {/* Toolbar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-5 border-b border-slate-100">
           <div className="flex bg-slate-100 p-1 w-full md:w-auto">
             <button 
               onClick={() => setTab("semua")} 
@@ -138,7 +142,7 @@ export default function AnggotaPage() {
           <div className="relative w-full md:max-w-xs">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input 
-              className="pl-9 rounded-none border-slate-300 bg-white" 
+              className="pl-9 rounded-none border-slate-200 bg-slate-50" 
               placeholder="Cari nama, NIM..." 
               value={search} 
               onChange={(e) => setSearch(e.target.value)} 

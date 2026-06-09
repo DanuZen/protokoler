@@ -1,59 +1,36 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase";
 import { useQuery } from "@tanstack/react-query";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// FRONTEND DEMO MODE — Semua koneksi Supabase dinonaktifkan sementara.
+// Ganti nilai DEMO_ROLE di bawah untuk mengubah tampilan berdasarkan peran:
+//   "admin"      → akses penuh (kelola anggota, kegiatan, laporan)
+//   "mahasiswa"  → akses terbatas (kegiatan saya, sertifikat, profil)
+//   "pimpinan"   → akses read-only laporan & dashboard
+// ─────────────────────────────────────────────────────────────────────────────
+const DEMO_ROLE: "admin" | "mahasiswa" | "pimpinan" = "admin";
+
+const MOCK_USER = {
+  id: "demo-user-id",
+  email: `demo@${DEMO_ROLE}.siproto.id`,
+  user_metadata: {
+    nama_lengkap: DEMO_ROLE === "admin" ? "Admin Demo" : DEMO_ROLE === "pimpinan" ? "Pimpinan Demo" : "Mahasiswa Demo",
+  },
+} as unknown as User;
+
+const MOCK_SESSION = { user: MOCK_USER } as Session;
+
 export function useAuth() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Demo Mode Override
-    const demoRole = typeof window !== "undefined" ? localStorage.getItem("demo_role") : null;
-    if (demoRole) {
-      const mockUser = {
-        id: "demo-user-id",
-        email: `demo@${demoRole}.com`,
-        user_metadata: { nama_lengkap: `Demo ${demoRole}` }
-      } as unknown as User;
-      setSession({ user: mockUser } as Session);
-      setLoading(false);
-      return;
-    }
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-      setLoading(false);
-    });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
-    return () => subscription?.unsubscribe();
-  }, []);
-
-  return { session, user: session?.user ?? null, loading };
+  const [session] = useState<Session | null>(MOCK_SESSION);
+  const [loading]  = useState(false);
+  return { session, user: MOCK_USER, loading };
 }
 
-export function useRole(user: User | null | undefined) {
+export function useRole(_user?: User | null) {
   return useQuery({
-    queryKey: ["user_role", user?.id],
-    enabled: !!user,
-    queryFn: async () => {
-      // Demo Mode Override
-      const demoRole = typeof window !== "undefined" ? localStorage.getItem("demo_role") : null;
-      if (demoRole) return demoRole as "admin" | "mahasiswa" | "pimpinan";
-
-      const { data, error } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user!.id);
-      if (error) throw error;
-      const roles = (data ?? []).map((r) => r.role);
-      // priority: admin > pimpinan > mahasiswa
-      if (roles.includes("admin")) return "admin" as const;
-      if (roles.includes("pimpinan")) return "pimpinan" as const;
-      return "mahasiswa" as const;
-    },
+    queryKey: ["user_role", "demo"],
+    queryFn: async () => DEMO_ROLE,
+    initialData: DEMO_ROLE,
   });
 }

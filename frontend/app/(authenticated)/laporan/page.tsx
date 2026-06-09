@@ -64,42 +64,43 @@ export default function Page() {
       </div>
 
       {/* ─── Main Content ─── */}
-      <div className="bg-slate-50 min-h-screen pt-4">
-        <div className="px-6 md:px-10 -mt-24 relative z-10 space-y-12 max-w-[1400px] mx-auto">
+      <div className="bg-slate-50 min-h-screen pt-4 pb-12">
+        <div className="px-6 md:px-10 -mt-24 relative z-10 space-y-6">
 
       {/* Filter */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col gap-4 bg-slate-100/50 p-6 rounded-2xl">
-        <div className="flex items-center gap-2 mb-5 text-slate-700">
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white border border-slate-200 shadow-sm p-4 rounded-none">
+        <div className="flex items-center gap-2 text-slate-700 font-bold text-sm uppercase tracking-wider shrink-0 bg-slate-50 px-4 py-2 border border-slate-200">
           <Filter className="h-4 w-4" />
-          <span className="font-bold text-sm uppercase tracking-wider">Filter Periode</span>
+          Filter Periode
         </div>
         <div className="flex flex-wrap items-end gap-4">
           <div className="space-y-2 flex-1 min-w-[200px]">
             <Label className="text-sm font-bold text-slate-700">Dari Tanggal</Label>
-            <Input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="rounded-xl h-12 bg-white border-slate-200 shadow-sm" />
+            <Input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="rounded-none h-12 bg-white border-slate-200 shadow-sm" />
           </div>
           <div className="space-y-2 flex-1 min-w-[200px]">
             <Label className="text-sm font-bold text-slate-700">Sampai Tanggal</Label>
-            <Input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="rounded-xl h-12 bg-white border-slate-200 shadow-sm" />
+            <Input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="rounded-none h-12 bg-white border-slate-200 shadow-sm" />
           </div>
         </div>
       </motion.div>
 
       {/* Kegiatan Table */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="pt-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white border border-slate-200 shadow-sm rounded-none overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-bold text-slate-900">Laporan Kegiatan</h2>
-            <Badge variant="outline" className="text-slate-500 bg-white">{kegiatan?.length ?? 0} ditemukan</Badge>
+            <h2 className="text-lg font-bold text-slate-900 uppercase tracking-wider">Laporan Kegiatan</h2>
+            <Badge variant="outline" className="text-slate-500 bg-white border-slate-300">{kegiatan?.length ?? 0} kegiatan</Badge>
           </div>
-          <Button variant="outline" size="sm" className="rounded-xl gap-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-100 h-10 px-4" onClick={() => exportCsv(
+          <Button variant="outline" size="sm" className="rounded-none gap-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-100 h-9 px-4" onClick={() => exportCsv(
             `laporan-kegiatan-${start}-${end}.csv`,
             [["Tanggal","Nama","Bentuk","Jam","Lokasi","Status"], ...(kegiatan ?? []).map((k: any) => [k.tanggal, k.nama_kegiatan, k.bentuk, `${k.jam_mulai}-${k.jam_selesai}`, k.lokasi, k.status])]
           )}>
             <Download className="h-4 w-4" /> Export CSV
           </Button>
         </div>
-        <Table className="text-base">
+        <div className="overflow-x-auto">
+          <Table className="text-sm">
           <TableHeader>
             <TableRow className="border-b-2 border-slate-900 hover:bg-transparent">
               <TableHead className="font-bold text-slate-900 py-4 w-[160px]">Tanggal</TableHead>
@@ -131,7 +132,7 @@ export default function Page() {
                 <TableCell className="py-5"><Badge variant="outline" className="capitalize font-bold border-slate-300">{k.bentuk?.replace("_"," ")}</Badge></TableCell>
                 <TableCell className="text-slate-600 py-5">{k.lokasi}</TableCell>
                 <TableCell className="py-5">
-                  <span className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-bold capitalize ${statusBadgeColor[k.status] ?? "bg-slate-100 text-slate-500"}`}>
+                  <span className={`inline-flex items-center rounded-none border px-3 py-1 text-xs font-bold uppercase tracking-wider ${statusBadgeColor[k.status] ?? "bg-slate-100 text-slate-500"}`}>
                     {k.status}
                   </span>
                 </TableCell>
@@ -139,23 +140,25 @@ export default function Page() {
             ))}
           </TableBody>
         </Table>
+        </div>
       </motion.div>
 
       {/* Rekap Table */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="pt-10 pb-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white border border-slate-200 shadow-sm rounded-none overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-bold text-slate-900">Rekap Penugasan Mahasiswa</h2>
-            <Badge variant="outline" className="text-slate-500 bg-white">{rekap.length} bertugas</Badge>
+            <h2 className="text-lg font-bold text-slate-900 uppercase tracking-wider">Rekap Penugasan Mahasiswa</h2>
+            <Badge variant="outline" className="text-slate-500 bg-white border-slate-300">{rekap.length} mahasiswa</Badge>
           </div>
-          <Button variant="outline" size="sm" className="rounded-xl gap-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-100 h-10 px-4" onClick={() => exportCsv(
+          <Button variant="outline" size="sm" className="rounded-none gap-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-100 h-9 px-4" onClick={() => exportCsv(
             `rekap-penugasan-${start}-${end}.csv`,
             [["NIM","Nama","Prodi","Total Tugas","Dikonfirmasi","Ditolak"], ...rekap.map((r: any) => [r.nim, r.nama_lengkap, r.prodi, r.total_tugas, r.dikonfirmasi, r.ditolak])]
           )}>
             <Download className="h-4 w-4" /> Export CSV
           </Button>
         </div>
-        <Table className="text-base">
+        <div className="overflow-x-auto">
+          <Table className="text-sm">
           <TableHeader>
             <TableRow className="border-b-2 border-slate-900 hover:bg-transparent">
               <TableHead className="font-bold text-slate-900 py-4 w-[120px]">NIM</TableHead>
@@ -181,18 +184,19 @@ export default function Page() {
                 <TableCell className="font-bold text-slate-900 text-lg py-5">{r.nama_lengkap}</TableCell>
                 <TableCell className="text-slate-600 py-5">{r.prodi}</TableCell>
                 <TableCell className="text-center py-5">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 font-bold text-slate-700 text-base">{r.total_tugas}</span>
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-none bg-slate-100 font-bold text-slate-700 text-base border border-slate-200">{r.total_tugas}</span>
                 </TableCell>
                 <TableCell className="text-center py-5">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-700 text-base">{r.dikonfirmasi}</span>
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-none bg-emerald-100 font-bold text-emerald-700 text-base border border-emerald-200">{r.dikonfirmasi}</span>
                 </TableCell>
                 <TableCell className="text-center py-5">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-red-100 font-bold text-red-600 text-base">{r.ditolak}</span>
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-none bg-red-100 font-bold text-red-600 text-base border border-red-200">{r.ditolak}</span>
                 </TableCell>
               </motion.tr>
             ))}
           </TableBody>
         </Table>
+        </div>
       </motion.div>
       </div>
     </div>

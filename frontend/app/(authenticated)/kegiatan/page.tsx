@@ -86,16 +86,18 @@ export default function Page() {
       </div>
 
       {/* ─── Main Content ─── */}
-      <div className="bg-slate-50 min-h-screen pt-4">
-        <div className="px-6 md:px-10 -mt-24 relative z-10 space-y-12 max-w-[1400px] mx-auto">
+      <div className="bg-slate-50 min-h-screen pt-4 pb-12">
+        <div className="px-6 md:px-10 -mt-10 relative z-10 space-y-6">
 
       {/* Search + count */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex items-center gap-4 pt-4">
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white border border-slate-200 shadow-sm p-4 rounded-none">
         <div className="relative max-w-md w-full">
           <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-          <Input className="pl-12 bg-transparent border-slate-300 rounded-full h-12 text-base focus-visible:ring-slate-900" placeholder="Cari kegiatan, lokasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <Input className="pl-12 bg-slate-50 border-slate-200 rounded-none h-11 text-base focus-visible:ring-slate-900" placeholder="Cari kegiatan, lokasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <span className="text-sm font-semibold text-slate-500 shrink-0">Menampilkan {filtered.length} hasil</span>
+        <div className="text-sm font-semibold text-slate-500 shrink-0 bg-slate-50 px-4 py-2 border border-slate-200">
+          Menampilkan <span className="text-slate-900">{filtered.length}</span> hasil
+        </div>
       </motion.div>
 
       {isLoading && (
@@ -107,49 +109,53 @@ export default function Page() {
       )}
 
       {!isLoading && !filtered.length && (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="rounded-3xl border border-slate-100 bg-white p-16 text-center shadow-sm">
-          <CalendarDays className="h-14 w-14 mx-auto mb-4 text-slate-200" />
-          <h3 className="font-bold text-slate-700 text-xl mb-2">Belum ada kegiatan</h3>
-          <p className="text-slate-400 text-sm">Buat kegiatan baru dengan menekan tombol "Buat Kegiatan" di atas.</p>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="rounded-none border border-slate-200 bg-white p-16 text-center shadow-sm">
+          <CalendarDays className="h-14 w-14 mx-auto mb-4 text-slate-300" />
+          <h3 className="font-bold text-slate-800 text-xl mb-2">Belum ada kegiatan</h3>
+          <p className="text-slate-500 text-sm">Buat kegiatan baru dengan menekan tombol "Buat Kegiatan" di atas.</p>
         </motion.div>
       )}
 
-      <motion.div initial="hidden" animate="visible" variants={stagger} className="flex flex-col">
-        {filtered.map((k) => (
-          <motion.div key={k.id} variants={cardAnim}>
-            <Link href={`/kegiatan/${k.id}`} className="block group">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6 border-b border-slate-200/60 hover:bg-slate-50/80 transition-colors px-4 -mx-4 rounded-xl">
-                <div className="flex flex-col gap-2 flex-1">
-                  <div className="flex items-center gap-3">
-                    <BentukIcon bentuk={k.bentuk} className="h-7 w-7 text-slate-700 shrink-0" />
-                    <Badge variant="outline" className="text-xs uppercase tracking-wider font-bold text-slate-500 border-slate-300">
-                      {k.bentuk.replace("_", " ")}
-                    </Badge>
+      <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 shadow-sm rounded-none overflow-hidden">
+        <div className="divide-y divide-slate-100">
+          {filtered.map((k) => (
+            <motion.div key={k.id} variants={cardAnim} className="group hover:bg-slate-50/60 transition-colors">
+              <Link href={`/kegiatan/${k.id}`} className="block">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-6 py-5">
+                  <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                    <div className="flex items-center gap-2.5 mb-1">
+                      <div className="h-8 w-8 bg-slate-100 border border-slate-200 rounded-none flex items-center justify-center flex-shrink-0 group-hover:bg-slate-900 group-hover:text-[#C9A84C] transition-colors">
+                        <BentukIcon bentuk={k.bentuk} className="h-3.5 w-3.5 text-slate-500 group-hover:text-[#C9A84C] transition-colors" />
+                      </div>
+                      <Badge variant="outline" className="text-[10px] uppercase tracking-wider font-bold text-slate-500 border-slate-200 rounded-none">
+                        {k.bentuk.replace("_", " ")}
+                      </Badge>
+                    </div>
+                    <h3 className="font-semibold text-slate-900 text-lg group-hover:text-[#C9A84C] transition-colors truncate">{k.nama_kegiatan}</h3>
                   </div>
-                  <h3 className="font-bold text-slate-900 text-2xl group-hover:text-blue-600 transition-colors mt-1">{k.nama_kegiatan}</h3>
-                </div>
-                
-                <div className="flex flex-col gap-1.5 min-w-[200px]">
-                  <div className="flex items-center gap-2 text-slate-600 text-base">
-                    <Clock className="h-4 w-4 text-slate-400 shrink-0" />
-                    <span className="font-medium">{new Date(k.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</span>
-                    <span className="text-slate-400">· {k.jam_mulai.slice(0,5)}</span>
+                  
+                  <div className="flex flex-col gap-1 min-w-[200px]">
+                    <div className="flex items-center gap-1.5 text-slate-600 text-sm font-medium">
+                      <Clock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                      <span>{new Date(k.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</span>
+                      <span className="text-slate-400 text-xs">· {k.jam_mulai.slice(0,5)} WIB</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+                      <MapPin className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                      <span className="truncate">{k.lokasi}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-slate-500 text-sm">
-                    <MapPin className="h-4 w-4 shrink-0 opacity-70" />
-                    {k.lokasi}
-                  </div>
-                </div>
 
-                <div className="flex items-center gap-4 justify-end md:w-[140px]">
-                  <span className={cn("inline-flex items-center rounded-full px-3 py-1 text-sm font-bold capitalize", statusConfig[k.status]?.color || "bg-slate-100 text-slate-500 border-slate-200")}>
-                    {statusConfig[k.status]?.label || k.status}
-                  </span>
+                  <div className="flex items-center gap-4 justify-end md:w-[140px]">
+                    <span className={cn("inline-flex items-center rounded-none px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border", statusConfig[k.status]?.color || "bg-slate-100 text-slate-500 border-slate-200")}>
+                      {statusConfig[k.status]?.label || k.status}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
+              </Link>
+            </motion.div>
+          ))}
+        </div>
       </motion.div>
       </div>
     </div>
@@ -158,7 +164,7 @@ export default function Page() {
 }
 
 function StatusBadge({ status }: { status: string }) {
-  return <span className={cn("rounded px-2 py-0.5 text-xs font-medium capitalize", statusConfig[status]?.color || "bg-slate-100 text-slate-500")}>{status}</span>;
+  return <span className={cn("rounded-none px-2 py-0.5 text-xs font-bold uppercase tracking-wider border", statusConfig[status]?.color || "bg-slate-100 text-slate-500 border-slate-200")}>{status}</span>;
 }
 
 function KegiatanForm({ onDone }: { onDone: () => void }) {
@@ -181,10 +187,10 @@ function KegiatanForm({ onDone }: { onDone: () => void }) {
         <div className="space-y-1.5">
           <Label className="text-sm font-semibold">Nama Kegiatan</Label>
           <div className="flex gap-3">
-            <Input required value={form.nama_kegiatan} onChange={(e) => setForm({ ...form, nama_kegiatan: e.target.value })} className="rounded-lg flex-1" placeholder="Contoh: Wisuda Periode 130" />
+            <Input required value={form.nama_kegiatan} onChange={(e) => setForm({ ...form, nama_kegiatan: e.target.value })} className="rounded-none flex-1" placeholder="Contoh: Wisuda Periode 130" />
             <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v as Status })}>
-              <SelectTrigger className="rounded-lg w-[140px]"><SelectValue /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className="rounded-none w-[140px]"><SelectValue /></SelectTrigger>
+              <SelectContent className="rounded-none">
                 <SelectItem value="draft">Draft</SelectItem>
                 <SelectItem value="terkonfirmasi">Terkonfirmasi</SelectItem>
                 <SelectItem value="selesai">Selesai</SelectItem>
@@ -195,18 +201,18 @@ function KegiatanForm({ onDone }: { onDone: () => void }) {
         </div>
         
         <div className="grid grid-cols-3 gap-3">
-          <div className="space-y-1.5"><Label className="text-sm font-semibold">Tanggal</Label><Input type="date" required value={form.tanggal} onChange={(e) => setForm({ ...form, tanggal: e.target.value })} className="rounded-lg" /></div>
-          <div className="space-y-1.5"><Label className="text-sm font-semibold">Jam Mulai</Label><Input type="time" required value={form.jam_mulai} onChange={(e) => setForm({ ...form, jam_mulai: e.target.value })} className="rounded-lg" /></div>
-          <div className="space-y-1.5"><Label className="text-sm font-semibold">Jam Selesai</Label><Input type="time" required value={form.jam_selesai} onChange={(e) => setForm({ ...form, jam_selesai: e.target.value })} className="rounded-lg" /></div>
+          <div className="space-y-1.5"><Label className="text-sm font-semibold">Tanggal</Label><Input type="date" required value={form.tanggal} onChange={(e) => setForm({ ...form, tanggal: e.target.value })} className="rounded-none" /></div>
+          <div className="space-y-1.5"><Label className="text-sm font-semibold">Jam Mulai</Label><Input type="time" required value={form.jam_mulai} onChange={(e) => setForm({ ...form, jam_mulai: e.target.value })} className="rounded-none" /></div>
+          <div className="space-y-1.5"><Label className="text-sm font-semibold">Jam Selesai</Label><Input type="time" required value={form.jam_selesai} onChange={(e) => setForm({ ...form, jam_selesai: e.target.value })} className="rounded-none" /></div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5"><Label className="text-sm font-semibold">Tempat</Label><Input required value={form.tempat} onChange={(e) => setForm({ ...form, tempat: e.target.value })} className="rounded-lg" placeholder="Nama gedung/ruangan" /></div>
+          <div className="space-y-1.5"><Label className="text-sm font-semibold">Tempat</Label><Input required value={form.tempat} onChange={(e) => setForm({ ...form, tempat: e.target.value })} className="rounded-none" placeholder="Nama gedung/ruangan" /></div>
           <div className="space-y-1.5">
             <Label className="text-sm font-semibold">Bentuk Acara</Label>
             <Select value={form.bentuk} onValueChange={(v) => setForm({ ...form, bentuk: v as Bentuk })}>
-              <SelectTrigger className="rounded-lg"><SelectValue /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className="rounded-none"><SelectValue /></SelectTrigger>
+              <SelectContent className="rounded-none">
                 <SelectItem value="wisuda"><div className="flex items-center gap-2"><GraduationCap className="h-4 w-4" /> Wisuda</div></SelectItem>
                 <SelectItem value="kunjungan"><div className="flex items-center gap-2"><Handshake className="h-4 w-4" /> Kunjungan Tamu</div></SelectItem>
                 <SelectItem value="seminar"><div className="flex items-center gap-2"><Megaphone className="h-4 w-4" /> Seminar</div></SelectItem>
@@ -219,13 +225,13 @@ function KegiatanForm({ onDone }: { onDone: () => void }) {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5"><Label className="text-sm font-semibold">Peserta</Label><Input required value={form.peserta} onChange={(e) => setForm({ ...form, peserta: e.target.value })} className="rounded-lg" placeholder="Contoh: 500 Mahasiswa" /></div>
-          <div className="space-y-1.5"><Label className="text-sm font-semibold">Petugas Protokoler</Label><Input required value={form.petugas} onChange={(e) => setForm({ ...form, petugas: e.target.value })} className="rounded-lg" placeholder="Jumlah atau nama petugas" /></div>
+          <div className="space-y-1.5"><Label className="text-sm font-semibold">Peserta</Label><Input required value={form.peserta} onChange={(e) => setForm({ ...form, peserta: e.target.value })} className="rounded-none" placeholder="Contoh: 500 Mahasiswa" /></div>
+          <div className="space-y-1.5"><Label className="text-sm font-semibold">Petugas Protokoler</Label><Input required value={form.petugas} onChange={(e) => setForm({ ...form, petugas: e.target.value })} className="rounded-none" placeholder="Jumlah atau nama petugas" /></div>
         </div>
 
-        <div className="space-y-1.5"><Label className="text-sm font-semibold">Rundown / Deskripsi</Label><Textarea rows={4} value={form.rundown} onChange={(e) => setForm({ ...form, rundown: e.target.value })} className="rounded-lg" placeholder="Detail urutan acara atau catatan penting" /></div>
+        <div className="space-y-1.5"><Label className="text-sm font-semibold">Rundown / Deskripsi</Label><Textarea rows={4} value={form.rundown} onChange={(e) => setForm({ ...form, rundown: e.target.value })} className="rounded-none" placeholder="Detail urutan acara atau catatan penting" /></div>
         <DialogFooter>
-          <Button type="submit" disabled={save.isPending} className="w-full rounded-lg">
+          <Button type="submit" disabled={save.isPending} className="w-full rounded-none">
             {save.isPending ? "Menyimpan..." : "Buat Kegiatan"}
           </Button>
         </DialogFooter>
