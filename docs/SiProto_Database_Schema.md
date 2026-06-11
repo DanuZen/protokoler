@@ -1,15 +1,17 @@
 # DATABASE SCHEMA
+
 ## SiProto – Sistem Informasi Protokoler Universitas
+
 **Versi 1.2 | Juni 2025**
 
 ---
 
-| Info | Detail |
-|------|--------|
-| **Database** | PostgreSQL |
-| **ORM** | Prisma / TypeORM (rekomendasi) |
-| **Versi Dokumen** | 1.2 |
-| **Referensi** | SiProto_PRD.md v1.2 + SiProto_Alur_Sistem.md v1.2 |
+| Info              | Detail                                            |
+| ----------------- | ------------------------------------------------- |
+| **Database**      | PostgreSQL                                        |
+| **ORM**           | Prisma / TypeORM (rekomendasi)                    |
+| **Versi Dokumen** | 1.2                                               |
+| **Referensi**     | SiProto_PRD.md v1.2 + SiProto_Alur_Sistem.md v1.2 |
 
 ---
 
@@ -112,22 +114,24 @@ CREATE TYPE status_hadir_enum AS ENUM (
 CREATE TYPE role_enum AS ENUM (
   'admin',
   'protokoler',
-  'tamu'
+  'tamu',
+  'dokumentasi'
 );
 ```
 
 ---
 
 ## Tabel: `users`
-*Tabel autentikasi utama (dikelola Supabase Auth / NextAuth)*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK, DEFAULT gen_random_uuid() | Primary key |
-| `email` | VARCHAR(255) | UNIQUE, NOT NULL | Email login |
-| `role` | role_enum | NOT NULL, DEFAULT 'protokoler' | Role akses sistem |
-| `created_at` | TIMESTAMPTZ | DEFAULT NOW() | Waktu registrasi |
-| `updated_at` | TIMESTAMPTZ | DEFAULT NOW() | Waktu update terakhir |
+_Tabel autentikasi utama (dikelola Supabase Auth / NextAuth)_
+
+| Kolom        | Tipe         | Constraint                     | Keterangan            |
+| ------------ | ------------ | ------------------------------ | --------------------- |
+| `id`         | UUID         | PK, DEFAULT gen_random_uuid()  | Primary key           |
+| `email`      | VARCHAR(255) | UNIQUE, NOT NULL               | Email login           |
+| `role`       | role_enum    | NOT NULL, DEFAULT 'protokoler' | Role akses sistem     |
+| `created_at` | TIMESTAMPTZ  | DEFAULT NOW()                  | Waktu registrasi      |
+| `updated_at` | TIMESTAMPTZ  | DEFAULT NOW()                  | Waktu update terakhir |
 
 ```sql
 CREATE TABLE users (
@@ -142,26 +146,27 @@ CREATE TABLE users (
 ---
 
 ## Tabel: `protokoler`
-*Data lengkap anggota tim protokoler*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `user_id` | UUID | FK → users.id, UNIQUE | Relasi ke auth user |
-| `nim` | VARCHAR(20) | UNIQUE, NOT NULL | Nomor Induk Mahasiswa |
-| `nama_lengkap` | VARCHAR(255) | NOT NULL | Nama lengkap |
-| `prodi` | VARCHAR(100) | NOT NULL | Program studi |
-| `departemen` | VARCHAR(100) | NOT NULL | Departemen/jurusan |
-| `fakultas` | VARCHAR(100) | NOT NULL | Fakultas |
-| `no_hp` | VARCHAR(20) | NOT NULL | Nomor WhatsApp aktif |
-| `foto_setengah_badan_url` | TEXT | | URL foto setengah badan |
-| `foto_full_body_url` | TEXT | | URL foto full body |
-| `status_akun` | status_akun_enum | NOT NULL, DEFAULT 'pending' | Status verifikasi |
-| `catatan_penolakan` | TEXT | | Alasan penolakan oleh admin |
-| `total_kegiatan` | INTEGER | NOT NULL, DEFAULT 0 | Akumulasi jumlah kegiatan |
-| `kategori_sertifikat` | kategori_sertifikat_enum | | Tingkatan sertifikat saat ini |
-| `created_at` | TIMESTAMPTZ | DEFAULT NOW() | |
-| `updated_at` | TIMESTAMPTZ | DEFAULT NOW() | |
+_Data lengkap anggota tim protokoler_
+
+| Kolom                     | Tipe                     | Constraint                  | Keterangan                    |
+| ------------------------- | ------------------------ | --------------------------- | ----------------------------- |
+| `id`                      | UUID                     | PK                          | Primary key                   |
+| `user_id`                 | UUID                     | FK → users.id, UNIQUE       | Relasi ke auth user           |
+| `nim`                     | VARCHAR(20)              | UNIQUE, NOT NULL            | Nomor Induk Mahasiswa         |
+| `nama_lengkap`            | VARCHAR(255)             | NOT NULL                    | Nama lengkap                  |
+| `prodi`                   | VARCHAR(100)             | NOT NULL                    | Program studi                 |
+| `departemen`              | VARCHAR(100)             | NOT NULL                    | Departemen/jurusan            |
+| `fakultas`                | VARCHAR(100)             | NOT NULL                    | Fakultas                      |
+| `no_hp`                   | VARCHAR(20)              | NOT NULL                    | Nomor WhatsApp aktif          |
+| `foto_setengah_badan_url` | TEXT                     |                             | URL foto setengah badan       |
+| `foto_full_body_url`      | TEXT                     |                             | URL foto full body            |
+| `status_akun`             | status_akun_enum         | NOT NULL, DEFAULT 'pending' | Status verifikasi             |
+| `catatan_penolakan`       | TEXT                     |                             | Alasan penolakan oleh admin   |
+| `total_kegiatan`          | INTEGER                  | NOT NULL, DEFAULT 0         | Akumulasi jumlah kegiatan     |
+| `kategori_sertifikat`     | kategori_sertifikat_enum |                             | Tingkatan sertifikat saat ini |
+| `created_at`              | TIMESTAMPTZ              | DEFAULT NOW()               |                               |
+| `updated_at`              | TIMESTAMPTZ              | DEFAULT NOW()               |                               |
 
 ```sql
 CREATE TABLE protokoler (
@@ -190,29 +195,30 @@ CREATE INDEX idx_protokoler_status_akun ON protokoler(status_akun);
 ---
 
 ## Tabel: `kegiatan`
-*Data kegiatan protokoler*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `nama_kegiatan` | VARCHAR(255) | NOT NULL | Judul/nama acara |
-| `bentuk_kegiatan` | bentuk_kegiatan_enum | NOT NULL | Jenis acara |
-| `tanggal` | DATE | NOT NULL | Tanggal pelaksanaan |
-| `jam_mulai` | TIME | NOT NULL | Jam mulai |
-| `jam_selesai` | TIME | NOT NULL | Jam selesai |
-| `lokasi` | VARCHAR(255) | NOT NULL | Tempat kegiatan |
-| `audience` | TEXT | | Deskripsi peserta/hadirin |
-| `keynote` | VARCHAR(255) | | Narasumber/pembicara utama |
-| `rundown_url` | TEXT | | URL file rundown acara |
-| `status` | status_kegiatan_enum | NOT NULL, DEFAULT 'draf' | Status kegiatan |
-| `jumlah_protokoler_dibutuhkan` | INTEGER | NOT NULL, DEFAULT 0 | Kuota protokoler |
-| `jumlah_lo_dibutuhkan` | INTEGER | NOT NULL, DEFAULT 0 | Kuota LO |
-| `checklist_tata_tempat` | BOOLEAN | DEFAULT FALSE | Status checklist tata tempat |
-| `checklist_tata_upacara` | BOOLEAN | DEFAULT FALSE | Status checklist tata upacara |
-| `checklist_tata_penghormatan` | BOOLEAN | DEFAULT FALSE | Status checklist tata penghormatan |
-| `dibuat_oleh` | UUID | FK → users.id | Admin yang membuat |
-| `created_at` | TIMESTAMPTZ | DEFAULT NOW() | |
-| `updated_at` | TIMESTAMPTZ | DEFAULT NOW() | |
+_Data kegiatan protokoler_
+
+| Kolom                          | Tipe                 | Constraint               | Keterangan                         |
+| ------------------------------ | -------------------- | ------------------------ | ---------------------------------- |
+| `id`                           | UUID                 | PK                       | Primary key                        |
+| `nama_kegiatan`                | VARCHAR(255)         | NOT NULL                 | Judul/nama acara                   |
+| `bentuk_kegiatan`              | bentuk_kegiatan_enum | NOT NULL                 | Jenis acara                        |
+| `tanggal`                      | DATE                 | NOT NULL                 | Tanggal pelaksanaan                |
+| `jam_mulai`                    | TIME                 | NOT NULL                 | Jam mulai                          |
+| `jam_selesai`                  | TIME                 | NOT NULL                 | Jam selesai                        |
+| `lokasi`                       | VARCHAR(255)         | NOT NULL                 | Tempat kegiatan                    |
+| `audience`                     | TEXT                 |                          | Deskripsi peserta/hadirin          |
+| `keynote`                      | VARCHAR(255)         |                          | Narasumber/pembicara utama         |
+| `rundown_url`                  | TEXT                 |                          | URL file rundown acara             |
+| `status`                       | status_kegiatan_enum | NOT NULL, DEFAULT 'draf' | Status kegiatan                    |
+| `jumlah_protokoler_dibutuhkan` | INTEGER              | NOT NULL, DEFAULT 0      | Kuota protokoler                   |
+| `jumlah_lo_dibutuhkan`         | INTEGER              | NOT NULL, DEFAULT 0      | Kuota LO                           |
+| `checklist_tata_tempat`        | BOOLEAN              | DEFAULT FALSE            | Status checklist tata tempat       |
+| `checklist_tata_upacara`       | BOOLEAN              | DEFAULT FALSE            | Status checklist tata upacara      |
+| `checklist_tata_penghormatan`  | BOOLEAN              | DEFAULT FALSE            | Status checklist tata penghormatan |
+| `dibuat_oleh`                  | UUID                 | FK → users.id            | Admin yang membuat                 |
+| `created_at`                   | TIMESTAMPTZ          | DEFAULT NOW()            |                                    |
+| `updated_at`                   | TIMESTAMPTZ          | DEFAULT NOW()            |                                    |
 
 ```sql
 CREATE TABLE kegiatan (
@@ -244,18 +250,19 @@ CREATE INDEX idx_kegiatan_tanggal ON kegiatan(tanggal);
 ---
 
 ## Tabel: `tamu_vvip`
-*Daftar tamu penting per kegiatan*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `kegiatan_id` | UUID | FK → kegiatan.id, NOT NULL | Relasi kegiatan |
-| `nama_tamu` | VARCHAR(255) | NOT NULL | Nama lengkap tamu |
-| `jabatan` | VARCHAR(255) | NOT NULL | Jabatan/posisi |
-| `instansi` | VARCHAR(255) | NOT NULL | Asal instansi |
-| `tipe` | tipe_tamu_enum | NOT NULL | Internal/Eksternal |
-| `jumlah_rombongan` | INTEGER | DEFAULT 1 | Jumlah anggota rombongan |
-| `created_at` | TIMESTAMPTZ | DEFAULT NOW() | |
+_Daftar tamu penting per kegiatan_
+
+| Kolom              | Tipe           | Constraint                 | Keterangan               |
+| ------------------ | -------------- | -------------------------- | ------------------------ |
+| `id`               | UUID           | PK                         | Primary key              |
+| `kegiatan_id`      | UUID           | FK → kegiatan.id, NOT NULL | Relasi kegiatan          |
+| `nama_tamu`        | VARCHAR(255)   | NOT NULL                   | Nama lengkap tamu        |
+| `jabatan`          | VARCHAR(255)   | NOT NULL                   | Jabatan/posisi           |
+| `instansi`         | VARCHAR(255)   | NOT NULL                   | Asal instansi            |
+| `tipe`             | tipe_tamu_enum | NOT NULL                   | Internal/Eksternal       |
+| `jumlah_rombongan` | INTEGER        | DEFAULT 1                  | Jumlah anggota rombongan |
+| `created_at`       | TIMESTAMPTZ    | DEFAULT NOW()              |                          |
 
 ```sql
 CREATE TABLE tamu_vvip (
@@ -273,21 +280,22 @@ CREATE TABLE tamu_vvip (
 ---
 
 ## Tabel: `pendaftaran_kegiatan`
-*Pendaftaran mandiri protokoler ke kegiatan*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `kegiatan_id` | UUID | FK → kegiatan.id | Relasi kegiatan |
-| `protokoler_id` | UUID | FK → protokoler.id | Relasi anggota |
-| `peran` | peran_kegiatan_enum | NOT NULL | LO atau Protokoler |
-| `status` | status_pendaftaran_enum | NOT NULL, DEFAULT 'pending' | Status seleksi |
-| `kegiatan_dialihkan_id` | UUID | FK → kegiatan.id, NULLABLE | Jika dialihkan |
-| `surat_tugas_url` | TEXT | | URL surat tugas yang diterbitkan |
-| `catatan_admin` | TEXT | | Catatan dari admin saat seleksi |
-| `reviewed_at` | TIMESTAMPTZ | | Waktu admin melakukan review |
-| `reviewed_by` | UUID | FK → users.id | Admin yang melakukan review |
-| `created_at` | TIMESTAMPTZ | DEFAULT NOW() | Waktu pendaftaran |
+_Pendaftaran mandiri protokoler ke kegiatan_
+
+| Kolom                   | Tipe                    | Constraint                  | Keterangan                       |
+| ----------------------- | ----------------------- | --------------------------- | -------------------------------- |
+| `id`                    | UUID                    | PK                          | Primary key                      |
+| `kegiatan_id`           | UUID                    | FK → kegiatan.id            | Relasi kegiatan                  |
+| `protokoler_id`         | UUID                    | FK → protokoler.id          | Relasi anggota                   |
+| `peran`                 | peran_kegiatan_enum     | NOT NULL                    | LO atau Protokoler               |
+| `status`                | status_pendaftaran_enum | NOT NULL, DEFAULT 'pending' | Status seleksi                   |
+| `kegiatan_dialihkan_id` | UUID                    | FK → kegiatan.id, NULLABLE  | Jika dialihkan                   |
+| `surat_tugas_url`       | TEXT                    |                             | URL surat tugas yang diterbitkan |
+| `catatan_admin`         | TEXT                    |                             | Catatan dari admin saat seleksi  |
+| `reviewed_at`           | TIMESTAMPTZ             |                             | Waktu admin melakukan review     |
+| `reviewed_by`           | UUID                    | FK → users.id               | Admin yang melakukan review      |
+| `created_at`            | TIMESTAMPTZ             | DEFAULT NOW()               | Waktu pendaftaran                |
 
 ```sql
 CREATE TABLE pendaftaran_kegiatan (
@@ -312,18 +320,19 @@ CREATE INDEX idx_pendaftaran_protokoler ON pendaftaran_kegiatan(protokoler_id);
 ---
 
 ## Tabel: `absensi`
-*Kehadiran selfie saat pelaksanaan*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `kegiatan_id` | UUID | FK → kegiatan.id | Relasi kegiatan |
-| `protokoler_id` | UUID | FK → protokoler.id | Relasi anggota |
-| `foto_selfie_url` | TEXT | NOT NULL | URL foto selfie |
-| `waktu_absen` | TIMESTAMPTZ | NOT NULL, DEFAULT NOW() | Waktu selfie dilakukan |
-| `status` | status_hadir_enum | NOT NULL, DEFAULT 'hadir' | Status kehadiran |
-| `latitude` | DECIMAL(10,8) | | Koordinat GPS (opsional) |
-| `longitude` | DECIMAL(11,8) | | Koordinat GPS (opsional) |
+_Kehadiran selfie saat pelaksanaan_
+
+| Kolom             | Tipe              | Constraint                | Keterangan               |
+| ----------------- | ----------------- | ------------------------- | ------------------------ |
+| `id`              | UUID              | PK                        | Primary key              |
+| `kegiatan_id`     | UUID              | FK → kegiatan.id          | Relasi kegiatan          |
+| `protokoler_id`   | UUID              | FK → protokoler.id        | Relasi anggota           |
+| `foto_selfie_url` | TEXT              | NOT NULL                  | URL foto selfie          |
+| `waktu_absen`     | TIMESTAMPTZ       | NOT NULL, DEFAULT NOW()   | Waktu selfie dilakukan   |
+| `status`          | status_hadir_enum | NOT NULL, DEFAULT 'hadir' | Status kehadiran         |
+| `latitude`        | DECIMAL(10,8)     |                           | Koordinat GPS (opsional) |
+| `longitude`       | DECIMAL(11,8)     |                           | Koordinat GPS (opsional) |
 
 ```sql
 CREATE TABLE absensi (
@@ -342,18 +351,19 @@ CREATE TABLE absensi (
 ---
 
 ## Tabel: `evaluasi_kegiatan`
-*Angket evaluasi pasca kegiatan oleh protokoler (batas 1×24 jam)*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `kegiatan_id` | UUID | FK → kegiatan.id | Relasi kegiatan |
-| `protokoler_id` | UUID | FK → protokoler.id | Anggota yang mengisi |
-| `evaluasi_kegiatan` | TEXT | NOT NULL | Evaluasi pelaksanaan acara |
-| `refleksi_diri` | TEXT | NOT NULL | Refleksi kinerja pribadi |
-| `rating_kegiatan` | SMALLINT | CHECK (1-5) | Rating kegiatan (1–5 bintang) |
-| `waktu_pengisian` | TIMESTAMPTZ | NOT NULL, DEFAULT NOW() | Waktu angket diisi |
-| `dalam_batas_waktu` | BOOLEAN | NOT NULL | TRUE jika diisi dalam 1×24 jam |
+_Angket evaluasi pasca kegiatan oleh protokoler (batas 1×24 jam)_
+
+| Kolom               | Tipe        | Constraint              | Keterangan                     |
+| ------------------- | ----------- | ----------------------- | ------------------------------ |
+| `id`                | UUID        | PK                      | Primary key                    |
+| `kegiatan_id`       | UUID        | FK → kegiatan.id        | Relasi kegiatan                |
+| `protokoler_id`     | UUID        | FK → protokoler.id      | Anggota yang mengisi           |
+| `evaluasi_kegiatan` | TEXT        | NOT NULL                | Evaluasi pelaksanaan acara     |
+| `refleksi_diri`     | TEXT        | NOT NULL                | Refleksi kinerja pribadi       |
+| `rating_kegiatan`   | SMALLINT    | CHECK (1-5)             | Rating kegiatan (1–5 bintang)  |
+| `waktu_pengisian`   | TIMESTAMPTZ | NOT NULL, DEFAULT NOW() | Waktu angket diisi             |
+| `dalam_batas_waktu` | BOOLEAN     | NOT NULL                | TRUE jika diisi dalam 1×24 jam |
 
 ```sql
 CREATE TABLE evaluasi_kegiatan (
@@ -372,17 +382,18 @@ CREATE TABLE evaluasi_kegiatan (
 ---
 
 ## Tabel: `testimoni_tamu`
-*Testimoni dari tamu undangan (tanpa batas waktu)*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `kegiatan_id` | UUID | FK → kegiatan.id | Relasi kegiatan |
-| `nama_tamu` | VARCHAR(255) | NOT NULL | Nama pengisi testimoni |
-| `jabatan_tamu` | VARCHAR(255) | | Jabatan/instansi pengisi |
-| `isi_testimoni` | TEXT | NOT NULL | Isi feedback |
-| `rating` | SMALLINT | CHECK (1-5) | Rating kepuasan (1–5) |
-| `waktu_pengisian` | TIMESTAMPTZ | DEFAULT NOW() | Waktu testimoni diisi |
+_Testimoni dari tamu undangan (tanpa batas waktu)_
+
+| Kolom             | Tipe         | Constraint       | Keterangan               |
+| ----------------- | ------------ | ---------------- | ------------------------ |
+| `id`              | UUID         | PK               | Primary key              |
+| `kegiatan_id`     | UUID         | FK → kegiatan.id | Relasi kegiatan          |
+| `nama_tamu`       | VARCHAR(255) | NOT NULL         | Nama pengisi testimoni   |
+| `jabatan_tamu`    | VARCHAR(255) |                  | Jabatan/instansi pengisi |
+| `isi_testimoni`   | TEXT         | NOT NULL         | Isi feedback             |
+| `rating`          | SMALLINT     | CHECK (1-5)      | Rating kepuasan (1–5)    |
+| `waktu_pengisian` | TIMESTAMPTZ  | DEFAULT NOW()    | Waktu testimoni diisi    |
 
 ```sql
 CREATE TABLE testimoni_tamu (
@@ -399,17 +410,18 @@ CREATE TABLE testimoni_tamu (
 ---
 
 ## Tabel: `sertifikat`
-*Sertifikat digital yang diterbitkan sistem*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `protokoler_id` | UUID | FK → protokoler.id | Penerima sertifikat |
-| `kegiatan_id` | UUID | FK → kegiatan.id | Kegiatan yang dikerjakan |
-| `kategori` | kategori_sertifikat_enum | NOT NULL | Tingkatan saat diterbitkan |
-| `tanggal_terbit` | DATE | NOT NULL, DEFAULT CURRENT_DATE | Tanggal sertifikat dibuat |
-| `file_url` | TEXT | | URL file PDF sertifikat |
-| `nomor_sertifikat` | VARCHAR(50) | UNIQUE | Nomor unik sertifikat |
+_Sertifikat digital yang diterbitkan sistem_
+
+| Kolom              | Tipe                     | Constraint                     | Keterangan                 |
+| ------------------ | ------------------------ | ------------------------------ | -------------------------- |
+| `id`               | UUID                     | PK                             | Primary key                |
+| `protokoler_id`    | UUID                     | FK → protokoler.id             | Penerima sertifikat        |
+| `kegiatan_id`      | UUID                     | FK → kegiatan.id               | Kegiatan yang dikerjakan   |
+| `kategori`         | kategori_sertifikat_enum | NOT NULL                       | Tingkatan saat diterbitkan |
+| `tanggal_terbit`   | DATE                     | NOT NULL, DEFAULT CURRENT_DATE | Tanggal sertifikat dibuat  |
+| `file_url`         | TEXT                     |                                | URL file PDF sertifikat    |
+| `nomor_sertifikat` | VARCHAR(50)              | UNIQUE                         | Nomor unik sertifikat      |
 
 ```sql
 CREATE TABLE sertifikat (
@@ -427,45 +439,52 @@ CREATE TABLE sertifikat (
 ---
 
 ## Tabel: `dokumentasi_kegiatan`
-*Foto dan file dokumentasi per kegiatan*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `kegiatan_id` | UUID | FK → kegiatan.id | Relasi kegiatan |
-| `file_url` | TEXT | NOT NULL | URL file/foto |
-| `tipe` | VARCHAR(20) | CHECK ('foto', 'dokumen') | Jenis file |
-| `keterangan` | TEXT | | Deskripsi file |
-| `diunggah_oleh` | UUID | FK → users.id | Yang upload |
-| `created_at` | TIMESTAMPTZ | DEFAULT NOW() | |
+_Foto dan file dokumentasi per kegiatan (diupload oleh role Dokumentasi)_
+
+| Kolom         | Tipe        | Constraint                         | Keterangan                                       |
+| ------------- | ----------- | ---------------------------------- | ------------------------------------------------ |
+| `id`          | UUID        | PK                                 | Primary key                                      |
+| `kegiatan_id` | UUID        | FK → kegiatan.id                   | Relasi kegiatan                                  |
+| `file_url`    | TEXT        | NOT NULL                           | URL file/foto/video                              |
+| `media_type`  | VARCHAR(20) | CHECK ('foto', 'video', 'dokumen') | Jenis media                                      |
+| `ukuran_file` | BIGINT      |                                    | Ukuran file dalam bytes                          |
+| `keterangan`  | TEXT        |                                    | Deskripsi file/dokumentasi                       |
+| `uploaded_by` | UUID        | FK → users.id, NOT NULL            | User role dokumentasi yang upload                |
+| `uploaded_at` | TIMESTAMPTZ | DEFAULT NOW()                      | Tanggal upload                                   |
+| `metadata`    | JSONB       |                                    | Metadata acara: nama, tanggal, tempat (opsional) |
 
 ```sql
 CREATE TABLE dokumentasi_kegiatan (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   kegiatan_id UUID NOT NULL REFERENCES kegiatan(id) ON DELETE CASCADE,
   file_url TEXT NOT NULL,
-  tipe VARCHAR(20) CHECK (tipe IN ('foto', 'dokumen')),
+  media_type VARCHAR(20) CHECK (media_type IN ('foto', 'video', 'dokumen')),
+  ukuran_file BIGINT,
   keterangan TEXT,
-  diunggah_oleh UUID REFERENCES users(id),
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  uploaded_by UUID NOT NULL REFERENCES users(id),
+  uploaded_at TIMESTAMPTZ DEFAULT NOW(),
+  metadata JSONB,
+  CONSTRAINT dokumentasi_not_duplicate UNIQUE(kegiatan_id, file_url)
 );
 ```
 
 ---
 
 ## Tabel: `regulasi`
-*Repositori dokumen peraturan keprotokolan*
 
-| Kolom | Tipe | Constraint | Keterangan |
-|-------|------|-----------|------------|
-| `id` | UUID | PK | Primary key |
-| `judul` | VARCHAR(255) | NOT NULL | Judul dokumen regulasi |
-| `deskripsi` | TEXT | | Ringkasan isi |
-| `kategori` | VARCHAR(100) | | UU, Perpres, SOP, Pedoman, dll |
-| `file_url` | TEXT | NOT NULL | URL file PDF |
-| `tahun_terbit` | SMALLINT | | Tahun penerbitan dokumen |
-| `diunggah_oleh` | UUID | FK → users.id | Admin yang upload |
-| `created_at` | TIMESTAMPTZ | DEFAULT NOW() | |
+_Repositori dokumen peraturan keprotokolan_
+
+| Kolom           | Tipe         | Constraint    | Keterangan                     |
+| --------------- | ------------ | ------------- | ------------------------------ |
+| `id`            | UUID         | PK            | Primary key                    |
+| `judul`         | VARCHAR(255) | NOT NULL      | Judul dokumen regulasi         |
+| `deskripsi`     | TEXT         |               | Ringkasan isi                  |
+| `kategori`      | VARCHAR(100) |               | UU, Perpres, SOP, Pedoman, dll |
+| `file_url`      | TEXT         | NOT NULL      | URL file PDF                   |
+| `tahun_terbit`  | SMALLINT     |               | Tahun penerbitan dokumen       |
+| `diunggah_oleh` | UUID         | FK → users.id | Admin yang upload              |
+| `created_at`    | TIMESTAMPTZ  | DEFAULT NOW() |                                |
 
 ```sql
 CREATE TABLE regulasi (
@@ -560,16 +579,16 @@ FOR EACH ROW EXECUTE FUNCTION check_and_issue_certificate();
 
 ## Ringkasan Tabel & Relasi
 
-| Tabel | Relasi Utama | Keterangan |
-|-------|-------------|------------|
-| `users` | → protokoler (1:1) | Auth base |
-| `protokoler` | → users (1:1), → pendaftaran (1:N), → absensi (1:N) | Anggota protokoler |
-| `kegiatan` | → pendaftaran (1:N), → tamu_vvip (1:N) | Master kegiatan |
-| `pendaftaran_kegiatan` | → kegiatan (N:1), → protokoler (N:1) | Join table + status seleksi |
-| `absensi` | → kegiatan (N:1), → protokoler (N:1) | Selfie kehadiran |
-| `evaluasi_kegiatan` | → kegiatan (N:1), → protokoler (N:1) | Angket pasca kegiatan |
-| `testimoni_tamu` | → kegiatan (N:1) | Feedback tamu eksternal |
-| `sertifikat` | → protokoler (N:1), → kegiatan (N:1) | Sertifikat digital |
-| `dokumentasi_kegiatan` | → kegiatan (N:1) | Galeri foto & dokumen |
-| `tamu_vvip` | → kegiatan (N:1) | Data tamu penting |
-| `regulasi` | — | Repository dokumen hukum |
+| Tabel                  | Relasi Utama                                        | Keterangan                  |
+| ---------------------- | --------------------------------------------------- | --------------------------- |
+| `users`                | → protokoler (1:1)                                  | Auth base                   |
+| `protokoler`           | → users (1:1), → pendaftaran (1:N), → absensi (1:N) | Anggota protokoler          |
+| `kegiatan`             | → pendaftaran (1:N), → tamu_vvip (1:N)              | Master kegiatan             |
+| `pendaftaran_kegiatan` | → kegiatan (N:1), → protokoler (N:1)                | Join table + status seleksi |
+| `absensi`              | → kegiatan (N:1), → protokoler (N:1)                | Selfie kehadiran            |
+| `evaluasi_kegiatan`    | → kegiatan (N:1), → protokoler (N:1)                | Angket pasca kegiatan       |
+| `testimoni_tamu`       | → kegiatan (N:1)                                    | Feedback tamu eksternal     |
+| `sertifikat`           | → protokoler (N:1), → kegiatan (N:1)                | Sertifikat digital          |
+| `dokumentasi_kegiatan` | → kegiatan (N:1)                                    | Galeri foto & dokumen       |
+| `tamu_vvip`            | → kegiatan (N:1)                                    | Data tamu penting           |
+| `regulasi`             | —                                                   | Repository dokumen hukum    |
