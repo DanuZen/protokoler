@@ -1,19 +1,21 @@
 # PROJECT PLAN
+
 ## SiProto – Sistem Informasi Protokoler Universitas
+
 **Versi 1.2 | Juni 2025**
 
 ---
 
-| Info | Detail |
-|------|--------|
-| **Nama Proyek** | SiProto – Sistem Informasi Protokoler Universitas |
-| **Institusi** | Universitas (Lingkup Internal Kampus) |
-| **Versi Dokumen** | 1.2 |
-| **Tanggal Dibuat** | Juni 2025 |
-| **Platform Target** | Web App & Mobile App (Android/iOS) |
-| **Target Durasi** | 1 – 2 Bulan |
-| **Tim Pengembang** | Tim Internal Kampus |
-| **Referensi** | Indikator Lomba Anugerah Protokol 2026 + Dokumen Alur Sistem v1.0 |
+| Info                | Detail                                                            |
+| ------------------- | ----------------------------------------------------------------- |
+| **Nama Proyek**     | SiProto – Sistem Informasi Protokoler Universitas                 |
+| **Institusi**       | Universitas (Lingkup Internal Kampus)                             |
+| **Versi Dokumen**   | 1.2                                                               |
+| **Tanggal Dibuat**  | Juni 2025                                                         |
+| **Platform Target** | Web App & Mobile App (Android/iOS)                                |
+| **Target Durasi**   | 1 – 2 Bulan                                                       |
+| **Tim Pengembang**  | Tim Internal Kampus                                               |
+| **Referensi**       | Indikator Lomba Anugerah Protokol 2026 + Dokumen Alur Sistem v1.0 |
 
 ---
 
@@ -49,26 +51,32 @@ SiProto dibangun sebagai solusi transformasi digital yang menjawab seluruh tanta
 ### 3.1 Dalam Lingkup (In Scope)
 
 **Indikator 1 – Pendahuluan:**
+
 - Pendaftaran & verifikasi akun anggota protokoler (dengan upload foto)
 - Repositori regulasi dan dasar hukum keprotokolan
 - Manajemen kategori dan jenis kegiatan protokoler
 
 **Indikator 2 – Pelaksanaan:**
+
 - Pembuatan kegiatan (Draf/Publik) dengan detail VVIP, keynote, rundown
 - Pendaftaran mandiri protokoler + seleksi (Diterima/Ditolak/Dialihkan)
 - Penerbitan surat tugas/izin kuliah otomatis
 - Absensi selfie digital saat pelaksanaan kegiatan
 - Checklist 3 Tata Protokol per kegiatan
-- Upload dokumentasi kegiatan (foto & dokumen)
+- Upload dokumentasi kegiatan (foto, video, dokumen) oleh role Dokumentasi
+- Dashboard Dokumentasi untuk role Dokumentasi (list kegiatan selesai, upload, galeri)
 
 **Indikator 3 – Evaluasi:**
+
 - Angket evaluasi protokoler (wajib 1×24 jam pasca kegiatan)
 - Form testimoni tamu (tanpa batas waktu)
 - Feedback evaluasi admin/pembina
+- Dashboard Evaluasi untuk Admin & Protokoler (ringkasan hasil evaluasi, detail, export)
 - Penerbitan sertifikat digital berbasis penyelesaian angket
 - Laporan evaluasi dan rekap kegiatan per periode
 
 **Indikator 4 – Inovasi:**
+
 - Gamifikasi pencapaian: Perak / Silver / Gold berdasarkan akumulasi kegiatan
 - Dashboard inovasi & rekap dampak transformasi digital
 - SiProto sebagai produk inovasi layanan keprotokolan kampus
@@ -84,72 +92,83 @@ SiProto dibangun sebagai solusi transformasi digital yang menjawab seluruh tanta
 
 ## 4. Stakeholder
 
-| Stakeholder | Peran | Kepentingan |
-|-------------|-------|-------------|
-| Admin / Pembina | Primary User | Mengelola seluruh siklus kegiatan dan anggota protokoler |
-| Mahasiswa / Protokoler | Secondary User | Mendaftar, bertugas, absensi, evaluasi, dan kumpulkan sertifikat |
-| Tamu Undangan | Tertiary User | Mengisi form testimoni pasca kegiatan |
-| Pimpinan / Manajemen | Viewer | Monitoring dashboard, laporan kegiatan, dan rekap evaluasi |
+| Stakeholder            | Peran          | Kepentingan                                                               |
+| ---------------------- | -------------- | ------------------------------------------------------------------------- |
+| Admin / Pembina        | Primary User   | Mengelola seluruh siklus kegiatan, anggota protokoler, dan hasil evaluasi |
+| Mahasiswa / Protokoler | Secondary User | Mendaftar, bertugas, absensi, evaluasi, dan kumpulkan sertifikat          |
+| Role Dokumentasi       | Secondary User | Upload dokumentasi kegiatan (foto/video) dan kelola galeri dokumentasi    |
+| Tamu Undangan          | Tertiary User  | Mengisi form testimoni pasca kegiatan                                     |
+| Pimpinan / Manajemen   | Viewer         | Monitoring dashboard, laporan kegiatan, hasil evaluasi, dan rekap dampak  |
 
 ---
 
 ## 5. Milestone & Timeline
 
-Target pengembangan: **1 – 2 bulan (8 minggu)**
+Target pengembangan: **1 – 2.5 bulan (10 minggu)** _(Updated: Ditambahkan Dashboard Dokumentasi & Evaluasi)_
 
-| Fase | Milestone | Deliverable | Durasi |
-|------|-----------|-------------|--------|
-| Fase 1 | Perencanaan & Desain | PRD final, wireframe UI/UX (6 fase alur), arsitektur sistem & database | Minggu 1 – 2 |
-| Fase 2 | Development Backend | API: auth & akun, kegiatan, pendaftaran, absensi, evaluasi, sertifikat | Minggu 2 – 4 |
-| Fase 3 | Development Frontend | Web dashboard Admin & Pimpinan, Mobile App Protokoler & Tamu | Minggu 3 – 6 |
-| Fase 4 | Integrasi & Testing | Integrasi end-to-end, UAT 6 fase alur bersama user | Minggu 6 – 7 |
-| Fase 5 | Deploy & Go-Live | Server deployment, pelatihan user, go-live | Minggu 8 |
+| Fase   | Milestone            | Deliverable                                                                                             | Durasi        |
+| ------ | -------------------- | ------------------------------------------------------------------------------------------------------- | ------------- |
+| Fase 1 | Perencanaan & Desain | PRD final v1.3, wireframe UI/UX (7 halaman: 6 fase + 2 dashboard), arsitektur sistem & database         | Minggu 1 – 2  |
+| Fase 2 | Development Backend  | API: auth & akun, kegiatan, pendaftaran, absensi, evaluasi, dokumentasi, dashboard evaluasi, sertifikat | Minggu 2 – 4  |
+| Fase 3 | Development Frontend | Web: Dashboard Admin, Dashboard Dokumentasi, Dashboard Evaluasi; Mobile: Protokoler & Tamu app          | Minggu 3 – 6  |
+| Fase 4 | Integrasi & Testing  | Integrasi end-to-end, UAT 7 fase alur bersama user (termasuk Fase IV.A dokumentasi)                     | Minggu 6 – 8  |
+| Fase 5 | Deploy & Go-Live     | Server deployment, pelatihan user (Admin, Protokoler, Dokumentasi, Tamu), go-live                       | Minggu 9 – 10 |
+
+**Catatan Timeline:**
+
+- Penambahan role Dokumentasi dan 2 dashboard (Dokumentasi & Evaluasi) menambah ~2 minggu ke timeline
+- Jika tim terbatas, pertimbangkan MVP tanpa Dokumentasi dashboard di release v1.3, masukkan di v1.4
 
 ---
 
 ## 6. Arsitektur Teknologi (Rekomendasi)
 
-| Layer | Teknologi Rekomendasi | Keterangan |
-|-------|-----------------------|------------|
-| Frontend Web | React.js / Next.js | Dashboard Admin & Pimpinan |
-| Mobile App | Flutter / React Native | Aplikasi Protokoler & Tamu (Android & iOS) |
-| Backend API | Node.js + Express / Laravel | REST API untuk semua modul (6 fase alur) |
-| Database | PostgreSQL / MySQL | Penyimpanan data utama |
-| File Storage | MinIO / S3 | Foto profil, selfie absensi, foto kegiatan, sertifikat |
-| Notifikasi | Firebase Cloud Messaging | Push notification penugasan, reminder, batas waktu angket |
-| Sertifikat Generator | PDF Library (PDFKit/TCPDF) | Generate sertifikat digital otomatis |
-| Hosting | Server kampus / VPS | Deployment internal kampus |
+| Layer                | Teknologi Rekomendasi       | Keterangan                                                |
+| -------------------- | --------------------------- | --------------------------------------------------------- |
+| Frontend Web         | React.js / Next.js          | Dashboard Admin & Pimpinan                                |
+| Mobile App           | Flutter / React Native      | Aplikasi Protokoler & Tamu (Android & iOS)                |
+| Backend API          | Node.js + Express / Laravel | REST API untuk semua modul (6 fase alur)                  |
+| Database             | PostgreSQL / MySQL          | Penyimpanan data utama                                    |
+| File Storage         | MinIO / S3                  | Foto profil, selfie absensi, foto kegiatan, sertifikat    |
+| Notifikasi           | Firebase Cloud Messaging    | Push notification penugasan, reminder, batas waktu angket |
+| Sertifikat Generator | PDF Library (PDFKit/TCPDF)  | Generate sertifikat digital otomatis                      |
+| Hosting              | Server kampus / VPS         | Deployment internal kampus                                |
 
 ---
 
 ## 7. Pemetaan Modul ke Indikator Lomba Anugerah Protokol 2026
 
-| Indikator | Sub-indikator | Modul SiProto | Fase Alur |
-|-----------|---------------|---------------|-----------|
-| **1. Pendahuluan** | Peraturan | Repositori Regulasi | Lintas Fase |
-| | Pengelolaan SDM | Pendaftaran Akun + Rekap Anggota | Fase ⓪ + ⑤ |
-| | Jenis Acara | Manajemen Kegiatan & Kategori | Fase ① |
-| **2. Pelaksanaan** | Penerapan 3 Tata | Checklist 3 Tata Protokol | Fase ① + ③ |
-| | Alur Persiapan & Pelaksanaan | Persiapan + Pendaftaran + Absensi | Fase ① + ② + ③ |
-| | Dokumentasi Kegiatan | Upload Foto + Surat Tugas Otomatis | Fase ② + ③ |
-| **3. Evaluasi** | Mekanisme Evaluasi | Angket + Testimoni Tamu + Feedback | Fase ④ |
-| | Hasil & Tindak Lanjut | Rekap Evaluasi + Laporan | Fase ④ + ⑤ |
-| **4. Inovasi** | Inovasi Layanan | Absensi Selfie + Sertifikat Digital + Gamifikasi | Fase ③ + ④ + ⑤ |
-| | Transformasi Digital | SiProto sebagai produk inovasi | Keseluruhan |
+| Indikator          | Sub-indikator                | Modul SiProto                                                | Fase Alur            |
+| ------------------ | ---------------------------- | ------------------------------------------------------------ | -------------------- |
+| **1. Pendahuluan** | Peraturan                    | Repositori Regulasi                                          | Lintas Fase          |
+|                    | Pengelolaan SDM              | Pendaftaran Akun + Rekap Anggota                             | Fase ⓪ + ⑤           |
+|                    | Jenis Acara                  | Manajemen Kegiatan & Kategori                                | Fase ①               |
+| **2. Pelaksanaan** | Penerapan 3 Tata             | Checklist 3 Tata Protokol                                    | Fase ① + ③           |
+|                    | Alur Persiapan & Pelaksanaan | Persiapan + Pendaftaran + Absensi                            | Fase ① + ② + ③       |
+|                    | Dokumentasi Kegiatan         | Upload Dokumentasi (foto/video) oleh Dokumentasi             | Fase ④.A             |
+|                    | Dashboard Dokumentasi        | Kelola upload dokumentasi kegiatan per event                 | Fase ④.A             |
+| **3. Evaluasi**    | Mekanisme Evaluasi           | Angket + Testimoni Tamu + Feedback Admin                     | Fase ④               |
+|                    | Dashboard Evaluasi           | Ringkasan & detail hasil evaluasi untuk Admin & Protokoler   | Fase ④               |
+|                    | Hasil & Tindak Lanjut        | Rekap Evaluasi + Laporan                                     | Fase ④ + ⑤           |
+| **4. Inovasi**     | Inovasi Layanan              | Absensi Selfie + Sertifikat Digital + Gamifikasi + Dashboard | Fase ③ + ④ + ④.A + ⑤ |
+|                    | Transformasi Digital         | SiProto sebagai produk inovasi layanan keprotokolan          | Keseluruhan          |
 
 ---
 
 ## 8. Risiko Proyek
 
-| Risiko | Level | Mitigasi |
-|--------|-------|----------|
-| Ketersediaan tim pengembang terbatas | Tinggi | Prioritaskan fitur inti MVP dulu (Fase ⓪–③), fitur lanjutan di Fase ④–⑤ |
-| Perubahan kebutuhan di tengah pengembangan | Sedang | Kunci scope di PRD, perubahan lewat proses formal |
-| Adopsi pengguna rendah | Sedang | Libatkan user dalam UAT & adakan sesi pelatihan per role |
-| Absensi selfie tidak diisi / di-bypass | Sedang | Sistem tidak mencatat kehadiran tanpa selfie; enforce di UI |
-| Angket evaluasi tidak diisi dalam 1×24 jam | Sedang | Reminder H+0 dan H+12 jam otomatis via push notification |
-| Masalah upload foto (ukuran, format) | Sedang | Batasi ukuran file, kompresi otomatis, validasi format di frontend |
-| Masalah performa di mobile | Rendah | Testing multi-device sebelum go-live |
+| Risiko                                         | Level  | Mitigasi                                                                                       |
+| ---------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------- |
+| Ketersediaan tim pengembang terbatas           | Tinggi | Prioritaskan fitur inti MVP dulu (Fase ⓪–③), fitur dashboard di Fase ④–④.A, evaluasi di Fase ⑤ |
+| Perubahan kebutuhan di tengah pengembangan     | Sedang | Kunci scope di PRD v1.3, perubahan lewat proses formal                                         |
+| Adopsi pengguna rendah                         | Sedang | Libatkan user dalam UAT & adakan sesi pelatihan per role (Admin, Protokoler, Dokumentasi)      |
+| Absensi selfie tidak diisi / di-bypass         | Sedang | Sistem tidak mencatat kehadiran tanpa selfie; enforce di UI                                    |
+| Angket evaluasi tidak diisi dalam 1×24 jam     | Sedang | Reminder H+0 dan H+12 jam otomatis via push notification                                       |
+| Upload dokumentasi video file besar            | Sedang | Kompresi otomatis, limit 100MB per file, storage planning untuk S3/MinIO                       |
+| Dashboard Dokumentasi/Evaluasi tidak responsif | Sedang | Testing performa dashboard dengan data besar (1000+ events), optimize query                    |
+| Masalah upload foto (ukuran, format)           | Sedang | Batasi ukuran file, kompresi otomatis, validasi format di frontend                             |
+| Masalah performa di mobile                     | Rendah | Testing multi-device sebelum go-live                                                           |
+| Role Dokumentasi tidak adoptive                | Rendah | Sosialisasi peran dokumentasi, training khusus role baru                                       |
 
 ---
 
