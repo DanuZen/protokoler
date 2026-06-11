@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import type { Session, User } from "@supabase/supabase-js";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from 'react';
+import type { Session, User } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FRONTEND DEMO MODE — Semua koneksi Supabase dinonaktifkan sementara.
@@ -8,29 +7,53 @@ import { useQuery } from "@tanstack/react-query";
 //   "admin"      → akses penuh (kelola anggota, kegiatan, laporan)
 //   "mahasiswa"  → akses terbatas (kegiatan saya, sertifikat, profil)
 //   "pimpinan"   → akses read-only laporan & dashboard
+//   "dokumentasi"→ akses dashboard dokumentasi
 // ─────────────────────────────────────────────────────────────────────────────
-const DEMO_ROLE: "admin" | "mahasiswa" | "pimpinan" = "admin";
+type DemoRole = 'admin' | 'mahasiswa' | 'pimpinan' | 'dokumentasi';
 
-const MOCK_USER = {
-  id: "demo-user-id",
-  email: `demo@${DEMO_ROLE}.siproto.id`,
-  user_metadata: {
-    nama_lengkap: DEMO_ROLE === "admin" ? "Admin Demo" : DEMO_ROLE === "pimpinan" ? "Pimpinan Demo" : "Mahasiswa Demo",
-  },
-} as unknown as User;
+const isDemoRole = (value: string | null): value is DemoRole => value === 'admin' || value === 'mahasiswa' || value === 'pimpinan' || value === 'dokumentasi';
 
-const MOCK_SESSION = { user: MOCK_USER } as Session;
+const getDemoRole = (): DemoRole => {
+  if (typeof window === 'undefined') return 'admin';
+  const stored = window.localStorage.getItem('demo_role');
+  return isDemoRole(stored) ? stored : 'admin';
+};
+
+const createDemoUser = (role: DemoRole) =>
+  ({
+    id: 'demo-user-id',
+    email: `demo@${role}.siproto.id`,
+    user_metadata: {
+      nama_lengkap: role === 'admin' ? 'Admin Demo' : role === 'pimpinan' ? 'Pimpinan Demo' : role === 'dokumentasi' ? 'Dokumentasi Demo' : 'Mahasiswa Demo',
+    },
+  }) as unknown as User;
 
 export function useAuth() {
-  const [session] = useState<Session | null>(MOCK_SESSION);
-  const [loading]  = useState(false);
-  return { session, user: MOCK_USER, loading };
+  const [role, setRole] = useState<DemoRole>('admin');
+  const [loading] = useState(false);
+
+  useEffect(() => {
+    const syncRole = () => setRole(getDemoRole());
+    syncRole();
+    window.addEventListener('storage', syncRole);
+    return () => window.removeEventListener('storage', syncRole);
+  }, []);
+
+  const user = useMemo(() => createDemoUser(role), [role]);
+  const session = useMemo(() => ({ user }) as Session, [user]);
+
+  return { session, user, loading };
 }
 
 export function useRole(_user?: User | null) {
-  return useQuery({
-    queryKey: ["user_role", "demo"],
-    queryFn: async () => DEMO_ROLE,
-    initialData: DEMO_ROLE,
-  });
+  const [role, setRole] = useState<DemoRole>('admin');
+
+  useEffect(() => {
+    const syncRole = () => setRole(getDemoRole());
+    syncRole();
+    window.addEventListener('storage', syncRole);
+    return () => window.removeEventListener('storage', syncRole);
+  }, []);
+
+  return { data: role };
 }

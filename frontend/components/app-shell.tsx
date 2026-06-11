@@ -1,78 +1,62 @@
-"use client";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter, usePathname } from "next/navigation";
-import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Bell, Search } from "lucide-react";
+'use client';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter, usePathname } from 'next/navigation';
+import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Bell, Search, Camera } from 'lucide-react';
 // supabase import removed — frontend demo mode active
-import { Button } from "@/components/ui/button";
-import { useAuth, useRole } from "@/hooks/use-auth";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { Button } from '@/components/ui/button';
+import { useAuth, useRole } from '@/hooks/use-auth';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
-type Role = "admin" | "mahasiswa" | "pimpinan";
+type Role = 'admin' | 'mahasiswa' | 'pimpinan' | 'dokumentasi';
 
 const adminItems = [
-  { to: "/dashboard", label: "Dashboard",  icon: LayoutDashboard },
-  { to: "/anggota",   label: "Anggota",    icon: Users },
-  { to: "/kegiatan",  label: "Kegiatan",   icon: CalendarDays },
-  { to: "/evaluasi",  label: "Evaluasi",   icon: ClipboardList },
-  { to: "/laporan",   label: "Laporan",    icon: FileBarChart },
-  { to: "/regulasi",  label: "Regulasi",   icon: ShieldCheck },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/anggota', label: 'Anggota', icon: Users },
+  { to: '/kegiatan', label: 'Kegiatan', icon: CalendarDays },
+  { to: '/evaluasi/dashboard', label: 'Evaluasi', icon: ClipboardList },
+  { to: '/dokumentasi/dashboard', label: 'Dokumentasi', icon: Camera },
+  { to: '/laporan', label: 'Laporan', icon: FileBarChart },
+  { to: '/regulasi', label: 'Regulasi', icon: ShieldCheck },
 ];
 
 const pimpinanItems = [
-  { to: "/dashboard", label: "Dashboard",  icon: LayoutDashboard },
-  { to: "/anggota",   label: "Anggota",    icon: Users },
-  { to: "/kegiatan",  label: "Kegiatan",   icon: CalendarDays },
-  { to: "/evaluasi",  label: "Evaluasi",   icon: ClipboardList },
-  { to: "/laporan",   label: "Laporan",    icon: FileBarChart },
-  { to: "/regulasi",  label: "Regulasi",   icon: ShieldCheck },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/anggota', label: 'Anggota', icon: Users },
+  { to: '/kegiatan', label: 'Kegiatan', icon: CalendarDays },
+  { to: '/evaluasi/dashboard', label: 'Evaluasi', icon: ClipboardList },
+  { to: '/laporan', label: 'Laporan', icon: FileBarChart },
+  { to: '/regulasi', label: 'Regulasi', icon: ShieldCheck },
 ];
 
 const mahasiswaItems = [
-  { to: "/beranda",      label: "Beranda",      icon: LayoutDashboard },
-  { to: "/kegiatan",    label: "Kegiatan",     icon: CalendarDays },
-  { to: "/jadwal",      label: "Jadwal Tugas", icon: CalendarDays },
-  { to: "/sertifikat",  label: "Sertifikat",   icon: ShieldCheck },
-  { to: "/profil",      label: "Profil Saya",  icon: UserCircle2 },
-  { to: "/regulasi",    label: "Regulasi",     icon: ShieldCheck },
+  { to: '/beranda', label: 'Beranda', icon: LayoutDashboard },
+  { to: '/kegiatan', label: 'Kegiatan', icon: CalendarDays },
+  { to: '/jadwal', label: 'Jadwal Tugas', icon: CalendarDays },
+  { to: '/evaluasi/dashboard', label: 'Evaluasi', icon: ClipboardList },
+  { to: '/sertifikat', label: 'Sertifikat', icon: ShieldCheck },
+  { to: '/profil', label: 'Profil Saya', icon: UserCircle2 },
+  { to: '/regulasi', label: 'Regulasi', icon: ShieldCheck },
+];
+
+const dokumentasiItems = [
+  { to: '/dokumentasi/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/kegiatan', label: 'Kegiatan', icon: CalendarDays },
+  { to: '/regulasi', label: 'Regulasi', icon: ShieldCheck },
 ];
 
 function NavItem({ item, active }: { item: { to: string; label: string; icon: any }; active: boolean }) {
   return (
     <Link href={item.to} className="block outline-none group">
-      <div
-        className={cn(
-          "relative flex items-center gap-3 px-4 py-2.5 text-sm transition-all duration-150",
-          active
-            ? "text-white font-semibold"
-            : "text-slate-500 hover:text-slate-300 font-medium"
-        )}
-      >
+      <div className={cn('relative flex items-center gap-3 px-4 py-2.5 text-sm transition-all duration-150', active ? 'text-white font-semibold' : 'text-slate-500 hover:text-slate-300 font-medium')}>
         {/* Gold left accent bar for active */}
-        {active && (
-          <motion.div
-            layoutId="active-nav-bar"
-            className="absolute left-0 top-1 bottom-1 w-[3px] bg-[#C9A84C]"
-            transition={{ type: "spring", stiffness: 400, damping: 35 }}
-          />
-        )}
+        {active && <motion.div layoutId="active-nav-bar" className="absolute left-0 top-1 bottom-1 w-[3px] bg-[#C9A84C]" transition={{ type: 'spring', stiffness: 400, damping: 35 }} />}
         {/* Subtle active background */}
-        {active && (
-          <motion.div
-            layoutId="active-nav-bg"
-            className="absolute inset-0 bg-white/[0.06]"
-            transition={{ type: "spring", stiffness: 400, damping: 35 }}
-          />
-        )}
+        {active && <motion.div layoutId="active-nav-bg" className="absolute inset-0 bg-white/[0.06]" transition={{ type: 'spring', stiffness: 400, damping: 35 }} />}
 
         {/* Icon */}
-        <div className={cn(
-          "relative z-10 flex-shrink-0 h-8 w-8 flex items-center justify-center transition-all duration-150",
-          active
-            ? "bg-slate-800 text-[#C9A84C]"
-            : "text-slate-500 group-hover:text-slate-300"
-        )}>
+        <div className={cn('relative z-10 flex-shrink-0 h-8 w-8 flex items-center justify-center transition-all duration-150', active ? 'bg-slate-800 text-[#C9A84C]' : 'text-slate-500 group-hover:text-slate-300')}>
           <item.icon className="h-[17px] w-[17px]" />
         </div>
 
@@ -90,26 +74,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const signOut = () => {
     // Demo Mode: langsung redirect ke halaman utama
-    router.push("/");
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('demo_role');
+    }
+    router.push('/');
   };
 
-  const navItems =
-    role === "admin"     ? adminItems :
-    role === "pimpinan"  ? pimpinanItems :
-    role === "mahasiswa" ? mahasiswaItems :
-    adminItems; // fallback
+  const navItems = role === 'admin' ? adminItems : role === 'pimpinan' ? pimpinanItems : role === 'dokumentasi' ? dokumentasiItems : role === 'mahasiswa' ? mahasiswaItems : adminItems; // fallback
 
-  const displayName =
-    user?.user_metadata?.nama_lengkap ||
-    user?.email?.split("@")[0] ||
-    "Demo Admin";
+  const displayName = user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Demo Admin';
 
   const initials = displayName.charAt(0).toUpperCase();
-  const isDashboard = path === "/dashboard";
+  const isDashboard = path === '/dashboard';
 
   return (
     <div className="flex min-h-screen bg-slate-100 text-slate-900 font-sans relative">
-      
       {/* ─── GLOBAL DASHBOARD BACKGROUND ─── */}
       <div className="fixed inset-0 z-0 opacity-80 pointer-events-none">
         <Image src="/rektorat.jpg" alt="UNP Rectorat" fill className="object-cover object-center" priority />
@@ -120,25 +99,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* ─── SIDEBAR ─────────────────────────────────── */}
       <aside className="hidden w-[260px] flex-col bg-slate-900 md:flex z-20 fixed top-0 left-0 h-full border-r border-slate-800">
-
         {/* Logo */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-800">
           <div className="relative h-9 w-9 flex-shrink-0 bg-[#C9A84C]/10 border border-[#C9A84C]/30 flex items-center justify-center overflow-hidden">
-            <Image
-              src="/logo protokoler.png"
-              alt="Logo Protokoler"
-              fill
-              sizes="36px"
-              className="object-contain p-1"
-            />
+            <Image src="/logo protokoler.png" alt="Logo Protokoler" fill sizes="36px" className="object-contain p-1" />
           </div>
           <div>
-            <div className="font-display text-sm font-bold tracking-widest text-white uppercase">
-              PROTOKOLER
-            </div>
-            <div className="text-[9px] uppercase tracking-[0.2em] text-[#C9A84C]/70 font-semibold mt-0.5">
-              Universitas Negeri Padang
-            </div>
+            <div className="font-display text-sm font-bold tracking-widest text-white uppercase">PROTOKOLER</div>
+            <div className="text-[9px] uppercase tracking-[0.2em] text-[#C9A84C]/70 font-semibold mt-0.5">Universitas Negeri Padang</div>
           </div>
         </div>
 
@@ -146,13 +114,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-0.5">
           {/* Section label */}
           <div className="px-4 pt-2 pb-3">
-            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500">
-              {role === "mahasiswa" ? "Menu Protokoler" : "Menu Utama"}
-            </span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500">{role === 'mahasiswa' ? 'Menu Protokoler' : role === 'dokumentasi' ? 'Menu Dokumentasi' : 'Menu Utama'}</span>
           </div>
 
           {navItems.map((item) => {
-            const active = path === item.to || path.startsWith(item.to + "/");
+            const active = path === item.to || path.startsWith(item.to + '/');
             return <NavItem key={item.to} item={item} active={active} />;
           })}
         </nav>
@@ -161,9 +127,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="border-t border-slate-800 p-4 space-y-3">
           {/* Mini profile */}
           <div className="flex items-center gap-3 px-2">
-            <div className="h-8 w-8 bg-[#C9A84C] flex-shrink-0 flex items-center justify-center text-slate-900 text-xs font-extrabold">
-              {initials}
-            </div>
+            <div className="h-8 w-8 bg-[#C9A84C] flex-shrink-0 flex items-center justify-center text-slate-900 text-xs font-extrabold">{initials}</div>
             <div className="min-w-0 flex-1">
               <div className="text-xs font-bold text-white truncate">{displayName}</div>
               <div className="flex items-center gap-1.5 mt-0.5">
@@ -171,18 +135,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500" />
                 </span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em]">
-                  {role || "..."}
-                </span>
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em]">{role || '...'}</span>
               </div>
             </div>
           </div>
 
           {/* Logout */}
-          <button
-            onClick={signOut}
-            className="flex w-full items-center gap-3 px-3 py-2.5 text-xs font-bold text-slate-400 hover:text-red-400 hover:bg-red-500/8 transition-colors border border-transparent hover:border-red-500/20"
-          >
+          <button onClick={signOut} className="flex w-full items-center gap-3 px-3 py-2.5 text-xs font-bold text-slate-400 hover:text-red-400 hover:bg-red-500/8 transition-colors border border-transparent hover:border-red-500/20">
             <LogOut className="h-4 w-4" />
             <span>Keluar Sistem</span>
           </button>
@@ -191,7 +150,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* ─── MAIN CONTENT ────────────────────────────── */}
       <main className="flex min-w-0 flex-1 flex-col relative md:ml-[260px]">
-
         {/* Header */}
         <header className="flex h-16 items-center justify-between px-6 md:px-8 z-20 transition-all absolute top-0 left-0 right-0 bg-transparent border-none">
           {/* Mobile logo */}
@@ -224,26 +182,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             {/* User profile */}
             <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-none border bg-slate-800/60 border-slate-700">
-              <div className="h-7 w-7 bg-[#C9A84C] flex items-center justify-center text-slate-900 text-[10px] font-extrabold flex-shrink-0">
-                {initials}
-              </div>
+              <div className="h-7 w-7 bg-[#C9A84C] flex items-center justify-center text-slate-900 text-[10px] font-extrabold flex-shrink-0">{initials}</div>
               <div>
                 <div className="text-xs font-bold leading-tight text-white">{displayName}</div>
-                <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">
-                  {role || "..."}
-                </div>
+                <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">{role || '...'}</div>
               </div>
             </div>
           </div>
         </header>
 
         {/* Page content */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="flex-1 overflow-auto relative z-10 bg-transparent"
-        >
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="flex-1 overflow-auto relative z-10 bg-transparent">
           {children}
         </motion.div>
       </main>
