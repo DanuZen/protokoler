@@ -1,34 +1,38 @@
 # UX FLOW & HALAMAN APLIKASI
+
 ## SiProto – Sistem Informasi Protokoler Universitas
+
 **Versi 1.2 | Juni 2025**
 
 ---
 
-| Info | Detail |
-|------|--------|
-| **Platform** | Web App (Admin/Pimpinan) + Mobile App (Protokoler/Tamu) |
-| **Versi Dokumen** | 1.2 |
-| **Referensi** | SiProto_PRD.md v1.2 + SiProto_Alur_Sistem.md v1.2 |
+| Info              | Detail                                                  |
+| ----------------- | ------------------------------------------------------- |
+| **Platform**      | Web App (Admin/Pimpinan) + Mobile App (Protokoler/Tamu) |
+| **Versi Dokumen** | 1.2                                                     |
+| **Referensi**     | SiProto_PRD.md v1.2 + SiProto_Alur_Sistem.md v1.2       |
 
 ---
 
 ## Peta Navigasi Umum
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     SIPROTO PLATFORM                            │
-├─────────────────┬───────────────────┬───────────────────────────┤
-│   WEB APP       │   MOBILE APP      │   PUBLIK / TAMU           │
-│   (Admin)       │   (Protokoler)    │   (Tanpa Login)           │
-├─────────────────┼───────────────────┼───────────────────────────┤
-│ Dashboard       │ Beranda           │ Form Testimoni (via link)  │
-│ Kegiatan        │ Kegiatan Saya     │                           │
-│ Anggota         │ Jadwal            │                           │
-│ Evaluasi        │ Profil Saya       │                           │
-│ Laporan         │ Sertifikat        │                           │
-│ Regulasi        │ Regulasi          │                           │
-│ Pengaturan      │                   │                           │
-└─────────────────┴───────────────────┴───────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                        SIPROTO PLATFORM                             │
+├─────────────────┬──────────────────┬──────────────┬─────────────────┤
+│   WEB APP       │   WEB APP        │  MOBILE APP  │  PUBLIK / TAMU  │
+│   (Admin)       │   (Dokumentasi)  │  (Protokoler)│  (Tanpa Login)  │
+├─────────────────┼──────────────────┼──────────────┼─────────────────┤
+│ Dashboard       │ Dashboard        │ Beranda      │ Form Testimoni  │
+│ Kegiatan        │ Dokumentasi      │ Kegiatan     │  (via link)     │
+│ Anggota         │ - List Kegiatan  │ Jadwal       │                 │
+│ Evaluasi        │ - Upload File    │ Profil Saya  │                 │
+│ Dashboard       │ - Galeri         │ Sertifikat   │                 │
+│ Evaluasi        │                  │ Regulasi     │                 │
+│ Laporan         │                  │              │                 │
+│ Regulasi        │                  │              │                 │
+│ Pengaturan      │                  │              │                 │
+└─────────────────┴──────────────────┴──────────────┴─────────────────┘
 ```
 
 ---
@@ -51,6 +55,7 @@
 **URL:** `/dashboard`
 
 **Konten:**
+
 - 📊 Statistik ringkasan: total kegiatan bulan ini, protokoler aktif, kegiatan mendatang
 - 🔔 Notifikasi: pendaftaran baru, angket belum terisi, evaluasi selesai
 - 📅 Kalender mini: kegiatan 7 hari ke depan
@@ -182,6 +187,153 @@
 
 ---
 
+### G. Dashboard Evaluasi
+
+**URL:** `/evaluasi/dashboard` (Admin & Protokoler only)
+
+**Konten:**
+
+- 📊 Filter: Status Kegiatan (Semua | Selesai), Rentang Tanggal, Pencarian Nama Kegiatan
+- 📋 Tabel Kegiatan dengan Ringkasan Evaluasi:
+  - Nama Kegiatan
+  - Tanggal Pelaksanaan
+  - Jumlah Evaluasi Protokoler + Rata-rata Rating
+  - Jumlah Testimoni Tamu
+  - Sentimen Testimoni (Positif | Netral | Negatif)
+  - Status Feedback Admin (Sudah | Belum)
+  - Tombol: [Lihat Detail]
+
+**[/evaluasi/kegiatan/:id/hasil] — Detail Hasil Evaluasi**
+
+```
+Halaman Detail Evaluasi Satu Kegiatan:
+
+├── Header: Nama Kegiatan, Tanggal, Tempat
+├── 3 Tab: EVALUASI PROTOKOLER | TESTIMONI TAMU | FEEDBACK ADMIN
+│
+├── [Tab EVALUASI PROTOKOLER]
+│   ├── Statistik:
+│   │   ├── Total Evaluasi Masuk: 12 / 12 tepat waktu
+│   │   ├── Rata-rata Rating Kegiatan: 4.2 ⭐ (breakdown: 6×5⭐ 4×4⭐ 2×3⭐)
+│   │   └── Word Cloud: Kata-kata sering muncul (lancar, koordinasi, venue, dll)
+│   │
+│   ├── Daftar Evaluasi (accordion/expandable):
+│   │   ├── Nama Protokoler
+│   │   ├── Waktu Pengisian (dalam/luar batas 1×24 jam)
+│   │   ├── Rating & Ringkasan Evaluasi
+│   │   └── Tombol: [Baca Lengkap]
+│   │
+│   └── Export Button: [📥 Export ke Excel]
+│
+├── [Tab TESTIMONI TAMU]
+│   ├── Statistik:
+│   │   ├── Total Testimoni: 8 masuk
+│   │   └── Sentimen: 7 Positif, 1 Netral, 0 Negatif
+│   │
+│   ├── Daftar Testimoni (card view):
+│   │   ├── Nama Tamu (opsional: anonimus)
+│   │   ├── Rating (1-5 bintang)
+│   │   ├── Teks Testimoni
+│   │   └── Sentimen Badge (Positif/Netral/Negatif)
+│   │
+│   └── Export Button: [📥 Export ke Excel]
+│
+├── [Tab FEEDBACK ADMIN]
+│   ├── Form textarea: Input feedback dari admin
+│   ├── Preview markdown: Lihat format final
+│   └── Button: [Simpan Feedback] (Admin only)
+│
+└── Header Bottom: [← Kembali ke Dashboard] [Print Laporan] [Share Hasil]
+```
+
+---
+
+### H. Dashboard Dokumentasi (Role Dokumentasi)
+
+**URL:** `/dokumentasi/dashboard` (Dokumentasi role only)
+
+**Konten — Halaman Utama Dashboard Dokumentasi:**
+
+- 📊 Statistik Ringkasan:
+  - Total Kegiatan Selesai (bulan ini | semua)
+  - Kegiatan Sudah Terdokumentasi
+  - Kegiatan Belum Terdokumentasi
+  - Total File Uploaded (foto, video, dokumen)
+
+**[/dokumentasi/list] — Daftar Kegiatan untuk Upload**
+
+```
+Halaman List Kegiatan yang Siap Didokumentasi:
+
+├── Filter & Search:
+│   ├── Status: Semua | Belum Didokumentasi | Sudah Didokumentasi
+│   ├── Rentang Tanggal (date range picker)
+│   └── Search: Nama Kegiatan
+│
+├── Tabel Kegiatan:
+│   ├── Nama Kegiatan
+│   ├── Tanggal Pelaksanaan
+│   ├── Lokasi
+│   ├── Status Dokumentasi (badge: Belum | Proses | Selesai)
+│   ├── Jumlah File Uploaded (foto + video)
+│   └── Aksi: [Upload] [Lihat Galeri]
+│
+└── Paginasi: 20 kegiatan per halaman
+```
+
+**[/dokumentasi/upload/:kegiatan_id] — Form Upload Dokumentasi**
+
+```
+Modal / Halaman Upload File Dokumentasi:
+
+├── Info Kegiatan:
+│   ├── Nama Kegiatan
+│   ├── Tanggal & Lokasi
+│   └── Status Dokumentasi Saat Ini (X file sudah upload)
+│
+├── Form Upload:
+│   ├── Drag-drop zone atau [Pilih File]
+│   ├── File accepted: .jpg .png .mp4 .mov (max 100MB per file)
+│   ├── Media Type selector: [Foto] [Video] [Dokumen]
+│   ├── Keterangan (textarea, max 500 karakter)
+│   └── Button: [Upload] [Batal]
+│
+├── Upload Progress (jika multiple files):
+│   ├── Progress bar per file
+│   ├── ETA upload time
+│   └── Cancel button per file
+│
+└── Success Message: File berhasil diupload, ditampilkan di Galeri Dokumentasi
+```
+
+**[/dokumentasi/galeri/:kegiatan_id] — Galeri Dokumentasi Kegiatan**
+
+```
+Galeri Dokumentasi Satu Kegiatan:
+
+├── Filter View: [Semua] [Foto Saja] [Video Saja]
+│
+├── Masonry Grid Layout:
+│   ├── Setiap card menampilkan:
+│   │   ├── Thumbnail foto/video
+│   │   ├── Media type badge (Foto/Video/Dokumen)
+│   │   ├── Tanggal upload
+│   │   ├── Nama user yang upload
+│   │   └── Action buttons: [Preview] [Download] [Delete]
+│   │
+│   └── Video player (embedded, auto-pause lainnya)
+│
+├── Gallery Controls:
+│   ├── Lightbox / modal preview (full screen)
+│   ├── Next / Previous navigation
+│   ├── Download button
+│   └── Close button
+│
+└── Summary: Total X foto, Y video, Z dokumen
+```
+
+---
+
 ## MOBILE APP — Alur Protokoler
 
 ### M-A. Onboarding & Autentikasi
@@ -211,6 +363,7 @@
 ### M-B. Beranda (Home)
 
 **Konten:**
+
 - Greeting: "Halo, [Nama]! 👋"
 - Status akun + badge kategori (Perak/Silver/Gold)
 - Progress bar: menuju tingkatan berikutnya
@@ -315,30 +468,30 @@
 
 ## Notifikasi & Reminder
 
-| Trigger | Target | Pesan | Waktu |
-|---------|--------|-------|-------|
-| Akun diverifikasi admin | Protokoler | "Akun Anda telah disetujui! Anda bisa mulai mendaftar kegiatan." | Segera |
-| Akun ditolak admin | Protokoler | "Pendaftaran akun ditolak. [Alasan]. Silakan daftar ulang." | Segera |
-| Diterima di kegiatan | Protokoler | "Anda diterima untuk [Nama Kegiatan] sebagai [Peran]!" | Segera |
-| Ditolak dari kegiatan | Protokoler | "Maaf, pendaftaran Anda untuk [Nama Kegiatan] ditolak." | Segera |
-| Reminder H-1 kegiatan | Protokoler | "Besok ada kegiatan [Nama]! Pastikan hadir tepat waktu." | H-1 pukul 08.00 |
-| Reminder H-0 kegiatan | Protokoler | "Hari ini kegiatan [Nama] berlangsung jam [Jam]. Jangan lupa absen selfie!" | Pagi hari H |
-| Kegiatan selesai | Protokoler | "Isi evaluasi [Nama Kegiatan] sekarang! Batas waktu: [Jam]." | Segera selesai |
-| H+12 jam belum evaluasi | Protokoler | "Reminder: Sisa 12 jam untuk mengisi evaluasi [Nama]. Jangan sampai terlewat!" | H+12 jam |
-| Batas waktu evaluasi habis | Sistem | Sertifikat tidak diterbitkan, rekap diupdate | H+24 jam |
-| Evaluasi terisi | Protokoler | "Sertifikat [Nama Kegiatan] sudah bisa diunduh! 🏆" | Segera |
+| Trigger                    | Target     | Pesan                                                                          | Waktu           |
+| -------------------------- | ---------- | ------------------------------------------------------------------------------ | --------------- |
+| Akun diverifikasi admin    | Protokoler | "Akun Anda telah disetujui! Anda bisa mulai mendaftar kegiatan."               | Segera          |
+| Akun ditolak admin         | Protokoler | "Pendaftaran akun ditolak. [Alasan]. Silakan daftar ulang."                    | Segera          |
+| Diterima di kegiatan       | Protokoler | "Anda diterima untuk [Nama Kegiatan] sebagai [Peran]!"                         | Segera          |
+| Ditolak dari kegiatan      | Protokoler | "Maaf, pendaftaran Anda untuk [Nama Kegiatan] ditolak."                        | Segera          |
+| Reminder H-1 kegiatan      | Protokoler | "Besok ada kegiatan [Nama]! Pastikan hadir tepat waktu."                       | H-1 pukul 08.00 |
+| Reminder H-0 kegiatan      | Protokoler | "Hari ini kegiatan [Nama] berlangsung jam [Jam]. Jangan lupa absen selfie!"    | Pagi hari H     |
+| Kegiatan selesai           | Protokoler | "Isi evaluasi [Nama Kegiatan] sekarang! Batas waktu: [Jam]."                   | Segera selesai  |
+| H+12 jam belum evaluasi    | Protokoler | "Reminder: Sisa 12 jam untuk mengisi evaluasi [Nama]. Jangan sampai terlewat!" | H+12 jam        |
+| Batas waktu evaluasi habis | Sistem     | Sertifikat tidak diterbitkan, rekap diupdate                                   | H+24 jam        |
+| Evaluasi terisi            | Protokoler | "Sertifikat [Nama Kegiatan] sudah bisa diunduh! 🏆"                            | Segera          |
 
 ---
 
 ## Komponen UI Bersama
 
-| Komponen | Dipakai Di | Keterangan |
-|----------|-----------|------------|
-| `BadgeStatus` | Kegiatan, Pendaftaran | Warna badge per status |
-| `BadgeKategori` | Profil, Sertifikat | Perak/Silver/Gold + warna |
-| `KalenderKegiatan` | Dashboard, Kegiatan | Tampilan kalender bulanan |
-| `TimerCountdown` | Evaluasi | Hitung mundur 24 jam |
-| `KameraAbsensi` | Absensi | Akses kamera selfie mode |
-| `GrafikStatistik` | Dashboard, Laporan | Chart kegiatan & distribusi |
-| `CardKegiatan` | Mobile beranda | Card preview kegiatan |
-| `FormStepper` | Daftar akun, Buat kegiatan | Multi-step form |
+| Komponen           | Dipakai Di                 | Keterangan                  |
+| ------------------ | -------------------------- | --------------------------- |
+| `BadgeStatus`      | Kegiatan, Pendaftaran      | Warna badge per status      |
+| `BadgeKategori`    | Profil, Sertifikat         | Perak/Silver/Gold + warna   |
+| `KalenderKegiatan` | Dashboard, Kegiatan        | Tampilan kalender bulanan   |
+| `TimerCountdown`   | Evaluasi                   | Hitung mundur 24 jam        |
+| `KameraAbsensi`    | Absensi                    | Akses kamera selfie mode    |
+| `GrafikStatistik`  | Dashboard, Laporan         | Chart kegiatan & distribusi |
+| `CardKegiatan`     | Mobile beranda             | Card preview kegiatan       |
+| `FormStepper`      | Daftar akun, Buat kegiatan | Multi-step form             |
