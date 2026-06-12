@@ -5,7 +5,7 @@ import { kegiatanApi } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, MapPin, Check, X, ClipboardList, Clock, ChevronRight } from "lucide-react";
+import { CalendarDays, MapPin, Check, X, ClipboardList, Clock, ChevronRight, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -75,30 +75,49 @@ export default function KegiatanSayaPage() {
   return (
     <div className="min-h-screen bg-transparent">
       {/* ─── Hero Banner ─── */}
-      <div className="relative px-6 md:px-10 pt-24 pb-32 overflow-hidden">
+      <section className="relative px-6 md:px-10 pt-10 pb-16 overflow-hidden">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight">Kegiatan Saya</h1>
-            <p className="mt-3 text-slate-300 text-lg">Daftar penugasan yang ditugaskan kepada Anda.</p>
-          </div>
-          <div className="flex items-center gap-0 border border-slate-700 bg-slate-900/50 backdrop-blur-sm rounded-none overflow-hidden">
-            {[
-              { label: "Menunggu", value: pending,   color: "text-amber-400" },
-              { label: "Dikonfirmasi", value: confirmed, color: "text-emerald-400" },
-              { label: "Total", value: data?.length ?? 0, color: "text-white" },
-            ].map((s, i) => (
-              <div key={s.label} className={cn("text-center px-5 py-4", i < 2 && "border-r border-slate-700")}>
-                <div className={`text-3xl font-display font-bold ${s.color}`}>{s.value}</div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 mt-1">{s.label}</div>
-              </div>
-            ))}
+            <p className="text-[#C9A84C] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Sistem Informasi Protokoler</p>
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight">Kegiatan Saya</h1>
+            <p className="mt-2 text-slate-400 text-sm">Daftar penugasan yang ditugaskan kepada Anda.</p>
           </div>
         </motion.div>
-      </div>
+      </section>
 
-      {/* ─── Main Content ─── */}
-      <div className="bg-slate-50 min-h-screen pt-4 pb-12">
-        <div className="px-6 md:px-10 -mt-10 relative z-10 space-y-6">
+      {/* ─── Floating Stats Row ─── */}
+      <section className="px-6 md:px-10 -mt-12 relative z-20 pb-0">
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            { label: "Menunggu", value: pending, icon: AlertCircle, hint: "Perlu konfirmasi" },
+            { label: "Dikonfirmasi", value: confirmed, icon: CheckCircle2, hint: "Siap bertugas" },
+            { label: "Total Penugasan", value: data?.length ?? 0, icon: ClipboardList, hint: "Semua status" },
+          ].map((stat, index) => (
+            <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
+              <div className="bg-slate-900 border border-slate-800 shadow-xl py-3 px-4 flex flex-col justify-between hover:border-[#C9A84C]/60 hover:shadow-2xl transition-all group relative overflow-hidden">
+                <stat.icon className="absolute -right-4 -bottom-4 h-24 w-24 text-white opacity-5 transform group-hover:scale-110 transition-transform duration-500" />
+                <div className="flex items-center justify-between relative z-10">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{stat.label}</p>
+                  <div className="flex-shrink-0 h-7 w-7 flex items-center justify-center bg-[#C9A84C]/20 text-[#C9A84C] group-hover:bg-[#C9A84C] group-hover:text-white transition-colors border border-[#C9A84C]/30">
+                    <stat.icon className="h-3.5 w-3.5" />
+                  </div>
+                </div>
+                <div className="mt-1.5 relative z-10">
+                  <p className="text-3xl font-extrabold leading-tight font-display text-white">{stat.value}</p>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <span className="text-[10px] text-slate-500">{stat.hint}</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── BODY CONTENT ─── */}
+      <div className="bg-slate-50 min-h-screen -mt-6">
+        <div className="h-12" />
+        <section className="px-6 md:px-10 pb-12 space-y-6">
 
           {isLoading ? (
             <div className="space-y-4">
@@ -190,7 +209,7 @@ export default function KegiatanSayaPage() {
               </div>
             </motion.div>
           )}
-        </div>
+        </section>
       </div>
     </div>
   );

@@ -117,11 +117,12 @@ export default function EvaluasiPage() {
   return (
     <div className="min-h-screen bg-transparent">
       {/* ─── Hero Banner ─── */}
-      <div className="relative px-6 md:px-10 pt-24 pb-32 overflow-hidden">
+      <section className="relative px-6 md:px-10 pt-10 pb-16 overflow-hidden">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight">Evaluasi Kegiatan</h1>
-            <p className="mt-3 text-slate-300 text-lg">Berikan masukan dan penilaian terhadap kinerja protokoler.</p>
+            <p className="text-[#C9A84C] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Sistem Informasi Protokoler</p>
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight">Evaluasi Kegiatan</h1>
+            <p className="mt-2 text-slate-400 text-sm">Berikan masukan dan penilaian terhadap kinerja protokoler.</p>
           </div>
           <div className="flex items-center gap-4 bg-slate-900/50 p-4 border border-slate-700 backdrop-blur-sm rounded-none">
             <div className="text-center px-4 border-r border-slate-700">
@@ -134,22 +135,25 @@ export default function EvaluasiPage() {
             </div>
           </div>
         </motion.div>
-      </div>
+      </section>
 
-      {/* ─── Main Content ─── */}
-      <div className="bg-slate-50 min-h-screen pt-4 pb-12">
-        <div className="px-6 md:px-10 -mt-10 relative z-10 space-y-6">
-
-          {/* Search + count */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white border border-slate-200 shadow-sm p-4 rounded-none">
+      {/* ─── Floating Toolbar ─── */}
+      <section className="px-6 md:px-10 -mt-12 relative z-20 pb-0">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 shadow-xl p-4 rounded-none">
             <div className="relative max-w-md w-full">
               <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-              <Input className="pl-12 bg-slate-50 border-slate-200 rounded-none h-11 text-base focus-visible:ring-slate-900" placeholder="Cari kegiatan yang sudah selesai..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              <Input className="pl-12 bg-slate-800 border-slate-700 text-white placeholder-slate-500 rounded-none h-11 text-base focus-visible:ring-slate-700" placeholder="Cari kegiatan yang sudah selesai..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
-            <div className="text-sm font-semibold text-slate-500 shrink-0 bg-slate-50 px-4 py-2 border border-slate-200">
-              Menampilkan <span className="text-slate-900">{filtered.length}</span> kegiatan selesai
+            <div className="text-sm font-semibold text-slate-400 shrink-0 bg-slate-800 px-4 py-2 border border-slate-700">
+              Menampilkan <span className="text-white">{filtered.length}</span> kegiatan selesai
             </div>
           </motion.div>
+      </section>
+
+      {/* ─── BODY CONTENT ─── */}
+      <div className="bg-slate-50 min-h-screen -mt-6">
+        <div className="h-12" />
+        <section className="px-6 md:px-10 pb-12 space-y-6">
 
           {isLoading ? (
             <div className="space-y-4">
@@ -195,7 +199,7 @@ export default function EvaluasiPage() {
               </div>
             </motion.div>
           )}
-        </div>
+        </section>
       </div>
 
       {/* ─── Multi-Step Dialog ─── */}
@@ -301,7 +305,7 @@ export default function EvaluasiPage() {
                 <Button
                   onClick={() => setStep(2)}
                   disabled={!step1Valid}
-                  className="rounded-none bg-slate-900 text-white hover:bg-[#C9A84C] hover:text-slate-900 transition-colors gap-1 font-bold"
+                  className="rounded-none bg-slate-900 text-white hover:bg-[#C9A84C] hover:text-white transition-colors gap-1 font-bold"
                 >
                   Lanjut <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -309,7 +313,7 @@ export default function EvaluasiPage() {
                 <Button
                   onClick={() => submitEval.mutate()}
                   disabled={!step2Valid || submitEval.isPending}
-                  className="rounded-none bg-[#C9A84C] text-slate-900 hover:bg-[#b8963f] font-bold gap-1"
+                  className="rounded-none bg-[#C9A84C] text-white hover:bg-[#b8963f] font-bold gap-1"
                 >
                   {submitEval.isPending ? "Mengirim..." : <>Kirim Evaluasi <CheckCircle2 className="h-4 w-4" /></>}
                 </Button>

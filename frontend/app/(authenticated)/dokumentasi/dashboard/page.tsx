@@ -10,16 +10,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Camera, FileImage, Film, Upload, GalleryHorizontal, CalendarDays, MapPin, Clock, ArrowLeft, Sparkles, ShieldCheck } from 'lucide-react';
+import { Camera, FileImage, Film, Upload, GalleryHorizontal, CalendarDays, MapPin, Clock, ArrowLeft, Sparkles, ShieldCheck, CheckCircle2, Folder, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-const gallerySeed = [
-  { id: 'gal-1', label: 'Sambutan Rektor', type: 'foto', color: 'from-slate-900 to-slate-700' },
-  { id: 'gal-2', label: 'Prosesi Utama', type: 'video', color: 'from-amber-500 to-orange-500' },
-  { id: 'gal-3', label: 'Dokumentasi Panel', type: 'dokumen', color: 'from-emerald-600 to-teal-600' },
-];
 
 export default function DokumentasiDashboardPage() {
   const { user } = useAuth();
@@ -37,10 +32,10 @@ export default function DokumentasiDashboardPage() {
   const selected = selesai.find((item: any) => item.id === selectedId) ?? selesai[0] ?? null;
 
   const stats = [
-    { label: 'Kegiatan selesai', value: selesai.length, hint: 'Siap didokumentasikan' },
-    { label: 'Sudah terdokumentasi', value: selesai.length ? 1 : 0, hint: 'Upload aktif' },
-    { label: 'File unggahan', value: 8, hint: 'Foto, video, dokumen' },
-    { label: 'Antrian review', value: 2, hint: 'Menunggu verifikasi' },
+    { label: 'Kegiatan selesai', value: selesai.length, hint: 'Siap didokumentasikan', icon: CheckCircle2 },
+    { label: 'Sudah terdokumentasi', value: selesai.length ? 1 : 0, hint: 'Upload aktif', icon: Camera },
+    { label: 'File unggahan', value: 8, hint: 'Foto, video, dokumen', icon: ImageIcon },
+    { label: 'Antrian review', value: 2, hint: 'Menunggu verifikasi', icon: Folder },
   ];
 
   const handleUpload = () => {
@@ -54,21 +49,21 @@ export default function DokumentasiDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent pb-16">
-      <div className="relative px-6 md:px-10 pt-24 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800" />
-        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'radial-gradient(circle at top right, rgba(201,168,76,0.32), transparent 35%), radial-gradient(circle at left, rgba(56,189,248,0.18), transparent 30%)' }} />
+    <div className="min-h-screen bg-transparent">
+      {/* ─── Hero Banner ─── */}
+      <section className="relative px-6 md:px-10 pt-10 pb-16 overflow-hidden">
+        {/* decorative grid */}
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
+        {/* gold glow */}
+        <div className="absolute -right-24 -top-8 h-80 w-80 rounded-full bg-[#C9A84C]/8 blur-3xl pointer-events-none" />
+        {/* gold underline */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#C9A84C]/50 to-transparent" />
 
-        <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="relative z-10 flex flex-col gap-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge className="rounded-none border border-amber-300/40 bg-amber-300/10 text-amber-200">Dashboard Dokumentasi</Badge>
-            <span className="text-xs uppercase tracking-[0.25em] text-slate-400">Role {role || '...'}</span>
-          </div>
-
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl">
-              <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight">Galeri dan Upload Dokumentasi Acara</h1>
-              <p className="mt-3 text-slate-300 text-base md:text-lg leading-relaxed">Ruang kerja khusus untuk mengunggah foto, video, dan dokumen kegiatan yang sudah selesai, lalu menatanya dalam galeri acara yang terkurasi.</p>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
+            <div>
+              <p className="text-[#C9A84C] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Sistem Informasi Protokoler</p>
+              <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight">Galeri Dokumentasi</h1>
+              <p className="mt-2 text-slate-400 text-sm">Ruang kerja unggah foto, video, dan dokumen kegiatan yang sudah selesai.</p>
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -77,61 +72,64 @@ export default function DokumentasiDashboardPage() {
                   <ArrowLeft className="mr-2 h-4 w-4" /> Ke Kegiatan
                 </Button>
               </Link>
-              <Button onClick={handleUpload} className="rounded-none bg-[#C9A84C] text-slate-950 hover:bg-[#b8963f] font-bold">
+              <Button onClick={handleUpload} className="rounded-none bg-[#C9A84C] text-white hover:bg-[#b8963f] font-bold">
                 <Upload className="mr-2 h-4 w-4" /> Upload Sekarang
               </Button>
             </div>
-          </div>
         </motion.div>
-      </div>
+      </section>
 
-      <div className="bg-slate-50 pt-4">
-        <div className="px-6 md:px-10 -mt-16 relative z-10 space-y-6">
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {/* ─── Floating Stats Row ─── */}
+      <section className="px-6 md:px-10 -mt-12 relative z-20 pb-0">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat, index) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                <Card className="rounded-none border-slate-200 shadow-sm">
-                  <CardContent className="p-5">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{stat.label}</p>
-                        <div className="mt-2 text-3xl font-display font-bold text-slate-900">{stat.value}</div>
-                      </div>
-                      <div className="flex h-12 w-12 items-center justify-center bg-slate-950 text-[#C9A84C]">
-                        <Camera className="h-5 w-5" />
-                      </div>
+                <div className="bg-slate-900 border border-slate-800 shadow-xl py-3 px-4 flex flex-col justify-between hover:border-[#C9A84C]/60 hover:shadow-2xl transition-all group relative overflow-hidden">
+                  <stat.icon className="absolute -right-4 -bottom-4 h-24 w-24 text-white opacity-5 transform group-hover:scale-110 transition-transform duration-500" />
+                  <div className="flex items-center justify-between relative z-10">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{stat.label}</p>
+                    <div className="flex-shrink-0 h-7 w-7 flex items-center justify-center bg-[#C9A84C]/20 text-[#C9A84C] group-hover:bg-[#C9A84C] group-hover:text-white transition-colors border border-[#C9A84C]/30">
+                      <stat.icon className="h-3.5 w-3.5" />
                     </div>
-                    <p className="mt-3 text-sm text-slate-500">{stat.hint}</p>
-                  </CardContent>
-                </Card>
+                  </div>
+                  <div className="mt-1.5 relative z-10">
+                    <p className="text-3xl font-extrabold leading-tight font-display text-white">{stat.value}</p>
+                    <div className="flex items-center gap-1.5 mt-1.5">
+                      <span className="text-[10px] text-slate-500">{stat.hint}</span>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
-          </div>
+        </div>
+      </section>
 
-          {role !== 'dokumentasi' && (
-            <div className="border border-amber-200 bg-amber-50 p-4 text-amber-900 text-sm shadow-sm rounded-none flex items-start gap-3">
-              <ShieldCheck className="h-4 w-4 mt-0.5 shrink-0" />
-              <div>
-                <p className="font-bold">Mode pratinjau</p>
-                <p className="text-amber-800/90">Halaman ini tetap bisa dibuka oleh admin untuk inspeksi, tetapi aksi upload idealnya digunakan oleh role Dokumentasi.</p>
-              </div>
-            </div>
-          )}
+      {/* ─── BODY CONTENT ─── */}
+      <div className="bg-slate-50 min-h-screen -mt-6">
+        <div className="h-12" />
+        <section className="px-6 md:px-10 pb-12 space-y-6">
 
-          <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden">
-              <CardContent className="p-0">
-                <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 bg-white">
-                  <div>
-                    <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-900">Kegiatan Siap Upload</h2>
-                    <p className="text-xs text-slate-400 mt-1">Pilih kegiatan selesai untuk memulai unggahan.</p>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+            <div className="w-full h-full min-h-0">
+            <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden h-full flex flex-col">
+              <CardContent className="p-0 flex flex-col h-full">
+                <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                      <GalleryHorizontal className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm font-bold text-white uppercase tracking-wider">Kegiatan Siap Upload</h2>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Pilih kegiatan selesai untuk memulai unggahan.</p>
+                    </div>
                   </div>
-                  <Badge variant="outline" className="rounded-none border-slate-300 text-slate-600">
+                  <Badge variant="outline" className="rounded-none border-slate-700 text-slate-300">
                     {selesai.length} kegiatan
                   </Badge>
                 </div>
 
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 flex-1 overflow-y-auto bg-white">
                   {selesai.length === 0 ? (
                     <div className="p-10 text-center text-slate-400">
                       <GalleryHorizontal className="mx-auto h-10 w-10 mb-3 text-slate-300" />
@@ -141,11 +139,11 @@ export default function DokumentasiDashboardPage() {
                     selesai.map((item: any) => {
                       const active = selected?.id === item.id;
                       return (
-                        <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors', active ? 'bg-slate-950 text-white' : 'hover:bg-slate-50')}>
+                        <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-[#C9A84C]' : 'border-transparent hover:bg-slate-50')}>
                           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                             <div>
-                              <div className={cn('font-semibold', active ? 'text-white' : 'text-slate-900')}>{item.nama_kegiatan}</div>
-                              <div className={cn('mt-1 flex items-center gap-3 text-xs', active ? 'text-slate-300' : 'text-slate-500')}>
+                              <div className={cn('font-semibold', active ? 'text-slate-900' : 'text-slate-800')}>{item.nama_kegiatan}</div>
+                              <div className={cn('mt-1 flex flex-wrap items-center gap-3 text-xs', active ? 'text-slate-600' : 'text-slate-500')}>
                                 <span className="inline-flex items-center gap-1">
                                   <CalendarDays className="h-3.5 w-3.5" /> {new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                                 </span>
@@ -158,8 +156,8 @@ export default function DokumentasiDashboardPage() {
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Badge className={cn('rounded-none', active ? 'bg-[#C9A84C] text-slate-950' : 'bg-emerald-50 text-emerald-700 border border-emerald-200')}>{active ? 'Terpilih' : 'Selesai'}</Badge>
-                              <span className={cn('text-xs font-bold uppercase tracking-[0.2em]', active ? 'text-slate-300' : 'text-slate-400')}>Upload</span>
+                              <Badge className={cn('rounded-none', active ? 'bg-[#C9A84C] text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-200')}>{active ? 'Terpilih' : 'Selesai'}</Badge>
+                              <span className={cn('text-xs font-bold uppercase tracking-[0.2em]', active ? 'text-[#C9A84C]' : 'text-slate-400')}>Upload</span>
                             </div>
                           </div>
                         </button>
@@ -169,23 +167,25 @@ export default function DokumentasiDashboardPage() {
                 </div>
               </CardContent>
             </Card>
+            </div>
 
-            <div className="space-y-6">
-              <Card className="rounded-none border-slate-200 shadow-sm">
-                <CardContent className="p-6 space-y-4">
-                  <div>
-                    <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-900">Form Upload</h2>
-                    <p className="text-xs text-slate-400 mt-1">Metadata file ditangkap langsung dari dashboard ini.</p>
-                  </div>
-
-                  {selected ? (
-                    <div className="space-y-3 border border-slate-200 bg-slate-50 p-4">
-                      <div className="text-sm font-semibold text-slate-900">{selected.nama_kegiatan}</div>
-                      <div className="text-xs text-slate-500">
-                        {selected.lokasi} · {new Date(selected.tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+            <div className="w-full h-full">
+              <Card className="rounded-none border-slate-200 shadow-sm h-full flex flex-col">
+                <CardContent className="p-0 flex flex-col h-full">
+                  <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                        <Upload className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h2 className="text-sm font-bold text-white uppercase tracking-wider">Form Upload</h2>
+                        <p className="text-[11px] text-slate-400 mt-0.5">Metadata file ditangkap langsung dari dashboard ini.</p>
                       </div>
                     </div>
-                  ) : (
+                  </div>
+                  <div className="p-6 flex flex-col flex-1 overflow-y-auto space-y-4">
+
+                  {!selected && (
                     <div className="border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">Pilih kegiatan di sisi kiri untuk mulai upload dokumentasi.</div>
                   )}
 
@@ -204,8 +204,8 @@ export default function DokumentasiDashboardPage() {
                             type="button"
                             onClick={() => setMediaType(item.value)}
                             className={cn(
-                              'flex flex-col items-center gap-2 border px-3 py-3 text-sm font-semibold transition-colors rounded-none',
-                              active ? 'border-slate-900 bg-slate-900 text-[#C9A84C]' : 'border-slate-200 bg-white text-slate-500 hover:border-slate-400',
+                              'flex flex-col items-center gap-2 border px-3 py-3 text-sm transition-all rounded-none',
+                              active ? 'bg-[#C9A84C] border-slate-900 text-white font-bold shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] -translate-y-[1px]' : 'bg-white border-slate-200 text-slate-500 font-semibold hover:border-slate-400 hover:bg-slate-50',
                             )}
                           >
                             <item.icon className="h-4 w-4" />
@@ -235,35 +235,12 @@ export default function DokumentasiDashboardPage() {
                       Reset
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-none border-slate-200 shadow-sm">
-                <CardContent className="p-6 space-y-4">
-                  <div>
-                    <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-900">Galeri Dokumen</h2>
-                    <p className="text-xs text-slate-400 mt-1">Pratinjau hasil unggahan terbaru untuk kegiatan terpilih.</p>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    {gallerySeed.map((item) => (
-                      <div key={item.id} className="overflow-hidden border border-slate-200 bg-white">
-                        <div className={cn('h-28 bg-gradient-to-br flex items-end justify-between p-3 text-white', item.color)}>
-                          <Badge className="rounded-none bg-white/15 text-white border-white/20">{item.type}</Badge>
-                          <span className="text-[10px] uppercase tracking-[0.2em]">Preview</span>
-                        </div>
-                        <div className="p-3">
-                          <div className="text-sm font-semibold text-slate-900">{item.label}</div>
-                          <p className="mt-1 text-xs text-slate-500">Siap dipindahkan ke galeri publik setelah review.</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </div>
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { BadgeStatus } from "@/components/BadgeStatus";
 import { BadgeKategori } from "@/components/BadgeKategori";
-import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
@@ -86,7 +86,8 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   ];
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-20">
+    <div className="bg-slate-50 min-h-screen relative z-10">
+      <div className="space-y-6 px-6 md:px-10 py-8 pb-20">
       {/* Back & Header */}
       <div>
         <Link href="/kegiatan">
@@ -151,85 +152,129 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
       <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
         
         {/* ── Tab INFO ── */}
+        {/* ── Tab INFO ── */}
         {tab === "info" && (
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-3 gap-6 items-start">
             <div className="lg:col-span-2 space-y-6">
-              <Card>
-                <CardContent className="pt-6 space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4 text-sm">
-                    {keg.audience && (
-                      <div><p className="text-slate-400 text-xs font-semibold uppercase mb-1">Target Audience</p><p className="font-medium">{keg.audience}</p></div>
-                    )}
-                    {keg.keynote && (
-                      <div><p className="text-slate-400 text-xs font-semibold uppercase mb-1">Keynote / Narasumber</p><p className="font-medium">{keg.keynote}</p></div>
-                    )}
-                  </div>
-                  {keg.rundown_url && (
-                    <a href={keg.rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline">
-                      <FileText className="h-4 w-4" /> Lihat Rundown Acara
-                    </a>
-                  )}
-                </CardContent>
-              </Card>
+              
+              {/* Informasi Tambahan (Hanya tampil jika ada data) */}
+              {(keg.audience || keg.keynote || keg.rundown_url || keg.peserta) && (
+                <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden bg-white">
+                  <CardContent className="p-0">
+                    <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                          <Info className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h2 className="text-sm font-bold text-white uppercase tracking-wider">Informasi Tambahan</h2>
+                          <p className="text-[11px] text-slate-400 mt-0.5">Detail audiens dan rundown acara</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-6 space-y-4">
+                      <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                        {(keg.audience || keg.peserta) && (
+                          <div><p className="text-slate-400 text-xs font-semibold uppercase mb-1">Target Peserta</p><p className="font-medium text-slate-900 capitalize">{keg.audience || keg.peserta}</p></div>
+                        )}
+                        {keg.keynote && (
+                          <div><p className="text-slate-400 text-xs font-semibold uppercase mb-1">Keynote / Pemateri</p><p className="font-medium text-slate-900">{keg.keynote}</p></div>
+                        )}
+                      </div>
+                      {keg.rundown_url && (
+                        <a href={keg.rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline mt-2">
+                          <FileText className="h-4 w-4" /> Lihat Rundown Acara
+                        </a>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Checklist 3 Tata Protokol */}
               {isAdmin && (
-                <Card>
-                  <CardContent className="pt-6">
-                    <h3 className="font-display font-bold text-lg mb-4">Checklist 3 Tata Protokol</h3>
-                    <div className="space-y-3">
-                      {[
-                        { key: "checklist_tata_tempat", label: "Tata Tempat" },
-                        { key: "checklist_tata_upacara", label: "Tata Upacara" },
-                        { key: "checklist_tata_penghormatan", label: "Tata Penghormatan" },
-                      ].map(({ key, label }) => {
-                        const checked = keg[key] ?? false;
-                        return (
-                          <button
-                            key={key}
-                            onClick={() => isAdmin && updateChecklist.mutate({ [key]: !checked })}
-                            className={`flex items-center gap-3 w-full p-3 border transition-colors text-left ${
-                              checked ? "bg-green-50 border-green-200 text-green-800" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-                            }`}
-                          >
-                            {checked ? <CheckSquare className="h-5 w-5 text-green-600" /> : <Square className="h-5 w-5 text-slate-400" />}
-                            <span className="font-semibold">{label}</span>
-                            {checked && <span className="ml-auto text-xs font-bold text-green-600">✓ Terpenuhi</span>}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {keg.checklist_tata_tempat && keg.checklist_tata_upacara && keg.checklist_tata_penghormatan && (
-                      <div className="mt-4 bg-green-100 border border-green-200 p-3 text-green-800 text-sm font-bold text-center">
-                        ✅ Semua 3 Tata Protokol terpenuhi
+                <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden bg-white">
+                  <CardContent className="p-0">
+                    <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                          <ClipboardCheck className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h2 className="text-sm font-bold text-white uppercase tracking-wider">Checklist Tata Protokol</h2>
+                          <p className="text-[11px] text-slate-400 mt-0.5">Verifikasi pemenuhan 3 tata protokol dasar</p>
+                        </div>
                       </div>
-                    )}
+                    </div>
+                    <div className="p-6">
+                      <div className="space-y-3">
+                        {[
+                          { key: "checklist_tata_tempat", label: "Tata Tempat" },
+                          { key: "checklist_tata_upacara", label: "Tata Upacara" },
+                          { key: "checklist_tata_penghormatan", label: "Tata Penghormatan" },
+                        ].map(({ key, label }) => {
+                          const checked = keg[key as keyof typeof keg] ?? false;
+                          return (
+                            <button
+                              key={key}
+                              onClick={() => isAdmin && updateChecklist.mutate({ [key]: !checked })}
+                              className={`flex items-center gap-3 w-full p-4 border transition-colors text-left rounded-none ${
+                                checked ? "bg-[#C9A84C]/10 border-[#C9A84C] text-[#C9A84C]" : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
+                              }`}
+                            >
+                              {checked ? <CheckSquare className="h-5 w-5" /> : <Square className="h-5 w-5 text-slate-300" />}
+                              <span className="font-bold">{label}</span>
+                              {checked && <span className="ml-auto text-xs font-bold uppercase tracking-wider">✓ Terpenuhi</span>}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {keg.checklist_tata_tempat && keg.checklist_tata_upacara && keg.checklist_tata_penghormatan && (
+                        <div className="mt-4 bg-[#C9A84C] p-3 text-white text-sm font-bold text-center uppercase tracking-wider">
+                          ✓ Semua 3 Tata Protokol Terpenuhi
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               )}
             </div>
 
             {/* Tamu VVIP Sidebar */}
-            <div>
-              <Card>
-                <CardContent className="pt-6">
-                  <h3 className="font-display font-bold text-lg mb-4">Tamu VVIP</h3>
-                  {!keg.tamu_vvip?.length ? (
-                    <p className="text-sm text-slate-400">Belum ada tamu VVIP tercatat.</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {keg.tamu_vvip.map((t: any) => (
-                        <div key={t.id} className="border border-slate-200 p-3 bg-white">
-                          <p className="font-bold text-sm">{t.nama_tamu}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">{t.jabatan} · {t.instansi}</p>
-                          <div className="flex items-center justify-between mt-2">
-                            <Badge variant="outline" className="rounded-none text-[10px] border-slate-300">{t.tipe}</Badge>
-                            <span className="text-xs text-slate-500">{t.jumlah_rombongan} orang</span>
-                          </div>
-                        </div>
-                      ))}
+            <div className="h-full">
+              <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden bg-white h-full flex flex-col">
+                <CardContent className="p-0 flex flex-col h-full">
+                  <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                        <Crown className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h2 className="text-sm font-bold text-white uppercase tracking-wider">Tamu VVIP</h2>
+                        <p className="text-[11px] text-slate-400 mt-0.5">Daftar kehadiran tamu penting</p>
+                      </div>
                     </div>
-                  )}
+                  </div>
+                  <div className="p-6 flex-1 bg-white">
+                    {!keg.tamu_vvip?.length ? (
+                      <div className="border border-dashed border-slate-200 p-6 text-center">
+                        <p className="text-sm text-slate-400 font-medium">Belum ada tamu VVIP tercatat.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {keg.tamu_vvip.map((t: any) => (
+                          <div key={t.id} className="border border-slate-200 p-4 bg-white hover:border-[#C9A84C] transition-colors">
+                            <p className="font-bold text-sm text-slate-900">{t.nama_tamu}</p>
+                            <p className="text-xs text-slate-500 mt-0.5">{t.jabatan} · {t.instansi}</p>
+                            <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+                              <Badge variant="outline" className="rounded-none text-[10px] border-slate-300 uppercase tracking-wider text-slate-600">{t.tipe}</Badge>
+                              <span className="text-xs font-bold text-[#C9A84C]">{t.jumlah_rombongan} Orang</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -238,9 +283,21 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
         {/* ── Tab PENDAFTAR ── */}
         {tab === "pendaftar" && (
-          <Card>
-            <CardContent className="pt-6">
-              <Table>
+          <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden bg-white">
+            <CardContent className="p-0">
+              <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-white uppercase tracking-wider">Daftar Pendaftar</h2>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Kelola penugasan protokoler dan LO</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-0 overflow-x-auto">
+                <Table>
                 <TableHeader className="bg-slate-50/50">
                   <TableRow>
                     <TableHead className="font-bold">Protokoler</TableHead>
@@ -293,15 +350,28 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   )}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         )}
 
         {/* ── Tab ABSENSI ── */}
         {tab === "absensi" && (
-          <Card>
-            <CardContent className="pt-6">
-              {absensi && (
+          <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden bg-white">
+            <CardContent className="p-0">
+              <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                    <CheckSquare className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-white uppercase tracking-wider">Rekap Absensi</h2>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Pantau kehadiran petugas bertugas</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6">
+                {absensi && (
                 <div className="flex gap-6 mb-6 p-4 bg-slate-50 border border-slate-200">
                   <div className="text-center">
                     <div className="text-3xl font-display font-bold text-green-600">{absensi.filter((a: any) => a.status === "hadir").length}</div>
@@ -356,6 +426,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   )}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -363,10 +434,21 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
         {/* ── Tab EVALUASI ── */}
         {tab === "evaluasi" && (
           <div className="space-y-6">
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="font-display font-bold text-lg mb-4">Angket Evaluasi Protokoler</h3>
-                <Table>
+            <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden bg-white">
+              <CardContent className="p-0">
+                <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                      <Star className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm font-bold text-white uppercase tracking-wider">Angket Evaluasi Protokoler</h2>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Hasil penilaian pasca kegiatan</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-0 overflow-x-auto">
+                  <Table>
                   <TableHeader className="bg-slate-50/50">
                     <TableRow>
                       <TableHead className="font-bold">Protokoler</TableHead>
@@ -415,14 +497,26 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     )}
                   </TableBody>
                 </Table>
+                </div>
               </CardContent>
             </Card>
 
             {/* Testimoni Tamu */}
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="font-display font-bold text-lg mb-4">Testimoni Tamu</h3>
-                {!testimoni?.length ? (
+            <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden bg-white">
+              <CardContent className="p-0">
+                <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                      <MessageSquare className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm font-bold text-white uppercase tracking-wider">Testimoni Tamu</h2>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Umpan balik dari tamu undangan</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  {!testimoni?.length ? (
                   <p className="text-sm text-slate-400 py-4 text-center">Belum ada testimoni dari tamu.</p>
                 ) : (
                   <div className="space-y-4">
@@ -444,6 +538,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     ))}
                   </div>
                 )}
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -451,20 +546,34 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
         {/* ── Tab DOKUMENTASI ── */}
         {tab === "dokumentasi" && (
-          <Card>
-            <CardContent className="pt-6 text-center text-slate-500">
-              <Image className="h-12 w-12 mx-auto mb-3 text-slate-300" />
+          <Card className="rounded-none border-slate-200 shadow-sm overflow-hidden bg-white">
+            <CardContent className="p-0">
+              <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                    <Camera className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-white uppercase tracking-wider">Galeri Dokumentasi</h2>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Kumpulan foto dan dokumen kegiatan</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-12 text-center text-slate-500 bg-slate-50 border-t border-slate-200">
+                <Image className="h-12 w-12 mx-auto mb-3 text-slate-300" />
               <p className="font-medium">Galeri dokumentasi kegiatan akan tampil di sini.</p>
               {isAdmin && (
                 <Button variant="outline" className="rounded-none border-slate-300 mt-4">
                   + Upload Foto / Dokumen
                 </Button>
               )}
+              </div>
             </CardContent>
           </Card>
         )}
 
       </motion.div>
+      </div>
     </div>
   );
 }

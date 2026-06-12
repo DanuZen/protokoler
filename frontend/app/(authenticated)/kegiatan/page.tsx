@@ -21,15 +21,15 @@ import { cn } from "@/lib/utils";
 
 type Bentuk = "wisuda"|"kunjungan"|"seminar"|"pelantikan"|"rapat_resmi"|"lainnya";
 type Status = "draft"|"terkonfirmasi"|"selesai"|"batal"|"terjadwal"|"berlangsung";
-type Keg = { id: string; nama_kegiatan: string; bentuk: Bentuk; tanggal: string; jam_mulai: string; jam_selesai: string; lokasi: string; deskripsi: string | null; status: Status | string };
+type Keg = { id: string; nama_kegiatan: string; bentuk: Bentuk; tanggal: string; jam_mulai: string; jam_selesai: string; lokasi: string; deskripsi?: string | null; status: Status | string };
 
-const statusConfig: Record<string, { label: string; color: string }> = {
-  draft: { label: "Draft", color: "bg-slate-100 text-slate-500 border-slate-200" },
-  terkonfirmasi: { label: "Terkonfirmasi", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  terjadwal: { label: "Terjadwal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
-  berlangsung: { label: "Berlangsung", color: "bg-amber-100 text-amber-700 border-amber-200" },
-  selesai: { label: "Selesai", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  batal: { label: "Batal", color: "bg-red-100 text-red-500 border-red-200" },
+const statusConfig: Record<string, { label: string; color: string; dot: string }> = {
+  terkonfirmasi: { label: 'Terkonfirmasi', color: 'text-emerald-600', dot: 'bg-emerald-500' },
+  terjadwal:     { label: 'Terjadwal',     color: 'text-blue-600',    dot: 'bg-blue-500' },
+  berlangsung:   { label: 'Berlangsung',   color: 'text-amber-600',   dot: 'bg-amber-500' },
+  selesai:       { label: 'Selesai',       color: 'text-slate-500',   dot: 'bg-slate-400' },
+  draft:         { label: 'Draft',         color: 'text-slate-400',   dot: 'bg-slate-300' },
+  batal:         { label: 'Batal',         color: 'text-red-600',     dot: 'bg-red-500' },
 };
 
 const BentukIcon = ({ bentuk, className }: { bentuk: string, className?: string }) => {
@@ -66,11 +66,19 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-transparent">
       {/* ─── Hero Banner ─── */}
-      <div className="relative px-6 md:px-10 pt-24 pb-32 overflow-hidden">
+      <section className="relative px-6 md:px-10 pt-10 pb-16 overflow-hidden">
+        {/* decorative grid */}
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
+        {/* gold glow */}
+        <div className="absolute -right-24 -top-8 h-80 w-80 rounded-full bg-[#C9A84C]/8 blur-3xl pointer-events-none" />
+        {/* gold underline */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#C9A84C]/50 to-transparent" />
+
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-end justify-between gap-6 relative z-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight">Manajemen Kegiatan</h1>
-            <p className="mt-3 text-slate-300 text-lg">Daftar kegiatan protokoler universitas.</p>
+            <p className="text-[#C9A84C] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Sistem Informasi Protokoler</p>
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight">Manajemen Kegiatan</h1>
+            <p className="mt-2 text-slate-400 text-sm">Daftar kegiatan protokoler universitas.</p>
           </div>
           {isAdmin && (
             <Dialog open={open} onOpenChange={setOpen}>
@@ -83,22 +91,25 @@ export default function Page() {
             </Dialog>
           )}
         </motion.div>
-      </div>
+      </section>
 
-      {/* ─── Main Content ─── */}
-      <div className="bg-slate-50 min-h-screen pt-4 pb-12">
-        <div className="px-6 md:px-10 -mt-10 relative z-10 space-y-6">
+      {/* ─── Floating Toolbar ─── */}
+      <section className="px-6 md:px-10 -mt-12 relative z-20 pb-0">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 shadow-xl p-4 rounded-none">
+          <div className="relative max-w-md w-full">
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <Input className="pl-12 bg-slate-800 border-slate-700 text-white placeholder-slate-500 rounded-none h-11 text-base focus-visible:ring-slate-700" placeholder="Cari kegiatan, lokasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
+          <div className="text-sm font-semibold text-slate-400 shrink-0 bg-slate-800 px-4 py-2 border border-slate-700">
+            Menampilkan <span className="text-white">{filtered.length}</span> hasil
+          </div>
+        </motion.div>
+      </section>
 
-      {/* Search + count */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white border border-slate-200 shadow-sm p-4 rounded-none">
-        <div className="relative max-w-md w-full">
-          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-          <Input className="pl-12 bg-slate-50 border-slate-200 rounded-none h-11 text-base focus-visible:ring-slate-900" placeholder="Cari kegiatan, lokasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
-        </div>
-        <div className="text-sm font-semibold text-slate-500 shrink-0 bg-slate-50 px-4 py-2 border border-slate-200">
-          Menampilkan <span className="text-slate-900">{filtered.length}</span> hasil
-        </div>
-      </motion.div>
+      {/* ─── BODY CONTENT ─── */}
+      <div className="bg-slate-50 min-h-screen -mt-6">
+        <div className="h-12" />
+        <section className="px-6 md:px-10 pb-12 space-y-6">
 
       {isLoading && (
         <div className="space-y-6">
@@ -117,19 +128,28 @@ export default function Page() {
       )}
 
       <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 shadow-sm rounded-none overflow-hidden">
+        <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+              <CalendarDays className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider">Semua Kegiatan</h2>
+              <p className="text-[11px] text-slate-400 mt-0.5">Daftar lengkap agenda protokoler.</p>
+            </div>
+          </div>
+        </div>
         <div className="divide-y divide-slate-100">
           {filtered.map((k) => (
             <motion.div key={k.id} variants={cardAnim} className="group hover:bg-slate-50/60 transition-colors">
               <Link href={`/kegiatan/${k.id}`} className="block">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-6 py-5">
                   <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                    <div className="flex items-center gap-2.5 mb-1">
-                      <div className="h-8 w-8 bg-slate-100 border border-slate-200 rounded-none flex items-center justify-center flex-shrink-0 group-hover:bg-slate-900 group-hover:text-[#C9A84C] transition-colors">
-                        <BentukIcon bentuk={k.bentuk} className="h-3.5 w-3.5 text-slate-500 group-hover:text-[#C9A84C] transition-colors" />
-                      </div>
-                      <Badge variant="outline" className="text-[10px] uppercase tracking-wider font-bold text-slate-500 border-slate-200 rounded-none">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <BentukIcon bentuk={k.bentuk} className="h-3.5 w-3.5 text-slate-400 group-hover:text-[#C9A84C] transition-colors" />
+                      <span className="text-[10px] uppercase tracking-wider font-bold text-slate-500 group-hover:text-[#C9A84C] transition-colors">
                         {k.bentuk.replace("_", " ")}
-                      </Badge>
+                      </span>
                     </div>
                     <h3 className="font-semibold text-slate-900 text-lg group-hover:text-[#C9A84C] transition-colors truncate">{k.nama_kegiatan}</h3>
                   </div>
@@ -147,9 +167,16 @@ export default function Page() {
                   </div>
 
                   <div className="flex items-center gap-4 justify-end md:w-[140px]">
-                    <span className={cn("inline-flex items-center rounded-none px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border", statusConfig[k.status]?.color || "bg-slate-100 text-slate-500 border-slate-200")}>
-                      {statusConfig[k.status]?.label || k.status}
-                    </span>
+                    {statusConfig[k.status] ? (
+                      <span className={cn('shrink-0 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest', statusConfig[k.status].color)}>
+                        <span className={cn('h-1.5 w-1.5 shrink-0', statusConfig[k.status].dot)} />
+                        {statusConfig[k.status].label}
+                      </span>
+                    ) : (
+                      <span className="shrink-0 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+                        {k.status}
+                      </span>
+                    )}
                   </div>
                 </div>
               </Link>
@@ -157,8 +184,8 @@ export default function Page() {
           ))}
         </div>
       </motion.div>
+        </section>
       </div>
-    </div>
     </div>
   );
 }
@@ -171,7 +198,7 @@ function KegiatanForm({ onDone }: { onDone: () => void }) {
   const qc = useQueryClient();
   const [form, setForm] = useState({
     nama_kegiatan: "", bentuk: "lainnya" as Bentuk, tanggal: new Date().toISOString().slice(0,10),
-    jam_mulai: "08:00", jam_selesai: "12:00", tempat: "", peserta: "", petugas: "", rundown: "", status: "draft" as Status,
+    jam_mulai: "08:00", jam_selesai: "12:00", tempat: "", peserta: "", keynote: "", petugas: "", petugas_lo: "", rundown: "", status: "draft" as Status,
   });
   const save = useMutation({
     mutationFn: async () => { await kegiatanApi.create(form); },
@@ -225,8 +252,34 @@ function KegiatanForm({ onDone }: { onDone: () => void }) {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5"><Label className="text-sm font-semibold">Peserta</Label><Input required value={form.peserta} onChange={(e) => setForm({ ...form, peserta: e.target.value })} className="rounded-none" placeholder="Contoh: 500 Mahasiswa" /></div>
-          <div className="space-y-1.5"><Label className="text-sm font-semibold">Petugas Protokoler</Label><Input required value={form.petugas} onChange={(e) => setForm({ ...form, petugas: e.target.value })} className="rounded-none" placeholder="Jumlah atau nama petugas" /></div>
+          <div className="space-y-1.5">
+            <Label className="text-sm font-semibold">Peserta / Audiens</Label>
+            <Select value={form.peserta} onValueChange={(v) => setForm({ ...form, peserta: v })}>
+              <SelectTrigger className="rounded-none"><SelectValue placeholder="Pilih target audiens" /></SelectTrigger>
+              <SelectContent className="rounded-none">
+                <SelectItem value="umum">Umum / Publik</SelectItem>
+                <SelectItem value="mahasiswa">Mahasiswa / Sivitas Akademika</SelectItem>
+                <SelectItem value="undangan">Tamu Undangan Terbatas</SelectItem>
+                <SelectItem value="vvip">VVIP / Pejabat Tinggi</SelectItem>
+                <SelectItem value="internal">Pimpinan Internal</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-sm font-semibold">Keynote / Pemateri</Label>
+            <Input value={form.keynote} onChange={(e) => setForm({ ...form, keynote: e.target.value })} className="rounded-none" placeholder="Nama tokoh/pembicara utama" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <Label className="text-sm font-semibold">Petugas Protokoler</Label>
+            <Input type="number" min="0" required value={form.petugas} onChange={(e) => setForm({ ...form, petugas: e.target.value })} className="rounded-none" placeholder="Masukkan jumlah" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-sm font-semibold">Petugas LO</Label>
+            <Input type="number" min="0" value={form.petugas_lo} onChange={(e) => setForm({ ...form, petugas_lo: e.target.value })} className="rounded-none" placeholder="Masukkan jumlah" />
+          </div>
         </div>
 
         <div className="space-y-1.5"><Label className="text-sm font-semibold">Rundown / Deskripsi</Label><Textarea rows={4} value={form.rundown} onChange={(e) => setForm({ ...form, rundown: e.target.value })} className="rounded-none" placeholder="Detail urutan acara atau catatan penting" /></div>

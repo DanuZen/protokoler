@@ -83,66 +83,81 @@ export default function AnggotaPage() {
   return (
     <div className="min-h-screen bg-transparent">
       {/* ─── Hero Banner ─── */}
-      <div className="relative px-6 md:px-10 pt-24 pb-32 overflow-hidden">
+      <section className="relative px-6 md:px-10 pt-10 pb-16 overflow-hidden">
+        {/* decorative grid */}
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
+        {/* gold glow */}
+        <div className="absolute -right-24 -top-8 h-80 w-80 rounded-full bg-[#C9A84C]/8 blur-3xl pointer-events-none" />
+        {/* gold underline */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#C9A84C]/50 to-transparent" />
+
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-end justify-between gap-6 relative z-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight">Manajemen Anggota</h1>
-            <p className="mt-3 text-slate-300 text-lg">Verifikasi dan kelola tim protokoler universitas.</p>
+            <p className="text-[#C9A84C] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Sistem Informasi Protokoler</p>
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight">Manajemen Anggota</h1>
+            <p className="mt-2 text-slate-400 text-sm">Verifikasi dan kelola tim protokoler universitas.</p>
           </div>
         </motion.div>
-      </div>
+      </section>
 
-      {/* ─── Main Content ─── */}
-      <div className="bg-slate-50 min-h-screen pt-4 pb-12">
-        <div className="px-6 md:px-10 -mt-24 relative z-10 space-y-6">
+      {/* ─── Floating Stats Row ─── */}
+      <section className="px-6 md:px-10 -mt-12 relative z-20 pb-0">
 
-      {/* Stats Row */}
-      <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-slate-200 shadow-xl">
+      <motion.div initial="hidden" animate="visible" variants={stagger} className="grid gap-4 md:grid-cols-3">
         {[
-          { label: "Menunggu Verifikasi", value: pendingCount, icon: ShieldCheck, color: "text-orange-500" },
-          { label: "Protokoler Aktif", value: aktifCount, icon: UserCheck, color: "text-emerald-600" },
-          { label: "Total Terdaftar", value: allData.length, icon: Users, color: "text-slate-900" },
-        ].map((s, i) => (
-          <motion.div key={s.label} variants={fadeUp} className={cn(
-            "bg-white p-6 flex justify-between items-center hover:bg-slate-50 transition-colors",
-            i < 2 && "border-b md:border-b-0 md:border-r border-slate-200"
-          )}>
-            <div>
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1">{s.label}</div>
-              <div className={`text-4xl font-display font-extrabold leading-none ${s.color}`}>{s.value}</div>
-            </div>
-            <div className="flex-shrink-0 h-12 w-12 bg-slate-900 flex items-center justify-center rounded-none">
-              <s.icon className="h-5 w-5 text-[#C9A84C]" />
+          { label: "Menunggu Verifikasi", value: pendingCount, icon: ShieldCheck, hint: "Perlu ditinjau" },
+          { label: "Protokoler Aktif", value: aktifCount, icon: UserCheck, hint: "Anggota aktif" },
+          { label: "Total Terdaftar", value: allData.length, icon: Users, hint: "Seluruh anggota" },
+        ].map((stat, i) => (
+          <motion.div key={stat.label} variants={fadeUp}>
+            <div className="bg-slate-900 border border-slate-800 shadow-xl py-3 px-4 flex flex-col justify-between hover:border-[#C9A84C]/60 hover:shadow-2xl transition-all group relative overflow-hidden h-full">
+              <stat.icon className="absolute -right-4 -bottom-4 h-24 w-24 text-white opacity-5 transform group-hover:scale-110 transition-transform duration-500" />
+              <div className="flex items-center justify-between relative z-10">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{stat.label}</p>
+                <div className="flex-shrink-0 h-7 w-7 flex items-center justify-center bg-[#C9A84C]/20 text-[#C9A84C] group-hover:bg-[#C9A84C] group-hover:text-white transition-colors border border-[#C9A84C]/30">
+                  <stat.icon className="h-3.5 w-3.5" />
+                </div>
+              </div>
+              <div className="mt-1.5 relative z-10">
+                <p className="text-3xl font-extrabold leading-tight font-display text-white">{stat.value}</p>
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <span className="text-[10px] text-slate-500">{stat.hint}</span>
+                </div>
+              </div>
             </div>
           </motion.div>
         ))}
       </motion.div>
+      </section>
 
-      {/* Main Content Area */}
+      {/* ─── BODY CONTENT (white bg) ─── */}
+      <div className="bg-slate-50 min-h-screen -mt-6">
+        <div className="h-12" />
+        <section className="px-6 md:px-10 pb-12">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white border border-slate-200 shadow-sm rounded-none overflow-hidden">
         
         {/* Toolbar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-5 border-b border-slate-100">
-          <div className="flex bg-slate-100 p-1 w-full md:w-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-900 px-5 py-4 bg-slate-900 text-white">
+          <div className="flex bg-slate-800 p-1 w-full md:w-auto border border-slate-700">
             <button 
               onClick={() => setTab("semua")} 
-              className={`flex-1 md:flex-none px-6 py-2 text-sm font-bold transition-colors ${tab === "semua" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+              className={`flex-1 md:flex-none px-6 py-2 text-sm font-bold transition-colors ${tab === "semua" ? "bg-[#C9A84C] text-white shadow-sm" : "text-slate-400 hover:text-white"}`}
             >
               Semua Anggota
             </button>
             <button 
               onClick={() => setTab("pending")} 
-              className={`flex-1 md:flex-none px-6 py-2 text-sm font-bold transition-colors flex items-center justify-center gap-2 ${tab === "pending" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+              className={`flex-1 md:flex-none px-6 py-2 text-sm font-bold transition-colors flex items-center justify-center gap-2 ${tab === "pending" ? "bg-[#C9A84C] text-white shadow-sm" : "text-slate-400 hover:text-white"}`}
             >
               Menunggu Verifikasi 
-              {pendingCount > 0 && <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">{pendingCount}</span>}
+              {pendingCount > 0 && <span className={cn("text-[10px] px-1.5 py-0.5 rounded-none font-extrabold", tab === "pending" ? "bg-slate-900 text-[#C9A84C]" : "bg-[#C9A84C] text-white")}>{pendingCount}</span>}
             </button>
           </div>
           
           <div className="relative w-full md:max-w-xs">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input 
-              className="pl-9 rounded-none border-slate-200 bg-slate-50" 
+              className="pl-9 rounded-none border-slate-700 bg-slate-800 text-white placeholder-slate-500 focus-visible:ring-slate-700 h-10" 
               placeholder="Cari nama, NIM..." 
               value={search} 
               onChange={(e) => setSearch(e.target.value)} 
@@ -197,7 +212,7 @@ export default function AnggotaPage() {
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            className="border-green-200 text-green-700 hover:bg-green-50"
+                            className="rounded-none border-green-500 text-green-700 hover:bg-green-50 font-bold"
                             onClick={() => { setSelected(m); setDialogMode("approve"); }}
                           >
                             <Check className="h-4 w-4 mr-1" /> Setujui
@@ -205,7 +220,7 @@ export default function AnggotaPage() {
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            className="border-red-200 text-red-700 hover:bg-red-50"
+                            className="rounded-none border-red-500 text-red-700 hover:bg-red-50 font-bold"
                             onClick={() => { setSelected(m); setDialogMode("reject"); setRejectReason(""); }}
                           >
                             <X className="h-4 w-4 mr-1" /> Tolak
@@ -269,7 +284,7 @@ export default function AnggotaPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      </div>
+        </section>
       </div>
     </div>
   );
