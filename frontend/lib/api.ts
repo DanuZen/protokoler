@@ -16,6 +16,17 @@ const mockKegiatan = [
     jam_selesai: '12:00:00',
     lokasi: 'Auditorium UNP',
     status: 'terjadwal',
+    deskripsi: '',
+    rundown: [],
+    checklist_tata_tempat: [],
+    checklist_tata_upacara: [],
+    checklist_tata_penghormatan: [],
+    tamu_vvip: [],
+    audience: '',
+    keynote: '',
+    rundown_url: '',
+    jumlah_protokoler_dibutuhkan: 0,
+    jumlah_lo_dibutuhkan: 0,
   },
   {
     id: 'keg-2',
@@ -27,6 +38,17 @@ const mockKegiatan = [
     jam_selesai: '11:30:00',
     lokasi: 'Ruang Rektor',
     status: 'terjadwal',
+    deskripsi: '',
+    rundown: [],
+    checklist_tata_tempat: [],
+    checklist_tata_upacara: [],
+    checklist_tata_penghormatan: [],
+    tamu_vvip: [],
+    audience: '',
+    keynote: '',
+    rundown_url: '',
+    jumlah_protokoler_dibutuhkan: 0,
+    jumlah_lo_dibutuhkan: 0,
   },
   {
     id: 'keg-3',
@@ -38,6 +60,17 @@ const mockKegiatan = [
     jam_selesai: '13:00:00',
     lokasi: 'Auditorium UNP',
     status: 'selesai',
+    deskripsi: '',
+    rundown: [],
+    checklist_tata_tempat: [],
+    checklist_tata_upacara: [],
+    checklist_tata_penghormatan: [],
+    tamu_vvip: [],
+    audience: '',
+    keynote: '',
+    rundown_url: '',
+    jumlah_protokoler_dibutuhkan: 0,
+    jumlah_lo_dibutuhkan: 0,
   },
   {
     id: 'keg-4',
@@ -49,6 +82,17 @@ const mockKegiatan = [
     jam_selesai: '16:00:00',
     lokasi: 'Aula FMIPA',
     status: 'berlangsung',
+    deskripsi: '',
+    rundown: [],
+    checklist_tata_tempat: [],
+    checklist_tata_upacara: [],
+    checklist_tata_penghormatan: [],
+    tamu_vvip: [],
+    audience: '',
+    keynote: '',
+    rundown_url: '',
+    jumlah_protokoler_dibutuhkan: 0,
+    jumlah_lo_dibutuhkan: 0,
   },
 ];
 
@@ -57,8 +101,8 @@ export const protokolerApi = {
   list: async (search?: string) => {
     await delay(30);
     return [
-      { id: 'p1', nim: '20010101', nama_lengkap: 'Budi Santoso', status_anggota: 'aktif', tingkat: 'gold' },
-      { id: 'p2', nim: '20010102', nama_lengkap: 'Siti Nurhaliza', status_anggota: 'aktif', tingkat: 'silver' },
+      { id: 'p1', nim: '20010101', nama_lengkap: 'Budi Santoso', prodi: 'Ilmu Komputer', departemen: 'Elektronika', fakultas: 'Teknik', no_hp: '081234567890', status_akun: 'aktif', total_kegiatan: 12, kategori_sertifikat: 'gold' },
+      { id: 'p2', nim: '20010102', nama_lengkap: 'Siti Nurhaliza', prodi: 'Manajemen', departemen: 'Ekonomi', fakultas: 'Ekonomi dan Bisnis', no_hp: '081298765432', status_akun: 'aktif', total_kegiatan: 8, kategori_sertifikat: 'silver' },
     ];
   },
   get: async (id: string) => {
@@ -194,6 +238,15 @@ export const laporanApi = {
   kegiatan: async (start: string, end: string, status?: string) => {
     await delay(30);
     return mockKegiatan;
+  },
+  rekap: async (start: string, end: string) => {
+    await delay(30);
+    return {
+      rekap_mahasiswa: [
+        { nim: '20010101', nama_lengkap: 'Budi Santoso', prodi: 'Ilmu Komputer', total_tugas: 10, dikonfirmasi: 8, ditolak: 2 },
+        { nim: '20010102', nama_lengkap: 'Siti Nurhaliza', prodi: 'Manajemen', total_tugas: 5, dikonfirmasi: 5, ditolak: 0 },
+      ]
+    };
   },
 };
 
