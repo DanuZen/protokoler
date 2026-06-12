@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Medal, Trophy, Award } from "lucide-react";
 
 type BadgeKategoriProps = {
   kategori: "perak" | "silver" | "gold" | string | null;
@@ -13,29 +14,31 @@ export function BadgeKategori({ kategori, className }: BadgeKategoriProps) {
   
   let visual = {
     color: "bg-slate-100 text-slate-800 border-slate-200",
-    icon: "🏅",
+    icon: Award,
     label: kategori
   };
 
   if (normalized === "perak") {
     visual = {
       color: "bg-slate-200 text-slate-700 border-slate-300 shadow-sm",
-      icon: "🥈",
+      icon: Medal,
       label: "Perak"
     };
   } else if (normalized === "silver") {
     visual = {
-      color: "bg-zinc-200 text-zinc-800 border-zinc-400 shadow-sm",
-      icon: "🥇", // using 1st place icon for silver since perak is 2nd in this custom logic, or whatever emoji fits
+      color: "bg-slate-200 text-slate-800 border-slate-400 shadow-sm",
+      icon: Medal,
       label: "Silver"
     };
   } else if (normalized === "gold") {
     visual = {
-      color: "bg-gradient-gold text-gold-foreground border-yellow-500 shadow-md",
-      icon: "🏆",
+      color: "bg-[#C9A84C] text-slate-900 border-[#C9A84C] shadow-sm",
+      icon: Trophy,
       label: "Gold"
     };
   }
+
+  const Icon = visual.icon;
 
   return (
     <Badge
@@ -46,7 +49,7 @@ export function BadgeKategori({ kategori, className }: BadgeKategoriProps) {
         className
       )}
     >
-      <span className="text-base leading-none">{visual.icon}</span>
+      <Icon className="h-3.5 w-3.5" />
       {visual.label}
     </Badge>
   );
