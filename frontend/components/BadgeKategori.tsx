@@ -32,7 +32,7 @@ export function BadgeKategori({ kategori, className }: BadgeKategoriProps) {
     };
   } else if (normalized === "gold") {
     visual = {
-      color: "bg-[#C9A84C] text-slate-900 border-[#C9A84C] shadow-sm",
+      color: "bg-[#6b0000] text-slate-900 border-[#d2ad5c] shadow-sm",
       icon: Trophy,
       label: "Gold"
     };

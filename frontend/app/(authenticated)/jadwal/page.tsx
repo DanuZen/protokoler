@@ -2,12 +2,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { kegiatanApi } from "@/lib/api";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   CalendarDays, Clock, MapPin, Search, ArrowRight,
-  GraduationCap, Handshake, Megaphone, Landmark, ClipboardList, ChevronLeft, ChevronRight, ListTodo
+  GraduationCap, Handshake, Megaphone, Landmark, ClipboardList,
+  ChevronLeft, ChevronRight, ListTodo, CheckCircle2, Loader2,
+  AlertCircle, XCircle, Radio, Circle
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -17,7 +17,7 @@ const MONTHS = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustu
 const DAYS_SHORT = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
 
 const stagger = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.06 } } };
-const fadeUp = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } };
+const fadeUp = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3 } } };
 
 function BentukIcon({ bentuk, className }: { bentuk: string; className?: string }) {
   const map: Record<string, any> = {
@@ -28,16 +28,20 @@ function BentukIcon({ bentuk, className }: { bentuk: string; className?: string 
   return <Icon className={className} />;
 }
 
-const statusConfig: Record<string, { label: string; color: string }> = {
-  draft: { label: "Draft", color: "bg-slate-100 text-slate-500 border-slate-200" },
-  terkonfirmasi: { label: "Terkonfirmasi", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  terjadwal: { label: "Terjadwal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
-  berlangsung: { label: "Berlangsung", color: "bg-amber-100 text-amber-700 border-amber-200" },
-  selesai: { label: "Selesai", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  batal: { label: "Batal", color: "bg-red-100 text-red-600 border-red-200" },
+const statusConfig: Record<string, { label: string; color: string; dot: string; Icon: any }> = {
+  draft:        { label: "Draft",         color: "bg-slate-100 text-slate-600 border-slate-200",    dot: "bg-slate-400",   Icon: Circle },
+  terkonfirmasi:{ label: "Terkonfirmasi", color: "bg-blue-50 text-blue-700 border-blue-200",        dot: "bg-blue-500",    Icon: CheckCircle2 },
+  terjadwal:    { label: "Terjadwal",     color: "bg-indigo-50 text-indigo-700 border-indigo-200",  dot: "bg-indigo-500",  Icon: CalendarDays },
+  berlangsung:  { label: "Berlangsung",   color: "bg-amber-50 text-amber-700 border-amber-200",     dot: "bg-amber-500",   Icon: Radio },
+  selesai:      { label: "Selesai",       color: "bg-emerald-50 text-emerald-700 border-emerald-200", dot: "bg-emerald-500", Icon: CheckCircle2 },
+  batal:        { label: "Batal",         color: "bg-red-50 text-red-600 border-red-200",           dot: "bg-red-500",     Icon: XCircle },
 };
 
 export default function JadwalPage() {
+  const getLocalISODate = (d: Date) => {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
+
   const today = new Date();
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [viewYear, setViewYear] = useState(today.getFullYear());
@@ -49,9 +53,8 @@ export default function JadwalPage() {
     queryFn: () => kegiatanApi.list(),
   });
 
-  // Build a set of dates that have kegiatan
   const kegiatanByDate = ((kegiatan || []) as any[]).reduce((acc: Record<string, any[]>, k) => {
-    const d = k.tanggal.slice(0, 10);
+    const d = getLocalISODate(new Date(k.tanggal));
     if (!acc[d]) acc[d] = [];
     acc[d].push(k);
     return acc;
@@ -59,14 +62,12 @@ export default function JadwalPage() {
 
   const filtered = ((kegiatan || []) as any[]).filter((k) => {
     const matchSearch = k.nama_kegiatan.toLowerCase().includes(search.toLowerCase()) || k.lokasi.toLowerCase().includes(search.toLowerCase());
-    if (selectedDate) return matchSearch && k.tanggal.slice(0, 10) === selectedDate;
+    if (selectedDate) return matchSearch && getLocalISODate(new Date(k.tanggal)) === selectedDate;
     return matchSearch;
   });
 
-  // Sort by date ascending
   const sortedFiltered = [...filtered].sort((a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime());
 
-  // Calendar helpers
   const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay();
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   const calendarDays: (number | null)[] = [
@@ -79,50 +80,49 @@ export default function JadwalPage() {
 
   const formatDateLabel = (d: string) => new Date(d).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
+  const upcoming = ((kegiatan || []) as any[]).filter((k) => k.status === "terjadwal" || k.status === "berlangsung").length;
+  const todayStr = getLocalISODate(today);
+
   return (
-    <div className="min-h-screen bg-transparent">
-      {/* ─── Hero Banner ─── */}
-      <section className="relative px-6 md:px-10 pt-10 pb-16 overflow-hidden">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
-          <div>
-            <p className="text-[#C9A84C] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Sistem Informasi Protokoler</p>
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight">Jadwal Penugasan</h1>
-            <p className="mt-2 text-slate-400 text-sm">Pantau kalender dan agenda kegiatan protokoler yang akan datang.</p>
+    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+      {/* ─── HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+            <CalendarDays className="h-7 w-7" />
           </div>
-        </motion.div>
-      </section>
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+                Kalender Protokoler
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-[2.5rem] font-black tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Jadwal Penugasan</h2>
+            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau kalender dan agenda kegiatan protokoler yang akan datang.</p>
+          </div>
+        </div>
+      </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="px-6 md:px-10 -mt-12 relative z-20 pb-0">
-        <div className="grid gap-4 md:grid-cols-2 max-w-2xl">
+      <section className="relative z-20 pb-0">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
-            { 
-              label: "Akan Datang", 
-              value: ((kegiatan || []) as any[]).filter((k) => k.status === "terjadwal" || k.status === "berlangsung").length, 
-              icon: Clock, 
-              hint: "Segera dilaksanakan" 
-            },
-            { 
-              label: "Total Kegiatan", 
-              value: (kegiatan || []).length, 
-              icon: ListTodo, 
-              hint: "Semua agenda" 
-            },
+            { label: "Akan Datang", value: upcoming, icon: Clock, hint: "Segera dilaksanakan", color: "text-emerald-600", bg: "bg-emerald-100" },
+            { label: "Berlangsung", value: ((kegiatan || []) as any[]).filter((k) => k.status === "berlangsung").length, icon: Radio, hint: "Kegiatan berjalan saat ini", color: "text-amber-600", bg: "bg-amber-100" },
+            { label: "Selesai", value: ((kegiatan || []) as any[]).filter((k) => k.status === "selesai").length, icon: CheckCircle2, hint: "Tugas yang telah selesai", color: "text-blue-600", bg: "bg-blue-100" },
+            { label: "Total Kegiatan", value: (kegiatan || []).length, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-[#ff6b4a]", bg: "bg-orange-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-slate-900 border border-slate-800 shadow-xl py-3 px-4 flex flex-col justify-between hover:border-[#C9A84C]/60 hover:shadow-2xl transition-all group relative overflow-hidden">
-                <stat.icon className="absolute -right-4 -bottom-4 h-24 w-24 text-white opacity-5 transform group-hover:scale-110 transition-transform duration-500" />
+              <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full">
                 <div className="flex items-center justify-between relative z-10">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{stat.label}</p>
-                  <div className="flex-shrink-0 h-7 w-7 flex items-center justify-center bg-[#C9A84C]/20 text-[#C9A84C] group-hover:bg-[#C9A84C] group-hover:text-white transition-colors border border-[#C9A84C]/30">
-                    <stat.icon className="h-3.5 w-3.5" />
+                  <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
+                  <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                    <stat.icon className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="mt-1.5 relative z-10">
-                  <p className="text-3xl font-extrabold leading-tight font-display text-white">{stat.value}</p>
-                  <div className="flex items-center gap-1.5 mt-1.5">
-                    <span className="text-[10px] text-slate-500">{stat.hint}</span>
-                  </div>
+                <div className="mt-4 relative z-10">
+                  <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                  <span className="text-[11px] font-medium text-slate-400 mt-1 block">{stat.hint}</span>
                 </div>
               </div>
             </motion.div>
@@ -131,42 +131,39 @@ export default function JadwalPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="bg-slate-50 min-h-screen -mt-6">
-        <div className="h-12" />
-        <section className="px-6 md:px-10 pb-12 space-y-6">
+      <div className="flex-1 mt-8">
+        <section className="pb-12 space-y-6">
+          <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-6 items-start">
 
-          {/* Two-column layout: Calendar + List */}
-          <div className="grid grid-cols-1 xl:grid-cols-[340px_1fr] gap-6">
-
-            {/* ── Calendar ── */}
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="bg-white border border-slate-200 shadow-sm rounded-none h-fit">
-              {/* Month nav */}
-              <div className="flex items-center justify-between p-5 border-b border-slate-100">
-                <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center border border-slate-200 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-colors rounded-none">
+            {/* ── Calendar Panel ── */}
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden h-fit sticky top-6 shadow-sm">
+              {/* Month nav header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
+                <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-orange-500 hover:text-orange-500 text-slate-400 bg-white transition-colors shadow-sm">
                   <ChevronLeft className="h-4 w-4" />
                 </button>
-                <div className="font-bold text-slate-900 text-base uppercase tracking-wider">
+                <div className="font-bold text-slate-800 text-sm uppercase tracking-widest">
                   {MONTHS[viewMonth]} {viewYear}
                 </div>
-                <button onClick={nextMonth} className="h-8 w-8 flex items-center justify-center border border-slate-200 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-colors rounded-none">
+                <button onClick={nextMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-orange-500 hover:text-orange-500 text-slate-400 bg-white transition-colors shadow-sm">
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
 
               {/* Day labels */}
-              <div className="grid grid-cols-7 border-b border-slate-100">
+              <div className="grid grid-cols-7 border-b border-white/20 bg-slate-50">
                 {DAYS_SHORT.map((d) => (
-                  <div key={d} className="text-center py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{d}</div>
+                  <div key={d} className="text-center py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{d}</div>
                 ))}
               </div>
 
               {/* Date cells */}
-              <div className="grid grid-cols-7 p-2 gap-1">
+              <div className="grid grid-cols-7 p-3 gap-1">
                 {calendarDays.map((day, i) => {
                   if (!day) return <div key={`empty-${i}`} />;
                   const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
                   const hasEvent = !!kegiatanByDate[dateStr];
-                  const isToday = dateStr === today.toISOString().slice(0, 10);
+                  const isToday = dateStr === todayStr;
                   const isSelected = dateStr === selectedDate;
 
                   return (
@@ -174,116 +171,161 @@ export default function JadwalPage() {
                       key={day}
                       onClick={() => setSelectedDate(isSelected ? null : dateStr)}
                       className={cn(
-                        "relative h-9 w-full flex items-center justify-center text-sm font-medium transition-all rounded-none",
-                        isSelected && "bg-slate-900 text-white",
-                        !isSelected && isToday && "border-2 border-[#C9A84C] text-[#C9A84C]",
-                        !isSelected && !isToday && "hover:bg-slate-100 text-slate-700",
+                        "relative h-9 w-full flex flex-col items-center justify-center text-sm font-semibold transition-all rounded-md",
+                        isSelected && "bg-[#ff6b4a] text-white shadow-sm",
+                        !isSelected && isToday && "ring-2 ring-[#ff6b4a] text-[#ff6b4a]",
+                        !isSelected && !isToday && "hover:bg-slate-50 text-slate-700",
                       )}
                     >
                       {day}
-                      {hasEvent && !isSelected && (
-                        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-[#C9A84C]" />
+                      {hasEvent && (
+                        <span className={cn(
+                          "absolute bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full",
+                          isSelected ? "bg-white" : "bg-orange-400"
+                        )} />
                       )}
                     </button>
                   );
                 })}
               </div>
 
-              {/* Legend */}
-              <div className="p-4 border-t border-slate-100 flex items-center gap-3 text-xs text-slate-500">
-                <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[#C9A84C] inline-block" /> Ada kegiatan</span>
-                <span className="flex items-center gap-1.5"><span className="h-4 w-4 border-2 border-[#C9A84C] inline-flex items-center justify-center text-[9px] text-[#C9A84C] font-bold">{today.getDate()}</span> Hari ini</span>
+              {/* Legend + selected filter clear */}
+              <div className="px-4 py-3 border-t border-slate-100 bg-white flex items-center justify-between gap-3 text-xs text-slate-500">
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-400 inline-block" />
+                    Ada kegiatan
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-4 w-4 ring-2 ring-[#ff6b4a] inline-flex items-center justify-center text-[9px] text-[#ff6b4a] font-bold rounded-full">{today.getDate()}</span>
+                    Hari ini
+                  </span>
+                </div>
+                {selectedDate && (
+                  <button onClick={() => setSelectedDate(null)} className="text-[#ff6b4a] font-bold hover:text-orange-600 transition-colors text-xs flex items-center gap-1">
+                    <XCircle className="h-3.5 w-3.5" /> Reset
+                  </button>
+                )}
               </div>
             </motion.div>
 
             {/* ── Agenda List ── */}
             <div className="space-y-4">
-              {/* Search + filter info */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white border border-slate-200 shadow-sm p-4 rounded-none">
-                <div className="relative max-w-md w-full">
-                  <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                  <Input className="pl-12 bg-slate-50 border-slate-200 rounded-none h-11 text-base focus-visible:ring-slate-900" placeholder="Cari kegiatan..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              {/* Search bar */}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-white border border-slate-200 rounded-[24px] p-4 flex flex-col md:flex-row items-center gap-4 shadow-sm">
+                <div className="relative flex-1 w-full">
+                  <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Input
+                    className="pl-11 bg-white border-slate-200 rounded-xl h-11 text-sm text-slate-900 placeholder-slate-400 focus-visible:ring-1 focus-visible:ring-slate-200 focus-visible:border-slate-200 shadow-sm"
+                    placeholder="Cari nama kegiatan atau lokasi..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
                 </div>
-                <div className="text-sm font-semibold text-slate-500 shrink-0 bg-slate-50 px-4 py-2 border border-slate-200">
+                <div className={cn(
+                  "shrink-0 flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border rounded-xl",
+                  selectedDate ? "bg-orange-50 border-orange-200 text-orange-600" : "bg-slate-50 border-slate-200 text-slate-500"
+                )}>
+                  <CalendarDays className="h-4 w-4" />
                   {selectedDate ? (
-                    <span className="flex items-center gap-2">
-                      <CalendarDays className="h-4 w-4 text-[#C9A84C]" />
-                      {formatDateLabel(selectedDate)}
-                      <button onClick={() => setSelectedDate(null)} className="text-slate-400 hover:text-slate-900 ml-1 font-bold">✕</button>
-                    </span>
+                    <span>{formatDateLabel(selectedDate)}</span>
                   ) : (
-                    <span><span className="text-slate-900">{sortedFiltered.length}</span> kegiatan</span>
+                    <span><span className="text-slate-800 font-bold">{sortedFiltered.length}</span> kegiatan</span>
                   )}
                 </div>
               </motion.div>
 
               {/* List */}
               {isLoading ? (
-                <div className="space-y-4">
-                  {[...Array(4)].map((_, i) => <div key={i} className="h-24 w-full bg-white border border-slate-200 animate-pulse" />)}
+                <div className="bg-white border border-slate-200 p-16 flex flex-col items-center gap-3 text-slate-400">
+                  <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
+                  <span className="text-sm font-medium">Memuat jadwal...</span>
                 </div>
               ) : sortedFiltered.length === 0 ? (
                 <div className="bg-white border border-slate-200 p-16 text-center shadow-sm">
-                  <CalendarDays className="h-12 w-12 mx-auto mb-4 text-slate-300" />
-                  <h3 className="font-bold text-slate-900 text-lg">Tidak ada kegiatan</h3>
+                  <AlertCircle className="h-10 w-10 mx-auto mb-4 text-slate-300" />
+                  <h3 className="font-bold text-slate-800 text-base">Tidak ada kegiatan</h3>
                   <p className="text-slate-500 text-sm mt-1">
                     {selectedDate ? "Tidak ada kegiatan pada tanggal ini." : "Tidak ada kegiatan yang cocok dengan pencarian."}
                   </p>
                 </div>
               ) : (
-                <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 shadow-sm rounded-none overflow-hidden">
+                <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
+                  {/* Table header */}
+                  <div className="hidden md:grid grid-cols-[56px_1fr_200px_160px_48px] gap-4 px-6 py-3 border-b border-slate-100 bg-white">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center">Tgl</div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Kegiatan</div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Waktu & Lokasi</div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Status</div>
+                    <div />
+                  </div>
+
                   <div className="divide-y divide-slate-100">
-                    {sortedFiltered.map((k: any) => (
-                      <motion.div key={k.id} variants={fadeUp} className="group hover:bg-slate-50/60 transition-colors">
-                        <Link href={`/kegiatan/${k.id}`} className="block">
-                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-6 py-5">
-                            {/* Date block */}
-                            <div className="hidden md:flex flex-col items-center justify-center bg-slate-900 text-white rounded-none w-14 h-14 shrink-0">
-                              <span className="text-xl font-display font-bold leading-none">
-                                {new Date(k.tanggal).getDate()}
-                              </span>
-                              <span className="text-[9px] uppercase tracking-wider text-slate-400 mt-0.5">
-                                {MONTHS[new Date(k.tanggal).getMonth()].slice(0, 3)}
-                              </span>
-                            </div>
+                    {sortedFiltered.map((k: any) => {
+                      const cfg = statusConfig[k.status] || statusConfig.draft;
+                      const StatusIcon = cfg.Icon;
+                      return (
+                        <motion.div key={k.id} variants={fadeUp} className="group hover:bg-slate-50/50 transition-colors">
+                          <Link href={`/kegiatan/${k.id}`} className="block">
+                            <div className="grid grid-cols-1 md:grid-cols-[56px_1fr_200px_160px_48px] gap-4 items-center px-6 py-5">
 
-                            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                              <div className="flex items-center gap-2.5 mb-1">
-                                <div className="h-7 w-7 bg-slate-100 border border-slate-200 rounded-none flex items-center justify-center flex-shrink-0 group-hover:bg-slate-900 transition-colors">
-                                  <BentukIcon bentuk={k.bentuk} className="h-3.5 w-3.5 text-slate-500 group-hover:text-[#C9A84C] transition-colors" />
+                              {/* Date block */}
+                              <div className="hidden md:flex flex-col items-center justify-center bg-slate-50 text-slate-500 w-14 h-14 rounded-xl shrink-0 border border-slate-200 group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-colors shadow-sm">
+                                <span className="text-xl font-bold leading-none">
+                                  {new Date(k.tanggal).getDate()}
+                                </span>
+                                <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5 font-semibold">
+                                  {MONTHS[new Date(k.tanggal).getMonth()].slice(0, 3)}
+                                </span>
+                              </div>
+
+                              {/* Title & type */}
+                              <div className="flex flex-col gap-1.5 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <div className="h-5 w-5 flex items-center justify-center text-slate-400 group-hover:text-orange-500 transition-colors shrink-0">
+                                    <BentukIcon bentuk={k.bentuk_kegiatan || k.bentuk} className="h-3.5 w-3.5" />
+                                  </div>
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{(k.bentuk_kegiatan || k.bentuk || '').replace(/_/g, " ")}</span>
                                 </div>
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{k.bentuk.replace("_", " ")}</span>
+                                <h3 className="font-bold text-slate-800 text-base group-hover:text-orange-600 transition-colors line-clamp-1">{k.nama_kegiatan}</h3>
                               </div>
-                              <h3 className="font-semibold text-slate-900 text-lg group-hover:text-[#C9A84C] transition-colors truncate">{k.nama_kegiatan}</h3>
-                            </div>
 
-                            <div className="flex flex-col gap-1 min-w-[180px]">
-                              <div className="flex items-center gap-1.5 text-slate-600 text-sm font-medium">
-                                <Clock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                                <span>{k.jam_mulai.slice(0, 5)} – {k.jam_selesai.slice(0, 5)} WIB</span>
+                              {/* Time & location */}
+                              <div className="flex flex-col gap-1.5">
+                                <div className="flex items-center gap-1.5 text-slate-700 text-sm font-semibold">
+                                  <Clock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                  <span>{k.jam_mulai?.slice(0, 5)} – {k.jam_selesai?.slice(0, 5)} WIB</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+                                  <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                                  <span className="truncate">{k.lokasi}</span>
+                                </div>
                               </div>
-                              <div className="flex items-center gap-1.5 text-slate-500 text-xs">
-                                <MapPin className="h-3.5 w-3.5 shrink-0 opacity-70" />
-                                <span className="truncate">{k.lokasi}</span>
-                              </div>
-                            </div>
 
-                            <div className="flex items-center gap-3 justify-end md:w-[160px]">
-                              <span className={cn("inline-flex items-center rounded-none px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border", statusConfig[k.status]?.color || "bg-slate-100 text-slate-500 border-slate-200")}>
-                                {statusConfig[k.status]?.label || k.status}
-                              </span>
-                              <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-[#C9A84C] transition-colors shrink-0" />
+                              {/* Status */}
+                              <div className="flex justify-start">
+                                <div className={cn("inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[10px] font-bold tracking-wider uppercase bg-white shadow-sm", cfg.color.replace("bg-", "text-").replace("50", "600"), cfg.color.replace("bg-", "border-").replace("50", "200"))}>
+                                  <StatusIcon className="h-3.5 w-3.5" />
+                                  {cfg.label}
+                                </div>
+                              </div>
+
+                              {/* Arrow */}
+                              <div className="hidden md:flex justify-end pr-2">
+                                <div className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-300 group-hover:bg-orange-50 group-hover:border-orange-200 group-hover:text-orange-500 transition-all">
+                                  <ArrowRight className="h-4 w-4" />
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </Link>
-                      </motion.div>
-                    ))}
+                          </Link>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </motion.div>
               )}
             </div>
           </div>
-
         </section>
       </div>
     </div>

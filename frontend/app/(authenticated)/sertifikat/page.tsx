@@ -51,39 +51,45 @@ export default function SertifikatPage() {
   const inProcess = mockSertifikat.filter((s) => s.status === "dalam_proses").length;
 
   return (
-    <div className="min-h-screen bg-transparent">
-      {/* ─── Hero Banner ─── */}
-      <section className="relative px-6 md:px-10 pt-10 pb-16 overflow-hidden">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
-          <div>
-            <p className="text-[#C9A84C] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Sistem Informasi Protokoler</p>
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight">Sertifikat Saya</h1>
-            <p className="mt-2 text-slate-400 text-sm">Riwayat sertifikat penugasan dan keaktifan protokoler.</p>
+    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+      {/* ─── HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+            <Award className="h-7 w-7" />
           </div>
-        </motion.div>
-      </section>
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+                Penghargaan
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-[2.5rem] font-black tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Sertifikat Saya</h2>
+            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Riwayat sertifikat penugasan dan keaktifan protokoler.</p>
+          </div>
+        </div>
+      </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="px-6 md:px-10 -mt-12 relative z-20 pb-0">
+      <section className="relative z-20 pb-0">
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            { label: "Diterbitkan", value: issued, icon: BadgeCheck, hint: "Siap diunduh" },
-            { label: "Dalam Proses", value: inProcess, icon: Clock, hint: "Menunggu admin" },
-            { label: "Total", value: mockSertifikat.length, icon: Award, hint: "Seluruh riwayat" },
+            { label: "Diterbitkan", value: issued, icon: BadgeCheck, hint: "Siap diunduh", color: "text-emerald-600", bg: "bg-emerald-100" },
+            { label: "Dalam Proses", value: inProcess, icon: Clock, hint: "Menunggu admin", color: "text-amber-600", bg: "bg-amber-100" },
+            { label: "Total", value: mockSertifikat.length, icon: Award, hint: "Seluruh riwayat", color: "text-[#ff6b4a]", bg: "bg-orange-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-slate-900 border border-slate-800 shadow-xl py-3 px-4 flex flex-col justify-between hover:border-[#C9A84C]/60 hover:shadow-2xl transition-all group relative overflow-hidden">
-                <stat.icon className="absolute -right-4 -bottom-4 h-24 w-24 text-white opacity-5 transform group-hover:scale-110 transition-transform duration-500" />
+              <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
                 <div className="flex items-center justify-between relative z-10">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{stat.label}</p>
-                  <div className="flex-shrink-0 h-7 w-7 flex items-center justify-center bg-[#C9A84C]/20 text-[#C9A84C] group-hover:bg-[#C9A84C] group-hover:text-white transition-colors border border-[#C9A84C]/30">
-                    <stat.icon className="h-3.5 w-3.5" />
+                  <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
+                  <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                    <stat.icon className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="mt-1.5 relative z-10">
-                  <p className="text-3xl font-extrabold leading-tight font-display text-white">{stat.value}</p>
+                <div className="mt-4 relative z-10">
+                  <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
                   <div className="flex items-center gap-1.5 mt-1.5">
-                    <span className="text-[10px] text-slate-500">{stat.hint}</span>
+                    <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
                   </div>
                 </div>
               </div>
@@ -93,43 +99,42 @@ export default function SertifikatPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="bg-slate-50 min-h-screen -mt-6">
-        <div className="h-12" />
-        <section className="px-6 md:px-10 pb-12 space-y-6">
+      <div className="flex-1 mt-8">
+        <section className="pb-12 space-y-6">
 
           {mockSertifikat.length === 0 ? (
-            <div className="bg-white border border-slate-200 p-16 text-center shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-[24px] p-16 text-center shadow-sm">
               <Award className="h-12 w-12 mx-auto mb-4 text-slate-300" />
               <h3 className="font-bold text-slate-900 text-lg">Belum ada sertifikat</h3>
               <p className="text-slate-500 text-sm mt-1">Sertifikat akan diterbitkan setelah kegiatan selesai.</p>
             </div>
           ) : (
-            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 shadow-sm rounded-none overflow-hidden">
+            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
               <div className="divide-y divide-slate-100">
                 {mockSertifikat.map((s) => (
                   <motion.div key={s.id} variants={fadeUp}>
                     {/* Row */}
                     <button
-                      className="w-full text-left group hover:bg-slate-50/60 transition-colors"
+                      className="w-full text-left group hover:bg-slate-50 transition-colors"
                       onClick={() => setExpanded(expanded === s.id ? null : s.id)}
                     >
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
                         {/* Icon + info */}
                         <div className="flex items-center gap-4 flex-1 min-w-0">
                           <div className={cn(
-                            "h-12 w-12 flex items-center justify-center shrink-0 rounded-none",
-                            s.status === "diterbitkan" ? "bg-slate-900" : "bg-slate-200"
+                            "h-12 w-12 flex items-center justify-center shrink-0 rounded-xl",
+                            s.status === "diterbitkan" ? "bg-emerald-50" : "bg-slate-100"
                           )}>
-                            <Award className={cn("h-5 w-5", s.status === "diterbitkan" ? "text-[#C9A84C]" : "text-slate-400")} />
+                            <Award className={cn("h-5 w-5", s.status === "diterbitkan" ? "text-emerald-600" : "text-slate-400")} />
                           </div>
                           <div className="min-w-0">
-                            <h3 className="font-bold text-slate-900 text-base group-hover:text-[#C9A84C] transition-colors truncate">{s.judul}</h3>
+                            <h3 className="font-bold text-slate-900 text-base group-hover:text-orange-500 transition-colors truncate">{s.judul}</h3>
                             <p className="text-slate-500 text-sm truncate">{s.kegiatan}</p>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-4 md:shrink-0">
-                          <span className={cn("inline-flex items-center gap-1.5 rounded-none px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border",
+                          <span className={cn("inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border",
                             s.status === "diterbitkan"
                               ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                               : "bg-amber-50 text-amber-600 border-amber-200"
@@ -151,28 +156,28 @@ export default function SertifikatPage() {
                       >
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                           <div>
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Nomor Sertifikat</div>
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Nomor Sertifikat</div>
                             <div className="text-sm font-mono font-bold text-slate-900">{s.nomor}</div>
                           </div>
                           <div>
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Peran Penugasan</div>
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Peran Penugasan</div>
                             <div className="text-sm font-bold text-slate-900">{s.peran}</div>
                           </div>
                           <div>
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tanggal Kegiatan</div>
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Tanggal Kegiatan</div>
                             <div className="text-sm font-bold text-slate-900">
                               {new Date(s.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                             </div>
                           </div>
                           <div className="md:col-span-3">
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Lokasi</div>
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Lokasi</div>
                             <div className="text-sm text-slate-700 flex items-center gap-1.5">
                               <MapPin className="h-3.5 w-3.5 text-slate-400" /> {s.lokasi}
                             </div>
                           </div>
                         </div>
                         {s.status === "diterbitkan" && (
-                          <Button className="rounded-none bg-slate-900 text-white hover:bg-[#C9A84C] hover:text-white transition-colors gap-2 font-bold">
+                          <Button className="rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-sm transition-colors gap-2 font-bold">
                             <Download className="h-4 w-4" /> Unduh Sertifikat PDF
                           </Button>
                         )}

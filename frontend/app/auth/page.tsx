@@ -49,7 +49,7 @@ export default function AuthPage() {
     return '/dashboard';
   };
 
-  const enterDemoRole = (role: 'admin' | 'pimpinan' | 'dokumentasi' | 'mahasiswa') => {
+  const enterDemoRole = (role: 'admin' | 'dokumentasi' | 'mahasiswa') => {
     localStorage.setItem('demo_role', role);
     router.replace(role === 'mahasiswa' ? '/beranda' : role === 'dokumentasi' ? '/dokumentasi/dashboard' : '/dashboard');
   };
@@ -183,10 +183,6 @@ export default function AuthPage() {
                   </div>
 
                   <Button onClick={() => enterDemoRole('admin')} className="w-full h-12 rounded-none font-bold bg-slate-900 text-gold hover:bg-slate-800 flex justify-between px-6 shadow-md">
-                    <span>Masuk sebagai Admin</span> <ChevronRight className="h-5 w-5" />
-                  </Button>
-
-                  <Button onClick={() => enterDemoRole('pimpinan')} className="w-full h-12 rounded-none font-bold bg-slate-700 text-white hover:bg-slate-600 flex justify-between px-6 shadow-md">
                     <span>Masuk sebagai Pimpinan</span> <ChevronRight className="h-5 w-5" />
                   </Button>
 

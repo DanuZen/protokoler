@@ -5,105 +5,15 @@
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const mockKegiatan = [
-  {
-    id: 'keg-1',
-    nama_kegiatan: 'Wisuda Periode 130 UNP',
-    bentuk_kegiatan: 'wisuda',
-    bentuk: 'wisuda',
-    tanggal: new Date(Date.now() + 86400000 * 2).toISOString(), // 2 days from now
-    jam_mulai: '07:00:00',
-    jam_selesai: '12:00:00',
-    lokasi: 'Auditorium UNP',
-    status: 'terjadwal',
-    deskripsi: '',
-    rundown: [],
-    checklist_tata_tempat: [],
-    checklist_tata_upacara: [],
-    checklist_tata_penghormatan: [],
-    tamu_vvip: [],
-    audience: '',
-    keynote: '',
-    rundown_url: '',
-    jumlah_protokoler_dibutuhkan: 0,
-    jumlah_lo_dibutuhkan: 0,
-  },
-  {
-    id: 'keg-2',
-    nama_kegiatan: 'Kunjungan Menteri Pendidikan',
-    bentuk_kegiatan: 'kunjungan',
-    bentuk: 'kunjungan',
-    tanggal: new Date(Date.now() + 86400000 * 5).toISOString(), // 5 days from now
-    jam_mulai: '09:00:00',
-    jam_selesai: '11:30:00',
-    lokasi: 'Ruang Rektor',
-    status: 'terjadwal',
-    deskripsi: '',
-    rundown: [],
-    checklist_tata_tempat: [],
-    checklist_tata_upacara: [],
-    checklist_tata_penghormatan: [],
-    tamu_vvip: [],
-    audience: '',
-    keynote: '',
-    rundown_url: '',
-    jumlah_protokoler_dibutuhkan: 0,
-    jumlah_lo_dibutuhkan: 0,
-  },
-  {
-    id: 'keg-3',
-    nama_kegiatan: 'Rapat Senat Terbuka Dies Natalis',
-    bentuk_kegiatan: 'rapat_resmi',
-    bentuk: 'rapat_resmi',
-    tanggal: new Date(Date.now() - 86400000).toISOString(), // yesterday
-    jam_mulai: '08:00:00',
-    jam_selesai: '13:00:00',
-    lokasi: 'Auditorium UNP',
-    status: 'selesai',
-    deskripsi: '',
-    rundown: [],
-    checklist_tata_tempat: [],
-    checklist_tata_upacara: [],
-    checklist_tata_penghormatan: [],
-    tamu_vvip: [],
-    audience: '',
-    keynote: '',
-    rundown_url: '',
-    jumlah_protokoler_dibutuhkan: 0,
-    jumlah_lo_dibutuhkan: 0,
-  },
-  {
-    id: 'keg-4',
-    nama_kegiatan: 'Seminar Internasional Pendidikan',
-    bentuk_kegiatan: 'seminar',
-    bentuk: 'seminar',
-    tanggal: new Date().toISOString(), // today
-    jam_mulai: '08:00:00',
-    jam_selesai: '16:00:00',
-    lokasi: 'Aula FMIPA',
-    status: 'berlangsung',
-    deskripsi: '',
-    rundown: [],
-    checklist_tata_tempat: [],
-    checklist_tata_upacara: [],
-    checklist_tata_penghormatan: [],
-    tamu_vvip: [],
-    audience: '',
-    keynote: '',
-    rundown_url: '',
-    jumlah_protokoler_dibutuhkan: 0,
-    jumlah_lo_dibutuhkan: 0,
-  },
-];
+let mockKegiatan: any[] = [];
 
 // ──────────────── PROTOKOLER ────────────────
+let mockProtokoler: any[] = [];
+
 export const protokolerApi = {
   list: async (search?: string) => {
     await delay(30);
-    return [
-      { id: 'p1', nim: '20010101', nama_lengkap: 'Budi Santoso', prodi: 'Ilmu Komputer', departemen: 'Elektronika', fakultas: 'Teknik', no_hp: '081234567890', status_akun: 'aktif', total_kegiatan: 12, kategori_sertifikat: 'gold' },
-      { id: 'p2', nim: '20010102', nama_lengkap: 'Siti Nurhaliza', prodi: 'Manajemen', departemen: 'Ekonomi', fakultas: 'Ekonomi dan Bisnis', no_hp: '081298765432', status_akun: 'aktif', total_kegiatan: 8, kategori_sertifikat: 'silver' },
-    ];
+    return mockProtokoler;
   },
   get: async (id: string) => {
     await delay(20);
@@ -139,16 +49,54 @@ export const kegiatanApi = {
   },
   create: async (data: any) => {
     await delay(500);
-    return { success: true, id: 'new-k' };
+    const newId = `keg-${Date.now()}`;
+    mockKegiatan.unshift({
+      id: newId,
+      ...data,
+      status: data.status || 'terjadwal',
+      pendaftar: [],
+      tamu_vvip: [],
+    });
+    return { success: true, id: newId };
   },
   update: async (id: string, data: any) => {
     await delay(500);
+    const index = mockKegiatan.findIndex((k) => k.id === id);
+    if (index !== -1) {
+      mockKegiatan[index] = { ...mockKegiatan[index], ...data };
+    }
     return { success: true };
   },
   remove: async (id: string) => {
     await delay(500);
+    mockKegiatan = mockKegiatan.filter((k) => k.id !== id);
     return { success: true };
   },
+  daftar: async (kegiatanId: string, protokolerId: string, namaLengkap: string) => {
+    await delay(500);
+    const kegiatan = mockKegiatan.find((k) => k.id === kegiatanId);
+    if (kegiatan) {
+      if (!kegiatan.pendaftar) kegiatan.pendaftar = [];
+      kegiatan.pendaftar.push({
+        id: `pend-${Date.now()}`,
+        kegiatan_id: kegiatanId,
+        protokoler_id: protokolerId,
+        nama_lengkap: namaLengkap,
+        status: 'pending',
+        tanggal_daftar: new Date().toISOString(),
+      });
+    }
+    return { success: true };
+  },
+  verifikasiPendaftar: async (kegiatanId: string, pendaftarId: string, status: 'diterima' | 'ditolak') => {
+    await delay(500);
+    const kegiatan = mockKegiatan.find((k) => k.id === kegiatanId);
+    if (kegiatan && kegiatan.pendaftar) {
+      const p = kegiatan.pendaftar.find((p: any) => p.id === pendaftarId);
+      if (p) p.status = status;
+    }
+    return { success: true };
+  }
 };
 
 // ──────────────── PENDAFTARAN ────────────────

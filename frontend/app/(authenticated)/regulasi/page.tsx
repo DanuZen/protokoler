@@ -63,102 +63,104 @@ export default function RegulasiPage() {
   );
 
   return (
-    <div className="min-h-screen bg-transparent">
-      {/* ─── Hero Banner ─── */}
-      <section className="relative px-6 md:px-10 pt-10 pb-20 overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
-        <div className="absolute -right-24 -top-8 h-80 w-80 rounded-full bg-[#C9A84C]/8 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#C9A84C]/50 to-transparent" />
-
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
-          <div>
-            <p className="text-[#C9A84C] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Sistem Informasi Protokoler</p>
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight">Regulasi & SOP</h1>
-            <p className="mt-2 text-slate-400 text-sm">Pusat informasi standar operasional dan tata tertib keprotokolan.</p>
+    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+      {/* ─── HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+            <BookOpen className="h-7 w-7" />
           </div>
-          
-          {role === "admin" && (
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
-                <Button className="rounded-none bg-[#C9A84C] hover:bg-[#b8963f] text-white font-bold px-6 py-6 h-auto text-sm shadow-xl">
-                  <Plus className="h-5 w-5 mr-2" />
-                  Tambah Regulasi
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+                Pedoman
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-[2.5rem] font-black tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Regulasi & SOP</h2>
+            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pusat informasi standar operasional dan tata tertib keprotokolan.</p>
+          </div>
+        </div>
+        
+        {role === "admin" && (
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button className="rounded-xl bg-[#1a1a1a] hover:bg-black text-white font-bold px-6 h-11 text-sm shadow-sm">
+                <Plus className="h-5 w-5 mr-2" />
+                Tambah Regulasi
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-xl rounded-[24px] border border-slate-200 shadow-xl p-0 bg-white">
+              <div className="bg-slate-50 border-b border-slate-100 p-6">
+                <DialogTitle className="text-lg font-bold text-slate-900">Tambah Regulasi Baru</DialogTitle>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Judul / Nama SOP</label>
+                  <Input 
+                    className="rounded-xl border-slate-200 bg-white text-slate-900 focus-visible:ring-slate-200" 
+                    placeholder="Contoh: SOP Tata Upacara Bendera"
+                    value={form.judul} onChange={(e) => setForm({ ...form, judul: e.target.value })} 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Kategori</label>
+                  <Input 
+                    className="rounded-xl border-slate-200 bg-white text-slate-900 focus-visible:ring-slate-200" 
+                    placeholder="Contoh: SOP Kegiatan"
+                    value={form.kategori} onChange={(e) => setForm({ ...form, kategori: e.target.value })} 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Isi Regulasi</label>
+                  <Textarea 
+                    className="rounded-xl border-slate-200 bg-white text-slate-900 focus-visible:ring-slate-200 min-h-[150px]" 
+                    placeholder="Tuliskan isi aturan atau dekskripsi lengkap..."
+                    value={form.konten} onChange={(e) => setForm({ ...form, konten: e.target.value })} 
+                  />
+                </div>
+              </div>
+              <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+                <Button variant="outline" onClick={() => setOpen(false)} className="rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50">Batal</Button>
+                <Button 
+                  onClick={() => createRegulasi.mutate()} 
+                  disabled={createRegulasi.isPending || !form.judul}
+                  className="rounded-xl bg-orange-500 text-white hover:bg-orange-600 font-bold"
+                >
+                  Simpan Regulasi
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-xl rounded-none border border-slate-200 shadow-xl p-0">
-                <div className="bg-slate-900 p-6 text-white">
-                  <DialogTitle className="text-xl font-display font-bold">Tambah Regulasi Baru</DialogTitle>
-                </div>
-                <div className="p-6 space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Judul / Nama SOP</label>
-                    <Input 
-                      className="rounded-none border-slate-300 bg-slate-50 focus-visible:ring-slate-900" 
-                      placeholder="Contoh: SOP Tata Upacara Bendera"
-                      value={form.judul} onChange={(e) => setForm({ ...form, judul: e.target.value })} 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Kategori</label>
-                    <Input 
-                      className="rounded-none border-slate-300 bg-slate-50 focus-visible:ring-slate-900" 
-                      placeholder="Contoh: SOP Kegiatan"
-                      value={form.kategori} onChange={(e) => setForm({ ...form, kategori: e.target.value })} 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Isi Regulasi</label>
-                    <Textarea 
-                      className="rounded-none border-slate-300 bg-slate-50 focus-visible:ring-slate-900 min-h-[150px]" 
-                      placeholder="Tuliskan isi aturan atau dekskripsi lengkap..."
-                      value={form.konten} onChange={(e) => setForm({ ...form, konten: e.target.value })} 
-                    />
-                  </div>
-                </div>
-                <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
-                  <Button variant="outline" onClick={() => setOpen(false)} className="rounded-none border-slate-300">Batal</Button>
-                  <Button 
-                    onClick={() => createRegulasi.mutate()} 
-                    disabled={createRegulasi.isPending || !form.judul}
-                    className="rounded-none bg-slate-900 text-white hover:bg-slate-800"
-                  >
-                    Simpan Regulasi
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
-        </motion.div>
-      </section>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+      </motion.div>
 
       {/* ─── Floating Toolbar (Search) ─── */}
-      <section className="px-6 md:px-10 -mt-12 relative z-20 pb-0">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 shadow-xl p-4 rounded-none">
+      <section className="relative z-20 pb-0">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-slate-200 bg-white rounded-[24px] p-5 shadow-sm">
           <div className="relative max-w-md w-full">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-            <Input className="pl-12 bg-slate-800 border-slate-700 text-white placeholder-slate-500 rounded-none h-11 text-base focus-visible:ring-[#C9A84C]" placeholder="Cari SOP atau regulasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
+            <Input className="pl-12 bg-white border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl h-11 text-base focus-visible:ring-slate-200 shadow-sm" placeholder="Cari SOP atau regulasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
-          <div className="text-sm font-semibold text-slate-400 shrink-0 bg-slate-800 px-4 py-2 border border-slate-700">
-            <span className="text-white">{filtered.length}</span> dokumen
+          <div className="text-sm font-semibold text-slate-500 shrink-0 bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl">
+            <span className="text-slate-900">{filtered.length}</span> dokumen
           </div>
         </motion.div>
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="bg-slate-50 min-h-screen -mt-6">
-        <div className="h-16" />
-        <section className="px-6 md:px-10 pb-12 space-y-6">
+      <div className="flex-1 mt-8">
+        <section className="pb-12 space-y-6">
 
           {/* Regulasi List */}
-          <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 shadow-sm rounded-none overflow-hidden">
-            <div className="flex items-center justify-between border-b border-slate-900 px-5 py-3.5 bg-slate-900 text-white">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
+            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50">
               <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center h-10 w-10 bg-[#C9A84C] text-white">
+                <div className="flex items-center justify-center h-10 w-10 bg-white border border-slate-200 text-slate-600 rounded-xl">
                   <FileCheck className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-white uppercase tracking-wider">Daftar SOP & Regulasi</h2>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Seluruh dokumen tata tertib keprotokolan.</p>
+                  <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Daftar SOP & Regulasi</h2>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Seluruh dokumen tata tertib keprotokolan.</p>
                 </div>
               </div>
             </div>
@@ -175,16 +177,16 @@ export default function RegulasiPage() {
                     <AccordionTrigger className="hover:no-underline py-5">
                       <div className="flex flex-col sm:flex-row sm:items-center text-left gap-3 w-full">
                         <div className="flex-1">
-                          <h4 className="font-bold text-slate-900">{r.judul}</h4>
-                          <span className="inline-block mt-1 text-[10px] font-bold text-[#C9A84C] bg-[#C9A84C]/10 border border-[#C9A84C]/20 px-2 py-0.5 uppercase tracking-wider">{r.kategori}</span>
+                          <h4 className="font-bold text-slate-900 group-hover:text-orange-500 transition-colors">{r.judul}</h4>
+                          <span className="inline-block mt-1 text-[10px] font-bold text-orange-600 bg-orange-50 border border-orange-200 rounded-md px-2 py-0.5 uppercase tracking-wider">{r.kategori}</span>
                         </div>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-5">
-                      <div className="bg-slate-50 border border-slate-200 p-5 text-slate-700 leading-relaxed text-sm">
+                      <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-slate-700 leading-relaxed text-sm">
                         {r.konten}
                         <div className="mt-5 pt-5 border-t border-slate-200 flex justify-end">
-                          <Button className="rounded-none bg-slate-950 text-white hover:bg-[#C9A84C] hover:text-white font-bold gap-2 transition-colors">
+                          <Button className="rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-sm font-bold gap-2 transition-colors">
                             <Download className="h-4 w-4" />
                             Unduh PDF Lampiran
                           </Button>

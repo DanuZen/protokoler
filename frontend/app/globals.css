@@ -56,24 +56,24 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.04 260);
 
-  /* Navy university blue */
-  --primary: oklch(0.28 0.09 260);
-  --primary-foreground: oklch(0.98 0.01 250);
-  --primary-glow: oklch(0.42 0.12 258);
+  /* Deep Maroon — Primary */
+  --primary: oklch(0.28 0.13 15);
+  --primary-foreground: oklch(0.98 0.01 60);
+  --primary-glow: oklch(0.4 0.16 15);
 
   /* Soft surface */
-  --secondary: oklch(0.96 0.01 250);
-  --secondary-foreground: oklch(0.22 0.06 260);
+  --secondary: oklch(0.96 0.01 30);
+  --secondary-foreground: oklch(0.22 0.06 20);
 
-  --muted: oklch(0.965 0.008 250);
-  --muted-foreground: oklch(0.5 0.03 258);
+  --muted: oklch(0.965 0.008 30);
+  --muted-foreground: oklch(0.5 0.03 30);
 
-  --accent: oklch(0.95 0.03 85);
-  --accent-foreground: oklch(0.28 0.09 260);
+  --accent: oklch(0.95 0.05 80);
+  --accent-foreground: oklch(0.28 0.09 20);
 
   /* University gold */
-  --gold: oklch(0.78 0.13 85);
-  --gold-foreground: oklch(0.2 0.05 260);
+  --gold: oklch(0.76 0.12 78);
+  --gold-foreground: oklch(0.2 0.05 20);
 
   --destructive: oklch(0.58 0.22 27);
   --destructive-foreground: oklch(0.98 0 0);
@@ -82,23 +82,23 @@
   --warning: oklch(0.78 0.15 75);
   --warning-foreground: oklch(0.2 0.05 80);
 
-  --border: oklch(0.91 0.01 255);
-  --input: oklch(0.91 0.01 255);
-  --ring: oklch(0.42 0.12 258);
+  --border: oklch(0.91 0.01 30);
+  --input: oklch(0.91 0.01 30);
+  --ring: oklch(0.4 0.16 15);
 
-  --sidebar: oklch(0.22 0.07 260);
-  --sidebar-foreground: oklch(0.92 0.02 250);
-  --sidebar-primary: oklch(0.78 0.13 85);
-  --sidebar-primary-foreground: oklch(0.2 0.05 260);
-  --sidebar-accent: oklch(0.3 0.08 260);
-  --sidebar-accent-foreground: oklch(0.98 0.01 250);
-  --sidebar-border: oklch(0.3 0.06 260);
-  --sidebar-ring: oklch(0.78 0.13 85);
+  --sidebar: oklch(0.20 0.10 15);
+  --sidebar-foreground: oklch(0.92 0.02 60);
+  --sidebar-primary: oklch(0.76 0.12 78);
+  --sidebar-primary-foreground: oklch(0.2 0.05 20);
+  --sidebar-accent: oklch(0.28 0.10 15);
+  --sidebar-accent-foreground: oklch(0.98 0.01 60);
+  --sidebar-border: oklch(0.32 0.09 15);
+  --sidebar-ring: oklch(0.76 0.12 78);
 
-  --gradient-hero: linear-gradient(135deg, oklch(0.22 0.08 260) 0%, oklch(0.32 0.1 258) 60%, oklch(0.45 0.12 255) 100%);
-  --gradient-gold: linear-gradient(135deg, oklch(0.78 0.13 85), oklch(0.85 0.14 80));
-  --shadow-elegant: 0 10px 40px -12px color-mix(in oklab, oklch(0.28 0.09 260) 35%, transparent);
-  --shadow-card: 0 2px 12px -4px color-mix(in oklab, oklch(0.28 0.09 260) 12%, transparent);
+  --gradient-hero: linear-gradient(135deg, oklch(0.20 0.12 15) 0%, oklch(0.30 0.14 15) 60%, oklch(0.40 0.16 15) 100%);
+  --gradient-gold: linear-gradient(135deg, oklch(0.76 0.12 78), oklch(0.82 0.13 76));
+  --shadow-elegant: 0 10px 40px -12px color-mix(in oklab, oklch(0.28 0.13 15) 35%, transparent);
+  --shadow-card: 0 2px 12px -4px color-mix(in oklab, oklch(0.28 0.13 15) 12%, transparent);
 }
 
 .dark {
@@ -139,7 +139,36 @@
     color: var(--color-foreground);
     font-family: "Inter", system-ui, -apple-system, sans-serif;
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.01em; }
+
+  /* Modern minimalist scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #fb923c; /* orange-400 */
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #f97316; /* orange-500 */
+  }
+  /* Sembunyikan arrow (button) pada scrollbar */
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background: #ea580c; /* orange-600 */
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: #c2410c; /* orange-700 */
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #fb923c transparent;
+  }
 }
 
 @utility bg-gradient-hero { background-image: var(--gradient-hero); }
@@ -172,9 +201,18 @@
   animation: float 6s ease-in-out infinite;
 }
 @utility glass-panel {
-  background-color: color-mix(in oklch, var(--color-background) 70%, transparent);
-  backdrop-filter: blur(12px);
-  border: 1px solid color-mix(in oklch, var(--color-border) 50%, transparent);
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+@utility glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(107, 0, 0, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
 }
 @utility bg-grid-pattern {
   background-image: radial-gradient(color-mix(in oklch, var(--color-foreground) 15%, transparent) 1px, transparent 1px);

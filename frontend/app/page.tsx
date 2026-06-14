@@ -61,7 +61,7 @@ export default function Landing() {
 
   const { user } = useAuth();
   const { data: role } = useRole(user);
-  const dashboardHref = role === 'admin' || role === 'pimpinan' ? '/dashboard' : role === 'dokumentasi' ? '/dokumentasi/dashboard' : '/beranda';
+  const dashboardHref = role === 'admin' ? '/dashboard' : role === 'dokumentasi' ? '/dokumentasi/dashboard' : '/beranda';
 
   const { data: kegiatanPublik, isLoading } = useQuery({
     queryKey: ['kegiatan-publik-landing'],
@@ -110,7 +110,7 @@ export default function Landing() {
               <div className="flex items-center gap-5">
                 <div className="hidden md:flex flex-col items-end mr-1">
                   <span className="text-sm font-bold text-slate-100 leading-tight">{user.user_metadata?.nama_lengkap || user.email}</span>
-                  <span className="text-[10px] text-gold uppercase tracking-[0.2em] font-bold">{role === 'admin' ? 'Administrator' : role === 'pimpinan' ? 'Pimpinan' : role === 'dokumentasi' ? 'Dokumentasi' : 'Protokoler'}</span>
+                  <span className="text-[10px] text-gold uppercase tracking-[0.2em] font-bold">{role === 'admin' ? 'Pimpinan' : role === 'dokumentasi' ? 'Dokumentasi' : 'Protokoler'}</span>
                 </div>
                 <Link href={dashboardHref}>
                   <Button className="rounded-none shadow-[2px_2px_0px_rgba(0,0,0,0.5)] transition-all px-8 bg-gold text-slate-900 hover:bg-yellow-400 h-11 font-bold uppercase tracking-wider border border-transparent">Dashboard</Button>

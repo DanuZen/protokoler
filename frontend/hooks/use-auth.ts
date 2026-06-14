@@ -5,13 +5,13 @@ import type { Session, User } from '@supabase/supabase-js';
 // FRONTEND DEMO MODE — Semua koneksi Supabase dinonaktifkan sementara.
 // Ganti nilai DEMO_ROLE di bawah untuk mengubah tampilan berdasarkan peran:
 //   "admin"      → akses penuh (kelola anggota, kegiatan, laporan)
-//   "mahasiswa"  → akses terbatas (kegiatan saya, sertifikat, profil)
-//   "pimpinan"   → akses read-only laporan & dashboard
-//   "dokumentasi"→ akses dashboard dokumentasi
+//   "admin"      → full access
+//   "mahasiswa"  → akses protokoler/user biasa
+//   "dokumentasi"→ akses khusus dokumentasi
 // ─────────────────────────────────────────────────────────────────────────────
-type DemoRole = 'admin' | 'mahasiswa' | 'pimpinan' | 'dokumentasi';
+type DemoRole = 'admin' | 'mahasiswa' | 'dokumentasi';
 
-const isDemoRole = (value: string | null): value is DemoRole => value === 'admin' || value === 'mahasiswa' || value === 'pimpinan' || value === 'dokumentasi';
+const isDemoRole = (value: string | null): value is DemoRole => value === 'admin' || value === 'mahasiswa' || value === 'dokumentasi';
 
 const getDemoRole = (): DemoRole => {
   if (typeof window === 'undefined') return 'admin';
@@ -24,7 +24,7 @@ const createDemoUser = (role: DemoRole) =>
     id: 'demo-user-id',
     email: `demo@${role}.siproto.id`,
     user_metadata: {
-      nama_lengkap: role === 'admin' ? 'Admin Demo' : role === 'pimpinan' ? 'Pimpinan Demo' : role === 'dokumentasi' ? 'Dokumentasi Demo' : 'Mahasiswa Demo',
+      nama_lengkap: role === 'admin' ? 'Pimpinan Demo' : role === 'dokumentasi' ? 'Dokumentasi Demo' : 'Mahasiswa Demo',
     },
   }) as unknown as User;
 
