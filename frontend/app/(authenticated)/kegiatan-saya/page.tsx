@@ -27,7 +27,7 @@ const mockPenugasan = [
     status_konfirmasi: "dikonfirmasi",
     kegiatan: {
       id: "keg-1",
-      nama_kegiatan: "Wisuda Periode 130 UNP",
+      nama_kegiatan: "Wisuda UNP",
       tanggal: new Date(Date.now() + 86400000 * 2).toISOString(),
       jam_mulai: "07:00:00", jam_selesai: "12:00:00",
       lokasi: "Auditorium UNP",

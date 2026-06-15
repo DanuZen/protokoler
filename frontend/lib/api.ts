@@ -4,15 +4,70 @@
  * Delay = 0 agar semua halaman render instan (tidak ada buffering).
  */
 
-let mockKegiatan: any[] = [];
+let mockKegiatan: any[] = [
+  {
+    id: 'keg-1',
+    nama_kegiatan: 'Upacara Wisuda Periode 123',
+    bentuk: 'upacara_resmi',
+    kategori: 'eksternal',
+    status: 'terjadwal',
+    tanggal: '2026-06-25T08:00:00Z',
+    jam_mulai: '08:00',
+    jam_selesai: '12:00',
+    lokasi: 'Auditorium UNP',
+    deskripsi: 'Pelaksanaan upacara wisuda ke-123 Universitas Negeri Padang.',
+    pendaftar: [
+      { id: 'pend-1', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', status: 'diterima' },
+      { id: 'pend-2', protokoler_id: 'prot-2', nama_lengkap: 'Budi Santoso', status: 'pending' },
+    ],
+    tamu_vvip: ['Rektor UNP', 'Gubernur Sumbar'],
+  },
+  {
+    id: 'keg-2',
+    nama_kegiatan: 'Penerimaan Mahasiswa Baru',
+    bentuk: 'kegiatan_pimpinan',
+    kategori: 'internal',
+    status: 'berlangsung',
+    tanggal: '2026-06-18T07:00:00Z',
+    jam_mulai: '07:00',
+    jam_selesai: '15:00',
+    lokasi: 'Lapangan Utama UNP',
+    deskripsi: 'Penyambutan mahasiswa baru jalur SNBP dan SNBT.',
+    pendaftar: [
+      { id: 'pend-3', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', status: 'diterima' },
+    ],
+    tamu_vvip: ['Rektor UNP'],
+  },
+  {
+    id: 'keg-3',
+    nama_kegiatan: 'Seminar Nasional Teknologi Pendidikan',
+    bentuk: 'kunjungan_tamu',
+    kategori: 'eksternal',
+    status: 'selesai',
+    tanggal: '2026-05-10T09:00:00Z',
+    jam_mulai: '09:00',
+    jam_selesai: '13:00',
+    lokasi: 'Hotel Pangeran Beach',
+    deskripsi: 'Seminar nasional yang dihadiri oleh Mendikbudristek.',
+    pendaftar: [
+      { id: 'pend-4', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', status: 'diterima' },
+      { id: 'pend-5', protokoler_id: 'prot-2', nama_lengkap: 'Budi Santoso', status: 'diterima' },
+    ],
+    tamu_vvip: ['Menteri Nadiem Makarim'],
+  }
+];
 
 // ──────────────── PROTOKOLER ────────────────
-let mockProtokoler: any[] = [];
+let mockProtokoler: any[] = [
+  { id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', nim: '22001111', prodi: 'Manajemen', status: 'aktif', no_hp: '08123456789' },
+  { id: 'prot-2', nama_lengkap: 'Budi Santoso', nim: '22002222', prodi: 'Ilmu Komputer', status: 'aktif', no_hp: '08987654321' },
+  { id: 'prot-3', nama_lengkap: 'Andi Saputra', nim: '23003333', prodi: 'Teknik Sipil', status: 'pending_verification', no_hp: '081122334455' },
+];
 
 export const protokolerApi = {
   list: async (search?: string) => mockProtokoler,
-  get: async (id: string) => ({ id, nama_lengkap: 'Dummy User' }),
-  create: async (data: any) => ({ success: true, id: 'new-p' }),
+  get: async (id: string) => mockProtokoler.find(p => p.id === id) || { id, nama_lengkap: 'Dummy User' },
+  create: async (data: any) => ({ success: true, id: `prot-${Date.now()}` }),
   update: async (id: string, data: any) => ({ success: true }),
   remove: async (id: string) => ({ success: true }),
 };
@@ -76,8 +131,8 @@ export const kegiatanApi = {
 
 // ──────────────── PENDAFTARAN ────────────────
 export const pendaftaranApi = {
-  byKegiatan: async (kegiatan_id: string) => [],
-  byProtokoler: async (protokoler_id: string) => [],
+  byKegiatan: async (kegiatan_id: string) => mockKegiatan.find(k => k.id === kegiatan_id)?.pendaftar || [],
+  byProtokoler: async (protokoler_id: string) => mockKegiatan.filter(k => k.pendaftar?.some((p:any) => p.protokoler_id === protokoler_id)).map(k => ({...k, pendaftaran_status: k.pendaftar.find((p:any)=>p.protokoler_id===protokoler_id)?.status})),
   create: async (data: any) => ({ success: true }),
   update: async (id: string, data: any) => ({ success: true }),
   remove: async (id: string) => ({ success: true }),
@@ -86,21 +141,30 @@ export const pendaftaranApi = {
 // ──────────────── ABSENSI & EVALUASI & TESTIMONI ────────────────
 export const absensiApi = {
   create: async (data: any) => ({ success: true }),
-  byKegiatan: async (kegiatan_id: string) => [],
+  byKegiatan: async (kegiatan_id: string) => [
+    { id: 'abs-1', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', waktu_absen: '2026-05-10T08:30:00Z', status: 'hadir', foto_url: 'https://placehold.co/100x100?text=Siti' }
+  ],
 };
 
 export const evaluasiApi = {
   create: async (data: any) => ({ success: true }),
-  byKegiatan: async (kegiatan_id: string) => [],
+  byKegiatan: async (kegiatan_id: string) => [
+    { id: 'eval-1', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', tata_tempat: 5, tata_upacara: 4, tata_penghormatan: 5, catatan: 'Sangat sigap dan responsif.' },
+    { id: 'eval-2', protokoler_id: 'prot-2', nama_lengkap: 'Budi Santoso', tata_tempat: 4, tata_upacara: 3, tata_penghormatan: 4, catatan: 'Perlu lebih fokus.' }
+  ],
 };
 
 export const testimoniApi = {
   create: async (data: any) => ({ success: true }),
-  byKegiatan: async (kegiatan_id: string) => [],
+  byKegiatan: async (kegiatan_id: string) => [
+    { id: 'testi-1', nama_tamu: 'Menteri Nadiem Makarim', instansi: 'Kemdikbudristek', rating: 5, feedback: 'Pelayanan protokoler UNP sangat luar biasa dan profesional.' }
+  ],
 };
 
 export const sertifikatApi = {
-  byProtokoler: async (protokoler_id: string) => [],
+  byProtokoler: async (protokoler_id: string) => [
+    { id: 'cert-1', kegiatan_id: 'keg-3', nama_kegiatan: 'Seminar Nasional Teknologi Pendidikan', url: '#', terbit_pada: '2026-05-11T10:00:00Z' }
+  ],
 };
 
 // ──────────────── DASHBOARD / LAPORAN ────────────────
@@ -127,8 +191,41 @@ export const laporanApi = {
 };
 
 // ──────────────── REGULASI ────────────────
+export const regulasiMockData = [
+  {
+    id: 'reg-1',
+    judul: 'Penerimaan Tamu Pribadi & Dinas',
+    subtitle: 'SOP Penyambutan Tamu VVIP',
+    kategori: 'SOP',
+    tanggal_berlaku: '2025-01-01',
+    deskripsi: 'Panduan resmi UNP untuk penerimaan tamu pribadi dan dinas. Pastikan proses penyambutan berjalan efektif dan profesional.',
+    link_dokumen: '#',
+    accentGradient: 'linear-gradient(135deg, #1e293b 0%, #334155 50%, #0f172a 100%)',
+  },
+  {
+    id: 'reg-2',
+    judul: 'Keprotokolan Pimpinan',
+    subtitle: 'SOP Kegiatan Resmi Pimpinan',
+    kategori: 'SOP',
+    tanggal_berlaku: '2025-06-01',
+    deskripsi: 'Panduan resmi keprotokolan UNP untuk setiap acara. Pastikan kegiatan berjalan sesuai standar dan mencerminkan citra positif.',
+    link_dokumen: '#',
+    accentGradient: 'linear-gradient(135deg, #6b0000 0%, #1e293b 50%, #0f172a 100%)',
+  },
+  {
+    id: 'reg-3',
+    judul: 'Penerimaan Tamu Pejabat',
+    subtitle: 'SOP Protokol Tamu Negara',
+    kategori: 'SOP',
+    tanggal_berlaku: '2026-06-10',
+    deskripsi: 'Panduan khusus penerimaan tamu pejabat di UNP. Pastikan proses penyambutan sesuai dengan protokol yang berlaku.',
+    link_dokumen: '#',
+    accentGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #450a0a 100%)',
+  },
+];
+
 export const regulasiApi = {
-  list: async () => [],
+  list: async () => regulasiMockData,
   create: async (data: any) => ({ success: true }),
 };
 
