@@ -136,7 +136,7 @@ export default function RegulasiPage() {
 
       {/* ─── Floating Toolbar (Search) ─── */}
       <section className="relative z-20 pb-0">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-slate-200 bg-white rounded-[24px] p-5 shadow-sm">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-5">
           <div className="relative max-w-md w-full">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
             <Input className="pl-12 bg-white border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl h-11 text-base focus-visible:ring-slate-200 shadow-sm" placeholder="Cari SOP atau regulasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -152,8 +152,8 @@ export default function RegulasiPage() {
         <section className="pb-12 space-y-6">
 
           {/* Regulasi List */}
-          <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
+            <div className="flex items-center justify-between border-b border-white/40 px-6 py-4 bg-white/40 backdrop-blur-md">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-white border border-slate-200 text-slate-600 rounded-xl">
                   <FileCheck className="h-5 w-5" />

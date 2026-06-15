@@ -96,7 +96,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { data: role } = useRole(user);
   const router = useRouter();
   const path = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const signOut = () => {
     // Demo mode: hanya clear localStorage, tidak ada koneksi ke backend

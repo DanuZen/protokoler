@@ -103,13 +103,13 @@ export default function SertifikatPage() {
         <section className="pb-12 space-y-6">
 
           {mockSertifikat.length === 0 ? (
-            <div className="bg-white border border-slate-200 rounded-[24px] p-16 text-center shadow-sm">
+            <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-16 text-center">
               <Award className="h-12 w-12 mx-auto mb-4 text-slate-300" />
               <h3 className="font-bold text-slate-900 text-lg">Belum ada sertifikat</h3>
               <p className="text-slate-500 text-sm mt-1">Sertifikat akan diterbitkan setelah kegiatan selesai.</p>
             </div>
           ) : (
-            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
+            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
               <div className="divide-y divide-slate-100">
                 {mockSertifikat.map((s) => (
                   <motion.div key={s.id} variants={fadeUp}>

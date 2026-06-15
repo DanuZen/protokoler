@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock } from 'lucide-react';
+import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText } from 'lucide-react';
 
 type AuthMode = 'login' | 'register';
 type RegisterStep = 1 | 2 | 3;
@@ -25,18 +25,9 @@ export default function AuthPage() {
   // Register multi-step state
   const [step, setStep] = useState<RegisterStep>(1);
   const [regForm, setRegForm] = useState({
-    nim: '',
-    nama_lengkap: '',
-    prodi: '',
-    departemen: '',
-    fakultas: '',
-    no_hp: '',
-    email: '',
-    password: '',
-    password_confirm: '',
+    nim: '', nama_lengkap: '', prodi: '', departemen: '',
+    fakultas: '', no_hp: '', email: '', password: '', password_confirm: '',
   });
-  const [fotoSetengah, setFotoSetengah] = useState<File | null>(null);
-  const [fotoFull, setFotoFull] = useState<File | null>(null);
   const [fotoSetengahPreview, setFotoSetengahPreview] = useState<string | null>(null);
   const [fotoFullPreview, setFotoFullPreview] = useState<string | null>(null);
 
@@ -52,22 +43,11 @@ export default function AuthPage() {
     router.replace(role === 'mahasiswa' ? '/beranda' : role === 'dokumentasi' ? '/dokumentasi/dashboard' : '/dashboard');
   };
 
-  const demoQuickCreds: Array<[string, string, string]> = [
-    ['Admin', 'admin@siproto.com', 'admin123'],
-    ['Protokoler', 'mhs@siproto.com', 'mhs123'],
-    ['Dokumentasi', 'docs@siproto.com', 'docs123'],
-  ];
-
   useEffect(() => {
-    // Demo mode: jika sudah ada role tersimpan, langsung redirect
     const demoRole = localStorage.getItem('demo_role');
-    if (demoRole) {
-      router.replace(resolveDashboardRoute());
-    }
+    if (demoRole) router.replace(resolveDashboardRoute());
   }, [router]);
 
-  // Demo: login form tidak digunakan (pakai tombol role langsung)
-  // Fungsi ini tetap ada tapi tidak memanggil backend
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     toast.info('Gunakan tombol peran di atas untuk masuk dalam mode demo.');
@@ -79,7 +59,6 @@ export default function AuthPage() {
       return;
     }
     setLoading(true);
-    // Demo mode: simulasi pendaftaran tanpa memanggil backend
     await new Promise((r) => setTimeout(r, 600));
     setLoading(false);
     setRegistered(true);
@@ -87,22 +66,11 @@ export default function AuthPage() {
 
   const handleFileChange = (file: File | null, type: 'setengah' | 'full') => {
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('Ukuran foto maksimal 2MB');
-      return;
-    }
-    if (!file.type.startsWith('image/')) {
-      toast.error('Format harus berupa gambar');
-      return;
-    }
+    if (file.size > 2 * 1024 * 1024) { toast.error('Ukuran foto maksimal 2MB'); return; }
+    if (!file.type.startsWith('image/')) { toast.error('Format harus berupa gambar'); return; }
     const url = URL.createObjectURL(file);
-    if (type === 'setengah') {
-      setFotoSetengah(file);
-      setFotoSetengahPreview(url);
-    } else {
-      setFotoFull(file);
-      setFotoFullPreview(url);
-    }
+    if (type === 'setengah') setFotoSetengahPreview(url);
+    else setFotoFullPreview(url);
   };
 
   const steps = [
@@ -111,264 +79,269 @@ export default function AuthPage() {
     { label: 'Buat Password', icon: BookOpen },
   ];
 
+  const roleCards = [
+    { role: 'admin' as const, label: 'Pimpinan', desc: 'Kelola seluruh sistem', icon: Shield, color: 'bg-slate-900 text-white hover:bg-slate-800', iconBg: 'bg-white/10' },
+    { role: 'mahasiswa' as const, label: 'Protokoler', desc: 'Akses tugas & jadwal', icon: GraduationCap, color: 'bg-orange-500 text-white hover:bg-orange-600', iconBg: 'bg-white/20' },
+    { role: 'dokumentasi' as const, label: 'Dokumentasi', desc: 'Kelola galeri & media', icon: Briefcase, color: 'bg-white text-slate-900 hover:bg-slate-50 border border-slate-200', iconBg: 'bg-slate-100' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center px-4 overflow-hidden relative py-12">
-      {/* BG Decorative */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/10 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/20 blur-[120px] pointer-events-none" />
-
-      <div className="w-full max-w-md z-10">
-        {/* Logo */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex flex-col items-center text-primary-foreground">
-          <div className="relative h-20 w-20 mb-4 bg-white/10 p-2 backdrop-blur-sm shadow-xl border border-white/20 overflow-hidden">
-            <Image src="/logo protokoler.png" alt="SiProto" fill sizes="80px" className="object-contain p-2" priority />
+    <div className="min-h-screen grid lg:grid-cols-2 overflow-hidden">
+      {/* ── Left Panel (branding) - White Background ── */}
+      <div className="hidden lg:flex flex-col justify-between bg-white relative z-10 p-12 xl:p-20 border-r border-slate-100 shadow-xl shadow-slate-200/50">
+        <div>
+          <div className="flex items-center gap-3 mb-16">
+            <div className="relative h-12 w-12">
+              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="48px" className="object-contain" priority />
+            </div>
+            <div>
+              <span className="font-display text-2xl font-bold tracking-tight leading-none block text-slate-900">PROTOKOLER</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">UNIVERSITAS NEGERI PADANG</span>
+            </div>
           </div>
-          <h1 className="font-display text-4xl font-bold tracking-tight">SiProto</h1>
-          <p className="text-sm text-primary-foreground/80 mt-1 font-medium">Sistem Informasi Protokoler · UNP</p>
-        </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="border border-white/50 bg-white/95 backdrop-blur-xl p-8 shadow-2xl">
-          <AnimatePresence mode="wait">
-            {/* ── LOGIN MODE ── */}
-            {mode === 'login' && (
-              <motion.div key="login" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}>
-                <h2 className="font-display text-2xl font-bold text-slate-900 mb-1">Masuk ke SiProto</h2>
-                <p className="text-sm text-slate-500 mb-6">Gunakan akun yang telah terdaftar dan diverifikasi.</p>
-                <div className="space-y-4">
-                  <div className="p-4 bg-blue-50 border border-blue-200 text-blue-800 text-sm mb-4 font-medium leading-relaxed">
-                    <strong>Mode Demo Frontend:</strong> Pilih peran (role) di bawah ini untuk langsung masuk dan melihat dashboard tanpa perlu mengisi database.
+          <div className="space-y-8">
+            <div>
+              <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 leading-tight mb-4">
+                Sistem Informasi<br />
+                <span className="text-orange-500">Protokoler UNP</span>
+              </h1>
+              <p className="text-slate-500 text-base leading-relaxed font-medium">
+                Platform manajemen keprotokolan terintegrasi — absensi, jadwal, evaluasi, dan sertifikasi digital dalam satu sistem.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                { icon: CalendarDays, label: 'Manajemen Jadwal', desc: 'Pantau kegiatan secara real-time' },
+                { icon: Trophy, label: 'Gamifikasi Kinerja', desc: 'Poin & medali untuk protokoler aktif' },
+                { icon: ScrollText, label: 'e-Sertifikat Otomatis', desc: 'Terbit setelah evaluasi selesai' },
+              ].map((f) => (
+                <div key={f.label} className="flex items-center gap-4 p-5 bg-white/60 backdrop-blur-sm border border-white/80 rounded-2xl shadow-sm">
+                  <div className="h-12 w-12 flex items-center justify-center bg-orange-100 text-orange-500 rounded-xl shrink-0">
+                    <f.icon className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-slate-900">{f.label}</div>
+                    <div className="text-xs text-slate-500">{f.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <p className="text-xs text-slate-400 font-medium">© 2026 Unit Protokoler Universitas Negeri Padang</p>
+      </div>
+
+      {/* ── Right Panel: Auth Card & Orange Background ── */}
+      <div className="flex items-center justify-center p-6 relative bg-slate-50 lg:bg-orange-50/50">
+        {/* Gradients specific to right panel */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-200/30 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-100/40 rounded-full blur-[100px] pointer-events-none" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="w-full max-w-md"
+        >
+          {/* Mobile logo */}
+          <div className="flex items-center gap-3 mb-8 lg:hidden">
+            <div className="relative h-12 w-12">
+              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="48px" className="object-contain" priority />
+            </div>
+            <div>
+              <span className="font-display text-xl font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500 block">UNIVERSITAS NEGERI PADANG</span>
+            </div>
+          </div>
+
+          {/* Main card */}
+          <div className="bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_20px_60px_rgb(0,0,0,0.08)] rounded-3xl p-8">
+            <AnimatePresence mode="wait">
+              {/* ── LOGIN MODE ── */}
+              {mode === 'login' && (
+                <motion.div key="login" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}>
+                  <div className="mb-7">
+                    <h2 className="font-display text-2xl font-bold text-slate-900 tracking-tight mb-1">Selamat Datang</h2>
+                    <p className="text-sm text-slate-500 font-medium">Pilih peran untuk masuk ke sistem demo.</p>
                   </div>
 
-                  <Button onClick={() => enterDemoRole('admin')} className="w-full h-12 rounded-none font-bold bg-slate-900 text-gold hover:bg-slate-800 flex justify-between px-6 shadow-md">
-                    <span>Masuk sebagai Pimpinan</span> <ChevronRight className="h-5 w-5" />
-                  </Button>
-
-                  <Button onClick={() => enterDemoRole('dokumentasi')} className="w-full h-12 rounded-none font-bold bg-white text-slate-900 hover:bg-slate-100 flex justify-between px-6 shadow-md border border-slate-200">
-                    <span>Masuk sebagai Dokumentasi</span> <ChevronRight className="h-5 w-5" />
-                  </Button>
-
-                  <Button onClick={() => enterDemoRole('mahasiswa')} className="w-full h-12 rounded-none font-bold bg-gold text-slate-900 hover:bg-yellow-500 flex justify-between px-6 shadow-md">
-                    <span>Masuk sebagai Protokoler</span> <ChevronRight className="h-5 w-5" />
-                  </Button>
-                </div>
-
-                <div className="my-5 flex items-center gap-3">
-                  <div className="h-px flex-1 bg-slate-200" />
-                  <span className="text-xs text-slate-400 font-medium">Belum punya akun?</span>
-                  <div className="h-px flex-1 bg-slate-200" />
-                </div>
-
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setMode('register');
-                    setStep(1);
-                  }}
-                  className="w-full rounded-none border-slate-300 h-11 font-semibold"
-                >
-                  Daftar Sebagai Protokoler
-                </Button>
-
-                <div className="mt-6 border-t border-slate-100 pt-5">
-                  <p className="text-center text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Demo Cepat</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {demoQuickCreds.map(([label, e, p]) => (
+                  {/* Role selection cards */}
+                  <div className="space-y-3 mb-7">
+                    {roleCards.map(({ role, label, desc, icon: Icon, color, iconBg }) => (
                       <button
-                        key={label}
-                        onClick={() => {
-                          setEmail(e);
-                          setPassword(p);
-                          toast.info('Kredensial diisi.');
-                        }}
-                        className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-3 font-semibold transition-colors"
+                        key={role}
+                        onClick={() => enterDemoRole(role)}
+                        className={`w-full flex items-center justify-between gap-4 px-5 py-4 rounded-2xl font-bold transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] ${color}`}
                       >
-                        {label}
+                        <div className="flex items-center gap-3">
+                          <div className={`h-10 w-10 flex items-center justify-center rounded-xl ${iconBg}`}>
+                            <Icon className="h-5 w-5" />
+                          </div>
+                          <div className="text-left">
+                            <div className="text-sm font-bold leading-tight">{label}</div>
+                            <div className="text-[11px] opacity-70 font-medium">{desc}</div>
+                          </div>
+                        </div>
+                        <ChevronRight className="h-5 w-5 opacity-60 shrink-0" />
                       </button>
                     ))}
                   </div>
-                </div>
-              </motion.div>
-            )}
 
-            {/* ── REGISTER MODE ── */}
-            {mode === 'register' && !registered && (
-              <motion.div key="register" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
-                <button onClick={() => setMode('login')} className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-900 mb-4">
-                  <ArrowLeft className="h-4 w-4" /> Kembali ke Login
-                </button>
+                  <div className="my-5 flex items-center gap-3">
+                    <div className="h-px flex-1 bg-slate-200" />
+                    <span className="text-xs text-slate-400 font-medium">Belum punya akun?</span>
+                    <div className="h-px flex-1 bg-slate-200" />
+                  </div>
 
-                {/* Stepper Mini */}
-                <div className="flex items-center gap-2 mb-6">
-                  {steps.map((s, i) => (
-                    <div key={i} className="flex items-center gap-2 flex-1">
-                      <div className={`h-7 w-7 flex items-center justify-center text-xs font-bold transition-colors ${step > i + 1 ? 'bg-green-600 text-white' : step === i + 1 ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-500'}`}>
-                        {step > i + 1 ? <Check className="h-4 w-4" /> : i + 1}
-                      </div>
-                      {i < steps.length - 1 && <div className={`h-px flex-1 ${step > i + 1 ? 'bg-green-500' : 'bg-slate-200'}`} />}
-                    </div>
-                  ))}
-                </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => { setMode('register'); setStep(1); }}
+                    className="w-full rounded-xl border-slate-200 h-11 font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                  >
+                    Daftar Sebagai Protokoler
+                  </Button>
+                </motion.div>
+              )}
 
-                <AnimatePresence mode="wait">
-                  {/* Step 1: Data Diri */}
-                  {step === 1 && (
-                    <motion.div key="s1" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-4">
-                      <h2 className="font-display text-xl font-bold text-slate-900">Data Diri</h2>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-bold text-slate-600">
-                            NIM <span className="text-red-500">*</span>
-                          </Label>
-                          <Input className="rounded-none h-10 border-slate-300 text-sm" value={regForm.nim} onChange={(e) => setRegForm({ ...regForm, nim: e.target.value })} placeholder="22000XXXXX" />
+              {/* ── REGISTER MODE ── */}
+              {mode === 'register' && !registered && (
+                <motion.div key="register" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
+                  <button onClick={() => setMode('login')} className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-5 font-semibold transition-colors">
+                    <ArrowLeft className="h-4 w-4" /> Kembali ke Login
+                  </button>
+
+                  {/* Stepper */}
+                  <div className="flex items-center gap-1 mb-6">
+                    {steps.map((s, i) => (
+                      <div key={i} className="flex items-center gap-1 flex-1">
+                        <div className={`h-7 w-7 flex items-center justify-center text-xs font-bold rounded-lg transition-all ${step > i + 1 ? 'bg-orange-500 text-white' : step === i + 1 ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                          {step > i + 1 ? <Check className="h-3.5 w-3.5" /> : i + 1}
                         </div>
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-bold text-slate-600">
-                            No. HP <span className="text-red-500">*</span>
-                          </Label>
-                          <Input className="rounded-none h-10 border-slate-300 text-sm" value={regForm.no_hp} onChange={(e) => setRegForm({ ...regForm, no_hp: e.target.value })} placeholder="08XX" />
-                        </div>
+                        {i < steps.length - 1 && <div className={`h-px flex-1 mx-1 ${step > i + 1 ? 'bg-orange-400' : 'bg-slate-200'}`} />}
                       </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-slate-600">
-                          Nama Lengkap <span className="text-red-500">*</span>
-                        </Label>
-                        <Input className="rounded-none h-10 border-slate-300 text-sm" value={regForm.nama_lengkap} onChange={(e) => setRegForm({ ...regForm, nama_lengkap: e.target.value })} />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-slate-600">
-                          Program Studi <span className="text-red-500">*</span>
-                        </Label>
-                        <Input className="rounded-none h-10 border-slate-300 text-sm" value={regForm.prodi} onChange={(e) => setRegForm({ ...regForm, prodi: e.target.value })} />
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1.5">
-                          <Label className="text-xs font-bold text-slate-600">Departemen</Label>
-                          <Input className="rounded-none h-10 border-slate-300 text-sm" value={regForm.departemen} onChange={(e) => setRegForm({ ...regForm, departemen: e.target.value })} />
+                    ))}
+                  </div>
+
+                  <AnimatePresence mode="wait">
+                    {/* Step 1 */}
+                    {step === 1 && (
+                      <motion.div key="s1" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-4">
+                        <h2 className="font-display text-xl font-bold text-slate-900">Data Diri</h2>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">NIM <span className="text-red-500">*</span></Label>
+                            <Input className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.nim} onChange={(e) => setRegForm({ ...regForm, nim: e.target.value })} placeholder="22000XXXXX" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">No. HP <span className="text-red-500">*</span></Label>
+                            <Input className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.no_hp} onChange={(e) => setRegForm({ ...regForm, no_hp: e.target.value })} placeholder="08XX" />
+                          </div>
                         </div>
                         <div className="space-y-1.5">
-                          <Label className="text-xs font-bold text-slate-600">Fakultas</Label>
-                          <Input className="rounded-none h-10 border-slate-300 text-sm" value={regForm.fakultas} onChange={(e) => setRegForm({ ...regForm, fakultas: e.target.value })} />
+                          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap <span className="text-red-500">*</span></Label>
+                          <Input className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.nama_lengkap} onChange={(e) => setRegForm({ ...regForm, nama_lengkap: e.target.value })} />
                         </div>
-                      </div>
-                      <Button className="w-full rounded-none h-11 font-bold mt-2" disabled={!regForm.nim || !regForm.nama_lengkap || !regForm.prodi} onClick={() => setStep(2)}>
-                        Lanjut <ChevronRight className="h-4 w-4 ml-2" />
-                      </Button>
-                    </motion.div>
-                  )}
-
-                  {/* Step 2: Upload Foto */}
-                  {step === 2 && (
-                    <motion.div key="s2" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-5">
-                      <h2 className="font-display text-xl font-bold text-slate-900">Upload Foto</h2>
-                      <p className="text-xs text-slate-500">Foto akan digunakan untuk identitas tim dan sertifikat. Format JPG/PNG, maks. 2MB.</p>
-                      {[
-                        { label: 'Foto Setengah Badan', desc: 'Tampak depan, formal', type: 'setengah' as const, preview: fotoSetengahPreview },
-                        { label: 'Foto Full Body', desc: 'Tampak depan, seragam lengkap', type: 'full' as const, preview: fotoFullPreview },
-                      ].map(({ label, desc, type, preview }) => (
-                        <div key={type}>
-                          <Label className="text-xs font-bold text-slate-600">
-                            {label} <span className="text-red-500">*</span>
-                          </Label>
-                          <p className="text-xs text-slate-400 mb-2">{desc}</p>
-                          <label
-                            className={`flex flex-col items-center justify-center w-full h-36 border-2 border-dashed cursor-pointer transition-colors ${preview ? 'border-green-300 bg-green-50' : 'border-slate-300 bg-slate-50 hover:bg-slate-100'}`}
-                          >
-                            {preview ? (
-                              <div className="relative h-full w-full">
-                                <Image src={preview} alt="preview" fill className="object-contain p-1" />
-                              </div>
-                            ) : (
-                              <div className="flex flex-col items-center gap-2 text-slate-400">
-                                <Upload className="h-8 w-8" />
-                                <span className="text-xs font-medium">Klik atau seret foto ke sini</span>
-                              </div>
-                            )}
-                            <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e.target.files?.[0] || null, type)} />
-                          </label>
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Program Studi <span className="text-red-500">*</span></Label>
+                          <Input className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.prodi} onChange={(e) => setRegForm({ ...regForm, prodi: e.target.value })} />
                         </div>
-                      ))}
-                      <div className="flex gap-3">
-                        <Button variant="outline" className="flex-1 rounded-none border-slate-300" onClick={() => setStep(1)}>
-                          <ChevronLeft className="h-4 w-4 mr-1" /> Kembali
-                        </Button>
-                        <Button className="flex-1 rounded-none font-bold" onClick={() => setStep(3)}>
+                        <Button className="w-full rounded-xl h-11 font-bold bg-orange-500 hover:bg-orange-600 text-white mt-2 transition-colors" disabled={!regForm.nim || !regForm.nama_lengkap || !regForm.prodi} onClick={() => setStep(2)}>
                           Lanjut <ChevronRight className="h-4 w-4 ml-2" />
                         </Button>
-                      </div>
-                    </motion.div>
-                  )}
+                      </motion.div>
+                    )}
 
-                  {/* Step 3: Akun */}
-                  {step === 3 && (
-                    <motion.div key="s3" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-4">
-                      <h2 className="font-display text-xl font-bold text-slate-900">Akun & Password</h2>
-                      <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-slate-600">
-                          Email <span className="text-red-500">*</span>
-                        </Label>
-                        <Input type="email" className="rounded-none h-10 border-slate-300 text-sm" value={regForm.email} onChange={(e) => setRegForm({ ...regForm, email: e.target.value })} placeholder="nama@kampus.ac.id" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-slate-600">
-                          Password <span className="text-red-500">*</span>
-                        </Label>
-                        <Input type="password" className="rounded-none h-10 border-slate-300 text-sm" value={regForm.password} onChange={(e) => setRegForm({ ...regForm, password: e.target.value })} placeholder="Min. 8 karakter" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-xs font-bold text-slate-600">
-                          Konfirmasi Password <span className="text-red-500">*</span>
-                        </Label>
-                        <Input type="password" className="rounded-none h-10 border-slate-300 text-sm" value={regForm.password_confirm} onChange={(e) => setRegForm({ ...regForm, password_confirm: e.target.value })} />
-                        {regForm.password && regForm.password_confirm && regForm.password !== regForm.password_confirm && <p className="text-xs text-red-500 font-medium">Password tidak cocok</p>}
-                      </div>
-                      <div className="flex gap-3">
-                        <Button variant="outline" className="flex-1 rounded-none border-slate-300" onClick={() => setStep(2)}>
-                          <ChevronLeft className="h-4 w-4 mr-1" /> Kembali
-                        </Button>
-                        <Button className="flex-1 rounded-none font-bold" disabled={loading || !regForm.email || !regForm.password || regForm.password !== regForm.password_confirm} onClick={handleRegister}>
-                          {loading ? (
-                            <>
-                              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                              Mendaftarkan...
-                            </>
-                          ) : (
-                            'Kirim Pendaftaran'
-                          )}
-                        </Button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            )}
+                    {/* Step 2 */}
+                    {step === 2 && (
+                      <motion.div key="s2" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-4">
+                        <h2 className="font-display text-xl font-bold text-slate-900">Upload Foto</h2>
+                        <p className="text-xs text-slate-500 -mt-2">Format JPG/PNG, maks. 2MB.</p>
+                        {[
+                          { label: 'Foto Setengah Badan', desc: 'Tampak depan, formal', type: 'setengah' as const, preview: fotoSetengahPreview },
+                          { label: 'Foto Full Body', desc: 'Tampak depan, seragam lengkap', type: 'full' as const, preview: fotoFullPreview },
+                        ].map(({ label, desc, type, preview }) => (
+                          <div key={type}>
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{label} <span className="text-red-500">*</span></Label>
+                            <p className="text-xs text-slate-400 mb-2">{desc}</p>
+                            <label className={`flex flex-col items-center justify-center w-full h-28 border-2 border-dashed cursor-pointer transition-colors rounded-xl ${preview ? 'border-orange-300 bg-orange-50' : 'border-slate-200 bg-slate-50 hover:bg-slate-100'}`}>
+                              {preview ? (
+                                <div className="relative h-full w-full">
+                                  <Image src={preview} alt="preview" fill className="object-contain p-1 rounded-xl" />
+                                </div>
+                              ) : (
+                                <div className="flex flex-col items-center gap-2 text-slate-400">
+                                  <Upload className="h-6 w-6" />
+                                  <span className="text-xs font-medium">Klik atau seret foto ke sini</span>
+                                </div>
+                              )}
+                              <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e.target.files?.[0] || null, type)} />
+                            </label>
+                          </div>
+                        ))}
+                        <div className="flex gap-3 pt-1">
+                          <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={() => setStep(1)}><ChevronLeft className="h-4 w-4 mr-1" /> Kembali</Button>
+                          <Button className="flex-1 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white" onClick={() => setStep(3)}>Lanjut <ChevronRight className="h-4 w-4 ml-2" /></Button>
+                        </div>
+                      </motion.div>
+                    )}
 
-            {/* ── REGISTERED: Waiting Verification ── */}
-            {mode === 'register' && registered && (
-              <motion.div key="pending" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-4 space-y-4">
-                <div className="h-20 w-20 mx-auto bg-orange-100 border-2 border-orange-300 flex items-center justify-center">
-                  <Clock className="h-10 w-10 text-orange-500" />
-                </div>
-                <h2 className="font-display text-2xl font-bold text-slate-900">Pendaftaran Terkirim!</h2>
-                <p className="text-sm text-slate-500 leading-relaxed">Data Anda sedang ditinjau oleh Admin. Anda akan menerima notifikasi setelah akun diverifikasi.</p>
-                <div className="bg-orange-50 border border-orange-200 p-3 text-xs text-orange-700 text-left font-medium">ℹ️ Proses verifikasi biasanya memakan waktu 1×24 jam kerja.</div>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setMode('login');
-                    setRegistered(false);
-                  }}
-                  className="w-full rounded-none border-slate-300"
-                >
-                  Kembali ke Login
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                    {/* Step 3 */}
+                    {step === 3 && (
+                      <motion.div key="s3" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-4">
+                        <h2 className="font-display text-xl font-bold text-slate-900">Akun & Password</h2>
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Email <span className="text-red-500">*</span></Label>
+                          <Input type="email" className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.email} onChange={(e) => setRegForm({ ...regForm, email: e.target.value })} placeholder="nama@kampus.ac.id" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Password <span className="text-red-500">*</span></Label>
+                          <Input type="password" className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.password} onChange={(e) => setRegForm({ ...regForm, password: e.target.value })} placeholder="Min. 8 karakter" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Konfirmasi Password <span className="text-red-500">*</span></Label>
+                          <Input type="password" className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.password_confirm} onChange={(e) => setRegForm({ ...regForm, password_confirm: e.target.value })} />
+                          {regForm.password && regForm.password_confirm && regForm.password !== regForm.password_confirm && <p className="text-xs text-red-500 font-medium">Password tidak cocok</p>}
+                        </div>
+                        <div className="flex gap-3 pt-1">
+                          <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={() => setStep(2)}><ChevronLeft className="h-4 w-4 mr-1" /> Kembali</Button>
+                          <Button className="flex-1 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white" disabled={loading || !regForm.email || !regForm.password || regForm.password !== regForm.password_confirm} onClick={handleRegister}>
+                            {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Mendaftarkan...</> : 'Kirim Pendaftaran'}
+                          </Button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )}
+
+              {/* ── REGISTERED: Waiting Verification ── */}
+              {mode === 'register' && registered && (
+                <motion.div key="pending" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-4 space-y-5">
+                  <div className="h-20 w-20 mx-auto bg-orange-100 border-2 border-orange-200 rounded-2xl flex items-center justify-center">
+                    <Clock className="h-10 w-10 text-orange-500" />
+                  </div>
+                  <div>
+                    <h2 className="font-display text-2xl font-bold text-slate-900 mb-2">Pendaftaran Terkirim!</h2>
+                    <p className="text-sm text-slate-500 leading-relaxed">Data Anda sedang ditinjau oleh Admin. Anda akan dinotifikasi setelah akun diverifikasi.</p>
+                  </div>
+                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 text-xs text-orange-700 text-left font-medium">
+                    ℹ️ Proses verifikasi biasanya memakan waktu 1×24 jam kerja.
+                  </div>
+                  <Button variant="outline" onClick={() => { setMode('login'); setRegistered(false); }} className="w-full rounded-xl border-slate-200 font-semibold">
+                    Kembali ke Login
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <p className="mt-6 text-center text-xs text-slate-400 font-medium lg:hidden">
+            © 2026 Protokoler · Universitas Negeri Padang
+          </p>
         </motion.div>
-
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="mt-6 text-center text-xs text-primary-foreground/50">
-          © 2026 SiProto · Universitas Negeri Padang
-        </motion.p>
       </div>
     </div>
   );

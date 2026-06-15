@@ -133,7 +133,7 @@ export default function AnggotaPage() {
       {/* ─── BODY CONTENT ─── */}
       <div className="flex-1 mt-8">
         <section className="pb-12">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
         
         {/* Toolbar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-100 px-6 py-4 bg-white">

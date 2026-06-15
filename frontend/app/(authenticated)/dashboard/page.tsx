@@ -1,11 +1,12 @@
 'use client';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
+import { useState, useMemo } from 'react';
 import { dashboardApi } from '@/lib/api';
 import { useAuth } from '@/hooks/use-auth';
 import {
-  LayoutGrid, ArrowRight, Settings2, Info, ChevronDown, Search, Filter, Download, MoreVertical,
-  Activity, CalendarDays, Users, CheckCircle2, Clock, MapPin
+  LayoutGrid, ArrowRight, Info, MoreVertical,
+  Activity, CalendarDays, Clock, MapPin
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -19,6 +20,7 @@ const fadeUp = (delay = 0) => ({
 export default function Dashboard() {
   const { user } = useAuth();
   const displayName = user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Demo Pimpinan';
+  const [hoveredBar, setHoveredBar] = useState<string | null>(null);
 
   const { data: stats } = useQuery({
     queryKey: ['dashboard-stats'],
@@ -187,27 +189,35 @@ export default function Dashboard() {
             </div>
             {/* Chart Bars */}
             <div className="flex-1 flex items-end justify-between ml-10 border-b border-slate-100 pb-2 h-full">
-              {['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'].map((m, i) => {
-                const isHovered = m === 'Jun'; // mock active state
-                const h1 = 20 + Math.random() * 60;
-                const h2 = 10 + Math.random() * 40;
+              {[
+                { m: 'Jan', h1: 28, h2: 14 }, { m: 'Feb', h1: 35, h2: 18 }, { m: 'Mar', h1: 22, h2: 11 },
+                { m: 'Apr', h1: 45, h2: 22 }, { m: 'Mei', h1: 55, h2: 28 }, { m: 'Jun', h1: 72, h2: 38 },
+                { m: 'Jul', h1: 48, h2: 24 }, { m: 'Agt', h1: 30, h2: 15 }, { m: 'Sep', h1: 25, h2: 12 },
+                { m: 'Okt', h1: 38, h2: 19 }, { m: 'Nov', h1: 42, h2: 21 }, { m: 'Des', h1: 33, h2: 16 },
+              ].map(({ m, h1, h2 }) => {
+                const isHovered = hoveredBar === m;
                 return (
-                  <div key={m} className="flex flex-col items-center gap-2 group flex-1 h-full justify-end">
+                  <div
+                    key={m}
+                    className="flex flex-col items-center gap-2 group flex-1 h-full justify-end"
+                    onMouseEnter={() => setHoveredBar(m)}
+                    onMouseLeave={() => setHoveredBar(null)}
+                  >
                     <div className="flex gap-1 items-end w-full max-w-[24px] mx-auto h-[90%] relative">
                       <div className={cn("w-1/2 rounded-sm transition-all duration-300", isHovered ? "bg-orange-500" : "bg-slate-100 group-hover:bg-slate-200")} style={{ height: `${h1}%` }} />
                       <div className={cn("w-1/2 rounded-sm transition-all duration-300", isHovered ? "bg-orange-100" : "bg-slate-50 group-hover:bg-slate-100")} style={{ height: `${h2}%` }} />
-                      
-                      {/* Mock Tooltip for 'Jun' */}
+
+                      {/* Tooltip — hanya muncul saat hover */}
                       {isHovered && (
-                        <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-[#1a1a1a] text-white p-3 rounded-xl shadow-xl w-32 z-10 pointer-events-none">
-                          <div className="text-[10px] text-slate-400 mb-1 font-medium">Juni 2026</div>
+                        <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-[#1a1a1a] text-white p-3 rounded-xl shadow-xl w-32 z-10 pointer-events-none animate-fade-in-up">
+                          <div className="text-[10px] text-slate-400 mb-1 font-medium">{m} 2026</div>
                           <div className="flex justify-between text-xs font-bold mb-1">
                             <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-orange-500" /> Internal</span>
-                            <span>{Math.round(h1)}</span>
+                            <span>{h1}</span>
                           </div>
                           <div className="flex justify-between text-xs font-bold">
-                            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-orange-100" /> Eksternal</span>
-                            <span>{Math.round(h2)}</span>
+                            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-orange-200" /> Eksternal</span>
+                            <span>{h2}</span>
                           </div>
                         </div>
                       )}

@@ -111,14 +111,14 @@ export default function Page() {
       )}
 
       {!isLoading && !filtered.length && (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="rounded-xl border border-slate-200 bg-white p-16 text-center shadow-sm">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-16 text-center">
           <CalendarDays className="h-14 w-14 mx-auto mb-4 text-slate-300" />
           <h3 className="font-bold text-slate-800 text-xl mb-2">Belum ada kegiatan</h3>
           <p className="text-slate-500 text-sm">Buat kegiatan baru dengan menekan tombol "Buat Kegiatan" di atas.</p>
         </motion.div>
       )}
 
-      <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden">
+      <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-white">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">

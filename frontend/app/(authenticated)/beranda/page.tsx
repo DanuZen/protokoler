@@ -187,7 +187,7 @@ export default function BerandaPage() {
             {/* Gamification Progress Card */}
             {protokoler?.status_akun === "aktif" && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="xl:col-span-5">
-                <Card className="rounded-[24px] border-slate-200 shadow-sm h-full flex flex-col bg-white">
+                <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl h-full flex flex-col">
                   <div className="border-b border-slate-100 px-6 py-4 bg-slate-50 rounded-t-[24px]">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
@@ -252,7 +252,7 @@ export default function BerandaPage() {
               </div>
 
               {recentKegiatan.length === 0 ? (
-                <div className="bg-white border border-slate-200 p-10 text-center text-slate-400">
+                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-10 text-center text-slate-400">
                   <Calendar className="h-10 w-10 mx-auto mb-3 text-slate-300" />
                   <p className="font-medium text-sm">Belum ada kegiatan yang tersedia saat ini.</p>
                 </div>
@@ -260,7 +260,7 @@ export default function BerandaPage() {
                 <div className="space-y-3">
                   {recentKegiatan.map((k: any) => (
                     <Link key={k.id} href={`/kegiatan/${k.id}`} className="block">
-                      <div className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-slate-300 hover:shadow-md transition-all group relative shadow-sm">
+                      <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-5 hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative">
                         <div className="flex justify-between items-start gap-4">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">

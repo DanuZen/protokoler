@@ -113,7 +113,7 @@ export default function JadwalPage() {
             { label: "Total Kegiatan", value: (kegiatan || []).length, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-[#ff6b4a]", bg: "bg-orange-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full">
+              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative overflow-hidden h-full">
                 <div className="flex items-center justify-between relative z-10">
                   <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
                   <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
@@ -136,7 +136,7 @@ export default function JadwalPage() {
           <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-6 items-start">
 
             {/* ── Calendar Panel ── */}
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden h-fit sticky top-6 shadow-sm">
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden h-fit sticky top-6">
               {/* Month nav header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
                 <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-orange-500 hover:text-orange-500 text-slate-400 bg-white transition-colors shadow-sm">
@@ -212,7 +212,7 @@ export default function JadwalPage() {
             {/* ── Agenda List ── */}
             <div className="space-y-4">
               {/* Search bar */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-white border border-slate-200 rounded-[24px] p-4 flex flex-col md:flex-row items-center gap-4 shadow-sm">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4">
                 <div className="relative flex-1 w-full">
                   <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <Input
@@ -237,12 +237,12 @@ export default function JadwalPage() {
 
               {/* List */}
               {isLoading ? (
-                <div className="bg-white border border-slate-200 p-16 flex flex-col items-center gap-3 text-slate-400">
+                <div className="bg-white/60 backdrop-blur-xl border border-white/80 rounded-2xl p-16 flex flex-col items-center gap-3 text-slate-400">
                   <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
                   <span className="text-sm font-medium">Memuat jadwal...</span>
                 </div>
               ) : sortedFiltered.length === 0 ? (
-                <div className="bg-white border border-slate-200 p-16 text-center shadow-sm">
+                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-16 text-center">
                   <AlertCircle className="h-10 w-10 mx-auto mb-4 text-slate-300" />
                   <h3 className="font-bold text-slate-800 text-base">Tidak ada kegiatan</h3>
                   <p className="text-slate-500 text-sm mt-1">
@@ -250,7 +250,7 @@ export default function JadwalPage() {
                   </p>
                 </div>
               ) : (
-                <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
+                <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
                   {/* Table header */}
                   <div className="hidden md:grid grid-cols-[56px_1fr_200px_160px_48px] gap-4 px-6 py-3 border-b border-slate-100 bg-white">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center">Tgl</div>

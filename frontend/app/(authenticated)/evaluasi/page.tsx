@@ -146,7 +146,7 @@ export default function EvaluasiPage() {
 
       {/* ─── Floating Toolbar ─── */}
       <section className="relative z-20 pb-0">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-5">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-5">
             <div className="relative max-w-md w-full">
               <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
               <Input className="pl-12 bg-white border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl h-11 text-base focus-visible:ring-slate-200 shadow-sm" placeholder="Cari kegiatan yang sudah selesai..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -166,13 +166,13 @@ export default function EvaluasiPage() {
               {[...Array(3)].map((_, i) => <div key={i} className="h-20 w-full bg-white border border-slate-200 animate-pulse rounded-[24px]" />)}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-16 text-center">
+            <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-16 text-center">
               <ClipboardCheck className="h-12 w-12 mx-auto mb-4 text-slate-300" />
               <h3 className="font-bold text-slate-900 text-lg">Belum ada kegiatan untuk dievaluasi</h3>
               <p className="text-slate-500 text-sm mt-1">Kegiatan yang sudah selesai akan muncul di sini.</p>
             </div>
           ) : (
-            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] overflow-hidden">
+            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
               <div className="divide-y divide-slate-100">
                 {filtered.map((k: any) => (
                   <motion.div key={k.id} variants={fadeUp} className="group hover:bg-slate-50 transition-colors">
