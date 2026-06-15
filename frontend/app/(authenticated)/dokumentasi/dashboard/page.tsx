@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 export default function DokumentasiDashboardPage() {
   const { user } = useAuth();
   const { data: role } = useRole(user);
+  const displayName = user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Tim Dokumentasi';
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState('foto');
   const [caption, setCaption] = useState('');
@@ -107,10 +108,10 @@ export default function DokumentasiDashboardPage() {
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
-                Sistem Informasi Protokoler
+                Dashboard Dokumentasi
               </span>
             </div>
-            <h1 className="text-3xl md:text-[2.5rem] font-black tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Galeri Dokumentasi</h1>
+            <h1 className="text-3xl md:text-[2.5rem] font-black tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h1>
             <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Ruang kerja unggah foto, video, dan dokumen kegiatan yang sudah selesai.</p>
           </div>
         </div>

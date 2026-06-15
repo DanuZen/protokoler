@@ -2,14 +2,12 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { protokolerApi } from '@/lib/api';
-import { ArrowLeft, Upload, User, BookOpen, Phone, ChevronRight, ChevronLeft, Check, Loader2, Clock } from 'lucide-react';
+import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock } from 'lucide-react';
 
 type AuthMode = 'login' | 'register';
 type RegisterStep = 1 | 2 | 3;
@@ -61,39 +59,18 @@ export default function AuthPage() {
   ];
 
   useEffect(() => {
-    // Check demo mode
+    // Demo mode: jika sudah ada role tersimpan, langsung redirect
     const demoRole = localStorage.getItem('demo_role');
     if (demoRole) {
       router.replace(resolveDashboardRoute());
-      return;
     }
-
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        // Here we'd ideally check role, but for demo, just route to beranda if they have real auth
-        router.replace('/dashboard');
-      }
-    });
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_e, s) => {
-      if (s?.user) router.replace(resolveDashboardRoute());
-    });
-    return () => subscription.unsubscribe();
   }, [router]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  // Demo: login form tidak digunakan (pakai tombol role langsung)
+  // Fungsi ini tetap ada tapi tidak memanggil backend
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-
-    toast.success('Berhasil masuk!');
-    router.replace(resolveDashboardRoute());
+    toast.info('Gunakan tombol peran di atas untuk masuk dalam mode demo.');
   };
 
   const handleRegister = async () => {
@@ -102,30 +79,10 @@ export default function AuthPage() {
       return;
     }
     setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: regForm.email,
-        password: regForm.password,
-        options: { data: { nama_lengkap: regForm.nama_lengkap } },
-      });
-      if (error) throw new Error(error.message);
-
-      await protokolerApi.create({
-        user_id: data.user?.id,
-        nim: regForm.nim,
-        nama_lengkap: regForm.nama_lengkap,
-        prodi: regForm.prodi,
-        departemen: regForm.departemen,
-        fakultas: regForm.fakultas,
-        no_hp: regForm.no_hp,
-      });
-
-      setRegistered(true);
-    } catch (e: any) {
-      toast.error(e.message);
-    } finally {
-      setLoading(false);
-    }
+    // Demo mode: simulasi pendaftaran tanpa memanggil backend
+    await new Promise((r) => setTimeout(r, 600));
+    setLoading(false);
+    setRegistered(true);
   };
 
   const handleFileChange = (file: File | null, type: 'setengah' | 'full') => {

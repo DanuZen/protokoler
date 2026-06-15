@@ -98,14 +98,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const signOut = async () => {
+  const signOut = () => {
+    // Demo mode: hanya clear localStorage, tidak ada koneksi ke backend
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem('demo_role');
+      window.localStorage.removeItem('demo_name');
+      window.localStorage.removeItem('demo_avatar');
     }
-    try {
-      const { supabase } = await import('@/lib/supabase');
-      await supabase.auth.signOut();
-    } catch (e) {}
     router.push('/auth');
   };
 

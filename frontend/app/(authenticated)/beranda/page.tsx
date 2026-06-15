@@ -47,6 +47,8 @@ export default function BerandaPage() {
   const progress = target > 0 ? Math.min(100, Math.round((total / target) * 100)) : 100;
   const recentKegiatan = (kegiatan ?? []).slice(0, 3);
 
+  const displayName = protokoler?.nama_lengkap || user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Protokoler';
+
   return (
     <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
       
@@ -60,10 +62,10 @@ export default function BerandaPage() {
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
-                Selamat Datang Kembali
+                Dashboard Anggota
               </span>
             </div>
-            <h1 className="text-3xl md:text-[2.5rem] font-black tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">{protokoler?.nama_lengkap ?? "Protokoler"}</h1>
+            <h1 className="text-3xl md:text-[2.5rem] font-black tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h1>
             <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">{protokoler?.prodi ? `${protokoler.prodi} · Unit Protokoler UNP` : "Anggota aktif unit keprotokolan Universitas Negeri Padang."}</p>
           </div>
         </div>

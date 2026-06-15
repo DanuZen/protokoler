@@ -1,9 +1,8 @@
 /**
  * API client MOCK untuk keperluan Frontend Demo SiProto v1.2.
  * Semua request mengembalikan data dummy langsung tanpa memanggil backend.
+ * Delay = 0 agar semua halaman render instan (tidak ada buffering).
  */
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 let mockKegiatan: any[] = [];
 
@@ -11,44 +10,24 @@ let mockKegiatan: any[] = [];
 let mockProtokoler: any[] = [];
 
 export const protokolerApi = {
-  list: async (search?: string) => {
-    await delay(30);
-    return mockProtokoler;
-  },
-  get: async (id: string) => {
-    await delay(20);
-    return { id, nama_lengkap: 'Dummy User' };
-  },
-  create: async (data: any) => {
-    await delay(30);
-    return { success: true, id: 'new-p' };
-  },
-  update: async (id: string, data: any) => {
-    await delay(30);
-    return { success: true };
-  },
-  remove: async (id: string) => {
-    await delay(30);
-    return { success: true };
-  },
+  list: async (search?: string) => mockProtokoler,
+  get: async (id: string) => ({ id, nama_lengkap: 'Dummy User' }),
+  create: async (data: any) => ({ success: true, id: 'new-p' }),
+  update: async (id: string, data: any) => ({ success: true }),
+  remove: async (id: string) => ({ success: true }),
 };
 
 // ──────────────── KEGIATAN ────────────────
 export const kegiatanApi = {
   list: async (params?: { status?: string; bentuk?: string }) => {
-    await delay(30);
     let result = [...mockKegiatan];
     if (params?.status === 'publik') {
       result = result.filter((k) => k.status === 'terjadwal' || k.status === 'berlangsung');
     }
     return result;
   },
-  get: async (id: string) => {
-    await delay(20);
-    return mockKegiatan.find((k) => k.id === id) || mockKegiatan[0];
-  },
+  get: async (id: string) => mockKegiatan.find((k) => k.id === id) || mockKegiatan[0],
   create: async (data: any) => {
-    await delay(500);
     const newId = `keg-${Date.now()}`;
     mockKegiatan.unshift({
       id: newId,
@@ -60,7 +39,6 @@ export const kegiatanApi = {
     return { success: true, id: newId };
   },
   update: async (id: string, data: any) => {
-    await delay(500);
     const index = mockKegiatan.findIndex((k) => k.id === id);
     if (index !== -1) {
       mockKegiatan[index] = { ...mockKegiatan[index], ...data };
@@ -68,12 +46,10 @@ export const kegiatanApi = {
     return { success: true };
   },
   remove: async (id: string) => {
-    await delay(500);
     mockKegiatan = mockKegiatan.filter((k) => k.id !== id);
     return { success: true };
   },
   daftar: async (kegiatanId: string, protokolerId: string, namaLengkap: string) => {
-    await delay(500);
     const kegiatan = mockKegiatan.find((k) => k.id === kegiatanId);
     if (kegiatan) {
       if (!kegiatan.pendaftar) kegiatan.pendaftar = [];
@@ -89,7 +65,6 @@ export const kegiatanApi = {
     return { success: true };
   },
   verifikasiPendaftar: async (kegiatanId: string, pendaftarId: string, status: 'diterima' | 'ditolak') => {
-    await delay(500);
     const kegiatan = mockKegiatan.find((k) => k.id === kegiatanId);
     if (kegiatan && kegiatan.pendaftar) {
       const p = kegiatan.pendaftar.find((p: any) => p.id === pendaftarId);
@@ -101,111 +76,60 @@ export const kegiatanApi = {
 
 // ──────────────── PENDAFTARAN ────────────────
 export const pendaftaranApi = {
-  byKegiatan: async (kegiatan_id: string) => {
-    await delay(400);
-    return [];
-  },
-  byProtokoler: async (protokoler_id: string) => {
-    await delay(400);
-    return [];
-  },
-  create: async (data: any) => {
-    await delay(30);
-    return { success: true };
-  },
-  update: async (id: string, data: any) => {
-    await delay(30);
-    return { success: true };
-  },
-  remove: async (id: string) => {
-    await delay(30);
-    return { success: true };
-  },
+  byKegiatan: async (kegiatan_id: string) => [],
+  byProtokoler: async (protokoler_id: string) => [],
+  create: async (data: any) => ({ success: true }),
+  update: async (id: string, data: any) => ({ success: true }),
+  remove: async (id: string) => ({ success: true }),
 };
 
 // ──────────────── ABSENSI & EVALUASI & TESTIMONI ────────────────
 export const absensiApi = {
-  create: async (data: any) => {
-    await delay(30);
-    return { success: true };
-  },
-  byKegiatan: async (kegiatan_id: string) => {
-    await delay(20);
-    return [];
-  },
+  create: async (data: any) => ({ success: true }),
+  byKegiatan: async (kegiatan_id: string) => [],
 };
 
 export const evaluasiApi = {
-  create: async (data: any) => {
-    await delay(30);
-    return { success: true };
-  },
-  byKegiatan: async (kegiatan_id: string) => {
-    await delay(20);
-    return [];
-  },
+  create: async (data: any) => ({ success: true }),
+  byKegiatan: async (kegiatan_id: string) => [],
 };
 
 export const testimoniApi = {
-  create: async (data: any) => {
-    await delay(30);
-    return { success: true };
-  },
-  byKegiatan: async (kegiatan_id: string) => {
-    await delay(20);
-    return [];
-  },
+  create: async (data: any) => ({ success: true }),
+  byKegiatan: async (kegiatan_id: string) => [],
 };
 
 export const sertifikatApi = {
-  byProtokoler: async (protokoler_id: string) => {
-    await delay(20);
-    return [];
-  },
+  byProtokoler: async (protokoler_id: string) => [],
 };
 
 // ──────────────── DASHBOARD / LAPORAN ────────────────
 export const dashboardApi = {
-  stats: async () => {
-    await delay(30);
-    return {
-      total_mahasiswa: 142,
-      total_kegiatan: 86,
-      kegiatan_mendatang: 3,
-      total_penugasan: 512,
-    };
-  },
-  upcoming: async (limit: number = 8) => {
-    await delay(30);
-    return mockKegiatan.filter((k) => k.status === 'terjadwal' || k.status === 'berlangsung').slice(0, limit);
-  },
+  stats: async () => ({
+    total_mahasiswa: 142,
+    total_kegiatan: 86,
+    kegiatan_mendatang: 3,
+    total_penugasan: 512,
+  }),
+  upcoming: async (limit: number = 8) =>
+    mockKegiatan.filter((k) => k.status === 'terjadwal' || k.status === 'berlangsung').slice(0, limit),
 };
 
 export const laporanApi = {
   stats: async () => dashboardApi.stats(),
-  kegiatan: async (start: string, end: string, status?: string) => {
-    await delay(30);
-    return mockKegiatan;
-  },
-  rekap: async (start: string, end: string) => {
-    await delay(30);
-    return {
-      rekap_mahasiswa: [
-        { nim: '20010101', nama_lengkap: 'Budi Santoso', prodi: 'Ilmu Komputer', total_tugas: 10, dikonfirmasi: 8, ditolak: 2 },
-        { nim: '20010102', nama_lengkap: 'Siti Nurhaliza', prodi: 'Manajemen', total_tugas: 5, dikonfirmasi: 5, ditolak: 0 },
-      ]
-    };
-  },
+  kegiatan: async (start: string, end: string, status?: string) => mockKegiatan,
+  rekap: async (start: string, end: string) => ({
+    rekap_mahasiswa: [
+      { nim: '20010101', nama_lengkap: 'Budi Santoso', prodi: 'Ilmu Komputer', total_tugas: 10, dikonfirmasi: 8, ditolak: 2 },
+      { nim: '20010102', nama_lengkap: 'Siti Nurhaliza', prodi: 'Manajemen', total_tugas: 5, dikonfirmasi: 5, ditolak: 0 },
+    ]
+  }),
 };
 
 // ──────────────── REGULASI ────────────────
 export const regulasiApi = {
-  list: async () => {
-    await delay(20);
-    return [];
-  },
-  create: async (data: any) => {
-    await delay(30);
-    return { success: true };
-  },
+  list: async () => [],
+  create: async (data: any) => ({ success: true }),
 };
+
+
