@@ -203,6 +203,21 @@
   50% { transform: translateY(-10px); }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(139, 10, 26, 0.15), 0 0 40px rgba(139, 10, 26, 0.05); }
+  50% { box-shadow: 0 0 40px rgba(139, 10, 26, 0.35), 0 0 80px rgba(139, 10, 26, 0.15); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(139, 10, 26, 0.2); }
+  50% { border-color: rgba(201, 148, 42, 0.5); }
+}
+
 @utility animate-fade-in-up {
   animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -212,6 +227,15 @@
 @utility animate-float {
   animation: float 6s ease-in-out infinite;
 }
+@utility animate-shimmer {
+  animation: shimmer 3s linear infinite;
+  background-size: 200% auto;
+}
+@utility animate-glow-pulse {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+/* === Glass Card System (Dark Theme) === */
 @utility glass-panel {
   background-color: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(24px);
@@ -226,7 +250,69 @@
   border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 8px 32px 0 rgba(107, 0, 0, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
 }
+
+/* Dark glass — untuk dark backgrounds */
+@utility glass-dark {
+  background: linear-gradient(135deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 0 1px rgba(255,255,255,0.03);
+}
+
+/* Red accent glass */
+@utility glass-red {
+  background: linear-gradient(135deg, rgba(139,10,26,0.18) 0%, rgba(139,10,26,0.05) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(139,10,26,0.25);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.4),
+    0 0 40px rgba(139,10,26,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* Gold accent glass */
+@utility glass-gold {
+  background: linear-gradient(135deg, rgba(201,148,42,0.14) 0%, rgba(201,148,42,0.04) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(201,148,42,0.2);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.4),
+    0 0 40px rgba(201,148,42,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
 @utility bg-grid-pattern {
   background-image: radial-gradient(color-mix(in oklch, var(--color-foreground) 15%, transparent) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+
+/* Mesh gradient backgrounds */
+@utility bg-mesh-dark {
+  background-color: #060208;
+  background-image:
+    radial-gradient(ellipse at 15% 30%, rgba(139, 10, 26, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 70%, rgba(92, 0, 16, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(201, 148, 42, 0.06) 0%, transparent 50%);
+}
+
+@utility bg-mesh-indigo {
+  background-color: #070610;
+  background-image:
+    radial-gradient(ellipse at 10% 60%, rgba(60, 0, 80, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 20%, rgba(139, 10, 26, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(30, 10, 60, 0.2) 0%, transparent 60%);
+}
+
+@utility bg-mesh-gold {
+  background-color: #060406;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(139, 10, 26, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(201, 148, 42, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(80, 40, 0, 0.1) 0%, transparent 60%);
 }
