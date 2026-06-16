@@ -68,13 +68,13 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#040206] text-slate-100 selection:bg-red-900/30 overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-red-100 overflow-x-hidden font-sans">
       {/* Interactive Dynamic Navbar */}
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className={cn('fixed top-0 left-0 right-0 z-50 transition-all duration-300', isScrolled ? 'bg-slate-950/95 backdrop-blur-xl shadow-lg border-b border-white/10 py-3' : 'bg-transparent py-5')}
+        className={cn('fixed top-0 left-0 right-0 z-50 transition-all duration-300', isScrolled ? 'bg-[#8B0A1A] backdrop-blur-xl shadow-lg border-b border-black/10 py-3' : 'bg-transparent py-5')}
       >
         <div className="container mx-auto flex items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3 group">
@@ -83,16 +83,16 @@ export default function Landing() {
             </div>
             <div className="flex flex-col">
               <span className="font-display text-xl font-bold tracking-tight leading-none mb-1 text-white">PROTOKOLER</span>
-              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">UNIVERSITAS NEGERI PADANG</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-red-200">UNIVERSITAS NEGERI PADANG</span>
             </div>
           </Link>
           <nav className="hidden gap-8 lg:flex items-center">
             {[{ label: 'Jadwal', href: '#jadwal' }, { label: 'Galeri', href: '#galeri' }].map((item) => (
-              <a key={item.label} href={item.href} className="text-sm font-semibold text-slate-300 hover:text-white transition-colors">
+              <a key={item.label} href={item.href} className="text-sm font-semibold text-white/80 hover:text-white transition-colors">
                 {item.label}
               </a>
             ))}
-            <Link href="/faq" className="text-sm font-semibold text-slate-300 hover:text-white transition-colors">
+            <Link href="/faq" className="text-sm font-semibold text-white/80 hover:text-white transition-colors">
               FAQ
             </Link>
           </nav>
@@ -101,15 +101,15 @@ export default function Landing() {
               <div className="flex items-center gap-5">
                 <div className="hidden md:flex flex-col items-end mr-1">
                   <span className="text-sm font-bold leading-tight text-white">{user.user_metadata?.nama_lengkap || user.email}</span>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">{role === 'admin' ? 'Pimpinan' : role === 'dokumentasi' ? 'Dokumentasi' : 'Protokoler'}</span>
+                  <span className="text-[10px] text-red-200 uppercase tracking-[0.2em] font-bold">{role === 'admin' ? 'Pimpinan' : role === 'dokumentasi' ? 'Dokumentasi' : 'Protokoler'}</span>
                 </div>
                 <Link href={dashboardHref}>
-                  <Button className="rounded-xl shadow-sm transition-all px-6 bg-[#8B0A1A] text-white hover:bg-[#6B0814] h-10 font-bold">Dashboard</Button>
+                  <Button className="rounded-xl shadow-sm transition-all px-6 bg-white text-[#8B0A1A] hover:bg-red-50 h-10 font-bold">Dashboard</Button>
                 </Link>
               </div>
             ) : (
               <Link href="/auth">
-                <Button className="rounded-xl shadow-sm transition-all px-6 bg-[#8B0A1A] text-white hover:bg-[#6B0814] h-10 font-bold">Masuk Sistem</Button>
+                <Button className="rounded-xl shadow-sm transition-all px-6 bg-white text-[#8B0A1A] hover:bg-red-50 h-10 font-bold">Masuk Sistem</Button>
               </Link>
             )}
           </div>
@@ -153,23 +153,22 @@ export default function Landing() {
 
 
         {/* Jadwal Kegiatan */}
-        <section id="jadwal" className="py-24 md:py-32 relative overflow-hidden bg-mesh-dark">
+        <section id="jadwal" className="py-24 md:py-32 relative overflow-hidden bg-slate-50">
           {/* Decorative orbs */}
-          <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: 'radial-gradient(circle, #8B0A1A 0%, transparent 70%)' }} />
-          <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full opacity-10 blur-3xl" style={{ background: 'radial-gradient(circle, #C9942A 0%, transparent 70%)' }} />
-          <div className="absolute inset-0 bg-grid-pattern opacity-[0.03]" />
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-[0.07] blur-3xl" style={{ background: 'radial-gradient(circle, #8B0A1A 0%, transparent 70%)' }} />
+          <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full opacity-[0.05] blur-3xl" style={{ background: 'radial-gradient(circle, #C9942A 0%, transparent 70%)' }} />
 
           <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 relative z-10">
             {/* Header */}
             <div className="mb-16 text-center">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-950/50 border border-red-900/30 text-[11px] font-bold text-red-400 mb-4 uppercase tracking-[0.25em]">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 border border-red-200 text-[11px] font-bold text-[#8B0A1A] mb-4 uppercase tracking-[0.25em]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#8B0A1A] animate-pulse" />
                 Agenda Publik
               </motion.div>
-              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
+              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
                 Kegiatan Mendatang
               </motion.h2>
-              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-4 text-slate-400 text-lg max-w-2xl mx-auto">
+              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-4 text-slate-500 text-lg max-w-2xl mx-auto">
                 Jadwal kegiatan resmi tingkat universitas yang akan dan sedang berlangsung.
               </motion.p>
             </div>
@@ -187,39 +186,39 @@ export default function Landing() {
                 className="grid md:grid-cols-[400px_1fr] gap-5"
               >
                 {/* Left: Calendar Card */}
-                <div className="glass-red p-7 md:p-9 flex flex-col gap-5 rounded-3xl">
+                <div className="bg-white p-7 md:p-9 flex flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg">
                   <div>
-                    <p className="text-[10px] font-bold text-red-400 uppercase tracking-[0.3em] mb-1">Kalender Acara</p>
-                    <p className="text-white font-bold text-xl">Pilih Tanggal</p>
+                    <p className="text-[10px] font-bold text-[#8B0A1A] uppercase tracking-[0.3em] mb-1">Kalender Acara</p>
+                    <p className="text-slate-900 font-bold text-xl">Pilih Tanggal</p>
                   </div>
                   <Calendar
                     mode="single"
                     selected={selectedDate}
                     onSelect={setSelectedDate}
                     locale={id}
-                    className="rounded-2xl border border-white/10 p-3 text-white w-full" style={{ background: 'rgba(255,255,255,0.03)' }}
+                    className="rounded-2xl border border-slate-100 p-3 text-slate-900 w-full bg-slate-50"
                   />
                   <div className="mt-auto pt-4 border-t border-white/10">
-                    <p className="text-slate-500 text-xs uppercase tracking-widest mb-1">Tanggal Dipilih</p>
-                    <p className="text-red-300 font-bold text-sm">
+                    <p className="text-slate-400 text-xs uppercase tracking-widest mb-1">Tanggal Dipilih</p>
+                    <p className="text-[#8B0A1A] font-bold text-sm">
                       {selectedDate?.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) ?? '—'}
                     </p>
                   </div>
                 </div>
 
                 {/* Right: Event Details Card */}
-                <div className="glass-dark p-8 md:p-10 flex flex-col rounded-3xl">
+                <div className="bg-white p-8 md:p-10 flex flex-col rounded-3xl border border-slate-200 shadow-lg">
                   {(() => {
                     const event = kegiatanPublik?.find((k: any) => selectedDate && new Date(k.tanggal).toDateString() === selectedDate.toDateString());
 
                     if (!event) {
                       return (
                         <div className="h-full flex flex-col items-center justify-center text-center py-16">
-                          <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                            <CalendarDays className="h-9 w-9 text-slate-600" />
+                          <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6 bg-slate-100 border border-slate-200">
+                            <CalendarDays className="h-9 w-9 text-slate-400" />
                           </div>
-                          <p className="font-bold text-lg text-slate-300">Tidak ada agenda pada tanggal ini.</p>
-                          <p className="text-sm mt-2 text-slate-600">Pilih tanggal lain di kalender untuk melihat jadwal kegiatan.</p>
+                          <p className="font-bold text-lg text-slate-700">Tidak ada agenda pada tanggal ini.</p>
+                          <p className="text-sm mt-2 text-slate-400">Pilih tanggal lain di kalender untuk melihat jadwal kegiatan.</p>
                         </div>
                       );
                     }
@@ -227,8 +226,8 @@ export default function Landing() {
                     return (
                       <div className="flex flex-col gap-6">
                         <div>
-                          <p className="text-[10px] font-bold text-red-400 uppercase tracking-[0.3em] mb-2">Detail Acara</p>
-                          <h3 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight">{event.nama_kegiatan}</h3>
+                          <p className="text-[10px] font-bold text-[#8B0A1A] uppercase tracking-[0.3em] mb-2">Detail Acara</p>
+                          <h3 className="font-display text-3xl md:text-4xl font-bold text-slate-900 leading-tight">{event.nama_kegiatan}</h3>
                           <p className="text-slate-500 text-sm mt-2">
                             {selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                           </p>
@@ -241,14 +240,14 @@ export default function Landing() {
                             { icon: Users, label: 'Pimpinan', value: event.tamu_vvip?.join(', ') || 'Pimpinan Universitas' },
                             { icon: Megaphone, label: 'Status', value: event.status?.toUpperCase() },
                           ].map(({ icon: Icon, label, value }) => (
-                            <div key={label} className="rounded-2xl p-4 transition-all duration-200 hover:scale-[1.02]" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                            <div key={label} className="rounded-2xl p-4 transition-all duration-200 hover:scale-[1.02] bg-slate-50 border border-slate-200">
                               <div className="flex items-center gap-2 mb-2">
-                                <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,10,26,0.25)' }}>
-                                  <Icon className="h-3.5 w-3.5 text-red-400" />
+                                <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-red-50">
+                                  <Icon className="h-3.5 w-3.5 text-[#8B0A1A]" />
                                 </div>
-                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{label}</span>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</span>
                               </div>
-                              <p className={`font-bold text-sm ${label === 'Status' && event.status === 'berlangsung' ? 'text-emerald-400' : 'text-white'}`}>
+                              <p className={`font-bold text-sm ${label === 'Status' && event.status === 'berlangsung' ? 'text-emerald-600' : 'text-slate-900'}`}>
                                 {value}
                               </p>
                             </div>
@@ -264,18 +263,17 @@ export default function Landing() {
         </section>
 
         {/* Galeri Kegiatan */}
-        <section id="galeri" className="py-24 md:py-32 relative overflow-hidden bg-mesh-indigo">
-          <div className="absolute inset-0 bg-grid-pattern opacity-[0.025]" />
+        <section id="galeri" className="py-24 md:py-32 relative overflow-hidden bg-white border-t border-slate-100">
           <div className="container mx-auto px-6 relative z-10">
             <div className="mb-16 max-w-3xl text-center mx-auto">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-[0.25em] mb-4" style={{ background: 'rgba(80,0,120,0.2)', borderColor: 'rgba(120,0,180,0.2)', color: '#c084fc' }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 border border-red-200 text-[11px] font-bold text-[#8B0A1A] mb-4 uppercase tracking-[0.25em]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#8B0A1A]" />
                 Galeri
               </motion.div>
-              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
+              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
                 Dedikasi di Lapangan
               </motion.h2>
-              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-6 text-slate-400 text-lg md:text-xl">
+              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-6 text-slate-500 text-lg md:text-xl">
                 Potret momen-momen penting tim protokoler dalam menyukseskan berbagai kegiatan universitas tingkat tinggi.
               </motion.p>
             </div>
@@ -294,14 +292,14 @@ export default function Landing() {
                   key={i}
                   whileHover={{ scale: 1.02, y: -6 }}
                   className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer"
-                  style={{ boxShadow: '0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)' }}
+                  style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05)' }}
                 >
                   <Image src={img.src} alt={img.alt} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw" className="object-cover transition-transform duration-1000 group-hover:scale-108" />
                   {/* Multi-layer overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-70 group-hover:opacity-85 transition-opacity duration-500" />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(135deg, rgba(139,10,26,0.25) 0%, transparent 60%)' }} />
                   {/* Border glow on hover */}
-                  <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ boxShadow: 'inset 0 0 0 1px rgba(139,10,26,0.5)' }} />
+                  <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ boxShadow: 'inset 0 0 0 2px rgba(139,10,26,0.4)' }} />
                   {/* Tag */}
                   <div className="absolute top-5 left-5">
                     <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest" style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)' }}>{img.tag}</span>
@@ -322,19 +320,17 @@ export default function Landing() {
 
 
         {/* Regulasi & SOP — Card Grid Style */}
-        <section className="py-24 md:py-32 relative overflow-hidden bg-mesh-gold">
-          <div className="absolute inset-0 bg-grid-pattern opacity-[0.025]" />
-          <div className="absolute top-1/4 right-0 w-80 h-80 rounded-full opacity-10 blur-3xl" style={{ background: 'radial-gradient(circle, #C9942A 0%, transparent 70%)' }} />
-          <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 relative z-10">
+        <section className="py-24 md:py-32 relative overflow-hidden bg-slate-50 border-t border-slate-100">
+          <div className="container mx-auto px-6 relative z-10">
             <div className="mb-16 max-w-3xl text-center mx-auto">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-[0.25em] mb-4" style={{ background: 'rgba(201,148,42,0.1)', borderColor: 'rgba(201,148,42,0.25)', color: '#C9942A' }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                Panduan & Regulasi
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 border border-red-200 text-[11px] font-bold text-[#8B0A1A] mb-4 uppercase tracking-[0.25em]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#8B0A1A]" />
+                Panduan &amp; Regulasi
               </motion.div>
-              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
+              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
                 Panduan Praktis Protokol
               </motion.h2>
-              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-4 text-slate-400 text-lg">
+              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-4 text-slate-500 text-lg">
                 Temukan SOP penting dan mendasar untuk kelancaran kegiatan Anda.
               </motion.p>
             </div>
@@ -347,27 +343,36 @@ export default function Landing() {
                   variants={zoomIn}
                   whileHover={{ y: -8, scale: 1.01 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className="group block rounded-3xl overflow-hidden cursor-pointer relative glass-dark hover:border-amber-900/40 transition-all duration-300"
+                  className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer block shadow-lg hover:shadow-2xl transition-all duration-300"
+                  style={{ background: reg.accentGradient }}
                 >
-                  {/* Card Header */}
-                  <div className="relative h-52 p-6 flex flex-col justify-center items-center text-center overflow-hidden" style={{ background: reg.accentGradient }}>
-                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '18px 18px' }} />
-                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.4) 100%)' }} />
-                    <div className="relative z-10 px-4">
-                      <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.3em] mb-2">SOP</p>
-                      <h3 className="font-display font-black text-white text-2xl md:text-3xl leading-tight uppercase drop-shadow-md">{reg.judul}</h3>
-                    </div>
-                    {/* Floating icon */}
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 z-20">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-2xl shadow-xl transition-all duration-300 group-hover:scale-110" style={{ background: 'rgba(201,148,42,0.15)', backdropFilter: 'blur(12px)', border: '1px solid rgba(201,148,42,0.3)' }}>
-                        <FileText className="h-5 w-5 text-amber-300" strokeWidth={2} />
-                      </div>
-                    </div>
+                  {/* Dot pattern background */}
+                  <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+                  {/* Bottom fade overlay */}
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.65) 100%)' }} />
+                  {/* Hover red glow overlay */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(135deg, rgba(139,10,26,0.3) 0%, transparent 60%)' }} />
+                  {/* Border glow on hover */}
+                  <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ boxShadow: 'inset 0 0 0 2px rgba(255,255,255,0.25)' }} />
+
+                  {/* Top: SOP label */}
+                  <div className="absolute top-6 left-0 right-0 flex justify-center">
+                    <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.3em]" style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.8)' }}>
+                      SOP
+                    </span>
                   </div>
-                  {/* Card Body */}
-                  <div className="p-6 pt-10 flex flex-col items-center text-center">
-                    <p className="text-slate-400 text-sm leading-relaxed max-w-[90%]">{reg.deskripsi}</p>
-                    <div className="mt-5 flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
+                  {/* Center: Title */}
+                  <div className="absolute inset-0 flex items-center justify-center px-6">
+                    <h3 className="font-display font-black text-white text-3xl md:text-4xl leading-tight uppercase text-center drop-shadow-lg">
+                      {reg.judul}
+                    </h3>
+                  </div>
+
+                  {/* Bottom: Description + CTA */}
+                  <div className="absolute bottom-0 left-0 right-0 p-7 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                    <p className="text-white/70 text-sm leading-relaxed mb-4 line-clamp-2">{reg.deskripsi}</p>
+                    <div className="flex items-center gap-2 text-white text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <ExternalLink className="h-3.5 w-3.5" />
                       <span>Buka Dokumen</span>
                     </div>
