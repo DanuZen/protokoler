@@ -1,33 +1,39 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { kegiatanApi } from '@/lib/api';
+import { kegiatanApi, postinganApi } from '@/lib/api';
 import { useAuth, useRole } from '@/hooks/use-auth';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Camera, Upload, ArrowLeft, Info, ArrowRight } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Camera, Upload, ArrowLeft, Info, ArrowRight, CalendarDays, MapPin, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-
 
 export default function DokumentasiDashboardPage() {
   const { user } = useAuth();
   const { data: role } = useRole(user);
   const displayName = user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Tim Dokumentasi';
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [mediaType, setMediaType] = useState('foto');
-  const [caption, setCaption] = useState('');
 
   const { data: kegiatan } = useQuery({
     queryKey: ['dokumentasi-dashboard-kegiatan'],
     queryFn: () => kegiatanApi.list(),
   });
 
+  const { data: postinganList } = useQuery({
+    queryKey: ['dokumentasi-dashboard-postingan'],
+    queryFn: () => postinganApi.list(),
+  });
+
   const selesai = useMemo(() => (kegiatan ?? []).filter((item: any) => item.status === 'selesai'), [kegiatan]);
-  const selected = selesai.find((item: any) => item.id === selectedId) ?? selesai[0] ?? null;
+  
+  const uploadedCount = useMemo(() => {
+    return (kegiatan ?? []).filter((k: any) => 
+      (postinganList ?? []).some((p: any) => p.judul === k.nama_kegiatan)
+    ).length;
+  }, [kegiatan, postinganList]);
 
   const stats = [
     { 
@@ -46,8 +52,8 @@ export default function DokumentasiDashboardPage() {
     },
     { 
       label: 'Terdokumentasi', 
-      value: selesai.length ? 1 : 0, 
-      hint: 'Upload aktif', 
+      value: uploadedCount, 
+      hint: 'Acara sudah diupload', 
       trend: '+2',
       isUp: true,
       chart: (
@@ -60,7 +66,7 @@ export default function DokumentasiDashboardPage() {
     },
     { 
       label: 'File unggahan', 
-      value: '8', 
+      value: uploadedCount * 2 + 6, 
       hint: 'Foto, video, dokumen', 
       trend: '+5%',
       isUp: true,
@@ -70,8 +76,8 @@ export default function DokumentasiDashboardPage() {
     },
     { 
       label: 'Antrian review', 
-      value: '2', 
-      hint: 'Menunggu verifikasi', 
+      value: selesai.length - uploadedCount > 0 ? selesai.length - uploadedCount : 0, 
+      hint: 'Belum diupload', 
       trend: '-1',
       isUp: false,
       chart: (
@@ -95,25 +101,12 @@ export default function DokumentasiDashboardPage() {
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
-                Dashboard Dokumentasi
+                Manajemen Dokumentasi
               </span>
             </div>
-            <h1 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h1>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Ruang kerja ringkasan statistik dan rekapitulasi data dokumentasi kegiatan.</p>
+            <h1 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Daftar Acara &amp; Dokumentasi</h1>
+            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Kelola dan pantau status unggahan dokumentasi untuk seluruh kegiatan.</p>
           </div>
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          <Link href="/kegiatan">
-            <Button variant="outline" className="rounded-xl border-slate-200 bg-white shadow-sm hover:bg-slate-50 text-slate-700">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Ke Kegiatan
-            </Button>
-          </Link>
-          <Link href="/dokumentasi/upload">
-            <Button className="rounded-xl bg-orange-500 text-white hover:bg-orange-600 font-bold shadow-md">
-              <Upload className="mr-2 h-4 w-4" /> Buka Workspace Upload
-            </Button>
-          </Link>
         </div>
       </motion.div>
 
@@ -153,24 +146,101 @@ export default function DokumentasiDashboardPage() {
         </div>
       </section>
 
-      {/* ─── BODY CONTENT (Simplified) ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 space-y-6">
-          <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-8 md:p-12 text-center flex flex-col items-center justify-center min-h-[300px]">
-            <div className="h-20 w-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mb-6">
-              <Upload className="h-10 w-10" />
+      {/* ─── BODY CONTENT: KEGIATAN LIST ─── */}
+      <div className="flex-1 mt-8 pb-12">
+        <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white/60 backdrop-blur-xl">
+          <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-white">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Daftar Acara & Status Dokumentasi</h2>
+              <p className="text-sm text-slate-500 mt-0.5">Pantau status unggahan dokumentasi untuk seluruh kegiatan.</p>
             </div>
-            <h2 className="font-display text-2xl font-bold text-slate-900 mb-3">Workspace Upload Terpisah</h2>
-            <p className="text-slate-500 max-w-md mx-auto mb-8">
-              Untuk memberikan pengalaman yang lebih lega dan fokus, seluruh proses pengunggahan file media (foto, video, dokumen) kini dipindahkan ke halaman Workspace Upload khusus.
-            </p>
             <Link href="/dokumentasi/upload">
-              <Button className="rounded-xl bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/30 h-12 px-8 font-bold text-base">
-                Buka Workspace Upload <ArrowRight className="ml-2 h-5 w-5" />
+              <Button size="sm" variant="outline" className="rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 border-orange-200 shadow-sm font-bold">
+                <Upload className="w-4 h-4 mr-2" /> Upload Dokumentasi
               </Button>
             </Link>
           </div>
-        </section>
+          <div className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-slate-500 uppercase bg-slate-50/50 border-b border-slate-100 font-bold">
+                  <tr>
+                    <th className="px-6 py-4">Nama Kegiatan</th>
+                    <th className="px-6 py-4">Waktu & Tempat</th>
+                    <th className="px-6 py-4">Status Acara</th>
+                    <th className="px-6 py-4">Status Dokumentasi</th>
+                    <th className="px-6 py-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 bg-white">
+                  {(!kegiatan || kegiatan.length === 0) ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-10 text-center text-slate-400">Belum ada kegiatan tersedia.</td>
+                    </tr>
+                  ) : (
+                    kegiatan.map((item: any) => {
+                      const isUploaded = (postinganList ?? []).some((p: any) => p.judul === item.nama_kegiatan);
+                      return (
+                        <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="font-bold text-slate-900">{item.nama_kegiatan}</div>
+                            <div className="text-xs text-slate-500 mt-1 uppercase tracking-wider">{item.kategori}</div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-1.5 text-slate-600 mb-1">
+                              <CalendarDays className="h-3.5 w-3.5 opacity-70" />
+                              <span className="font-medium">{new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+                              <MapPin className="h-3.5 w-3.5 opacity-70" />
+                              <span>{item.lokasi}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <Badge variant="outline" className={cn(
+                              "rounded-lg font-bold px-2 py-1",
+                              item.status === 'selesai' ? "bg-slate-100 text-slate-700 border-slate-200" :
+                              item.status === 'berlangsung' ? "bg-blue-50 text-blue-700 border-blue-200" :
+                              "bg-amber-50 text-amber-700 border-amber-200"
+                            )}>
+                              {item.status}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4">
+                            {isUploaded ? (
+                              <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 border px-2 py-1 rounded-lg">
+                                <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Sudah Upload
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-red-50 text-red-700 border-red-200 border px-2 py-1 rounded-lg bg-opacity-50">
+                                Belum Upload
+                              </Badge>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            {isUploaded ? (
+                              <Link href="/dokumentasi/berita">
+                                <Button variant="outline" size="sm" className="rounded-xl border-slate-200 text-slate-600 font-medium hover:bg-slate-50">
+                                  Lihat Berita
+                                </Button>
+                              </Link>
+                            ) : (
+                              <Link href="/dokumentasi/upload">
+                                <Button size="sm" className="rounded-xl bg-orange-500 text-white hover:bg-orange-600 shadow-sm font-medium">
+                                  <Upload className="w-3.5 h-3.5 mr-1.5" /> Upload
+                                </Button>
+                              </Link>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ const adminItems = [
   { to: '/kegiatan', icon: CalendarDays, label: 'Kegiatan' },
   { to: '/evaluasi/dashboard', icon: BarChart3, label: 'Evaluasi' },
   { to: '/dokumentasi/dashboard', icon: Camera, label: 'Dokumentasi' },
+  { to: '/sertifikat', icon: Award, label: 'Sertifikat' },
   { to: '/laporan', icon: FileBarChart, label: 'Laporan' },
 ];
 

@@ -119,7 +119,7 @@ export default function AnggotaPage() {
                 </div>
               </div>
               <div className="mt-4 relative z-10">
-                <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                <p className={cn("text-[32px] font-bold leading-tight", stat.color || "text-slate-900")}>{stat.value}</p>
                 <div className="flex items-center gap-1.5 mt-1.5">
                   <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
                 </div>

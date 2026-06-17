@@ -89,11 +89,11 @@ export default function Page() {
 
       {/* ─── BODY CONTENT ─── */}
       <div className="flex-1 mt-8">
-        <section className="pb-12 space-y-6">
+        <section className="pb-12 grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
 
           {/* Kegiatan Table */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="h-[500px] flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
+            <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
                   <FileBarChart className="h-5 w-5" />
@@ -103,14 +103,14 @@ export default function Page() {
                   <p className="text-[11px] text-slate-500 mt-0.5">{kegiatan?.length ?? 0} kegiatan ditemukan</p>
                 </div>
               </div>
-              <Button className="rounded-xl bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-slate-900 font-bold gap-2 h-9 px-4 transition-colors shadow-sm" onClick={() => exportCsv(
+              <Button className="rounded-xl bg-orange-600 text-white border border-transparent hover:bg-orange-700 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-orange-500/20" onClick={() => exportCsv(
                 `laporan-kegiatan-${start}-${end}.csv`,
                 [["Tanggal","Nama","Bentuk","Jam","Lokasi","Status"], ...(kegiatan ?? []).map((k: any) => [k.tanggal, k.nama_kegiatan, k.bentuk, `${k.jam_mulai}-${k.jam_selesai}`, k.lokasi, k.status])]
               )}>
                 <Download className="h-4 w-4" /> Export CSV
               </Button>
             </div>
-            <div className="overflow-x-auto">
+            <div className="flex-1 overflow-auto [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
                 <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50">
@@ -140,7 +140,7 @@ export default function Page() {
                   >
                     <TableCell className="text-slate-600 py-4 pl-6">{new Date(k.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</TableCell>
                     <TableCell className="font-bold text-slate-900 py-4">{k.nama_kegiatan}</TableCell>
-                    <TableCell className="py-4"><Badge variant="outline" className="capitalize font-bold border-slate-200 text-slate-600 bg-white">{k.bentuk?.replace("_"," ")}</Badge></TableCell>
+                    <TableCell className="py-4 font-medium text-slate-700 capitalize">{k.bentuk?.replace("_"," ")}</TableCell>
                     <TableCell className="text-slate-600 py-4">{k.lokasi}</TableCell>
                     <TableCell className="py-4 pr-6">
                       <span className={`inline-flex items-center rounded-xl border px-3 py-1 text-xs font-bold uppercase tracking-wider ${statusBadgeColor[k.status] ?? "bg-slate-100 text-slate-500 border-slate-200"}`}>
@@ -155,8 +155,8 @@ export default function Page() {
           </motion.div>
 
           {/* Rekap Table */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="h-[500px] flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
+            <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
                   <Users className="h-5 w-5" />
@@ -166,14 +166,14 @@ export default function Page() {
                   <p className="text-[11px] text-slate-500 mt-0.5">{rekap.length} mahasiswa dalam periode ini</p>
                 </div>
               </div>
-              <Button className="rounded-xl bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-slate-900 font-bold gap-2 h-9 px-4 transition-colors shadow-sm" onClick={() => exportCsv(
+              <Button className="rounded-xl bg-orange-600 text-white border border-transparent hover:bg-orange-700 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-orange-500/20" onClick={() => exportCsv(
                 `rekap-penugasan-${start}-${end}.csv`,
                 [["NIM","Nama","Prodi","Total Tugas","Dikonfirmasi","Ditolak"], ...rekap.map((r: any) => [r.nim, r.nama_lengkap, r.prodi, r.total_tugas, r.dikonfirmasi, r.ditolak])]
               )}>
                 <Download className="h-4 w-4" /> Export CSV
               </Button>
             </div>
-            <div className="overflow-x-auto">
+            <div className="flex-1 overflow-auto [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
                 <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50">

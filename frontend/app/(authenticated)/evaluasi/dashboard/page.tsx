@@ -49,10 +49,10 @@ export default function EvaluasiDashboardPage() {
   const selected = filtered.find((item: any) => item.id === selectedId) ?? filtered[0] ?? null;
 
   const summary = [
-    { label: 'Rata-rata rating', value: '4.2', hint: 'Evaluasi protokoler', icon: Star },
-    { label: 'Total evaluasi', value: '12', hint: 'Masuk dalam batas waktu', icon: ClipboardList },
-    { label: 'Testimoni tamu', value: '8', hint: 'Sentimen positif dominan', icon: MessageSquare },
-    { label: 'Kegiatan selesai', value: selesai.length, hint: 'Sumber dashboard', icon: CalendarCheck },
+    { label: 'Rata-rata rating', value: '4.2', hint: 'Evaluasi protokoler', icon: Star, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-100' },
+    { label: 'Total evaluasi', value: '12', hint: 'Masuk dalam batas waktu', icon: ClipboardList, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-100' },
+    { label: 'Testimoni tamu', value: '8', hint: 'Sentimen positif dominan', icon: MessageSquare, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-100' },
+    { label: 'Kegiatan selesai', value: selesai.length, hint: 'Sumber dashboard', icon: CalendarCheck, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-100' },
   ];
 
   const activeDetail = selected ?? filtered[0] ?? null;
@@ -78,16 +78,6 @@ export default function EvaluasiDashboardPage() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3">
-          <Link href="/evaluasi">
-            <Button variant="outline" className="rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Form Evaluasi
-            </Button>
-          </Link>
-          <Button onClick={handleExport} className="rounded-xl bg-[#1a1a1a] text-white hover:bg-black font-bold shadow-sm">
-            <Download className="mr-2 h-4 w-4" /> Export Excel
-          </Button>
-        </div>
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
@@ -98,7 +88,7 @@ export default function EvaluasiDashboardPage() {
                 <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
                   <div className="flex items-center justify-between relative z-10">
                     <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                    <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors bg-slate-50 text-slate-600 border border-slate-100 group-hover:bg-slate-100">
+                    <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors border group-hover:opacity-80", stat.bg, stat.color)}>
                       <stat.icon className="h-5 w-5" />
                     </div>
                   </div>
@@ -116,10 +106,10 @@ export default function EvaluasiDashboardPage() {
 
       {/* ─── BODY CONTENT ─── */}
       <div className="flex-1 mt-8">
-        <section className="pb-12 grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch h-[calc(100vh-12rem)] min-h-[600px]">
+        <section className="pb-12 grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
           <div className="w-full">
-            <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden h-full flex flex-col bg-white">
-              <CardContent className="p-0 flex flex-col h-full">
+            <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden h-[500px] flex flex-col bg-white">
+              <CardContent className="p-0 flex flex-col flex-1 min-h-0">
                 <div className="border-b border-slate-100 px-6 py-4 bg-slate-50">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
@@ -132,7 +122,7 @@ export default function EvaluasiDashboardPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col flex-1 bg-white">
+                <div className="flex flex-col flex-1 bg-white min-h-0">
                   <div className="p-4 border-b border-slate-100 bg-white">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -140,7 +130,7 @@ export default function EvaluasiDashboardPage() {
                     </div>
                   </div>
 
-                  <div className="divide-y divide-slate-100 flex-1 overflow-y-auto">
+                  <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0">
                     {filtered.length === 0 ? (
                     <div className="p-10 text-center text-slate-400">
                       <Sparkles className="mx-auto h-10 w-10 mb-3 text-slate-300" />
@@ -178,9 +168,9 @@ export default function EvaluasiDashboardPage() {
             </Card>
           </div>
 
-          <div className="w-full h-full">
-              <Card className="rounded-[24px] border-slate-200 shadow-sm h-full flex flex-col bg-white">
-                <CardContent className="p-0 flex flex-col h-full">
+          <div className="w-full">
+              <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden h-[500px] flex flex-col bg-white">
+                <CardContent className="p-0 flex flex-col flex-1 min-h-0">
                   <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
@@ -191,13 +181,19 @@ export default function EvaluasiDashboardPage() {
                         <p className="text-[11px] text-slate-500 mt-0.5">Ringkasan evaluasi, testimoni, dan feedback admin.</p>
                       </div>
                     </div>
-                    {activeDetail && <Badge className="rounded-md border border-emerald-200 text-emerald-700 bg-emerald-50">Selesai</Badge>}
+                    <div className="flex items-center gap-3">
+                      {activeDetail && (
+                        <Button onClick={handleExport} size="sm" className="h-8 rounded-lg bg-orange-600 text-white hover:bg-orange-700 text-[11px] font-bold px-3 shadow-sm transition-colors">
+                          <Download className="mr-1.5 h-3.5 w-3.5" /> Export Data
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                  <div className="p-6 flex flex-col flex-1 overflow-y-auto space-y-4">
+                  <div className="p-6 flex flex-col flex-1 min-h-0 space-y-4">
 
                   {activeDetail ? (
                     <>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-3 gap-2 shrink-0">
                         {[
                           { key: 'evaluasi', label: 'Evaluasi' },
                           { key: 'testimoni', label: 'Testimoni' },
@@ -210,7 +206,7 @@ export default function EvaluasiDashboardPage() {
                               onClick={() => setTab(item.key as DetailTab)}
                               className={cn(
                                 'border px-3 py-2 text-sm transition-all rounded-xl font-bold',
-                                active ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50',
+                                active ? 'bg-orange-600 border-orange-600 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50',
                               )}
                             >
                               {item.label}
@@ -219,75 +215,70 @@ export default function EvaluasiDashboardPage() {
                         })}
                       </div>
 
+                      <div className="flex-1 overflow-y-auto min-h-0 pr-1 pt-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                       {tab === 'evaluasi' && (
                         <div className="space-y-3">
-                          <div className="divide-y divide-white/20 border border-slate-200 bg-white">
                             {mockDetail.evaluasi.map((item) => (
-                              <div key={item.nama} className="p-4">
-                                <div className="flex items-center justify-between gap-3">
+                              <div key={item.nama} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
+                                <div className="flex items-start justify-between gap-3">
                                   <div>
                                     <div className="font-semibold text-slate-800">{item.nama}</div>
-                                    <div className="text-xs text-slate-500 mt-1">
-                                      {item.waktu} · {item.status}
+                                    <div className="flex items-center gap-2 text-xs mt-1">
+                                      <span className="text-slate-500">{item.waktu}</span>
+                                      <span className="h-1 w-1 rounded-full bg-slate-300"></span>
+                                      <span className={cn("font-medium", item.status === 'Tepat waktu' ? 'text-emerald-600' : 'text-orange-600')}>{item.status}</span>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-1 text-amber-500">
+                                  <div className="flex items-center gap-1 text-amber-500 shrink-0">
                                     {[...Array(item.rating)].map((_, index) => (
-                                      <Star key={index} className="h-4 w-4 fill-current" />
+                                      <Star key={index} className="h-3.5 w-3.5 fill-current" />
                                     ))}
                                   </div>
                                 </div>
-                                <p className="mt-3 text-sm text-slate-600">{item.ringkasan}</p>
+                                <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.ringkasan}</p>
                               </div>
                             ))}
-                          </div>
-                          <div className="flex justify-end">
-                            <Button onClick={handleExport} className="rounded-xl bg-slate-950 text-white hover:bg-slate-800">
-                              <Download className="mr-2 h-4 w-4" /> Export Data
-                            </Button>
-                          </div>
                         </div>
                       )}
 
                       {tab === 'testimoni' && (
                         <div className="space-y-3">
                           {mockDetail.testimoni.map((item) => (
-                            <div key={item.nama} className="border border-slate-200 bg-white p-4">
-                              <div className="flex items-center justify-between gap-3">
+                            <div key={item.nama} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
+                              <div className="flex items-start justify-between gap-3">
                                 <div>
                                   <div className="font-semibold text-slate-800">{item.nama}</div>
-                                  <div className="text-xs text-slate-500 mt-1">Sentimen: {item.sentimen}</div>
+                                  <div className="flex items-center gap-2 text-xs mt-1">
+                                    <span className="text-slate-500">Tamu Undangan</span>
+                                    <span className="h-1 w-1 rounded-full bg-slate-300"></span>
+                                    <span className={cn("font-medium", item.sentimen === 'Positif' ? 'text-emerald-600' : 'text-slate-500')}>{item.sentimen}</span>
+                                  </div>
                                 </div>
-                                <Badge className={cn('rounded-xl', item.sentimen === 'Positif' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-50 text-slate-600 border border-slate-200')}>{item.sentimen}</Badge>
+                                <div className="flex items-center gap-1 text-amber-500 shrink-0">
+                                  {[...Array(item.rating)].map((_, index) => (
+                                    <Star key={index} className="h-3.5 w-3.5 fill-current" />
+                                  ))}
+                                </div>
                               </div>
-                              <div className="mt-3 flex items-center gap-1 text-amber-500">
-                                {[...Array(item.rating)].map((_, index) => (
-                                  <Star key={index} className="h-4 w-4 fill-current" />
-                                ))}
-                              </div>
-                              <p className="mt-3 text-sm text-slate-600">{item.isi}</p>
+                              <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.isi}</p>
                             </div>
                           ))}
-                          <div className="flex justify-end">
-                            <Button onClick={handleExport} className="rounded-xl bg-slate-950 text-white hover:bg-slate-800">
-                              <Download className="mr-2 h-4 w-4" /> Export Testimoni
-                            </Button>
-                          </div>
                         </div>
                       )}
 
                       {tab === 'feedback' && (
-                        <div className="space-y-3">
+                        <div className="space-y-3 flex flex-col flex-1">
                           <div className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Catatan Admin</div>
-                          <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} className="min-h-[160px] rounded-xl border-slate-200 bg-slate-50" />
-                          <div className="flex items-center justify-between gap-3">
+                          <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} className="flex-1 min-h-[160px] rounded-xl border-slate-200 bg-slate-50" />
+                          <div className="flex items-center justify-between gap-3 mt-auto pt-2">
                             <p className="text-xs text-slate-400">Feedback ini terlihat oleh admin dan protokoler pada dashboard evaluasi.</p>
-                            <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-slate-950 text-white hover:bg-slate-800">
+                            <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-orange-600 text-white hover:bg-orange-700 transition-colors">
                               <MessageSquare className="mr-2 h-4 w-4" /> Simpan
                             </Button>
                           </div>
                         </div>
                       )}
+                      </div>
                     </>
                   ) : (
                     <div className="border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">Pilih kegiatan selesai untuk melihat hasil evaluasi.</div>

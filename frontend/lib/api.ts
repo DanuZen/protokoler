@@ -21,6 +21,9 @@ let mockKegiatan: any[] = [
       { id: 'pend-2', protokoler_id: 'prot-2', nama_lengkap: 'Budi Santoso', status: 'pending' },
     ],
     tamu_vvip: ['Rektor UNP', 'Gubernur Sumbar'],
+    audience: 'Mahasiswa Baru & Orang Tua',
+    keynote: 'Prof. Dr. Ganefri, Ph.D. (Rektor UNP)',
+    rundown_url: 'https://docs.google.com/document/d/12345/edit',
   },
   {
     id: 'keg-2',
@@ -104,7 +107,7 @@ export const kegiatanApi = {
     mockKegiatan = mockKegiatan.filter((k) => k.id !== id);
     return { success: true };
   },
-  daftar: async (kegiatanId: string, protokolerId: string, namaLengkap: string) => {
+  daftar: async (kegiatanId: string, protokolerId: string, namaLengkap: string, role: string = 'Protokoler') => {
     const kegiatan = mockKegiatan.find((k) => k.id === kegiatanId);
     if (kegiatan) {
       if (!kegiatan.pendaftar) kegiatan.pendaftar = [];
@@ -113,6 +116,7 @@ export const kegiatanApi = {
         kegiatan_id: kegiatanId,
         protokoler_id: protokolerId,
         nama_lengkap: namaLengkap,
+        role: role,
         status: 'pending',
         tanggal_daftar: new Date().toISOString(),
       });

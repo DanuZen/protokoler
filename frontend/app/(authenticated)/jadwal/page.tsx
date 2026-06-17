@@ -107,10 +107,10 @@ export default function JadwalPage() {
       <section className="relative z-20 pb-0">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
-            { label: "Akan Datang", value: upcoming, icon: Clock, hint: "Segera dilaksanakan", color: "text-emerald-600", bg: "bg-emerald-100" },
-            { label: "Berlangsung", value: ((kegiatan || []) as any[]).filter((k) => k.status === "berlangsung").length, icon: Radio, hint: "Kegiatan berjalan saat ini", color: "text-amber-600", bg: "bg-amber-100" },
-            { label: "Selesai", value: ((kegiatan || []) as any[]).filter((k) => k.status === "selesai").length, icon: CheckCircle2, hint: "Tugas yang telah selesai", color: "text-blue-600", bg: "bg-blue-100" },
-            { label: "Total Kegiatan", value: (kegiatan || []).length, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-[#ff6b4a]", bg: "bg-orange-50" },
+            { label: "Akan Datang", value: upcoming, icon: Clock, hint: "Segera dilaksanakan", color: "text-orange-600", bg: "bg-orange-50" },
+            { label: "Berlangsung", value: ((kegiatan || []) as any[]).filter((k) => k.status === "berlangsung").length, icon: Radio, hint: "Kegiatan berjalan saat ini", color: "text-orange-600", bg: "bg-orange-50" },
+            { label: "Selesai", value: ((kegiatan || []) as any[]).filter((k) => k.status === "selesai").length, icon: CheckCircle2, hint: "Tugas yang telah selesai", color: "text-orange-600", bg: "bg-orange-50" },
+            { label: "Total Kegiatan", value: (kegiatan || []).length, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-orange-600", bg: "bg-orange-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
               <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative overflow-hidden h-full">
@@ -136,7 +136,7 @@ export default function JadwalPage() {
           <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-6 items-start">
 
             {/* ── Calendar Panel ── */}
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden h-fit sticky top-6">
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden h-[500px] flex flex-col">
               {/* Month nav header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
                 <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-orange-500 hover:text-orange-500 text-slate-400 bg-white transition-colors shadow-sm">
@@ -189,6 +189,8 @@ export default function JadwalPage() {
                 })}
               </div>
 
+              <div className="flex-1"></div>
+
               {/* Legend + selected filter clear */}
               <div className="px-4 py-3 border-t border-slate-100 bg-white flex items-center justify-between gap-3 text-xs text-slate-500">
                 <div className="flex items-center gap-4">
@@ -210,39 +212,51 @@ export default function JadwalPage() {
             </motion.div>
 
             {/* ── Agenda List ── */}
-            <div className="space-y-4">
-              {/* Search bar */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4">
-                <div className="relative flex-1 w-full">
-                  <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <Input
-                    className="pl-11 bg-white border-slate-200 rounded-xl h-11 text-sm text-slate-900 placeholder-slate-400 focus-visible:ring-1 focus-visible:ring-slate-200 focus-visible:border-slate-200 shadow-sm"
-                    placeholder="Cari nama kegiatan atau lokasi..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl flex flex-col h-[500px] overflow-hidden">
+              
+              {/* Top Header & Search */}
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 border-b border-slate-100 bg-white">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
+                    <CalendarDays className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Daftar Agenda</h2>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Filter dan cari kegiatan mendatang.</p>
+                  </div>
                 </div>
-                <div className={cn(
-                  "shrink-0 flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border rounded-xl",
-                  selectedDate ? "bg-orange-50 border-orange-200 text-orange-600" : "bg-slate-50 border-slate-200 text-slate-500"
-                )}>
-                  <CalendarDays className="h-4 w-4" />
-                  {selectedDate ? (
-                    <span>{formatDateLabel(selectedDate)}</span>
-                  ) : (
-                    <span><span className="text-slate-800 font-bold">{sortedFiltered.length}</span> kegiatan</span>
-                  )}
+                
+                <div className="flex flex-1 md:max-w-md items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Input
+                      className="pl-9 bg-slate-50 border-slate-200 rounded-xl h-10 text-sm text-slate-900 placeholder-slate-400 focus-visible:ring-1 focus-visible:ring-slate-200 shadow-sm"
+                      placeholder="Cari kegiatan, lokasi..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                  </div>
+                  <div className={cn(
+                    "shrink-0 flex items-center gap-1.5 px-3 h-10 text-[11px] font-semibold border rounded-xl",
+                    selectedDate ? "bg-orange-50 border-orange-200 text-orange-600" : "bg-slate-50 border-slate-200 text-slate-500"
+                  )}>
+                    {selectedDate ? (
+                      <span>{formatDateLabel(selectedDate)}</span>
+                    ) : (
+                      <span><span className="text-slate-800 font-bold">{sortedFiltered.length}</span> kegiatan</span>
+                    )}
+                  </div>
                 </div>
-              </motion.div>
+              </div>
 
               {/* List */}
               {isLoading ? (
-                <div className="bg-white/60 backdrop-blur-xl border border-white/80 rounded-2xl p-16 flex flex-col items-center gap-3 text-slate-400">
+                <div className="flex-1 flex flex-col items-center justify-center gap-3 text-slate-400">
                   <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
                   <span className="text-sm font-medium">Memuat jadwal...</span>
                 </div>
               ) : sortedFiltered.length === 0 ? (
-                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-16 text-center">
+                <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
                   <AlertCircle className="h-10 w-10 mx-auto mb-4 text-slate-300" />
                   <h3 className="font-bold text-slate-800 text-base">Tidak ada kegiatan</h3>
                   <p className="text-slate-500 text-sm mt-1">
@@ -250,7 +264,7 @@ export default function JadwalPage() {
                   </p>
                 </div>
               ) : (
-                <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
+                <div className="flex-1 flex flex-col min-h-0 bg-white/40">
                   {/* Table header */}
                   <div className="hidden md:grid grid-cols-[56px_1fr_200px_160px_48px] gap-4 px-6 py-3 border-b border-slate-100 bg-white">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center">Tgl</div>
@@ -260,7 +274,7 @@ export default function JadwalPage() {
                     <div />
                   </div>
 
-                  <div className="divide-y divide-slate-100">
+                  <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0">
                     {sortedFiltered.map((k: any) => {
                       const cfg = statusConfig[k.status] || statusConfig.draft;
                       const StatusIcon = cfg.Icon;
@@ -322,9 +336,9 @@ export default function JadwalPage() {
                       );
                     })}
                   </div>
-                </motion.div>
+                </div>
               )}
-            </div>
+            </motion.div>
           </div>
         </section>
       </div>

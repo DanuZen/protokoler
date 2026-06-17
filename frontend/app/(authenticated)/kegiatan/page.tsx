@@ -7,7 +7,7 @@ import { useAuth, useRole } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Plus, MapPin, Clock, CalendarDays, Search,
+  Plus, MapPin, Clock, CalendarDays, Search, CheckCircle2,
   GraduationCap, Handshake, Megaphone, Landmark, ClipboardList
 } from "lucide-react";
 import { toast } from "sonner";
@@ -57,6 +57,10 @@ export default function Page() {
     return !q || k.nama_kegiatan.toLowerCase().includes(q) || k.lokasi.toLowerCase().includes(q) || k.bentuk.includes(q);
   });
 
+  const totalCount = data?.length ?? 0;
+  const terjadwalCount = data?.filter(k => k.status === 'terjadwal' || k.status === 'terkonfirmasi').length ?? 0;
+  const selesaiCount = data?.filter(k => k.status === 'selesai').length ?? 0;
+
   return (
     <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
       
@@ -85,17 +89,32 @@ export default function Page() {
         )}
       </motion.div>
 
-      {/* ─── Floating Toolbar ─── */}
+      {/* STATS */}
       <section className="relative z-20 pb-0">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-5">
-          <div className="relative max-w-md w-full">
-            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-            <Input className="pl-12 bg-white border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl h-11 text-base focus-visible:ring-slate-200 shadow-sm" placeholder="Cari kegiatan, lokasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
-          </div>
-          <div className="text-sm font-semibold text-slate-500 shrink-0 bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl">
-            Menampilkan <span className="text-slate-900">{filtered.length}</span> hasil
-          </div>
-        </motion.div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            { label: "Total Kegiatan", value: totalCount, icon: CalendarDays, hint: "Seluruh riwayat", color: "text-orange-600", bg: "bg-orange-50" },
+            { label: "Akan Datang", value: terjadwalCount, icon: Clock, hint: "Terjadwal & Terkonfirmasi", color: "text-blue-600", bg: "bg-blue-50" },
+            { label: "Selesai", value: selesaiCount, icon: CheckCircle2, hint: "Kegiatan tuntas", color: "text-emerald-600", bg: "bg-emerald-50" },
+          ].map((stat, index) => (
+            <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
+              <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
+                <div className="flex items-center justify-between relative z-10">
+                  <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
+                  <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                    <stat.icon className="h-5 w-5" />
+                  </div>
+                </div>
+                <div className="mt-4 relative z-10">
+                  <p className={cn("text-[32px] font-bold leading-tight", stat.color || "text-slate-900")}>{stat.value}</p>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* ─── BODY CONTENT ─── */}
@@ -118,8 +137,8 @@ export default function Page() {
         </motion.div>
       )}
 
-      <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
-        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-white">
+      <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden h-[500px] flex flex-col">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
               <CalendarDays className="h-5 w-5" />
@@ -129,8 +148,22 @@ export default function Page() {
               <p className="text-[11px] text-slate-500 mt-0.5">Daftar lengkap agenda protokoler.</p>
             </div>
           </div>
+          <div className="flex flex-1 md:max-w-md items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Input
+                className="pl-9 bg-slate-50 border-slate-200 rounded-xl h-10 text-sm text-slate-900 placeholder-slate-400 focus-visible:ring-1 focus-visible:ring-slate-200 shadow-sm"
+                placeholder="Cari kegiatan, lokasi..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <div className="shrink-0 flex items-center gap-1.5 px-3 h-10 text-[11px] font-semibold border border-slate-200 bg-slate-50 text-slate-500 rounded-xl">
+              <span><span className="text-slate-800 font-bold">{filtered.length}</span> kegiatan</span>
+            </div>
+          </div>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0 pr-1">
           {filtered.map((k) => (
             <motion.div key={k.id} variants={cardAnim} className="group hover:bg-slate-50 transition-colors">
               <Link href={`/kegiatan/${k.id}`} className="block">
