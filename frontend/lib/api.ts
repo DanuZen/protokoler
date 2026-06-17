@@ -229,4 +229,43 @@ export const regulasiApi = {
   create: async (data: any) => ({ success: true }),
 };
 
+// ──────────────── POSTINGAN / DOKUMENTASI ────────────────
+const defaultPostingan = [
+  { id: 'post-1', judul: 'Persiapan Acara VIP Tingkat Menteri', kategori: 'Seremonial', gambar: '/gallery_1.png', tanggal: '2026-06-15T08:00:00Z', ringkasan: 'Persiapan matang tim protokoler untuk acara VIP tingkat nasional berjalan dengan lancar tanpa hambatan.' },
+  { id: 'post-2', judul: 'Pengarahan Tamu Resmi Universitas', kategori: 'Protokol VIP', gambar: '/gallery_2.png', tanggal: '2026-06-14T08:00:00Z', ringkasan: 'Briefing dan pengarahan khusus diberikan kepada tim yang akan bertugas menyambut tamu VVIP dari kementerian.' },
+  { id: 'post-3', judul: 'Puncak Upacara Wisuda Ke-123', kategori: 'Wisuda', gambar: '/gallery_3.png', tanggal: '2026-06-10T08:00:00Z', ringkasan: 'Momen puncak upacara wisuda periode ke-123. Tim protokoler mengawal jalannya acara dari awal hingga akhir.' },
+  { id: 'post-4', judul: 'Rapat Koordinasi Tim Nasional', kategori: 'Internal', gambar: '/gallery_1.png', tanggal: '2026-06-05T08:00:00Z', ringkasan: 'Koordinasi lintas divisi untuk mempersiapkan serangkaian agenda besar universitas di bulan depan.' },
+  { id: 'post-5', judul: 'Pelatihan Service Excellence', kategori: 'Pelatihan', gambar: '/gallery_2.png', tanggal: '2026-06-01T08:00:00Z', ringkasan: 'Peningkatan kapasitas anggota protokoler dalam memberikan pelayanan prima kepada tamu-tamu kehormatan.' },
+];
 
+export const postinganApi = {
+  list: async () => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('demo_postingan');
+      if (stored) return JSON.parse(stored);
+      localStorage.setItem('demo_postingan', JSON.stringify(defaultPostingan));
+    }
+    return defaultPostingan;
+  },
+  create: async (data: any) => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('demo_postingan');
+      const posts = stored ? JSON.parse(stored) : defaultPostingan;
+      const newPost = { ...data, id: `post-${Date.now()}` };
+      const updated = [newPost, ...posts];
+      localStorage.setItem('demo_postingan', JSON.stringify(updated));
+      return newPost;
+    }
+    return null;
+  },
+  delete: async (id: string) => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('demo_postingan');
+      const posts = stored ? JSON.parse(stored) : defaultPostingan;
+      const updated = posts.filter((p: any) => p.id !== id);
+      localStorage.setItem('demo_postingan', JSON.stringify(updated));
+      return true;
+    }
+    return false;
+  }
+};
