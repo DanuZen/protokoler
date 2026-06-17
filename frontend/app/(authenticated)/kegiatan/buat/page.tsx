@@ -127,7 +127,7 @@ export default function BuatKegiatanPage() {
           </Link>
           <div>
             <p className="text-[11px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Admin</p>
-            <h1 className="text-2xl font-black text-slate-900 leading-none">Buat Kegiatan Baru</h1>
+            <h1 className="font-display text-2xl font-bold text-slate-900 leading-none">Buat Kegiatan Baru</h1>
           </div>
         </div>
 
@@ -352,7 +352,7 @@ export default function BuatKegiatanPage() {
                               onClick={() => setForm({ ...form, [item.key]: Math.max(0, val - 1) })}
                               className="h-9 w-9 flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 font-bold text-lg transition-colors"
                             >−</button>
-                            <span className="flex-1 text-center text-2xl font-black text-slate-900">{val}</span>
+                            <span className="flex-1 text-center font-display text-2xl font-bold text-slate-900">{val}</span>
                             <button
                               type="button"
                               onClick={() => setForm({ ...form, [item.key]: val + 1 })}

@@ -100,7 +100,7 @@ export default function Dashboard() {
                 Ringkasan Sistem
               </span>
             </div>
-            <h2 className="text-3xl md:text-[2.5rem] font-black tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h2>
+            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h2>
             <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Senang melihat Anda kembali. Mari mulai bekerja.</p>
           </div>
         </div>

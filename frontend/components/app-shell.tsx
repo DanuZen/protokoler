@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Camera, Bell, Settings, Home, CalendarCheck, BarChart3, Award, BookOpen } from 'lucide-react';
+import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Camera, Bell, Settings, Home, CalendarCheck, BarChart3, Award, BookOpen, UploadCloud } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useAuth, useRole } from '@/hooks/use-auth';
@@ -31,6 +31,8 @@ const mahasiswaItems = [
 const dokumentasiItems = [
   { to: '/dokumentasi/dashboard', icon: Camera, label: 'Dashboard' },
   { to: '/kegiatan', icon: CalendarDays, label: 'Kegiatan' },
+  { to: '/dokumentasi/berita', icon: BookOpen, label: 'Berita' },
+  { to: '/dokumentasi/upload', icon: UploadCloud, label: 'Upload' },
 ];
 
 function NavItem({ item, active, isOpen }: { item: { to: string; icon: any; label: string }; active: boolean; isOpen: boolean }) {

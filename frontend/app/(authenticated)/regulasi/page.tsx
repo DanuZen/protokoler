@@ -76,7 +76,7 @@ export default function RegulasiPage() {
                 Pedoman
               </span>
             </div>
-            <h2 className="text-3xl md:text-[2.5rem] font-black tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Regulasi & SOP</h2>
+            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Regulasi & SOP</h2>
             <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pusat informasi standar operasional dan tata tertib keprotokolan.</p>
           </div>
         </div>
