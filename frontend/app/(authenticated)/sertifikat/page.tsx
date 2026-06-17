@@ -390,7 +390,7 @@ function UserSertifikatView() {
 export default function SertifikatPage() {
   const { user } = useAuth();
   const { data: role } = useRole(user);
-  const isAdmin = role === "admin" || role === "pimpinan";
+  const isAdmin = role === "admin" || (role as string) === "pimpinan";
 
   if (isAdmin) {
     return <AdminSertifikatView />;

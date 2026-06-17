@@ -663,7 +663,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
         {/* ── Tab EVALUASI ── */}
         {tab === "evaluasi" && (() => {
           const totalTestimoni = testimoni?.length || 0;
-          const avgRating = totalTestimoni > 0 ? (testimoni.reduce((acc: any, curr: any) => acc + curr.rating, 0) / totalTestimoni).toFixed(1) : "0.0";
+          const avgRating = totalTestimoni > 0 ? ((testimoni || []).reduce((acc: any, curr: any) => acc + curr.rating, 0) / totalTestimoni).toFixed(1) : "0.0";
           const positiveCount = testimoni?.filter((t: any) => t.rating >= 4).length || 0;
           const hasSubmittedEvaluasi = isSuccessSubmit || evaluasi?.some((e: any) => e.protokoler_id === user?.id);
 
