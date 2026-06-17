@@ -1,6 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Github, Linkedin, Mail, Code } from 'lucide-react';
+import { ChevronLeft, GitBranch, ExternalLink, Mail, Code } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -104,10 +104,10 @@ export default function TimPengembang() {
                 {/* Socials Hover */}
                 <div className="absolute top-6 right-6 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 flex flex-col gap-2 z-30">
                   <a href="#" className="w-8 h-8 rounded-full bg-slate-50 text-slate-400 hover:text-[#6B0000] hover:bg-red-50 flex items-center justify-center shadow-sm">
-                    <Github className="w-3.5 h-3.5" />
+                    <GitBranch className="w-3.5 h-3.5" />
                   </a>
                   <a href="#" className="w-8 h-8 rounded-full bg-slate-50 text-slate-400 hover:text-[#6B0000] hover:bg-red-50 flex items-center justify-center shadow-sm">
-                    <Linkedin className="w-3.5 h-3.5" />
+                    <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
               </motion.div>
