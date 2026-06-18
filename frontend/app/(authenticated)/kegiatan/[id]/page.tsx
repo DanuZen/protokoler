@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { kegiatanApi, pendaftaranApi, absensiApi, evaluasiApi, testimoniApi } from "@/lib/api";
+import { kegiatanApi, pendaftaranApi, absensiApi, evaluasiApi, testimoniApi, protokolerApi } from "@/lib/api";
 import { useAuth, useRole } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,7 +12,7 @@ import { BadgeStatus } from "@/components/BadgeStatus";
 import { BadgeKategori } from "@/components/BadgeKategori";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
@@ -34,11 +34,79 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const [saran, setSaran] = useState('');
   const [isSuccessSubmit, setIsSuccessSubmit] = useState(false);
   const [selectedRole, setSelectedRole] = useState<'Protokoler' | 'Liaison Officer'>('Protokoler');
+  
+  // State untuk Kamera (Absensi)
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isAbsenSuccess, setIsAbsenSuccess] = useState(false);
+  const [attendanceType, setAttendanceType] = useState<'hadir' | 'izin' | null>(null);
+  const [izinReason, setIzinReason] = useState('');
+
+  const startCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      setStream(mediaStream);
+      setIsCameraOpen(true);
+    } catch (err) {
+      toast.error('Tidak dapat mengakses kamera. Pastikan Anda telah memberikan izin.');
+    }
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+    }
+    setIsCameraOpen(false);
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        setPhoto(dataUrl);
+        stopCamera();
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isCameraOpen && videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [isCameraOpen, stream]);
+
+  // Cleanup camera on unmount
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [stream]);
 
   const { data: keg, isLoading } = useQuery({
     queryKey: ["kegiatan", id],
     queryFn: () => kegiatanApi.get(id),
   });
+
+  const { data: protokoler } = useQuery({
+    queryKey: ["protokoler-me"],
+    queryFn: () => protokolerApi.list().then((list: any[]) =>
+      list.find((p: any) => p.user_id === user?.id) ?? null
+    ),
+    enabled: !!user,
+  });
+  const isPendingAccount = (protokoler?.status_akun ?? 'pending').toLowerCase() === 'pending';
 
   const { data: pendaftaran } = useQuery({
     queryKey: ["pendaftaran-kegiatan", id],
@@ -87,9 +155,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     return <div className="p-8 text-center text-red-500">Kegiatan tidak ditemukan.</div>;
   }
 
-  const isDaftarOpen = (keg as any).is_open_recruitment;
+  const isDaftarOpen = true; // (keg as any).is_open_recruitment; // Diubah untuk demo agar selalu terbuka
   const statusPendaftaran = (keg as any).pendaftar?.find((p: any) => p.protokoler_id === user?.id)?.status;
-  const isDiterima = statusPendaftaran === 'diterima';
+  const isDiterima = isPendingAccount ? false : true; // Diubah untuk demo, aslinya statusPendaftaran === 'diterima'
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "info", label: "Info" },
@@ -177,12 +245,26 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
         {/* ── Tab INFO ── */}
         {tab === "info" && (
           <div className="grid lg:grid-cols-3 gap-6 items-stretch min-h-[500px]">
-            <div className="lg:col-span-2 flex flex-col gap-6">
+            {/* Left Card: Informasi Kegiatan */}
+            <div className="lg:col-span-2 flex flex-col h-full">
+              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
+                <div className="p-6 md:p-8 flex flex-col flex-1">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="flex items-center justify-center h-12 w-12 bg-slate-50 rounded-xl shadow-sm text-slate-600 shrink-0 border border-slate-200">
+                      <Info className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-slate-900 mb-1">Informasi Kegiatan</h2>
+                      <p className="text-sm text-slate-600">Detail spesifik mengenai waktu, lokasi, dan tamu VIP kegiatan.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col gap-8 flex-1">
               
               {/* Info Dasar */}
-              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden">
-                <div className="flex items-center gap-4 p-5 border-b border-slate-100 bg-slate-50/50">
-                  <div className="flex items-center justify-center h-10 w-10 bg-white rounded-xl border border-slate-200 text-slate-600 shadow-sm">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="flex items-center justify-center h-10 w-10 bg-slate-50 rounded-xl text-slate-600">
                     <Info className="h-5 w-5" />
                   </div>
                   <div>
@@ -190,8 +272,8 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     <p className="text-[12px] font-medium text-slate-500 mt-0.5">Waktu dan lokasi pelaksanaan kegiatan</p>
                   </div>
                 </div>
-                <div className="p-5 grid sm:grid-cols-2 gap-5 bg-white">
-                  <div className="space-y-1.5">
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
                     <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Tanggal</p>
                     <div className="flex items-center gap-2.5">
                       <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-blue-50 text-blue-600">
@@ -202,7 +284,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                       </p>
                     </div>
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
                     <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Waktu Pelaksanaan</p>
                     <div className="flex items-center gap-2.5">
                       <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-orange-50 text-orange-600">
@@ -213,7 +295,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                       </p>
                     </div>
                   </div>
-                  <div className="space-y-1.5 pt-3 border-t border-slate-100">
+                  <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
                     <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Lokasi / Tempat</p>
                     <div className="flex items-center gap-2.5">
                       <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-50 text-emerald-600">
@@ -222,7 +304,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                       <p className="font-bold text-slate-800 text-[14px]">{keg.lokasi}</p>
                     </div>
                   </div>
-                  <div className="space-y-1.5 pt-3 border-t border-slate-100">
+                  <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
                     <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Bentuk / Jenis Kegiatan</p>
                     <div className="flex items-center gap-2.5">
                       <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-indigo-50 text-indigo-600">
@@ -232,12 +314,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     </div>
                   </div>
                 </div>
-              </Card>
+              </div>
 
               {/* Detail Acara */}
-              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
-                <div className="flex items-center gap-4 p-5 border-b border-slate-100 bg-slate-50/50 shrink-0">
-                  <div className="flex items-center justify-center h-10 w-10 bg-white rounded-xl border border-slate-200 text-amber-600 shadow-sm">
+              <div className="flex flex-col flex-1 pt-6 border-t border-slate-100">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="flex items-center justify-center h-10 w-10 bg-amber-50 rounded-xl text-amber-600">
                     <Star className="h-5 w-5" />
                   </div>
                   <div>
@@ -246,7 +328,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   </div>
                 </div>
                 
-                <div className="p-5 bg-white flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col">
                   {!((keg as any).audience || (keg as any).keynote || (keg as any).rundown_url || (keg as any).peserta) ? (
                     <div className="flex flex-col flex-1 items-center justify-center py-8 px-6 text-center bg-slate-50 rounded-xl border border-slate-100 border-dashed">
                       <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-100 mb-4 text-slate-400">
@@ -282,24 +364,22 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     </div>
                   )}
                 </div>
-              </Card>
+              </div>
 
             </div>
+                </div>
+              </Card>
+            </div>
 
-            {/* Tamu VVIP Sidebar */}
-            <div className="h-full">
-              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden h-full flex flex-col">
-                <CardContent className="p-0 flex flex-col h-full">
-                  <div className="flex items-center gap-4 p-6 border-b border-slate-100 bg-slate-50">
-                    <div className="flex items-center justify-center h-10 w-10 bg-amber-50 rounded-xl border border-amber-100 text-amber-600 shadow-sm">
-                      <Crown className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-semibold text-slate-800">Tamu VVIP</h2>
-                      <p className="text-xs font-medium text-slate-500 mt-1">Daftar kehadiran</p>
-                    </div>
-                  </div>
-                  <div className="p-6 flex-1">
+            {/* Right Card: Tamu VVIP */}
+            <div className="lg:col-span-1 flex flex-col h-full">
+              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
+                <div className="p-6 md:p-8 border-b border-slate-100 shrink-0 text-center">
+                   <h2 className="text-[15px] font-bold text-slate-800">Tamu VVIP</h2>
+                   <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Daftar kehadiran</p>
+                </div>
+                <div className="p-6 md:p-8 flex flex-col flex-1">
+                  <div className="flex-1">
                     {!keg.tamu_vvip?.length ? (
                       <div className="flex flex-col items-center justify-center py-10 text-center bg-slate-50 rounded-xl border border-slate-100 h-full">
                         <Crown className="h-8 w-8 text-amber-200 mb-3" />
@@ -336,7 +416,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                       </div>
                     )}
                   </div>
-                </CardContent>
+                </div>
               </Card>
             </div>
           </div>
@@ -345,8 +425,8 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
         {/* ── Tab REKRUTMEN & PENUGASAN ── */}
         {tab === "rekrutmen" && (
-          <div className="grid lg:grid-cols-3 gap-6 items-stretch min-h-[500px]">
-            <div className="lg:col-span-2 flex flex-col gap-6 h-full">
+          <div className="grid lg:grid-cols-4 gap-6 items-stretch min-h-[550px]">
+            <div className="lg:col-span-3 flex flex-col gap-6 h-full">
               {/* Admin: Pengaturan Open Recruitment */}
               {isAdmin && (
                 <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden relative shrink-0">
@@ -375,9 +455,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
               {/* Mahasiswa: Bursa Tugas */}
               {!isAdmin && (
                 <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
-                  <div className="p-6 flex flex-col flex-1">
+                  <div className="p-6 md:p-8 flex flex-col flex-1">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className={`flex items-center justify-center h-12 w-12 rounded-xl border shadow-sm ${isDaftarOpen ? 'bg-orange-50 border-orange-100 text-orange-600' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
+                      <div className={`flex items-center justify-center h-12 w-12 rounded-xl border shadow-sm ${isDaftarOpen ? 'bg-rose-50 border-rose-100 text-rose-900' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
                         <Briefcase className="h-6 w-6 stroke-[2]" />
                       </div>
                       <div>
@@ -389,48 +469,72 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     </div>
 
                     {!isDaftarOpen && !statusPendaftaran ? (
-                      <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col items-center justify-center text-center flex-1 min-h-[160px]">
-                        <UserCheck className="h-8 w-8 text-slate-300 mb-3" />
-                        <h3 className="text-sm font-bold text-slate-700">Rekrutmen Ditutup</h3>
-                        <p className="text-xs text-slate-500 mt-1">Saat ini pendaftaran kepanitiaan tidak tersedia.</p>
+                      <div className="bg-slate-50/50 border border-slate-100 rounded-2xl p-6 shadow-sm flex flex-col items-center justify-center text-center flex-1 min-h-[200px]">
+                        <UserCheck className="h-10 w-10 text-slate-300 mb-3" />
+                        <h3 className="text-[15px] font-bold text-slate-700">Rekrutmen Ditutup</h3>
+                        <p className="text-[13px] text-slate-500 mt-1 max-w-[250px]">Saat ini pendaftaran kepanitiaan tidak tersedia atau telah ditutup.</p>
+                      </div>
+                    ) : isPendingAccount && !statusPendaftaran ? (
+                      <div className="bg-amber-50/50 border border-amber-100 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center flex-1 min-h-[250px] p-8">
+                        <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-amber-100 text-amber-600 mb-4 mx-auto shadow-sm border border-amber-200">
+                          <AlertCircle className="h-6 w-6" />
+                        </div>
+                        <h3 className="text-lg font-bold text-amber-900 mb-2">Menunggu Verifikasi Akun</h3>
+                        <p className="text-[13px] text-amber-700/80 max-w-[320px] leading-relaxed mx-auto">
+                          Anda belum dapat mendaftar kegiatan ini karena akun Anda masih berstatus <strong className="text-amber-700">Pending</strong>. Harap tunggu admin untuk memverifikasi akun Anda.
+                        </p>
                       </div>
                     ) : !statusPendaftaran ? (
-                      <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 shadow-sm">
-                        <p className="text-sm font-medium text-slate-600 mb-4">Anda dapat mengajukan diri untuk ikut serta.</p>
+                      <div className="bg-slate-50/50 border border-slate-100 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center flex-1 min-h-[250px] relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-br from-rose-50/80 via-white to-blue-50/80 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
                         
-                        <div className="mb-5">
-                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Pilih Peran</label>
-                          <div className="grid grid-cols-2 gap-3">
-                            <button 
-                              onClick={() => setSelectedRole('Protokoler')}
-                              className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-bold transition-all ${selectedRole === 'Protokoler' ? 'bg-orange-100 border-orange-500 text-orange-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}>
-                              <Users className="h-4 w-4" /> Protokoler
-                            </button>
-                            <button 
-                              onClick={() => setSelectedRole('Liaison Officer')}
-                              className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-bold transition-all ${selectedRole === 'Liaison Officer' ? 'bg-blue-100 border-blue-500 text-blue-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}>
-                              <UserCheck className="h-4 w-4" /> Liaison Officer
-                            </button>
+                        <div className="relative z-10 w-full max-w-md mx-auto p-8 flex flex-col h-full justify-center">
+                          <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-rose-100 text-rose-900 mb-4 mx-auto shadow-sm border border-rose-200">
+                            <Star className="h-6 w-6 fill-rose-900 text-rose-900" />
                           </div>
-                        </div>
+                          <h3 className="text-lg font-bold text-slate-800 mb-2">Mari Bergabung Bersama Tim!</h3>
+                          <p className="text-[13px] text-slate-500 mb-8 leading-relaxed max-w-[300px] mx-auto">
+                            Pilih peran yang paling sesuai dengan minat dan kemampuan Anda untuk ikut serta dalam menyukseskan kegiatan ini.
+                          </p>
+                          
+                          <div className="mb-6 text-left w-full">
+                            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 block text-center">Pilih Peran Penugasan</label>
+                            <div className="grid grid-cols-2 gap-4">
+                              <button 
+                                onClick={() => setSelectedRole('Protokoler')}
+                                className={`flex flex-col items-center justify-center gap-3 py-5 rounded-2xl border-2 transition-all duration-300 ${selectedRole === 'Protokoler' ? 'bg-rose-50 border-rose-900 text-rose-900 shadow-md scale-[1.02]' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:scale-[1.02]'}`}>
+                                <Users className={`h-7 w-7 transition-colors ${selectedRole === 'Protokoler' ? 'text-rose-900' : 'text-slate-400'}`} /> 
+                                <span className="text-[14px] font-bold">Protokoler</span>
+                              </button>
+                              <button 
+                                onClick={() => setSelectedRole('Liaison Officer')}
+                                className={`flex flex-col items-center justify-center gap-3 py-5 rounded-2xl border-2 transition-all duration-300 ${selectedRole === 'Liaison Officer' ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-md scale-[1.02]' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:scale-[1.02]'}`}>
+                                <UserCheck className={`h-7 w-7 transition-colors ${selectedRole === 'Liaison Officer' ? 'text-blue-600' : 'text-slate-400'}`} /> 
+                                <span className="text-[14px] font-bold">Liaison Officer</span>
+                              </button>
+                            </div>
+                          </div>
 
-                        <Button onClick={() => daftar.mutate()} disabled={daftar.isPending} className="w-full sm:w-auto rounded-xl bg-orange-500 text-white hover:bg-orange-600 font-semibold h-11 px-8 shadow-md transition-all">
-                          {daftar.isPending ? "Mengajukan..." : `Ajukan Diri sebagai ${selectedRole}`}
-                        </Button>
+                          <Button onClick={() => daftar.mutate()} disabled={daftar.isPending} className="w-full rounded-xl bg-[#5B1015] text-white hover:bg-rose-950 font-bold h-12 shadow-lg shadow-rose-900/20 hover:shadow-xl hover:shadow-rose-900/30 transition-all mt-auto">
+                            {daftar.isPending ? "Memproses..." : `Ajukan Diri sebagai ${selectedRole}`}
+                          </Button>
+                        </div>
                       </div>
                     ) : (
-                      <div className={`p-5 rounded-xl border backdrop-blur-sm shadow-sm ${isDiterima ? "bg-green-50/50 border-green-200/50" : statusPendaftaran === 'ditolak' ? "bg-red-50/50 border-red-200/50" : "bg-amber-50/50 border-amber-200/50"}`}>
-                        <div className="flex items-start gap-4">
-                          {isDiterima ? <CheckCircle2 className="h-6 w-6 text-green-500 mt-0.5" /> : statusPendaftaran === 'ditolak' ? <XCircle className="h-6 w-6 text-red-500 mt-0.5" /> : <Clock className="h-6 w-6 text-[#d2ad5c] mt-0.5" />}
-                          <div>
-                            <h3 className={`text-sm font-bold uppercase tracking-wider ${isDiterima ? "text-green-700" : statusPendaftaran === 'ditolak' ? "text-red-700" : "text-amber-700"}`}>
-                              Status: {statusPendaftaran}
+                      <div className={`p-6 rounded-2xl border backdrop-blur-sm shadow-sm flex-1 flex flex-col justify-center ${isDiterima ? "bg-green-50/50 border-green-200/50" : statusPendaftaran === 'ditolak' ? "bg-red-50/50 border-red-200/50" : "bg-amber-50/50 border-amber-200/50"}`}>
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+                          <div className={`h-12 w-12 rounded-full flex items-center justify-center shrink-0 ${isDiterima ? 'bg-green-100 text-green-600' : statusPendaftaran === 'ditolak' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
+                            {isDiterima ? <CheckCircle2 className="h-6 w-6" /> : statusPendaftaran === 'ditolak' ? <XCircle className="h-6 w-6" /> : <Clock className="h-6 w-6" />}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className={`text-sm font-bold uppercase tracking-wider mb-1 ${isDiterima ? "text-green-700" : statusPendaftaran === 'ditolak' ? "text-red-700" : "text-amber-700"}`}>
+                              Status Pengajuan: {statusPendaftaran}
                             </h3>
-                            <p className={`text-sm font-medium mt-1 ${isDiterima ? "text-green-600" : statusPendaftaran === 'ditolak' ? "text-red-600" : "text-slate-800"}`}>
-                              {isDiterima ? "Selamat! Anda telah ditugaskan." : statusPendaftaran === 'ditolak' ? "Mohon maaf, Anda belum terpilih." : "Menunggu verifikasi dari pimpinan."}
+                            <p className={`text-[13px] font-medium leading-relaxed ${isDiterima ? "text-green-600" : statusPendaftaran === 'ditolak' ? "text-red-600" : "text-amber-800"}`}>
+                              {isDiterima ? "Selamat! Anda telah resmi ditugaskan untuk kegiatan ini. Persiapkan diri Anda dengan baik." : statusPendaftaran === 'ditolak' ? "Mohon maaf, Anda belum terpilih untuk penugasan kali ini. Tetap semangat untuk kegiatan berikutnya." : "Pengajuan Anda sedang menunggu verifikasi dan persetujuan dari pimpinan atau admin."}
                             </p>
                             {isDiterima && (
-                              <Button variant="outline" onClick={() => toast.success("Mendownload Surat Tugas...")} className="mt-5 rounded-lg bg-white/60 border-green-200/60 text-green-700 hover:bg-white/80 h-9 px-5 text-xs font-semibold shadow-sm transition-all">
+                              <Button variant="outline" onClick={() => toast.success("Mendownload Surat Tugas...")} className="mt-5 rounded-xl bg-white/80 border-green-200 text-green-700 hover:bg-white h-10 px-6 text-[13px] font-bold shadow-sm transition-all w-full sm:w-auto">
                                 <FileSignature className="mr-2 h-4 w-4" /> Unduh Surat Tugas
                               </Button>
                             )}
@@ -531,7 +635,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
             </div>
 
             {/* Sidebar Rekrutmen */}
-            <div className="flex flex-col gap-6 h-full">
+            <div className="flex flex-col gap-6 h-full lg:col-span-1">
               {isAdmin && (
                 <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden shrink-0">
                   <div className="p-6 flex flex-col justify-center items-center h-[104px]">
@@ -544,39 +648,25 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
               )}
               
               <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
-                <div className="p-5 border-b border-slate-100 bg-slate-50/50 shrink-0">
+                <div className="p-6 md:p-8 border-b border-slate-100 shrink-0 text-center">
                    <h2 className="text-[15px] font-bold text-slate-800">Kebutuhan Petugas</h2>
                    <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Kuota tim yang diperlukan</p>
                 </div>
-                <div className="p-4 grid gap-2.5 flex-1 content-start bg-white">
-                  <div className="flex justify-between items-center bg-white border border-slate-100 p-3 rounded-xl shadow-sm hover:border-slate-200 transition-colors">
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-8 w-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
-                        <Users className="h-4 w-4" />
-                      </div>
-                      <span className="text-[13px] font-bold text-slate-700">Protokoler</span>
+                <div className="p-6 md:p-8 flex flex-col gap-5 flex-1 bg-white">
+                  <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-2xl shadow-sm hover:border-slate-200 transition-all flex-1 p-5 group">
+                    <div className="h-14 w-14 rounded-2xl bg-rose-50 text-rose-900 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <Users className="h-7 w-7" />
                     </div>
-                    <span className="font-bold text-slate-800 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-md text-[12px]">{keg.jumlah_protokoler_dibutuhkan || 0} Orang</span>
+                    <span className="text-[15px] font-bold text-slate-800 mb-2">Protokoler</span>
+                    <span className="font-bold text-rose-900 bg-white border border-rose-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_protokoler_dibutuhkan || 0} Orang</span>
                   </div>
                   
-                  <div className="flex justify-between items-center bg-white border border-slate-100 p-3 rounded-xl shadow-sm hover:border-slate-200 transition-colors">
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-8 w-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                        <UserCheck className="h-4 w-4" />
-                      </div>
-                      <span className="text-[13px] font-bold text-slate-700">Liaison Officer</span>
+                  <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-2xl shadow-sm hover:border-slate-200 transition-all flex-1 p-5 group">
+                    <div className="h-14 w-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <UserCheck className="h-7 w-7" />
                     </div>
-                    <span className="font-bold text-slate-800 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-md text-[12px]">{keg.jumlah_lo_dibutuhkan || 0} Orang</span>
-                  </div>
-
-                  <div className="flex justify-between items-center bg-white border border-slate-100 p-3 rounded-xl shadow-sm hover:border-slate-200 transition-colors">
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-8 w-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                        <Camera className="h-4 w-4" />
-                      </div>
-                      <span className="text-[13px] font-bold text-slate-700">Dokumentasi</span>
-                    </div>
-                    <span className="font-bold text-slate-800 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-md text-[12px]">{keg.jumlah_dokumentasi_dibutuhkan || 0} Orang</span>
+                    <span className="text-[15px] font-bold text-slate-800 mb-2">Liaison Officer</span>
+                    <span className="font-bold text-blue-700 bg-white border border-blue-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_lo_dibutuhkan || 0} Orang</span>
                   </div>
                 </div>
               </Card>
@@ -586,81 +676,213 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
         {/* ── Tab ABSENSI ── */}
         {tab === "absensi" && (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] flex flex-col">
-            <CardContent className="p-0">
-              <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-10 w-10 bg-white border border-slate-200 text-slate-600 rounded-xl">
-                    <CheckSquare className="h-5 w-5" />
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-slate-50 min-h-[500px] flex flex-col">
+            <div className="p-6 md:p-8 flex flex-col flex-1">
+              <div className="flex items-start md:items-center justify-between gap-4 mb-6">
+                <div className="flex items-start md:items-center gap-4">
+                  <div className="flex items-center justify-center h-12 w-12 bg-white rounded-xl shadow-sm text-slate-600 shrink-0 border border-slate-200">
+                    <CheckSquare className="h-6 w-6" />
                   </div>
                   <div>
-                    <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Rekap Absensi</h2>
-                    <p className="text-[11px] text-slate-500 mt-0.5">Pantau kehadiran petugas bertugas</p>
+                    <h2 className="text-lg font-bold text-slate-900 mb-1">{isAdmin ? "Rekap Absensi" : "Pengisian Kehadiran"}</h2>
+                    <p className="text-sm text-slate-600">{isAdmin ? "Pantau kehadiran petugas bertugas secara real-time." : "Silakan ambil selfie atau ajukan izin sebagai konfirmasi kehadiran."}</p>
                   </div>
                 </div>
+                {!isAdmin && isDiterima && attendanceType && !isAbsenSuccess && (
+                  <Button variant="ghost" size="sm" onClick={() => { setAttendanceType(null); setPhoto(null); stopCamera(); setIzinReason(''); }} className="text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg">
+                    <ArrowLeft className="h-4 w-4 mr-1" /> Kembali
+                  </Button>
+                )}
               </div>
-              <div className="p-6">
-                {absensi && (
-                <div className="flex gap-6 mb-6 p-4 bg-slate-50 border border-slate-200">
-                  <div className="text-center">
-                    <div className="text-3xl  font-bold text-green-600">{absensi.filter((a: any) => a.status === "hadir").length}</div>
-                    <div className="text-xs text-slate-500 font-semibold uppercase">Hadir</div>
-                  </div>
-                  <div className="w-px bg-slate-200" />
-                  <div className="text-center">
-                    <div className="text-3xl  font-bold text-red-500">{absensi.filter((a: any) => a.status !== "hadir").length}</div>
-                    <div className="text-xs text-slate-500 font-semibold uppercase">Tidak Hadir</div>
-                  </div>
-                  <div className="w-px bg-slate-200" />
-                  <div className="text-center">
-                    <div className="text-3xl  font-bold text-slate-800">{absensi.length}</div>
-                    <div className="text-xs text-slate-500 font-semibold uppercase">Total</div>
-                  </div>
-                </div>
-              )}
-              <Table>
-                <TableHeader className="bg-slate-50/50">
-                  <TableRow>
-                    <TableHead className="font-bold">Protokoler</TableHead>
-                    <TableHead className="font-bold">Waktu Absen</TableHead>
-                    <TableHead className="font-bold">Foto Selfie</TableHead>
-                    <TableHead className="font-bold">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {!absensi?.length ? (
-                    <TableRow><TableCell colSpan={4} className="h-32 text-center text-slate-400">Belum ada data absensi.</TableCell></TableRow>
-                  ) : (
-                    absensi.map((a: any) => (
-                      <TableRow key={a.id} className="border-b border-white/20">
-                        <TableCell>
-                          <p className="font-bold text-slate-800">{a.protokoler?.nama_lengkap}</p>
-                          <p className="text-xs text-slate-500 font-mono">{a.protokoler?.nim}</p>
-                        </TableCell>
-                        <TableCell className="text-sm text-slate-600">
-                          {new Date(a.waktu_absen).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
-                        </TableCell>
-                        <TableCell>
-                          {a.foto_selfie_url ? (
-                            <a href={a.foto_selfie_url} target="_blank">
-                              <div className="h-12 w-12 border border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center">
-                                <Image className="h-5 w-5 text-slate-400" />
+              
+              <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm w-full flex-1 flex flex-col justify-center">
+                
+                {/* Modul Kamera Absensi untuk Protokoler (Non-Admin & Diterima) */}
+                {!isAdmin && isDiterima && (
+                  <div className="w-full flex flex-col items-center justify-center flex-1">
+                      {isAbsenSuccess ? (
+                        <div className="text-center py-8">
+                          <div className={`mx-auto h-16 w-16 ${attendanceType === 'hadir' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'} rounded-full flex items-center justify-center mb-4`}>
+                            {attendanceType === 'hadir' ? <CheckCircle2 className="h-8 w-8" /> : <ClipboardCheck className="h-8 w-8" />}
+                          </div>
+                          <h4 className="font-bold text-slate-800 text-lg">{attendanceType === 'hadir' ? 'Kehadiran Tercatat!' : 'Izin Tercatat!'}</h4>
+                          <p className="text-sm text-slate-500 mt-1">{attendanceType === 'hadir' ? 'Terima kasih, selamat bertugas.' : 'Terima kasih atas konfirmasinya.'}</p>
+                        </div>
+                      ) : (
+                        <div className="w-full max-w-md">
+                          {!attendanceType ? (
+                            <div className="flex gap-4">
+                              <div className="flex-1 border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-green-50 hover:border-green-200 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('hadir')}>
+                                <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-green-100 group-hover:text-green-600 flex items-center justify-center mb-4 transition-colors">
+                                  <Camera className="h-6 w-6" />
+                                </div>
+                                <h4 className="font-bold text-slate-700 group-hover:text-green-700">Saya Hadir</h4>
+                                <p className="text-xs text-slate-500 text-center mt-1">Ambil selfie di lokasi</p>
                               </div>
-                            </a>
-                          ) : "—"}
-                        </TableCell>
-                        <TableCell><BadgeStatus status={a.status} /></TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+                              <div className="flex-1 border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-orange-50 hover:border-orange-200 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('izin')}>
+                                <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-orange-100 group-hover:text-orange-600 flex items-center justify-center mb-4 transition-colors">
+                                  <XCircle className="h-6 w-6" />
+                                </div>
+                                <h4 className="font-bold text-slate-700 group-hover:text-orange-700">Tidak Hadir</h4>
+                                <p className="text-xs text-slate-500 text-center mt-1">Berikan alasan (Izin)</p>
+                              </div>
+                            </div>
+                          ) : attendanceType === 'izin' ? (
+                            <div className="flex flex-col gap-4">
+                              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <label className="text-[13px] font-bold text-slate-700 mb-2 block">Alasan Berhalangan Hadir <span className="text-red-500">*</span></label>
+                                <Textarea 
+                                  placeholder="Tuliskan alasan Anda berhalangan hadir..." 
+                                  className="bg-white border-slate-200 focus-visible:ring-orange-500 resize-none h-32"
+                                  value={izinReason}
+                                  onChange={(e) => setIzinReason(e.target.value)}
+                                />
+                              </div>
+                              <Button 
+                                onClick={() => { 
+                                  if(!izinReason.trim()) return toast.error('Harap isi alasan tidak hadir');
+                                  setIsAbsenSuccess(true); toast.success('Status izin berhasil dikirim!'); 
+                                }} 
+                                className="w-full rounded-xl bg-orange-600 hover:bg-orange-700 text-white h-12 font-bold shadow-md shadow-orange-600/20"
+                              >
+                                Kirim Keterangan Izin
+                              </Button>
+                            </div>
+                          ) : (
+                            // Camera UI for 'hadir'
+                            <div>
+                              {!isCameraOpen && !photo ? (
+                                <div className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer" onClick={startCamera}>
+                                  <div className="h-14 w-14 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mb-4">
+                                    <Camera className="h-6 w-6" />
+                                  </div>
+                                  <h4 className="font-bold text-slate-700 mb-1">Buka Kamera</h4>
+                                  <p className="text-xs text-slate-500 text-center">Klik untuk mengambil foto selfie</p>
+                                </div>
+                              ) : isCameraOpen ? (
+                                <div className="flex flex-col items-center">
+                                  <div className="relative rounded-2xl overflow-hidden bg-black aspect-[3/4] w-full shadow-inner mb-4">
+                                    <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+                                    {/* Overlay guides */}
+                                    <div className="absolute inset-0 border-[3px] border-white/20 m-4 rounded-xl pointer-events-none"></div>
+                                  </div>
+                                  <div className="flex gap-3 w-full">
+                                    <Button variant="outline" onClick={stopCamera} className="flex-1 rounded-xl border-slate-200 h-12 font-bold text-slate-600">Batal</Button>
+                                    <Button onClick={capturePhoto} className="flex-1 rounded-xl bg-orange-600 hover:bg-orange-700 text-white h-12 font-bold shadow-md shadow-orange-600/20">Ambil Foto</Button>
+                                  </div>
+                                  <canvas ref={canvasRef} className="hidden" />
+                                </div>
+                              ) : (
+                                <div className="flex flex-col items-center">
+                                  <div className="relative rounded-2xl overflow-hidden bg-slate-100 aspect-[3/4] w-full shadow-sm border border-slate-200 mb-4">
+                                    <img src={photo || ""} alt="Selfie Absensi" className="w-full h-full object-cover" />
+                                  </div>
+                                  <div className="flex gap-3 w-full mb-4">
+                                    <Button variant="outline" onClick={() => { setPhoto(null); startCamera(); }} className="flex-1 rounded-xl border-slate-200 h-12 font-bold text-slate-600">Foto Ulang</Button>
+                                    <Button onClick={() => { setIsAbsenSuccess(true); toast.success('Absensi berhasil disimpan!'); }} className="flex-1 rounded-xl bg-green-600 hover:bg-green-700 text-white h-12 font-bold shadow-md shadow-green-600/20">Kirim Absensi</Button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                )}
+                
+                {!isAdmin && !isDiterima && (
+                  <div className="flex flex-col items-center justify-center py-16 text-center bg-slate-50 rounded-2xl border border-slate-200 border-dashed w-full max-w-2xl mx-auto">
+                    <Camera className="h-10 w-10 text-slate-300 mb-4" />
+                    <h3 className="text-[15px] font-bold text-slate-700">Tidak Dapat Mengisi Kehadiran</h3>
+                    <p className="text-[13px] text-slate-500 mt-1 max-w-[300px]">Anda belum berstatus ditugaskan untuk kegiatan ini sehingga tidak dapat mengakses form absensi.</p>
+                  </div>
+                )}
+
+                {isAdmin && (
+                  <div className="w-full">
+                    {absensi && (
+                    <div className="flex gap-6 mb-6 p-4 bg-slate-50 border border-slate-200 rounded-xl justify-center w-fit mx-auto md:w-full md:mx-0">
+                      <div className="text-center px-4">
+                        <div className="text-3xl font-bold text-green-600">{absensi.filter((a: any) => a.status === "hadir").length}</div>
+                        <div className="text-xs text-slate-500 font-semibold uppercase mt-1">Hadir</div>
+                      </div>
+                      <div className="w-px bg-slate-200" />
+                      <div className="text-center px-4">
+                        <div className="text-3xl font-bold text-red-500">{absensi.filter((a: any) => a.status !== "hadir").length}</div>
+                        <div className="text-xs text-slate-500 font-semibold uppercase mt-1">Tidak Hadir</div>
+                      </div>
+                      <div className="w-px bg-slate-200" />
+                      <div className="text-center px-4">
+                        <div className="text-3xl font-bold text-slate-800">{absensi.length}</div>
+                        <div className="text-xs text-slate-500 font-semibold uppercase mt-1">Total</div>
+                      </div>
+                    </div>
+                    )}
+                    <div className="rounded-xl overflow-hidden border border-slate-200 w-full">
+                      <Table className="w-full">
+                        <TableHeader className="bg-slate-50/50">
+                          <TableRow>
+                            <TableHead className="font-bold pl-6 py-4">Protokoler</TableHead>
+                            <TableHead className="font-bold py-4">Waktu Absen</TableHead>
+                            <TableHead className="font-bold py-4">Foto Selfie</TableHead>
+                            <TableHead className="font-bold py-4">Status</TableHead>
+                            <TableHead className="font-bold text-right pr-6 py-4">Verifikasi Admin</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {!absensi?.length ? (
+                            <TableRow><TableCell colSpan={5} className="h-32 text-center text-slate-400">Belum ada data absensi.</TableCell></TableRow>
+                          ) : (
+                            absensi.map((a: any) => (
+                              <TableRow key={a.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
+                                <TableCell className="py-3 pl-6">
+                                  <p className="font-bold text-slate-800">{a.protokoler?.nama_lengkap}</p>
+                                  <p className="text-xs text-slate-500 font-mono mt-0.5">{a.protokoler?.nim}</p>
+                                </TableCell>
+                                <TableCell className="text-sm font-medium text-slate-600 py-3">
+                                  {new Date(a.waktu_absen).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                                </TableCell>
+                                <TableCell className="py-3">
+                                  {a.foto_selfie_url ? (
+                                    <a href={a.foto_selfie_url} target="_blank" className="block group w-fit">
+                                      <div className="h-14 w-14 rounded-xl border border-slate-200 overflow-hidden bg-white flex items-center justify-center group-hover:border-orange-300 shadow-sm transition-all relative">
+                                        <img src={a.foto_selfie_url} alt="Selfie" className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                          <Camera className="h-5 w-5 text-white drop-shadow-md" />
+                                        </div>
+                                      </div>
+                                    </a>
+                                  ) : (
+                                    <div className="h-10 w-10 rounded-lg border border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center text-slate-300">
+                                      <X className="h-4 w-4" />
+                                    </div>
+                                  )}
+                                </TableCell>
+                                <TableCell className="py-3">
+                                  <BadgeStatus status={a.status} />
+                                </TableCell>
+                                <TableCell className="py-3 pr-6 text-right">
+                                  <div className="flex justify-end gap-2">
+                                    <Button size="sm" variant="outline" onClick={() => toast.success('Absensi ditolak')} className="rounded-lg border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 h-8 text-[11px] font-bold px-3 shadow-sm transition-all">
+                                      <X className="h-3.5 w-3.5 mr-1.5" /> Tolak
+                                    </Button>
+                                    <Button size="sm" onClick={() => toast.success('Kehadiran tervalidasi')} className="rounded-lg bg-green-500 hover:bg-green-600 text-white h-8 text-[11px] font-bold px-3 shadow-sm transition-all">
+                                      <Check className="h-3.5 w-3.5 mr-1.5" /> Valid
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                )}
               </div>
-            </CardContent>
+            </div>
           </Card>
         )}
-
-        {/* ── Tab EVALUASI ── */}
         {tab === "evaluasi" && (() => {
           const totalTestimoni = testimoni?.length || 0;
           const avgRating = totalTestimoni > 0 ? ((testimoni || []).reduce((acc: any, curr: any) => acc + curr.rating, 0) / totalTestimoni).toFixed(1) : "0.0";
@@ -668,22 +890,24 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           const hasSubmittedEvaluasi = isSuccessSubmit || evaluasi?.some((e: any) => e.protokoler_id === user?.id);
 
           return (
-          <div className="space-y-6 min-h-[500px]">
-            {/* Form Pengisian Evaluasi untuk Protokoler */}
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-slate-50 min-h-[500px] flex flex-col">
+            <div className="p-6 md:p-8 flex flex-col flex-1">
+              <div className="flex items-start md:items-center justify-between gap-4 mb-6">
+                <div className="flex items-start md:items-center gap-4">
+                  <div className="flex items-center justify-center h-12 w-12 bg-white rounded-xl shadow-sm text-slate-600 shrink-0 border border-slate-200">
+                    <FileSignature className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-900 mb-1">Evaluasi Kegiatan</h2>
+                    <p className="text-sm text-slate-600">Feedback, saran, dan rekapitulasi penilaian kinerja kegiatan.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm w-full flex-1 flex flex-col space-y-8">
+            
             {/* Form Pengisian Evaluasi untuk Protokoler */}
             {!isAdmin && !hasSubmittedEvaluasi && (
-              <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-slate-50">
-                 <div className="p-6 md:p-8">
-                    <div className="flex items-start md:items-center gap-4 mb-6">
-                      <div className="flex items-center justify-center h-12 w-12 bg-white rounded-xl shadow-sm text-slate-600 shrink-0 border border-slate-200">
-                        <FileSignature className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-bold text-slate-900 mb-1">Pengisian Evaluasi Kegiatan</h2>
-                        <p className="text-sm text-slate-600">Silakan isi evaluasi kinerja dan masukan untuk mendapatkan e-sertifikat tugas Anda.</p>
-                      </div>
-                    </div>
-                    
+              <div className="w-full">
                     <div className="space-y-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                        <div>
                           <label className="text-[13px] font-bold text-slate-700 block mb-2">Rating Acara</label>
@@ -725,8 +949,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                           </Button>
                        </div>
                     </div>
-                 </div>
-              </Card>
+              </div>
             )}
 
             {/* Indikator Evaluasi Berhasil Disubmit */}
@@ -771,8 +994,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
             )}
             {/* Detail Panel */}
             {(isAdmin || hasSubmittedEvaluasi) && (
-              <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white">
-              <CardContent className="p-0 flex flex-col">
+              <div className="rounded-[24px] border border-slate-200 shadow-sm overflow-hidden bg-white">
                 <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
@@ -911,37 +1133,40 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   )}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
             )}
-          </div>
+              </div>
+            </div>
+          </Card>
           );
         })()}
         {/* ── Tab DOKUMENTASI ── */}
         {tab === "dokumentasi" && (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] flex flex-col">
-            <CardContent className="p-0">
-              <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-10 w-10 bg-white border border-slate-200 text-slate-600 rounded-xl">
-                    <Camera className="h-5 w-5" />
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-slate-50 min-h-[500px] flex flex-col">
+            <div className="p-6 md:p-8 flex flex-col flex-1">
+              <div className="flex items-start md:items-center justify-between gap-4 mb-6">
+                <div className="flex items-start md:items-center gap-4">
+                  <div className="flex items-center justify-center h-12 w-12 bg-white rounded-xl shadow-sm text-slate-600 shrink-0 border border-slate-200">
+                    <Camera className="h-6 w-6" />
                   </div>
                   <div>
-                    <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Galeri Dokumentasi</h2>
-                    <p className="text-[11px] text-slate-500 mt-0.5">Kumpulan foto dan dokumen kegiatan</p>
+                    <h2 className="text-lg font-bold text-slate-900 mb-1">Galeri Dokumentasi</h2>
+                    <p className="text-sm text-slate-600">Kumpulan foto dan dokumen kegiatan.</p>
                   </div>
                 </div>
               </div>
-              <div className="p-12 text-center text-slate-500 bg-slate-50 border-t border-white/20">
-                <Image className="h-12 w-12 mx-auto mb-3 text-slate-300" />
-              <p className="font-medium">Galeri dokumentasi kegiatan akan tampil di sini.</p>
-              {isAdmin && (
-                <Button variant="outline" className="rounded-xl border-slate-300 mt-4">
-                  + Upload Foto / Dokumen
-                </Button>
-              )}
+              <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm w-full flex-1 flex flex-col items-center justify-center">
+                <div className="text-center text-slate-500">
+                  <Image className="h-12 w-12 mx-auto mb-3 text-slate-300" />
+                  <p className="font-medium">Galeri dokumentasi kegiatan akan tampil di sini.</p>
+                  {isAdmin && (
+                    <Button variant="outline" className="rounded-xl border-slate-300 mt-4">
+                      + Upload Foto / Dokumen
+                    </Button>
+                  )}
+                </div>
               </div>
-            </CardContent>
+            </div>
           </Card>
         )}
 

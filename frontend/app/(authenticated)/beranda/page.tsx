@@ -187,7 +187,7 @@ export default function BerandaPage() {
             {/* Gamification Progress Card */}
             {protokoler?.status_akun === "aktif" && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="xl:col-span-5">
-                <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl h-full flex flex-col">
+                <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl h-full flex flex-col relative overflow-hidden">
                   <div className="border-b border-slate-100 px-6 py-4 bg-slate-50 rounded-t-[24px]">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
@@ -199,6 +199,7 @@ export default function BerandaPage() {
                       </div>
                     </div>
                   </div>
+
                   <CardContent className="pt-6 flex-1 flex flex-col">
                     {next ? (
                       <div className="mb-6">

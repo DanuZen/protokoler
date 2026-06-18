@@ -1,104 +1,313 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { postinganApi } from '@/lib/api';
+import { kegiatanApi, postinganApi } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { BookOpen, Trash2, CalendarDays, Search, UploadCloud } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { BookOpen, CalendarDays, Search, UploadCloud, MapPin, CheckCircle2, AlertCircle, ArrowLeft, ListTodo, Clock, Radio } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 export default function ManajemenBeritaPage() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
+  
+  // Dialog State
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState('foto');
+  const [formData, setFormData] = useState({
+    kategori: '',
+    gambar: '/gallery_1.png',
+    ringkasan: '',
+  });
+
+  // Queries
+  const { data: kegiatan } = useQuery({
+    queryKey: ['dokumentasi-kegiatan'],
+    queryFn: () => kegiatanApi.list(),
+  });
 
   const { data: postingan = [] } = useQuery({
     queryKey: ['postingan-list'],
     queryFn: postinganApi.list,
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: postinganApi.delete,
+  // Search filter - Tampilkan semua kegiatan (tidak hanya selesai)
+  const filteredKegiatan = (kegiatan ?? []).filter((p: any) => 
+    p.nama_kegiatan.toLowerCase().includes(search.toLowerCase()) || 
+    (p.lokasi && p.lokasi.toLowerCase().includes(search.toLowerCase()))
+  );
+
+  const selected = (kegiatan ?? []).find((item: any) => item.id === selectedId) || null;
+
+  const createMutation = useMutation({
+    mutationFn: postinganApi.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['postingan-list'] });
-      queryClient.invalidateQueries({ queryKey: ['postingan'] });
-      toast.success('Berita berhasil dihapus!');
+      toast.success(`Dokumentasi berhasil dipublikasikan!`);
+      setFormData({ kategori: '', gambar: '/gallery_1.png', ringkasan: '' });
+      setMediaType('foto');
+      setSelectedId(null); // Tutup dialog
     }
   });
 
-  const filteredPosts = postingan.filter((p: any) => p.judul.toLowerCase().includes(search.toLowerCase()) || p.kategori.toLowerCase().includes(search.toLowerCase()));
+  const handleUpload = () => {
+    if (!selected) return;
+    if (!formData.kategori || !formData.ringkasan) {
+      toast.error('Mohon lengkapi Kategori dan Keterangan berita');
+      return;
+    }
+    
+    const payload = {
+      judul: selected.nama_kegiatan,
+      kategori: formData.kategori,
+      gambar: formData.gambar,
+      ringkasan: formData.ringkasan,
+      tanggal: new Date().toISOString()
+    };
+    
+    createMutation.mutate(payload);
+  };
+
+  const isPublished = (judulKegiatan: string) => {
+    return postingan.some((p: any) => p.judul === judulKegiatan);
+  };
+
+  const totalKegiatan = kegiatan?.length || 0;
+  const selesaiKegiatan = (kegiatan || []).filter((k: any) => k.status === 'selesai').length;
+  const belumDokumentasi = (kegiatan || []).filter((k: any) => k.status === 'selesai' && !isPublished(k.nama_kegiatan)).length;
+  const beritaPublished = postingan?.length || 0;
 
   return (
     <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+      
       {/* HEADER */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-600 to-orange-800 shadow-lg shadow-orange-700/20 text-white">
             <BookOpen className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
-                Dokumentasi
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-700">
+                Workspace Terpadu
               </span>
             </div>
             <h1 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Berita</h1>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Kelola postingan berita dan dokumentasi yang tampil di halaman utama.</p>
+            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau status kegiatan dan unggah dokumentasi untuk mempublikasikannya sebagai berita.</p>
           </div>
         </div>
-
-        <Link href="/dokumentasi/upload">
-          <Button className="rounded-xl bg-orange-500 text-white hover:bg-orange-600 shadow-md font-bold h-11 px-6">
-            <UploadCloud className="mr-2 h-5 w-5" /> Buka Workspace Upload
-          </Button>
-        </Link>
       </motion.div>
 
-      {/* FILTER & LIST */}
-      <div className="mb-6 flex items-center gap-4 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="flex items-center flex-1 gap-2 bg-slate-50 px-3 rounded-xl border border-slate-100">
-          <Search className="h-4 w-4 text-slate-400" />
-          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Cari judul atau kategori..." className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-1" />
-        </div>
-      </div>
+      {!selectedId && (
+        <>
+          {/* SUMMARY CARDS */}
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {[
+              { label: "Total Kegiatan", value: totalKegiatan, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-orange-600", bg: "bg-orange-50" },
+              { label: "Acara Selesai", value: selesaiKegiatan, icon: CheckCircle2, hint: "Kegiatan yang telah selesai", color: "text-orange-600", bg: "bg-orange-50" },
+              { label: "Belum Upload", value: belumDokumentasi, icon: AlertCircle, hint: "Acara selesai belum ada berita", color: "text-orange-600", bg: "bg-orange-50" },
+              { label: "Berita Dipublikasi", value: beritaPublished, icon: BookOpen, hint: "Berita yang sudah tayang", color: "text-orange-600", bg: "bg-orange-50" }
+            ].map((stat, index) => (
+              <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
+                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative overflow-hidden h-full">
+                  <div className="flex items-center justify-between relative z-10">
+                    <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
+                    <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                      <stat.icon className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div className="mt-4 relative z-10">
+                    <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                    <span className="text-[11px] font-medium text-slate-400 mt-1 block">{stat.hint}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredPosts.map((post: any, i: number) => (
-          <motion.div key={post.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="h-full">
-            <Card className="overflow-hidden rounded-2xl border-slate-200 hover:shadow-lg transition-all duration-300 flex flex-col h-full bg-white group">
-              <div className="h-48 relative overflow-hidden bg-slate-100 shrink-0">
-                <img src={post.gambar} alt={post.judul} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold text-slate-800 uppercase tracking-wider shadow-sm">
-                  {post.kategori}
+          {/* FILTER */}
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-sm w-full max-w-md">
+              <Search className="h-4 w-4 text-slate-400" />
+              <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Cari nama acara atau lokasi..." className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-1" />
+            </div>
+          </div>
+        </>
+      )}
+
+      {!selectedId ? (
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+          <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">Daftar Acara & Status Dokumentasi</h2>
+                <p className="text-sm text-slate-500 mt-1">Pilih acara pada tabel di bawah ini untuk mengunggah dokumentasi.</p>
+              </div>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                  <tr>
+                    <th className="px-6 py-4">Nama Kegiatan</th>
+                    <th className="px-6 py-4">Waktu & Tempat</th>
+                    <th className="px-6 py-4">Status Acara</th>
+                    <th className="px-6 py-4">Status Dokumentasi</th>
+                    <th className="px-6 py-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 bg-white">
+                  {filteredKegiatan.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-10 text-center text-slate-400">
+                        Tidak ada kegiatan yang ditemukan.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredKegiatan.map((keg: any) => {
+                      const published = isPublished(keg.nama_kegiatan);
+                      return (
+                        <tr key={keg.id} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="font-bold text-slate-900 mb-1">{keg.nama_kegiatan}</div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{keg.kategori}</div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium mb-1.5">
+                              <CalendarDays className="h-3.5 w-3.5 text-slate-400" />
+                              {new Date(keg.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </div>
+                            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                              <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                              <span className="truncate max-w-[150px]">{keg.lokasi}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <Badge variant="outline" className={cn("px-2.5 py-0.5 rounded-full text-xs capitalize font-medium", 
+                              keg.status === 'selesai' ? 'bg-slate-100 text-slate-600 border-slate-200' :
+                              keg.status === 'berlangsung' ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                              'bg-amber-50 text-amber-600 border-amber-200'
+                            )}>
+                              {keg.status}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4">
+                            {published ? (
+                              <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-200 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 w-fit font-medium">
+                                <CheckCircle2 className="w-3 h-3" /> Sudah Upload
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="bg-red-50 text-red-600 border-red-200 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 w-fit font-medium">
+                                <AlertCircle className="w-3 h-3" /> Belum Upload
+                              </Badge>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <Button 
+                              onClick={() => setSelectedId(keg.id)}
+                              className="bg-orange-700 hover:bg-orange-800 text-white rounded-xl h-8 px-4 text-xs font-bold shadow-sm"
+                            >
+                              <UploadCloud className="w-3.5 h-3.5 mr-1.5" /> Upload
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </motion.div>
+      ) : (
+
+        <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
+          <div className="mb-6 flex items-center">
+            <Button variant="outline" onClick={() => setSelectedId(null)} className="bg-white border-slate-200 text-slate-700 hover:text-orange-700 hover:bg-orange-50 hover:border-orange-200 shadow-sm rounded-xl px-4 h-10 font-bold transition-all">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Kembali ke Daftar Acara
+            </Button>
+          </div>
+          
+          <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full">
+            <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center gap-4">
+              <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-orange-700 rounded-[14px] shadow-sm">
+                <UploadCloud className="h-6 w-6" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 leading-tight">Form Berita & Upload</h2>
+                <p className="text-sm text-slate-500 mt-1">
+                  Upload dokumentasi untuk: <strong className="text-slate-800">{selected?.nama_kegiatan}</strong>
+                </p>
+              </div>
+            </div>
+            
+            <div className="p-8 space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2.5">
+                  <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Tipe File Asli</label>
+                  <select 
+                    value={mediaType}
+                    onChange={e => setMediaType(e.target.value)}
+                    className="w-full flex h-12 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-orange-700 focus:border-transparent font-medium"
+                  >
+                    <option value="foto">Foto</option>
+                    <option value="video">Video</option>
+                    <option value="dokumen">Dokumen</option>
+                  </select>
+                </div>
+                <div className="space-y-2.5">
+                  <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Kategori Berita</label>
+                  <select 
+                    value={formData.kategori} 
+                    onChange={e => setFormData({...formData, kategori: e.target.value})}
+                    className="w-full flex h-12 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-orange-700 focus:border-transparent font-medium"
+                  >
+                    <option value="" disabled>Pilih Kategori</option>
+                    <option value="Seremonial">Seremonial</option>
+                    <option value="Protokol VIP">Protokol VIP</option>
+                    <option value="Wisuda">Wisuda</option>
+                    <option value="Internal">Internal</option>
+                    <option value="Pelatihan">Pelatihan</option>
+                  </select>
                 </div>
               </div>
-              <CardContent className="p-5 flex flex-col flex-1">
-                <div className="flex items-center gap-2 text-xs text-slate-400 mb-2 font-medium">
-                  <CalendarDays className="h-3.5 w-3.5" />
-                  {new Date(post.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-2.5 flex flex-col">
+                  <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-2 block">Upload File Dokumentasi</label>
+                  <label htmlFor="file-upload" className="flex-1 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 hover:bg-orange-50 hover:border-orange-400 transition-all flex flex-col items-center justify-center py-10 px-6 cursor-pointer group relative overflow-hidden min-h-[220px]">
+                    <div className="absolute inset-0 bg-orange-500/0 group-hover:bg-orange-500/5 transition-colors" />
+                    <div className="h-16 w-16 rounded-full bg-white flex items-center justify-center shadow-sm border border-slate-100 mb-4 group-hover:scale-110 group-hover:shadow-md transition-all">
+                      <UploadCloud className="h-7 w-7 text-orange-600 group-hover:text-orange-700" />
+                    </div>
+                    <h3 className="text-sm font-bold text-slate-700 mb-1.5 text-center">Klik untuk memilih atau seret & lepas file ke sini</h3>
+                    <p className="text-xs text-slate-400 text-center font-medium">Format didukung: JPG, PNG, MP4, PDF. Maksimal 100MB.</p>
+                    <input type="file" className="hidden" id="file-upload" />
+                  </label>
                 </div>
-                <h3 className="font-bold text-lg text-slate-900 leading-tight mb-2 line-clamp-2">{post.judul}</h3>
-                <p className="text-sm text-slate-500 line-clamp-3 mb-4 flex-1">{post.ringkasan}</p>
-                <div className="pt-4 border-t border-slate-100 flex justify-between items-center mt-auto shrink-0">
-                  <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Published</span>
-                  <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(post.id)} className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+
+                <div className="space-y-2.5 flex flex-col">
+                  <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-2 block">Keterangan / Isi Berita</label>
+                  <Textarea value={formData.ringkasan} onChange={(e) => setFormData({...formData, ringkasan: e.target.value})} placeholder="Tuliskan isi berita atau keterangan dokumentasi..." className="flex-1 min-h-[220px] rounded-2xl border-slate-200 bg-slate-50 resize-none text-sm p-5 leading-relaxed" />
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-        {filteredPosts.length === 0 && (
-          <div className="col-span-full py-16 text-center text-slate-400 bg-white rounded-2xl border border-slate-200 border-dashed">
-            <BookOpen className="h-10 w-10 mx-auto mb-3 text-slate-300" />
-            <p>Tidak ada berita yang ditemukan.</p>
-          </div>
-        )}
-      </div>
+              </div>
+
+              <div className="pt-2">
+                <Button onClick={handleUpload} disabled={createMutation.isPending} className="w-full rounded-xl bg-orange-700 text-white hover:bg-orange-800 shadow-lg shadow-orange-700/20 h-14 text-sm font-bold">
+                  <UploadCloud className="mr-2 h-5 w-5" /> {createMutation.isPending ? 'Menyimpan...' : 'Upload & Publish Berita'}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+      )}
     </div>
   );
 }

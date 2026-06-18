@@ -24,7 +24,6 @@ const adminItems = [
 const mahasiswaItems = [
   { to: '/beranda', icon: Home, label: 'Beranda' },
   { to: '/kegiatan', icon: CalendarDays, label: 'Kegiatan' },
-  { to: '/jadwal', icon: CalendarCheck, label: 'Jadwal' },
   { to: '/evaluasi/dashboard', icon: BarChart3, label: 'Evaluasi' },
   { to: '/sertifikat', icon: Award, label: 'Sertifikat' },
 ];
@@ -33,7 +32,6 @@ const dokumentasiItems = [
   { to: '/dokumentasi/dashboard', icon: Camera, label: 'Dashboard' },
   { to: '/kegiatan', icon: CalendarDays, label: 'Kegiatan' },
   { to: '/dokumentasi/berita', icon: BookOpen, label: 'Berita' },
-  { to: '/dokumentasi/upload', icon: UploadCloud, label: 'Upload' },
 ];
 
 function NavItem({ item, active, isOpen }: { item: { to: string; icon: any; label: string }; active: boolean; isOpen: boolean }) {
