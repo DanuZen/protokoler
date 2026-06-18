@@ -185,8 +185,8 @@ export default function KegiatanPage() {
                       onClick={() => setSelectedDate(isSelected ? null : dateStr)}
                       className={cn(
                         "relative h-9 w-full flex flex-col items-center justify-center text-sm font-semibold transition-all rounded-md",
-                        isSelected && "bg-[#ff6b4a] text-white shadow-sm",
-                        !isSelected && isToday && "ring-2 ring-[#ff6b4a] text-[#ff6b4a]",
+                        isSelected && "bg-orange-700 text-white shadow-sm",
+                        !isSelected && isToday && "ring-2 ring-orange-700 text-orange-700",
                         !isSelected && !isToday && "hover:bg-slate-50 text-slate-700",
                       )}
                     >
@@ -194,7 +194,7 @@ export default function KegiatanPage() {
                       {hasEvent && (
                         <span className={cn(
                           "absolute bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full",
-                          isSelected ? "bg-white" : "bg-orange-400"
+                          isSelected ? "bg-white" : "bg-orange-700"
                         )} />
                       )}
                     </button>
@@ -208,16 +208,16 @@ export default function KegiatanPage() {
               <div className="px-4 py-3 border-t border-slate-100 bg-white flex items-center justify-between gap-3 text-xs text-slate-500">
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-orange-400 inline-block" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-700 inline-block" />
                     Ada kegiatan
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="h-4 w-4 ring-2 ring-[#ff6b4a] inline-flex items-center justify-center text-[9px] text-[#ff6b4a] font-bold rounded-full">{today.getDate()}</span>
+                    <span className="h-4 w-4 ring-2 ring-orange-700 inline-flex items-center justify-center text-[9px] text-orange-700 font-bold rounded-full">{today.getDate()}</span>
                     Hari ini
                   </span>
                 </div>
                 {selectedDate && (
-                  <button onClick={() => setSelectedDate(null)} className="text-[#ff6b4a] font-bold hover:text-orange-600 transition-colors text-xs flex items-center gap-1">
+                  <button onClick={() => setSelectedDate(null)} className="text-orange-700 font-bold hover:text-orange-800 transition-colors text-xs flex items-center gap-1">
                     <XCircle className="h-3.5 w-3.5" /> Reset
                   </button>
                 )}

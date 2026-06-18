@@ -257,7 +257,7 @@ export default function ProfilPage() {
       </div>
       {/* ── Crop Modal ── */}
       {cropModalOpen && currentImageSrc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#6b0000]/80 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
           <div className="bg-white border border-slate-200 rounded-xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
             <div className="p-4 border-b border-white/20 flex justify-between items-center bg-slate-50">
               <h3 className="font-bold text-slate-800">Sesuaikan Foto</h3>
@@ -266,7 +266,7 @@ export default function ProfilPage() {
               </button>
             </div>
             
-            <div className="relative w-full h-[400px] bg-[#6b0000]">
+            <div className="relative w-full h-[400px] bg-black">
               <Cropper
                 image={currentImageSrc}
                 crop={crop}

@@ -8,7 +8,7 @@ import { useAuth, useRole } from '@/hooks/use-auth';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Camera, Upload, ArrowLeft, Info, ArrowRight, CalendarDays, MapPin, CheckCircle2 } from 'lucide-react';
+import { Camera, Upload, ArrowLeft, Info, ArrowRight, CalendarDays, MapPin, CheckCircle2, ListTodo } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -150,15 +150,15 @@ export default function DokumentasiDashboardPage() {
       <div className="flex-1 mt-8 pb-12">
         <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white/60 backdrop-blur-xl">
           <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-white">
-            <div>
-              <h2 className="text-lg font-bold text-slate-900">Daftar Acara & Status Dokumentasi</h2>
-              <p className="text-sm text-slate-500 mt-0.5">Pantau status unggahan dokumentasi untuk seluruh kegiatan.</p>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-12 w-12 bg-slate-50 text-slate-600 rounded-[14px] border border-slate-200">
+                <ListTodo className="h-6 w-6" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">Daftar Acara & Status Dokumentasi</h2>
+                <p className="text-sm text-slate-500 mt-0.5">Pantau status unggahan dokumentasi untuk seluruh kegiatan.</p>
+              </div>
             </div>
-            <Link href="/dokumentasi/upload">
-              <Button size="sm" variant="outline" className="rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 border-orange-200 shadow-sm font-bold">
-                <Upload className="w-4 h-4 mr-2" /> Upload Dokumentasi
-              </Button>
-            </Link>
           </div>
           <div className="p-0">
             <div className="overflow-x-auto">
