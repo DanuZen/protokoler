@@ -74,40 +74,45 @@ export default function KegiatanSayaPage() {
 
   return (
     <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
-      {/* ─── HEADER SECTION (Adapted Layout) ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col gap-4 md:gap-6 mb-6 md:mb-8 pt-2">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
-              Penugasan Mahasiswa
-            </span>
+      {/* ─── HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+            <ClipboardList className="h-7 w-7" />
           </div>
-          <h2 className="font-display text-[28px] md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 md:mb-2 text-slate-900 drop-shadow-sm">Kegiatan Saya</h2>
-          <p className="text-[13px] md:text-base text-slate-600 font-medium max-w-xl">
-            Daftar penugasan yang ditugaskan kepada Anda.
-          </p>
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+                Penugasan Mahasiswa
+              </span>
+            </div>
+            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Kegiatan Saya</h2>
+            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Daftar penugasan yang ditugaskan kepada Anda.</p>
+          </div>
         </div>
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="relative z-20 pb-0 shrink-0">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+      <section className="relative z-20 pb-0">
+        <div className="grid gap-4 md:grid-cols-3">
           {[
             { label: "Menunggu", value: pending, icon: AlertCircle, hint: "Perlu konfirmasi", color: "text-amber-600", bg: "bg-amber-100" },
             { label: "Dikonfirmasi", value: confirmed, icon: CheckCircle2, hint: "Siap bertugas", color: "text-emerald-600", bg: "bg-emerald-100" },
-            { label: "Total Penugasan", value: data?.length ?? 0, icon: ClipboardList, hint: "Semua status", color: "text-orange-600", bg: "bg-orange-50", className: "hidden md:block" },
+            { label: "Total Penugasan", value: data?.length ?? 0, icon: ClipboardList, hint: "Semua status", color: "text-[#ff6b4a]", bg: "bg-orange-50" },
           ].map((stat, index) => (
-            <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }} className={stat.className || ""}>
-              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-4 md:p-6 flex flex-col justify-between hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative overflow-hidden h-full">
-                <div className="flex items-center justify-between relative z-10 mb-2 md:mb-0">
-                  <p className="text-xs md:text-sm font-semibold text-slate-500 truncate pr-2">{stat.label}</p>
-                  <div className={cn("flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
-                    <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
+            <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
+              <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
+                <div className="flex items-center justify-between relative z-10">
+                  <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
+                  <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                    <stat.icon className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="mt-1 md:mt-4 relative z-10">
-                  <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
-                  <span className="text-[9px] md:text-[11px] font-medium text-slate-400 mt-0.5 md:mt-1 block truncate">{stat.hint}</span>
+                <div className="mt-4 relative z-10">
+                  <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -121,16 +126,16 @@ export default function KegiatanSayaPage() {
 
           {isLoading ? (
             <div className="space-y-4">
-              {[...Array(3)].map((_, i) => <div key={i} className="h-24 w-full bg-white/60 border border-white/80 animate-pulse rounded-2xl" />)}
+              {[...Array(3)].map((_, i) => <div key={i} className="h-24 w-full bg-white border border-slate-200 animate-pulse rounded-[24px]" />)}
             </div>
           ) : !data?.length ? (
-            <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-16 text-center">
+            <div className="bg-white border border-slate-200 rounded-[24px] p-16 text-center shadow-sm">
               <CalendarDays className="h-12 w-12 mx-auto mb-4 text-slate-300" />
               <h3 className="font-bold text-slate-900 text-lg">Belum ada penugasan</h3>
               <p className="text-slate-500 text-sm mt-1">Tunggu penugasan dari administrator.</p>
             </div>
           ) : (
-            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
+            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
               <div className="divide-y divide-slate-100">
                 <AnimatePresence>
                   {data?.map((p: any) => p.kegiatan && (

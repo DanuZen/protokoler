@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
   CalendarDays, Clock, MapPin, Search, ArrowRight, Plus,
   GraduationCap, Handshake, Megaphone, Landmark, ClipboardList,
-  ChevronLeft, ChevronRight, ChevronDown, ListTodo, CheckCircle2, Loader2,
+  ChevronLeft, ChevronRight, ListTodo, CheckCircle2, Loader2,
   AlertCircle, XCircle, Radio, Circle
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -90,33 +90,35 @@ export default function KegiatanPage() {
   const todayStr = getLocalISODate(today);
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 pb-6 px-5 md:px-8 pt-4">
-      {/* ─── HEADER SECTION (Adapted Layout) ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col gap-4 md:gap-6 mb-6 md:mb-8 pt-2">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
-              Agenda Protokoler
-            </span>
+    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+      {/* ─── HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+            <CalendarDays className="h-7 w-7" />
           </div>
-          <h2 className="font-display text-[28px] md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 md:mb-2 text-slate-900 drop-shadow-sm">Manajemen Kegiatan</h2>
-          <p className="text-[13px] md:text-base text-slate-600 font-medium max-w-xl">
-            Daftar kegiatan protokoler universitas.
-          </p>
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+                Agenda Protokoler
+              </span>
+            </div>
+            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Kegiatan</h2>
+            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Daftar kegiatan protokoler universitas.</p>
+          </div>
         </div>
-        
         {isAdmin && (
-          <Link href="/kegiatan/buat" className="w-full md:w-auto">
-            <Button className="w-full md:w-auto h-[52px] md:h-12 rounded-[1rem] md:rounded-xl shadow-md bg-gradient-to-r from-[#5b1511] to-orange-700 hover:from-[#4a110e] hover:to-orange-800 text-white font-bold transition-all text-[15px] md:text-sm">
-              <Plus className="mr-2 h-5 w-5 md:h-4 md:w-4" /> Buat Kegiatan
+          <Link href="/kegiatan/buat">
+            <Button className="h-11 rounded-xl px-6 shadow-sm bg-[#1a1a1a] hover:bg-black text-white font-bold transition-colors">
+              <Plus className="mr-2 h-4 w-4" /> Buat Kegiatan
             </Button>
           </Link>
         )}
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="relative z-20 pb-0 shrink-0">
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-6">
+      <section className="relative z-20 pb-0">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {[
             { label: "Akan Datang", value: upcoming, icon: Clock, hint: "Segera dilaksanakan", color: "text-orange-600", bg: "bg-orange-50" },
             { label: "Berlangsung", value: ((kegiatan || []) as any[]).filter((k) => k.status === "berlangsung").length, icon: Radio, hint: "Kegiatan berjalan saat ini", color: "text-orange-600", bg: "bg-orange-50" },
@@ -124,16 +126,16 @@ export default function KegiatanPage() {
             { label: "Total Kegiatan", value: (kegiatan || []).length, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-orange-600", bg: "bg-orange-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-4 md:p-6 flex flex-col justify-between hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative overflow-hidden h-full">
-                <div className="flex items-center justify-between relative z-10 mb-2 md:mb-0">
-                  <p className="text-xs md:text-sm font-semibold text-slate-500 truncate pr-2">{stat.label}</p>
-                  <div className={cn("flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
-                    <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
+              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative overflow-hidden h-full">
+                <div className="flex items-center justify-between relative z-10">
+                  <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
+                  <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                    <stat.icon className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="mt-1 md:mt-4 relative z-10">
-                  <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
-                  <span className="text-[9px] md:text-[11px] font-medium text-slate-400 mt-0.5 md:mt-1 block truncate">{stat.hint}</span>
+                <div className="mt-4 relative z-10">
+                  <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                  <span className="text-[11px] font-medium text-slate-400 mt-1 block">{stat.hint}</span>
                 </div>
               </div>
             </motion.div>
@@ -142,37 +144,114 @@ export default function KegiatanPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 flex flex-col min-h-0 mt-8 pb-4">
-        <section className="flex-1 flex flex-col min-h-0 pb-0 space-y-6">
-          <div className="flex-1 min-h-0 flex flex-col items-stretch">
+      <div className="flex-1 mt-8">
+        <section className="pb-12 space-y-6">
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
+
+            {/* ── Calendar Panel ── */}
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="xl:col-span-1 bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden h-[500px] flex flex-col">
+              {/* Month nav header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
+                <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-orange-500 hover:text-orange-500 text-slate-400 bg-white transition-colors shadow-sm">
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <div className="font-bold text-slate-800 text-sm uppercase tracking-widest">
+                  {MONTHS[viewMonth]} {viewYear}
+                </div>
+                <button onClick={nextMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-orange-500 hover:text-orange-500 text-slate-400 bg-white transition-colors shadow-sm">
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Day labels */}
+              <div className="grid grid-cols-7 border-b border-white/20 bg-slate-50">
+                {DAYS_SHORT.map((d) => (
+                  <div key={d} className="text-center py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{d}</div>
+                ))}
+              </div>
+
+              {/* Date cells */}
+              <div className="grid grid-cols-7 p-3 gap-1">
+                {calendarDays.map((day, i) => {
+                  if (!day) return <div key={`empty-${i}`} />;
+                  const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+                  const hasEvent = !!kegiatanByDate[dateStr];
+                  const isToday = dateStr === todayStr;
+                  const isSelected = dateStr === selectedDate;
+
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => setSelectedDate(isSelected ? null : dateStr)}
+                      className={cn(
+                        "relative h-9 w-full flex flex-col items-center justify-center text-sm font-semibold transition-all rounded-md",
+                        isSelected && "bg-orange-700 text-white shadow-sm",
+                        !isSelected && isToday && "ring-2 ring-orange-700 text-orange-700",
+                        !isSelected && !isToday && "hover:bg-slate-50 text-slate-700",
+                      )}
+                    >
+                      {day}
+                      {hasEvent && (
+                        <span className={cn(
+                          "absolute bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full",
+                          isSelected ? "bg-white" : "bg-orange-700"
+                        )} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex-1"></div>
+
+              {/* Legend + selected filter clear */}
+              <div className="px-4 py-3 border-t border-slate-100 bg-white flex items-center justify-between gap-3 text-xs text-slate-500">
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-700 inline-block" />
+                    Ada kegiatan
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-4 w-4 ring-2 ring-orange-700 inline-flex items-center justify-center text-[9px] text-orange-700 font-bold rounded-full">{today.getDate()}</span>
+                    Hari ini
+                  </span>
+                </div>
+                {selectedDate && (
+                  <button onClick={() => setSelectedDate(null)} className="text-orange-700 font-bold hover:text-orange-800 transition-colors text-xs flex items-center gap-1">
+                    <XCircle className="h-3.5 w-3.5" /> Reset
+                  </button>
+                )}
+              </div>
+            </motion.div>
+
             {/* ── Agenda List ── */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl flex flex-col min-h-[500px] md:flex-1 md:min-h-0 overflow-hidden">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="xl:col-span-3 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl flex flex-col h-[500px] overflow-hidden">
               
               {/* Top Header & Search */}
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 border-b border-slate-100 bg-white">
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                  <div className="flex shrink-0 items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 border-b border-slate-100 bg-white">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
                     <CalendarDays className="h-5 w-5" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider truncate">Daftar Agenda</h2>
-                    <p className="text-[11px] text-slate-500 mt-0.5 truncate">Filter dan cari kegiatan mendatang.</p>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Daftar Agenda</h2>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Filter dan cari kegiatan mendatang.</p>
                   </div>
                 </div>
                 
-                <div className="flex w-full md:max-w-md items-center gap-2">
+                <div className="flex flex-1 md:max-w-md items-center gap-2">
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <Input
-                      className="pl-9 bg-slate-50 border-slate-200 rounded-xl h-10 text-sm text-slate-900 placeholder-slate-400 focus-visible:ring-1 focus-visible:ring-slate-200 shadow-sm w-full"
+                      className="pl-9 bg-slate-50 border-slate-200 rounded-xl h-10 text-sm text-slate-900 placeholder-slate-400 focus-visible:ring-1 focus-visible:ring-slate-200 shadow-sm"
                       placeholder="Cari kegiatan, lokasi..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                     />
                   </div>
                   <div className={cn(
-                    "shrink-0 flex items-center justify-center px-4 h-10 text-[11px] font-semibold border rounded-xl shadow-sm transition-colors",
-                    selectedDate ? "bg-orange-50 border-orange-200 text-orange-600" : "bg-white border-slate-200 text-slate-500"
+                    "shrink-0 flex items-center gap-1.5 px-3 h-10 text-[11px] font-semibold border rounded-xl",
+                    selectedDate ? "bg-orange-50 border-orange-200 text-orange-600" : "bg-slate-50 border-slate-200 text-slate-500"
                   )}>
                     {selectedDate ? (
                       <span>{formatDateLabel(selectedDate)}</span>
@@ -185,15 +264,15 @@ export default function KegiatanPage() {
 
               {/* List */}
               {isLoading ? (
-                <div className="flex-1 flex flex-col items-center justify-center p-16 gap-3 text-slate-400">
-                  <Loader2 className="h-8 w-8 animate-spin text-slate-300 opacity-50" />
+                <div className="flex-1 flex flex-col items-center justify-center gap-3 text-slate-400">
+                  <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
                   <span className="text-sm font-medium">Memuat jadwal...</span>
                 </div>
               ) : sortedFiltered.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center p-16 text-center">
-                  <AlertCircle className="h-12 w-12 text-slate-400 opacity-50 mb-4" />
-                  <p className="text-slate-500 font-semibold text-lg">Tidak ada kegiatan</p>
-                  <p className="text-sm text-slate-400 mt-1 max-w-sm mx-auto">
+               <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
+                  <AlertCircle className="h-10 w-10 mx-auto mb-4 text-slate-300" />
+                  <h3 className="font-bold text-slate-800 text-base">Tidak ada kegiatan</h3>
+                  <p className="text-slate-500 text-sm mt-1">
                     {selectedDate ? "Tidak ada kegiatan pada tanggal ini." : "Tidak ada kegiatan yang cocok dengan pencarian."}
                   </p>
                 </div>
