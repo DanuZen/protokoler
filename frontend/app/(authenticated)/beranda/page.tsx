@@ -56,12 +56,12 @@ export default function BerandaPage() {
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         {/* Left: Title & Description */}
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Trophy className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Dashboard Anggota
               </span>
             </div>
@@ -75,7 +75,7 @@ export default function BerandaPage() {
           {/* Level Badge */}
           {kategori ? (
             <div className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border ${
-              kategori === 'gold' ? 'bg-orange-50 border-orange-200 text-orange-600' :
+              kategori === 'gold' ? 'bg-red-50 border-red-200 text-red-800' :
               kategori === 'silver' ? 'bg-slate-100 border-slate-200 text-slate-600' :
               'bg-slate-50 border-slate-200 text-slate-500'
             }`}>
@@ -118,7 +118,7 @@ export default function BerandaPage() {
               chart: (
                 <div className="flex items-end gap-1 h-10 mt-2">
                   {[40, 70, 45, 90].map((h, i) => (
-                    <div key={i} className="w-4 bg-orange-500 rounded-sm transition-all hover:opacity-80" style={{ height: `${h}%` }} />
+                    <div key={i} className="w-4 bg-red-700 rounded-sm transition-all hover:opacity-80" style={{ height: `${h}%` }} />
                   ))}
                 </div>
               )
@@ -203,18 +203,18 @@ export default function BerandaPage() {
                   <CardContent className="pt-6 flex-1 flex flex-col">
                     {next ? (
                       <div className="mb-6">
-                        <p className="text-sm text-slate-600 mb-3">Butuh <span className="font-bold text-slate-900">{remaining} kegiatan</span> lagi untuk mencapai level <strong className="text-orange-600">{next}</strong></p>
+                        <p className="text-sm text-slate-600 mb-3">Butuh <span className="font-bold text-slate-900">{remaining} kegiatan</span> lagi untuk mencapai level <strong className="text-red-800">{next}</strong></p>
                         <div className="w-full h-3 bg-slate-100 border border-slate-200 overflow-hidden rounded-xl relative">
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${progress}%` }}
                             transition={{ duration: 1, ease: "easeOut" }}
-                            className="absolute top-0 bottom-0 left-0 bg-orange-500"
+                            className="absolute top-0 bottom-0 left-0 bg-red-700"
                           />
                         </div>
                         <div className="flex justify-between mt-2">
                           <span className="text-xs font-bold text-slate-500">{total} / {target} Kegiatan</span>
-                          <span className="text-xs font-bold text-orange-600">{progress}%</span>
+                          <span className="text-xs font-bold text-red-800">{progress}%</span>
                         </div>
                       </div>
                     ) : (
@@ -226,7 +226,7 @@ export default function BerandaPage() {
 
                     <div className="flex gap-3 mt-auto">
                       {GAMIFICATION.map(g => (
-                        <div key={g.level} className={`flex flex-col items-center justify-center flex-1 py-3 px-2 text-center border transition-colors rounded-xl ${kategori === g.level.toLowerCase() ? "border-orange-500 bg-orange-500 text-white shadow-md" : "border-slate-200 text-slate-500 bg-slate-50"}`}>
+                        <div key={g.level} className={`flex flex-col items-center justify-center flex-1 py-3 px-2 text-center border transition-colors rounded-xl ${kategori === g.level.toLowerCase() ? "border-red-700 bg-red-700 text-white shadow-md" : "border-slate-200 text-slate-500 bg-slate-50"}`}>
                           <div className="text-xl mb-1.5">{g.icon}</div>
                           <div className="text-[11px] font-bold uppercase tracking-wider">{g.level}</div>
                           <div className="text-[10px] font-medium mt-1 opacity-80">{g.min === 20 ? "≥20" : `${g.min}–${g.max}`} keg.</div>
@@ -261,13 +261,13 @@ export default function BerandaPage() {
                 <div className="space-y-3">
                   {recentKegiatan.map((k: any) => (
                     <Link key={k.id} href={`/kegiatan/${k.id}`} className="block">
-                      <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-5 hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative">
+                      <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-5 hover:shadow-xl hover:shadow-red-50/80 transition-all group relative">
                         <div className="flex justify-between items-start gap-4">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
                               <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold text-slate-600 bg-slate-100 uppercase tracking-wider">{k.bentuk_kegiatan?.replace(/_/g, " ")}</span>
                             </div>
-                            <h3 className="font-bold text-slate-900 text-lg group-hover:text-orange-500 transition-colors line-clamp-1">{k.nama_kegiatan}</h3>
+                            <h3 className="font-bold text-slate-900 text-lg group-hover:text-red-700 transition-colors line-clamp-1">{k.nama_kegiatan}</h3>
                             <div className="flex flex-wrap items-center gap-4 mt-3 text-xs font-medium text-slate-500">
                               <span className="flex items-center gap-1.5">
                                 <Calendar className="h-3.5 w-3.5 text-slate-400" />
@@ -283,8 +283,8 @@ export default function BerandaPage() {
                               </span>
                             </div>
                           </div>
-                          <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-orange-50 transition-colors border border-slate-200 group-hover:border-orange-200">
-                            <ChevronRight className="h-5 w-5 text-slate-400 group-hover:text-orange-500" />
+                          <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-red-50 transition-colors border border-slate-200 group-hover:border-red-200">
+                            <ChevronRight className="h-5 w-5 text-slate-400 group-hover:text-red-700" />
                           </div>
                         </div>
                       </div>

@@ -6,12 +6,11 @@ import { kegiatanApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import {
   ArrowLeft, Check, Plus, Trash2, ChevronRight, ChevronLeft,
-  CalendarDays, Clock, MapPin, Users, GraduationCap, Handshake,
+  CalendarDays, MapPin, Users, GraduationCap, Handshake,
   Megaphone, Landmark, ClipboardList, Camera, FileText, Info,
   UserCheck, Star
 } from "lucide-react";
@@ -36,11 +35,11 @@ const BENTUK_OPTIONS = [
 
 function FieldGroup({ label, hint, required, children }: { label: string; hint?: string; required?: boolean; children: React.ReactNode }) {
   return (
-    <div className="space-y-1.5">
-      <Label className="text-sm font-semibold text-slate-700">
-        {label} {required && <span className="text-orange-500">*</span>}
+    <div className="space-y-2">
+      <Label className="text-[13px] font-bold text-slate-700 flex items-center gap-1">
+        {label} {required && <span className="text-red-500">*</span>}
       </Label>
-      {hint && <p className="text-xs text-slate-400">{hint}</p>}
+      {hint && <p className="text-[11px] text-slate-400 font-medium -mt-1">{hint}</p>}
       {children}
     </div>
   );
@@ -100,7 +99,6 @@ export default function BuatKegiatanPage() {
   });
 
   const handleNext = () => {
-    // Validate step 1
     if (step === 1) {
       if (!form.nama_kegiatan.trim()) { toast.error("Nama kegiatan wajib diisi"); return; }
       if (!form.tanggal) { toast.error("Tanggal kegiatan wajib diisi"); return; }
@@ -112,79 +110,81 @@ export default function BuatKegiatanPage() {
 
   const handlePrev = () => setStep(s => Math.max(1, s - 1));
 
-  const stepInputCls = "rounded-xl border-slate-200 bg-white h-11 text-sm focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400 transition-all shadow-sm";
+  const stepInputCls = "rounded-[14px] border-slate-200 bg-white h-[46px] text-sm focus:ring-2 focus:ring-red-400/20 focus:border-[#6B0000] transition-all shadow-sm";
 
   return (
-    <div className="min-h-full px-6 md:px-8 pt-4 pb-24">
-      <div className="max-w-3xl mx-auto space-y-8">
-
-        {/* Back + Title */}
+    <div className="min-h-full px-6 md:px-10 py-8 lg:py-10 max-w-[1400px] mx-auto">
+      
+      {/* ── Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
         <div className="flex items-center gap-4">
-          <Link href="/kegiatan">
-            <button className="flex items-center justify-center h-10 w-10 rounded-xl border border-slate-200 bg-white shadow-sm hover:bg-slate-50 transition-colors">
-              <ArrowLeft className="h-4 w-4 text-slate-600" />
-            </button>
-          </Link>
+          <div className="h-14 w-14 rounded-[1.25rem] bg-[#6B0000] text-white flex items-center justify-center shadow-md shadow-[#6B0000]/20 shrink-0">
+            <CalendarDays className="h-6 w-6" />
+          </div>
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Admin</p>
-            <h1 className="font-display text-2xl font-bold text-slate-900 leading-none">Buat Kegiatan Baru</h1>
+            <p className="text-[10px] font-black uppercase tracking-[0.15em] text-[#6B0000] mb-1">Manajemen Kegiatan</p>
+            <h1 className="font-display text-2xl lg:text-[28px] font-black text-slate-900 leading-none">Buat Kegiatan Baru</h1>
           </div>
         </div>
 
-        {/* ── Stepper ── */}
-        <div className="flex items-start gap-0">
-          {STEPS.map((s, i) => {
-            const Icon = s.icon;
-            const isActive = step === s.id;
-            const isDone = step > s.id;
-            return (
-              <div key={s.id} className="flex items-center flex-1">
-                <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                  <div className={`h-10 w-10 flex items-center justify-center rounded-full font-bold text-sm transition-all duration-300 shadow-sm ${
-                    isDone  ? "bg-orange-500 text-white shadow-orange-200" :
-                    isActive ? "bg-slate-900 text-white shadow-slate-200" :
-                               "bg-white border-2 border-slate-200 text-slate-400"
-                  }`}>
-                    {isDone ? <Check className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
-                  </div>
-                  <div className="text-center">
-                    <p className={`text-xs font-bold leading-none ${isActive || isDone ? "text-slate-900" : "text-slate-400"}`}>{s.label}</p>
-                    <p className={`text-[10px] mt-0.5 ${isActive ? "text-orange-500" : "text-slate-400"}`}>{s.desc}</p>
-                  </div>
-                </div>
-                {i < STEPS.length - 1 && (
-                  <div className={`h-[2px] flex-1 mx-3 mt-[-20px] transition-all duration-500 ${step > s.id ? "bg-orange-400" : "bg-slate-200"}`} />
-                )}
-              </div>
-            );
-          })}
-        </div>
+        <Link href="/kegiatan">
+          <button className="flex items-center justify-center gap-2 h-10 px-5 rounded-full border border-slate-200 bg-white text-[13px] font-bold text-slate-600 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-colors">
+            <ArrowLeft className="h-4 w-4" /> Kembali
+          </button>
+        </Link>
+      </div>
 
-        {/* ── Form Card ── */}
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 bg-slate-50 px-6 py-4">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Langkah {step} dari {STEPS.length}</p>
-            <h2 className="text-lg font-bold text-slate-800 mt-0.5">{STEPS[step - 1].label}</h2>
+      {/* ── Main Layout: 2 Columns ── */}
+      <div className="grid lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px] gap-8">
+        
+        {/* Kolom Kiri: Form Card */}
+        <div className="bg-white border border-slate-100 rounded-[2rem] p-8 shadow-sm relative min-h-[500px] flex flex-col">
+          
+          {/* Header Card Kiri */}
+          <div className="flex items-start gap-3 mb-8">
+            <div className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center shrink-0">
+              {step === 1 && <Info className="h-4 w-4 text-slate-500" />}
+              {step === 2 && <Star className="h-4 w-4 text-slate-500" />}
+              {step === 3 && <Users className="h-4 w-4 text-slate-500" />}
+            </div>
+            <div>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-slate-800">Langkah {step}: {STEPS[step-1].label}</h2>
+              <p className="text-[11px] text-slate-400 mt-1">{STEPS[step-1].desc}</p>
+            </div>
           </div>
 
-          <div className="p-6">
+          {/* Isi Form */}
+          <div className="flex-1">
             <AnimatePresence mode="wait">
-
-              {/* ─── Step 1: Info Dasar ─── */}
+              
+              {/* Step 1: Info Dasar */}
               {step === 1 && (
-                <motion.div key="step1" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.2 }} className="space-y-6">
-
-                  <FieldGroup label="Nama Kegiatan" required>
-                    <Input
-                      className={stepInputCls}
-                      placeholder="Contoh: Wisuda Periode 131 UNP"
-                      value={form.nama_kegiatan}
-                      onChange={e => setForm({ ...form, nama_kegiatan: e.target.value })}
-                    />
-                  </FieldGroup>
+                <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="space-y-7">
+                  
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <FieldGroup label="Nama Kegiatan" required>
+                      <Input
+                        className={stepInputCls}
+                        placeholder="Contoh: Wisuda Periode 131 UNP"
+                        value={form.nama_kegiatan}
+                        onChange={e => setForm({ ...form, nama_kegiatan: e.target.value })}
+                      />
+                    </FieldGroup>
+                    <FieldGroup label="Lokasi / Tempat" required>
+                      <div className="relative">
+                        <MapPin className="absolute left-3.5 top-[15px] h-4 w-4 text-slate-400" />
+                        <Input
+                          className={`${stepInputCls} pl-10`}
+                          placeholder="Contoh: Auditorium UNP, Padang"
+                          value={form.lokasi}
+                          onChange={e => setForm({ ...form, lokasi: e.target.value })}
+                        />
+                      </div>
+                    </FieldGroup>
+                  </div>
 
                   <FieldGroup label="Bentuk / Jenis Kegiatan" required>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    <div className="flex flex-wrap gap-2.5">
                       {BENTUK_OPTIONS.map(opt => {
                         const BentukIcon = opt.icon;
                         const selected = form.bentuk_kegiatan === opt.value;
@@ -193,13 +193,13 @@ export default function BuatKegiatanPage() {
                             key={opt.value}
                             type="button"
                             onClick={() => setForm({ ...form, bentuk_kegiatan: opt.value })}
-                            className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 text-xs font-semibold transition-all ${
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 text-[13px] font-bold transition-all ${
                               selected
-                                ? "border-orange-500 bg-orange-50 text-orange-700 shadow-sm shadow-orange-100"
-                                : "border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50"
+                                ? "border-[#6B0000] bg-red-50 text-[#6B0000] shadow-sm"
+                                : "border-slate-100 bg-white text-slate-500 hover:border-slate-200 hover:bg-slate-50"
                             }`}
                           >
-                            <BentukIcon className={`h-5 w-5 ${selected ? "text-orange-500" : "text-slate-400"}`} />
+                            <BentukIcon className={`h-4 w-4 ${selected ? "text-[#6B0000]" : "text-slate-400"}`} />
                             {opt.label}
                           </button>
                         );
@@ -207,8 +207,8 @@ export default function BuatKegiatanPage() {
                     </div>
                   </FieldGroup>
 
-                  <div className="grid grid-cols-3 gap-4">
-                    <FieldGroup label="Tanggal" required>
+                  <div className="grid grid-cols-3 gap-5">
+                    <FieldGroup label="Tanggal Pelaksanaan" required>
                       <Input type="date" className={stepInputCls} value={form.tanggal} onChange={e => setForm({ ...form, tanggal: e.target.value })} />
                     </FieldGroup>
                     <FieldGroup label="Jam Mulai" required>
@@ -218,26 +218,14 @@ export default function BuatKegiatanPage() {
                       <Input type="time" className={stepInputCls} value={form.jam_selesai} onChange={e => setForm({ ...form, jam_selesai: e.target.value })} />
                     </FieldGroup>
                   </div>
-
-                  <FieldGroup label="Lokasi / Tempat" required>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                      <Input
-                        className={`${stepInputCls} pl-9`}
-                        placeholder="Contoh: Auditorium UNP, Padang"
-                        value={form.lokasi}
-                        onChange={e => setForm({ ...form, lokasi: e.target.value })}
-                      />
-                    </div>
-                  </FieldGroup>
+                  
                 </motion.div>
               )}
 
-              {/* ─── Step 2: Detail Acara ─── */}
+              {/* Step 2: Detail Acara */}
               {step === 2 && (
-                <motion.div key="step2" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.2 }} className="space-y-6">
-
-                  <div className="grid md:grid-cols-2 gap-4">
+                <motion.div key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="space-y-7">
+                  <div className="grid md:grid-cols-2 gap-5">
                     <FieldGroup label="Target Peserta / Audiens" hint="Contoh: Mahasiswa Baru 2026">
                       <Input className={stepInputCls} placeholder="Mahasiswa dan Dosen UNP" value={form.audience} onChange={e => setForm({ ...form, audience: e.target.value })} />
                     </FieldGroup>
@@ -248,51 +236,49 @@ export default function BuatKegiatanPage() {
 
                   <FieldGroup label="Link Rundown Acara" hint="Opsional — tautan ke dokumen Google Drive, PDF, dll.">
                     <div className="relative">
-                      <FileText className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                      <Input type="url" className={`${stepInputCls} pl-9`} placeholder="https://drive.google.com/..." value={form.rundown_url} onChange={e => setForm({ ...form, rundown_url: e.target.value })} />
+                      <FileText className="absolute left-3.5 top-[15px] h-4 w-4 text-slate-400" />
+                      <Input type="url" className={`${stepInputCls} pl-10`} placeholder="https://drive.google.com/..." value={form.rundown_url} onChange={e => setForm({ ...form, rundown_url: e.target.value })} />
                     </div>
                   </FieldGroup>
 
-                  {/* Tamu VVIP */}
-                  <div className="border-t border-slate-100 pt-6">
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="border border-slate-100 bg-slate-50 rounded-[1.5rem] p-6">
+                    <div className="flex items-center justify-between mb-5">
                       <div>
                         <p className="text-sm font-bold text-slate-800">Daftar Tamu VVIP</p>
-                        <p className="text-xs text-slate-400 mt-0.5">Tambahkan tamu penting yang akan hadir</p>
+                        <p className="text-[11px] text-slate-500 mt-0.5">Tambahkan tamu penting yang akan hadir</p>
                       </div>
-                      <Button type="button" variant="outline" size="sm" className="rounded-xl border-slate-200 text-slate-600 bg-white hover:bg-slate-50 h-9 text-xs font-semibold shadow-sm" onClick={addTamu}>
-                        <Plus className="h-3.5 w-3.5 mr-1.5" /> Tambah Tamu
+                      <Button type="button" variant="outline" size="sm" className="rounded-xl bg-white border-slate-200 text-slate-700 hover:bg-slate-100 h-9 font-bold shadow-sm" onClick={addTamu}>
+                        <Plus className="h-4 w-4 mr-1.5" /> Tambah Tamu
                       </Button>
                     </div>
 
                     {tamuVvip.length === 0 ? (
-                      <div className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center bg-slate-50">
-                        <Users className="h-8 w-8 mx-auto text-slate-300 mb-2" />
-                        <p className="text-sm text-slate-400 font-medium">Belum ada tamu VVIP yang ditambahkan</p>
-                        <p className="text-xs text-slate-300 mt-1">Opsional — lewati jika tidak ada</p>
+                      <div className="border border-dashed border-slate-300 rounded-xl p-8 text-center bg-white/50">
+                        <Users className="h-6 w-6 mx-auto text-slate-300 mb-3" />
+                        <p className="text-xs font-bold text-slate-400">Belum ada tamu VVIP</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         {tamuVvip.map((tamu, idx) => (
-                          <div key={idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                          <div key={idx} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
                             <div className="flex items-center justify-between mb-3">
-                              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Tamu #{idx + 1}</span>
-                              <button type="button" onClick={() => removeTamu(idx)} className="flex items-center justify-center h-7 w-7 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tamu #{idx + 1}</span>
+                              <button type="button" onClick={() => removeTamu(idx)} className="h-7 w-7 flex items-center justify-center rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
                                 <Trash2 className="h-3.5 w-3.5" />
                               </button>
                             </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                               <div className="col-span-2 space-y-1">
-                                <Label className="text-xs text-slate-500">Nama Lengkap</Label>
-                                <Input className="h-9 rounded-lg border-slate-200 text-sm bg-white" placeholder="Nama tamu" value={tamu.nama_tamu} onChange={e => updateTamu(idx, "nama_tamu", e.target.value)} />
+                                <Label className="text-[11px] font-bold text-slate-500">Nama Lengkap</Label>
+                                <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Nama tamu" value={tamu.nama_tamu} onChange={e => updateTamu(idx, "nama_tamu", e.target.value)} />
                               </div>
                               <div className="space-y-1">
-                                <Label className="text-xs text-slate-500">Jabatan</Label>
-                                <Input className="h-9 rounded-lg border-slate-200 text-sm bg-white" placeholder="Jabatan" value={tamu.jabatan} onChange={e => updateTamu(idx, "jabatan", e.target.value)} />
+                                <Label className="text-[11px] font-bold text-slate-500">Jabatan</Label>
+                                <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Jabatan" value={tamu.jabatan} onChange={e => updateTamu(idx, "jabatan", e.target.value)} />
                               </div>
                               <div className="space-y-1">
-                                <Label className="text-xs text-slate-500">Jumlah Rombongan</Label>
-                                <Input type="number" min={1} className="h-9 rounded-lg border-slate-200 text-sm bg-white" value={tamu.jumlah_rombongan} onChange={e => updateTamu(idx, "jumlah_rombongan", Number(e.target.value))} />
+                                <Label className="text-[11px] font-bold text-slate-500">Rombongan</Label>
+                                <Input type="number" min={1} className="h-9 rounded-lg border-slate-200 text-sm" value={tamu.jumlah_rombongan} onChange={e => updateTamu(idx, "jumlah_rombongan", Number(e.target.value))} />
                               </div>
                             </div>
                           </div>
@@ -303,128 +289,115 @@ export default function BuatKegiatanPage() {
                 </motion.div>
               )}
 
-              {/* ─── Step 3: Kebutuhan Tim ─── */}
+              {/* Step 3: Kebutuhan Tim */}
               {step === 3 && (
-                <motion.div key="step3" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.2 }} className="space-y-8">
-
-                  <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-start gap-3">
-                    <Info className="h-4 w-4 text-orange-500 mt-0.5 shrink-0" />
-                    <p className="text-sm text-orange-700">Tentukan jumlah petugas yang dibutuhkan. Anggota akan dapat mendaftarkan diri melalui fitur Open Recruitment jika diaktifkan.</p>
-                  </div>
-
-                  {/* Open Recruitment Toggle */}
-                  <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-white border border-slate-200 text-slate-600 shadow-sm">
+                <motion.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="space-y-7">
+                  
+                  <div className="flex items-center justify-between p-5 bg-white border border-slate-200 rounded-[1.5rem] shadow-sm">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-100 text-slate-600 flex items-center justify-center">
                         <UserCheck className="h-5 w-5" />
                       </div>
                       <div>
                         <p className="text-sm font-bold text-slate-800">Aktifkan Open Recruitment</p>
-                        <p className="text-xs text-slate-500 mt-0.5">Anggota dapat mendaftarkan diri untuk kegiatan ini</p>
+                        <p className="text-xs text-slate-500 mt-0.5">Anggota dapat mendaftar sebagai panitia</p>
                       </div>
                     </div>
-                    <Switch
-                      checked={form.is_open_recruitment}
-                      onCheckedChange={v => setForm({ ...form, is_open_recruitment: v })}
-                      className="data-[state=checked]:bg-orange-500"
-                    />
+                    <Switch checked={form.is_open_recruitment} onCheckedChange={v => setForm({ ...form, is_open_recruitment: v })} className="data-[state=checked]:bg-[#6B0000]" />
                   </div>
 
-                  {/* Jumlah Petugas */}
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="grid md:grid-cols-3 gap-5">
                     {[
-                      { key: "jumlah_protokoler_dibutuhkan", label: "Protokoler", desc: "Tata acara & pendampingan VVIP", icon: UserCheck, color: "orange" },
-                      { key: "jumlah_lo_dibutuhkan",         label: "Liaison Officer (LO)", desc: "Pemandu utama audiens/tamu",    icon: Handshake, color: "blue" },
-                      { key: "jumlah_dokumentasi_dibutuhkan", label: "Dokumentasi", desc: "Foto & video kegiatan",         icon: Camera, color: "purple" },
+                      { key: "jumlah_protokoler_dibutuhkan", label: "Protokoler", desc: "Tata acara & pendampingan VVIP", icon: UserCheck },
+                      { key: "jumlah_lo_dibutuhkan",         label: "Liaison Officer (LO)", desc: "Pemandu utama audiens/tamu",    icon: Handshake },
+                      { key: "jumlah_dokumentasi_dibutuhkan", label: "Dokumentasi", desc: "Foto & video kegiatan",         icon: Camera },
                     ].map(item => {
                       const ItemIcon = item.icon;
                       const val = (form as any)[item.key];
                       return (
-                        <div key={item.key} className="border border-slate-200 rounded-xl p-4 bg-white shadow-sm">
-                          <div className="flex items-center gap-2 mb-3">
-                            <ItemIcon className="h-4 w-4 text-slate-500" />
-                            <p className="text-xs font-bold text-slate-700">{item.label}</p>
+                        <div key={item.key} className="border border-slate-100 bg-white rounded-[1.5rem] p-5 shadow-sm">
+                          <div className="flex items-center gap-2 mb-2">
+                            <ItemIcon className="h-4 w-4 text-slate-400" />
+                            <p className="text-[13px] font-bold text-slate-800">{item.label}</p>
                           </div>
-                          <p className="text-[11px] text-slate-400 mb-4">{item.desc}</p>
-                          <div className="flex items-center gap-3">
-                            <button
-                              type="button"
-                              onClick={() => setForm({ ...form, [item.key]: Math.max(0, val - 1) })}
-                              className="h-9 w-9 flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 font-bold text-lg transition-colors"
-                            >−</button>
-                            <span className="flex-1 text-center font-display text-2xl font-bold text-slate-900">{val}</span>
-                            <button
-                              type="button"
-                              onClick={() => setForm({ ...form, [item.key]: val + 1 })}
-                              className="h-9 w-9 flex items-center justify-center rounded-lg border border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100 font-bold text-lg transition-colors"
-                            >+</button>
+                          <p className="text-[10px] text-slate-400 font-medium mb-6">{item.desc}</p>
+                          <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl">
+                            <button type="button" onClick={() => setForm({ ...form, [item.key]: Math.max(0, val - 1) })} className="h-10 w-10 flex items-center justify-center rounded-[14px] bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 font-bold text-lg transition-colors shadow-sm">−</button>
+                            <span className="flex-1 text-center font-display text-2xl font-black text-slate-900">{val}</span>
+                            <button type="button" onClick={() => setForm({ ...form, [item.key]: val + 1 })} className="h-10 w-10 flex items-center justify-center rounded-[14px] bg-[#6B0000] text-white hover:bg-red-900 font-bold text-lg transition-colors shadow-sm">+</button>
                           </div>
                         </div>
                       );
                     })}
-                  </div>
-
-                  {/* Ringkasan */}
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Ringkasan Kegiatan</p>
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="space-y-0.5">
-                        <p className="text-[10px] text-slate-400 font-semibold uppercase">Nama</p>
-                        <p className="font-semibold text-slate-800 truncate">{form.nama_kegiatan || "—"}</p>
-                      </div>
-                      <div className="space-y-0.5">
-                        <p className="text-[10px] text-slate-400 font-semibold uppercase">Bentuk</p>
-                        <p className="font-semibold text-slate-800 capitalize">{form.bentuk_kegiatan.replace(/_/g, " ")}</p>
-                      </div>
-                      <div className="space-y-0.5">
-                        <p className="text-[10px] text-slate-400 font-semibold uppercase">Tanggal</p>
-                        <p className="font-semibold text-slate-800">{form.tanggal ? new Date(form.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : "—"}</p>
-                      </div>
-                      <div className="space-y-0.5">
-                        <p className="text-[10px] text-slate-400 font-semibold uppercase">Waktu</p>
-                        <p className="font-semibold text-slate-800">{form.jam_mulai && form.jam_selesai ? `${form.jam_mulai} – ${form.jam_selesai} WIB` : "—"}</p>
-                      </div>
-                      <div className="col-span-2 space-y-0.5">
-                        <p className="text-[10px] text-slate-400 font-semibold uppercase">Lokasi</p>
-                        <p className="font-semibold text-slate-800">{form.lokasi || "—"}</p>
-                      </div>
-                    </div>
                   </div>
                 </motion.div>
               )}
 
             </AnimatePresence>
           </div>
+
+          {/* Navigasi Kiri-Kanan Bawah */}
+          <div className="flex justify-between items-center mt-10 pt-6 border-t border-slate-100">
+            {step > 1 ? (
+              <Button type="button" variant="outline" className="rounded-xl border-slate-200 bg-white text-slate-600 hover:text-slate-900 shadow-sm h-11 px-5 font-bold transition-all" onClick={handlePrev}>
+                <ChevronLeft className="h-4 w-4 mr-1" /> Kembali
+              </Button>
+            ) : <div />}
+
+            {step < 3 ? (
+              <Button type="button" className="rounded-xl bg-[#0F172A] hover:bg-black text-white h-11 px-8 font-bold shadow-md transition-all" onClick={handleNext}>
+                Lanjut <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            ) : (
+              <Button type="button" className="rounded-xl bg-[#6B0000] hover:bg-red-950 text-white h-11 px-8 font-bold shadow-md shadow-red-900/20 transition-all" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
+                {saveMutation.isPending ? "Menyimpan..." : <><Check className="h-4 w-4 mr-2" /> Selesai & Buat</>}
+              </Button>
+            )}
+          </div>
         </div>
 
-        {/* ── Navigation ── */}
-        <div className="flex justify-between items-center">
-          {step > 1 ? (
-            <Button type="button" variant="outline" className="rounded-xl border-slate-200 bg-white text-slate-700 shadow-sm h-11 px-5 font-semibold" onClick={handlePrev}>
-              <ChevronLeft className="h-4 w-4 mr-1" /> Kembali
-            </Button>
-          ) : (
-            <div />
-          )}
+        {/* Kolom Kanan: Vertical Stepper */}
+        <div className="bg-white border border-slate-100 rounded-[2rem] p-8 shadow-sm h-fit sticky top-10">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+              <ClipboardList className="h-5 w-5 text-slate-500" />
+            </div>
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-widest text-slate-800">Tahapan</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">Progres form kegiatan</p>
+            </div>
+          </div>
 
-          {step < 3 ? (
-            <Button type="button" className="rounded-xl bg-slate-900 text-white hover:bg-black h-11 px-6 font-bold shadow-sm" onClick={handleNext}>
-              Lanjut <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white h-11 px-8 font-bold shadow-md shadow-orange-200 transition-all"
-              onClick={() => saveMutation.mutate()}
-              disabled={saveMutation.isPending}
-            >
-              {saveMutation.isPending ? (
-                <span className="flex items-center gap-2"><span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Menyimpan...</span>
-              ) : (
-                <span className="flex items-center gap-2"><Check className="h-4 w-4" /> Buat Kegiatan</span>
-              )}
-            </Button>
-          )}
+          <div className="relative pl-2">
+            {STEPS.map((s, i) => {
+              const Icon = s.icon;
+              const isActive = step === s.id;
+              const isDone = step > s.id;
+              
+              return (
+                <div key={s.id} className="relative mb-8 last:mb-0">
+                  {/* Connector */}
+                  {i < STEPS.length - 1 && (
+                    <div className={`absolute top-10 left-[19px] bottom-[-32px] w-[2px] transition-colors duration-300 ${isDone ? "bg-[#6B0000]" : "bg-slate-100"}`} />
+                  )}
+
+                  <div className="flex gap-5 relative z-10">
+                    <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                      isActive ? "bg-[#6B0000] text-white shadow-md shadow-[#6B0000]/20 ring-4 ring-red-50" :
+                      isDone ? "bg-red-50 text-[#6B0000] border border-red-100" :
+                      "bg-white border-2 border-slate-100 text-slate-300"
+                    }`}>
+                      {isDone ? <Check className="h-4 w-4 stroke-[3]" /> : <Icon className="h-4 w-4" />}
+                    </div>
+                    <div className="pt-2">
+                      <p className={`text-sm font-black leading-none mb-1 transition-colors ${isActive ? "text-[#6B0000]" : isDone ? "text-slate-800" : "text-slate-400"}`}>{s.label}</p>
+                      <p className="text-[11px] font-medium text-slate-400 leading-tight">{s.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
       </div>

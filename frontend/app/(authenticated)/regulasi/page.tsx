@@ -67,12 +67,12 @@ export default function RegulasiPage() {
       {/* ─── HEADER SECTION ─── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <BookOpen className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Pedoman
               </span>
             </div>
@@ -124,7 +124,7 @@ export default function RegulasiPage() {
                 <Button 
                   onClick={() => createRegulasi.mutate()} 
                   disabled={createRegulasi.isPending || !form.judul}
-                  className="rounded-xl bg-orange-500 text-white hover:bg-orange-600 font-bold"
+                  className="rounded-xl bg-red-700 text-white hover:bg-red-800 font-bold"
                 >
                   Simpan Regulasi
                 </Button>
@@ -177,8 +177,8 @@ export default function RegulasiPage() {
                     <AccordionTrigger className="hover:no-underline py-5">
                       <div className="flex flex-col sm:flex-row sm:items-center text-left gap-3 w-full">
                         <div className="flex-1">
-                          <h4 className="font-bold text-slate-900 group-hover:text-orange-500 transition-colors">{r.judul}</h4>
-                          <span className="inline-block mt-1 text-[10px] font-bold text-orange-600 bg-orange-50 border border-orange-200 rounded-md px-2 py-0.5 uppercase tracking-wider">{r.kategori}</span>
+                          <h4 className="font-bold text-slate-900 group-hover:text-red-700 transition-colors">{r.judul}</h4>
+                          <span className="inline-block mt-1 text-[10px] font-bold text-red-800 bg-red-50 border border-red-200 rounded-md px-2 py-0.5 uppercase tracking-wider">{r.kategori}</span>
                         </div>
                       </div>
                     </AccordionTrigger>

@@ -62,7 +62,7 @@ function NavItem({ item, active, isOpen }: { item: { to: string; icon: any; labe
       {/* Icon */}
       <div className={cn(
         'relative z-10 shrink-0 transition-colors duration-200',
-        active ? 'text-orange-600' : 'text-orange-100 group-hover:text-white'
+        active ? 'text-[#6B0000]' : 'text-red-100 group-hover:text-white'
       )}>
         <item.icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.5 : 2} />
       </div>
@@ -71,7 +71,7 @@ function NavItem({ item, active, isOpen }: { item: { to: string; icon: any; labe
       {isOpen && (
         <span className={cn(
           'relative z-10 text-[13px] transition-colors duration-200 whitespace-nowrap overflow-hidden tracking-tight',
-          active ? 'font-extrabold text-orange-600' : 'font-medium text-orange-100 group-hover:text-white'
+          active ? 'font-extrabold text-[#6B0000]' : 'font-medium text-red-100 group-hover:text-white'
         )}>
           {item.label}
         </span>
@@ -136,7 +136,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 w-full h-screen overflow-hidden">
         
         {/* ─── SIDEBAR ─────────────────────────────────── */}
-        <aside className={cn("hidden md:flex flex-col transition-all duration-300 border-r border-orange-600 bg-gradient-to-b from-orange-500 to-orange-600 pt-5 pb-6 shadow-xl z-20", isSidebarOpen ? "w-[240px]" : "w-[90px] items-center")}>
+        <aside className={cn("hidden md:flex flex-col transition-all duration-300 border-r border-[#4A0000] bg-[#6B0000] pt-5 pb-6 shadow-xl z-20", isSidebarOpen ? "w-[240px]" : "w-[90px] items-center")}>
           {/* Logo */}
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -148,7 +148,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {isSidebarOpen && (
               <div className="flex flex-col justify-center text-left">
                 <span className="font-black text-white text-[20px] leading-none tracking-tight whitespace-nowrap mb-1 drop-shadow-sm">Protokoler</span>
-                <span className="text-[11px] font-semibold text-orange-100 whitespace-nowrap drop-shadow-sm">Universitas Negeri Padang</span>
+                <span className="text-[11px] font-semibold text-red-100 whitespace-nowrap drop-shadow-sm">Universitas Negeri Padang</span>
               </div>
             )}
           </button>
@@ -170,14 +170,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {/* Home */}
             <Link
               href={role === 'admin' ? '/dashboard' : role === 'mahasiswa' ? '/beranda' : '/dokumentasi/dashboard'}
-              className={cn("text-orange-100 hover:text-white transition-colors flex items-center rounded-xl", isSidebarOpen ? "gap-3 py-3 px-4 hover:bg-white/10" : "p-3 hover:bg-white/10 justify-center")}
+              className={cn("text-red-100 hover:text-white transition-colors flex items-center rounded-xl", isSidebarOpen ? "gap-3 py-3 px-4 hover:bg-white/10" : "p-3 hover:bg-white/10 justify-center")}
             >
               <Home className="h-5 w-5 shrink-0" />
               {isSidebarOpen && <span className="text-sm font-semibold whitespace-nowrap">Beranda</span>}
             </Link>
 
             {/* Settings */}
-            <button className={cn("text-orange-100 hover:text-white transition-colors flex items-center rounded-xl", isSidebarOpen ? "gap-3 py-3 px-4 hover:bg-white/10" : "p-3 hover:bg-white/10 justify-center")}>
+            <button className={cn("text-red-100 hover:text-white transition-colors flex items-center rounded-xl", isSidebarOpen ? "gap-3 py-3 px-4 hover:bg-white/10" : "p-3 hover:bg-white/10 justify-center")}>
               <Settings className="h-5 w-5 shrink-0" />
               {isSidebarOpen && <span className="text-sm font-semibold whitespace-nowrap">Pengaturan</span>}
             </button>
@@ -189,7 +189,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className={cn("cursor-pointer group flex items-center rounded-xl transition-colors hover:bg-white/10", isSidebarOpen ? "gap-3 py-2.5 px-3 border border-transparent hover:border-white/20 shadow-sm" : "p-3 justify-center")}>
-                  <div className="h-8 w-8 bg-white text-orange-600 rounded-full flex items-center justify-center font-extrabold overflow-hidden text-[13px] shrink-0 shadow-md ring-2 ring-white/50">
+                  <div className="h-8 w-8 bg-white text-[#6B0000] rounded-full flex items-center justify-center font-extrabold overflow-hidden text-[13px] shrink-0 shadow-md ring-2 ring-white/50">
                     {demoAvatar ? (
                       <img src={demoAvatar} alt="Avatar" className="w-full h-full object-cover" />
                     ) : (
@@ -199,17 +199,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {isSidebarOpen && (
                     <div className="flex-1 min-w-0 text-left">
                       <div className="text-[13px] font-black text-white leading-tight truncate transition-colors">{displayName}</div>
-                      <div className="text-[10px] font-semibold text-orange-200 capitalize tracking-wide">{role ?? 'Admin'}</div>
+                      <div className="text-[10px] font-semibold text-red-200 capitalize tracking-wide">{role ?? 'Admin'}</div>
                     </div>
                   )}
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent side={isSidebarOpen ? "top" : "right"} align="end" className="w-48 rounded-xl border-slate-200/80 shadow-2xl bg-white/90 backdrop-blur-xl mb-1">
-                <DropdownMenuItem className="cursor-pointer font-medium text-sm text-slate-700 focus:bg-orange-50 focus:text-orange-600 rounded-lg py-2 px-3" onClick={() => router.push('/profil')}>
+                <DropdownMenuItem className="cursor-pointer font-medium text-sm text-slate-700 focus:bg-red-50 focus:text-[#6B0000] rounded-lg py-2 px-3" onClick={() => router.push('/profil')}>
                   <UserCircle2 className="mr-2 h-4 w-4" />
                   <span>Profil Saya</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer font-medium text-sm text-slate-700 focus:bg-orange-50 focus:text-orange-600 rounded-lg py-2 px-3" onClick={() => router.push('/auth')}>
+                <DropdownMenuItem className="cursor-pointer font-medium text-sm text-slate-700 focus:bg-red-50 focus:text-[#6B0000] rounded-lg py-2 px-3" onClick={() => router.push('/auth')}>
                   <Users className="mr-2 h-4 w-4" />
                   <span>Ganti Akun</span>
                 </DropdownMenuItem>
@@ -227,7 +227,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <main className="flex-1 flex flex-col min-w-0 bg-slate-50 relative overflow-y-auto overflow-x-hidden">
           
           {/* Glassmorphism Background Blobs */}
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-orange-400/20 blur-[120px] pointer-events-none" />
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-red-400/20 blur-[120px] pointer-events-none" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-400/10 blur-[120px] pointer-events-none" />
           <div className="absolute top-[40%] right-[20%] w-[30%] h-[30%] rounded-full bg-emerald-400/10 blur-[100px] pointer-events-none" />
           
@@ -244,3 +244,4 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+

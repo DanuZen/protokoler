@@ -94,12 +94,12 @@ export default function KegiatanPage() {
       {/* ─── HEADER SECTION ─── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <CalendarDays className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Agenda Protokoler
               </span>
             </div>
@@ -120,13 +120,13 @@ export default function KegiatanPage() {
       <section className="relative z-20 pb-0">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {[
-            { label: "Akan Datang", value: upcoming, icon: Clock, hint: "Segera dilaksanakan", color: "text-orange-600", bg: "bg-orange-50" },
-            { label: "Berlangsung", value: ((kegiatan || []) as any[]).filter((k) => k.status === "berlangsung").length, icon: Radio, hint: "Kegiatan berjalan saat ini", color: "text-orange-600", bg: "bg-orange-50" },
-            { label: "Selesai", value: ((kegiatan || []) as any[]).filter((k) => k.status === "selesai").length, icon: CheckCircle2, hint: "Tugas yang telah selesai", color: "text-orange-600", bg: "bg-orange-50" },
-            { label: "Total Kegiatan", value: (kegiatan || []).length, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-orange-600", bg: "bg-orange-50" },
+            { label: "Akan Datang", value: upcoming, icon: Clock, hint: "Segera dilaksanakan", color: "text-red-800", bg: "bg-red-50" },
+            { label: "Berlangsung", value: ((kegiatan || []) as any[]).filter((k) => k.status === "berlangsung").length, icon: Radio, hint: "Kegiatan berjalan saat ini", color: "text-red-800", bg: "bg-red-50" },
+            { label: "Selesai", value: ((kegiatan || []) as any[]).filter((k) => k.status === "selesai").length, icon: CheckCircle2, hint: "Tugas yang telah selesai", color: "text-red-800", bg: "bg-red-50" },
+            { label: "Total Kegiatan", value: (kegiatan || []).length, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-red-800", bg: "bg-red-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative overflow-hidden h-full">
+              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-red-50/80 transition-all group relative overflow-hidden h-full">
                 <div className="flex items-center justify-between relative z-10">
                   <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
                   <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
@@ -152,13 +152,13 @@ export default function KegiatanPage() {
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="xl:col-span-1 bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden h-[500px] flex flex-col">
               {/* Month nav header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
-                <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-orange-500 hover:text-orange-500 text-slate-400 bg-white transition-colors shadow-sm">
+                <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-red-700 hover:text-red-700 text-slate-400 bg-white transition-colors shadow-sm">
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <div className="font-bold text-slate-800 text-sm uppercase tracking-widest">
                   {MONTHS[viewMonth]} {viewYear}
                 </div>
-                <button onClick={nextMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-orange-500 hover:text-orange-500 text-slate-400 bg-white transition-colors shadow-sm">
+                <button onClick={nextMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-red-700 hover:text-red-700 text-slate-400 bg-white transition-colors shadow-sm">
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
@@ -185,8 +185,8 @@ export default function KegiatanPage() {
                       onClick={() => setSelectedDate(isSelected ? null : dateStr)}
                       className={cn(
                         "relative h-9 w-full flex flex-col items-center justify-center text-sm font-semibold transition-all rounded-md",
-                        isSelected && "bg-orange-700 text-white shadow-sm",
-                        !isSelected && isToday && "ring-2 ring-orange-700 text-orange-700",
+                        isSelected && "bg-red-900 text-white shadow-sm",
+                        !isSelected && isToday && "ring-2 ring-red-900 text-red-900",
                         !isSelected && !isToday && "hover:bg-slate-50 text-slate-700",
                       )}
                     >
@@ -194,7 +194,7 @@ export default function KegiatanPage() {
                       {hasEvent && (
                         <span className={cn(
                           "absolute bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full",
-                          isSelected ? "bg-white" : "bg-orange-700"
+                          isSelected ? "bg-white" : "bg-red-900"
                         )} />
                       )}
                     </button>
@@ -208,16 +208,16 @@ export default function KegiatanPage() {
               <div className="px-4 py-3 border-t border-slate-100 bg-white flex items-center justify-between gap-3 text-xs text-slate-500">
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-orange-700 inline-block" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-900 inline-block" />
                     Ada kegiatan
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="h-4 w-4 ring-2 ring-orange-700 inline-flex items-center justify-center text-[9px] text-orange-700 font-bold rounded-full">{today.getDate()}</span>
+                    <span className="h-4 w-4 ring-2 ring-red-900 inline-flex items-center justify-center text-[9px] text-red-900 font-bold rounded-full">{today.getDate()}</span>
                     Hari ini
                   </span>
                 </div>
                 {selectedDate && (
-                  <button onClick={() => setSelectedDate(null)} className="text-orange-700 font-bold hover:text-orange-800 transition-colors text-xs flex items-center gap-1">
+                  <button onClick={() => setSelectedDate(null)} className="text-red-900 font-bold hover:text-red-800 transition-colors text-xs flex items-center gap-1">
                     <XCircle className="h-3.5 w-3.5" /> Reset
                   </button>
                 )}
@@ -251,7 +251,7 @@ export default function KegiatanPage() {
                   </div>
                   <div className={cn(
                     "shrink-0 flex items-center gap-1.5 px-3 h-10 text-[11px] font-semibold border rounded-xl",
-                    selectedDate ? "bg-orange-50 border-orange-200 text-orange-600" : "bg-slate-50 border-slate-200 text-slate-500"
+                    selectedDate ? "bg-red-50 border-red-200 text-red-800" : "bg-slate-50 border-slate-200 text-slate-500"
                   )}>
                     {selectedDate ? (
                       <span>{formatDateLabel(selectedDate)}</span>
@@ -297,7 +297,7 @@ export default function KegiatanPage() {
                             <div className="grid grid-cols-1 md:grid-cols-[56px_1fr_200px_160px_48px] gap-4 items-center px-6 py-5">
 
                               {/* Date block */}
-                              <div className="hidden md:flex flex-col items-center justify-center bg-slate-50 text-slate-500 w-14 h-14 rounded-xl shrink-0 border border-slate-200 group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-colors shadow-sm">
+                              <div className="hidden md:flex flex-col items-center justify-center bg-slate-50 text-slate-500 w-14 h-14 rounded-xl shrink-0 border border-slate-200 group-hover:bg-red-700 group-hover:text-white group-hover:border-red-700 transition-colors shadow-sm">
                                 <span className="text-xl font-bold leading-none">
                                   {new Date(k.tanggal).getDate()}
                                 </span>
@@ -309,12 +309,12 @@ export default function KegiatanPage() {
                               {/* Title & type */}
                               <div className="flex flex-col gap-1.5 min-w-0">
                                 <div className="flex items-center gap-2">
-                                  <div className="h-5 w-5 flex items-center justify-center text-slate-400 group-hover:text-orange-500 transition-colors shrink-0">
+                                  <div className="h-5 w-5 flex items-center justify-center text-slate-400 group-hover:text-red-700 transition-colors shrink-0">
                                     <BentukIcon bentuk={k.bentuk_kegiatan || k.bentuk} className="h-3.5 w-3.5" />
                                   </div>
                                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{(k.bentuk_kegiatan || k.bentuk || '').replace(/_/g, " ")}</span>
                                 </div>
-                                <h3 className="font-bold text-slate-800 text-base group-hover:text-orange-600 transition-colors line-clamp-1">{k.nama_kegiatan}</h3>
+                                <h3 className="font-bold text-slate-800 text-base group-hover:text-red-800 transition-colors line-clamp-1">{k.nama_kegiatan}</h3>
                               </div>
 
                               {/* Time & location */}
@@ -339,7 +339,7 @@ export default function KegiatanPage() {
 
                               {/* Arrow */}
                               <div className="hidden md:flex justify-end pr-2">
-                                <div className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-300 group-hover:bg-orange-50 group-hover:border-orange-200 group-hover:text-orange-500 transition-all">
+                                <div className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-300 group-hover:bg-red-50 group-hover:border-red-200 group-hover:text-red-700 transition-all">
                                   <ArrowRight className="h-4 w-4" />
                                 </div>
                               </div>

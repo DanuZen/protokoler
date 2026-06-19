@@ -87,12 +87,12 @@ function AdminSertifikatView() {
       {/* HEADER SECTION */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Award className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Pimpinan
               </span>
             </div>
@@ -101,7 +101,7 @@ function AdminSertifikatView() {
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button onClick={() => toast.success("Fitur ini sedang dikembangkan")} className="rounded-xl bg-orange-600 text-white hover:bg-orange-700 shadow-sm font-bold shadow-orange-500/20">
+          <Button onClick={() => toast.success("Fitur ini sedang dikembangkan")} className="rounded-xl bg-red-800 text-white hover:bg-red-900 shadow-sm font-bold shadow-red-700/20">
             <BadgeCheck className="mr-2 h-4 w-4" /> Buat Penghargaan Khusus
           </Button>
         </div>
@@ -112,8 +112,8 @@ function AdminSertifikatView() {
         <div className="grid gap-4 md:grid-cols-3">
           {[
             { label: "Menunggu Persetujuan", value: pendingCount, icon: Clock, hint: "Butuh verifikasi", color: "text-amber-600", bg: "bg-amber-100" },
-            { label: "Total Diterbitkan", value: issuedCount, icon: BadgeCheck, hint: "Sertifikat & Penghargaan", color: "text-orange-600", bg: "bg-orange-50" },
-            { label: "Total Pengajuan", value: mockSertifikat.length, icon: Award, hint: "Seluruh riwayat", color: "text-orange-600", bg: "bg-orange-50" },
+            { label: "Total Diterbitkan", value: issuedCount, icon: BadgeCheck, hint: "Sertifikat & Penghargaan", color: "text-red-800", bg: "bg-red-50" },
+            { label: "Total Pengajuan", value: mockSertifikat.length, icon: Award, hint: "Seluruh riwayat", color: "text-red-800", bg: "bg-red-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
               <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
@@ -140,14 +140,14 @@ function AdminSertifikatView() {
         <section className="pb-12 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
             <div className="flex gap-1 overflow-x-auto pb-1 sm:pb-0 [&::-webkit-scrollbar]:hidden">
-              <button onClick={() => setTab('semua')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'semua' ? "bg-orange-600 text-white shadow-md shadow-orange-500/20" : "text-slate-600 hover:bg-slate-100")}>Semua Sertifikat</button>
-              <button onClick={() => setTab('acara')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'acara' ? "bg-orange-600 text-white shadow-md shadow-orange-500/20" : "text-slate-600 hover:bg-slate-100")}>Sertifikat Acara</button>
-              <button onClick={() => setTab('penghargaan')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'penghargaan' ? "bg-orange-600 text-white shadow-md shadow-orange-500/20" : "text-slate-600 hover:bg-slate-100")}>Penghargaan</button>
-              <button onClick={() => setTab('pending')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'pending' ? "bg-orange-600 text-white shadow-md shadow-orange-500/20" : "text-slate-600 hover:bg-slate-100")}>Menunggu <span className="ml-1.5 inline-flex items-center justify-center bg-white/20 px-1.5 py-0.5 rounded-md text-[10px]">{pendingCount}</span></button>
+              <button onClick={() => setTab('semua')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'semua' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Semua Sertifikat</button>
+              <button onClick={() => setTab('acara')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'acara' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Sertifikat Acara</button>
+              <button onClick={() => setTab('penghargaan')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'penghargaan' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Penghargaan</button>
+              <button onClick={() => setTab('pending')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'pending' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Menunggu <span className="ml-1.5 inline-flex items-center justify-center bg-white/20 px-1.5 py-0.5 rounded-md text-[10px]">{pendingCount}</span></button>
             </div>
             <div className="relative w-full sm:w-72">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input placeholder="Cari nama atau kegiatan..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-10 rounded-xl bg-slate-50 border-slate-200 text-sm focus-visible:ring-orange-500" />
+              <Input placeholder="Cari nama atau kegiatan..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-10 rounded-xl bg-slate-50 border-slate-200 text-sm focus-visible:ring-red-700" />
             </div>
           </div>
 
@@ -230,12 +230,12 @@ function UserSertifikatView() {
       {/* ─── HEADER SECTION ─── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Award className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Penghargaan
               </span>
             </div>
@@ -249,9 +249,9 @@ function UserSertifikatView() {
       <section className="relative z-20 pb-0">
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            { label: "Diterbitkan", value: issued, icon: BadgeCheck, hint: "Siap diunduh", color: "text-orange-600", bg: "bg-orange-50" },
-            { label: "Dalam Proses", value: inProcess, icon: Clock, hint: "Menunggu admin", color: "text-orange-600", bg: "bg-orange-50" },
-            { label: "Total", value: mockSertifikat.length, icon: Award, hint: "Seluruh riwayat", color: "text-orange-600", bg: "bg-orange-50" },
+            { label: "Diterbitkan", value: issued, icon: BadgeCheck, hint: "Siap diunduh", color: "text-red-800", bg: "bg-red-50" },
+            { label: "Dalam Proses", value: inProcess, icon: Clock, hint: "Menunggu admin", color: "text-red-800", bg: "bg-red-50" },
+            { label: "Total", value: mockSertifikat.length, icon: Award, hint: "Seluruh riwayat", color: "text-red-800", bg: "bg-red-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
               <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
@@ -280,13 +280,13 @@ function UserSertifikatView() {
           <div className="flex gap-2">
             <button 
               onClick={() => setKategori('acara')} 
-              className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200", kategori === 'acara' ? "bg-orange-600 text-white border-orange-600 shadow-md shadow-orange-500/20" : "bg-white text-slate-600 border-white shadow-sm hover:text-slate-900 hover:shadow-md")}
+              className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200", kategori === 'acara' ? "bg-red-800 text-white border-red-800 shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-white shadow-sm hover:text-slate-900 hover:shadow-md")}
             >
               Sertifikat Acara
             </button>
             <button 
               onClick={() => setKategori('penghargaan')} 
-              className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200", kategori === 'penghargaan' ? "bg-orange-600 text-white border-orange-600 shadow-md shadow-orange-500/20" : "bg-white text-slate-600 border-white shadow-sm hover:text-slate-900 hover:shadow-md")}
+              className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200", kategori === 'penghargaan' ? "bg-red-800 text-white border-red-800 shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-white shadow-sm hover:text-slate-900 hover:shadow-md")}
             >
               Penghargaan
             </button>
@@ -318,7 +318,7 @@ function UserSertifikatView() {
                             <Award className={cn("h-5 w-5", s.status === "diterbitkan" ? "text-emerald-600" : "text-slate-400")} />
                           </div>
                           <div className="min-w-0">
-                            <h3 className="font-bold text-slate-900 text-base group-hover:text-orange-500 transition-colors truncate">{s.judul}</h3>
+                            <h3 className="font-bold text-slate-900 text-base group-hover:text-red-700 transition-colors truncate">{s.judul}</h3>
                             <p className="text-slate-500 text-sm truncate">{s.kegiatan}</p>
                           </div>
                         </div>

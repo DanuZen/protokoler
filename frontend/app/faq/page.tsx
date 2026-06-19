@@ -73,7 +73,7 @@ export default function FAQPage() {
                 href={item.href}
                 className={cn(
                   'text-sm font-semibold transition-colors',
-                  item.href === '/faq' ? 'text-orange-400' : 'text-slate-300 hover:text-orange-400'
+                  item.href === '/faq' ? 'text-red-600' : 'text-slate-300 hover:text-red-600'
                 )}
               >
                 {item.label}
@@ -105,12 +105,12 @@ export default function FAQPage() {
             variants={staggerContainer}
             className="text-center mb-20"
           >
-            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-5 py-2 text-xs font-bold text-orange-300 uppercase tracking-[0.25em] mb-6">
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-red-700/30 bg-red-700/10 px-5 py-2 text-xs font-bold text-red-300 uppercase tracking-[0.25em] mb-6">
               Pusat Bantuan
             </motion.div>
             <motion.h1 variants={fadeUp} className="font-display text-5xl font-extrabold text-white md:text-6xl leading-tight">
               Pertanyaan <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-500">Sering Diajukan</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-700">Sering Diajukan</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-6 text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
               Temukan jawaban atas pertanyaan umum seputar fitur dan alur kerja platform <span className="text-white font-semibold">SiProto v1.2</span>.
@@ -133,7 +133,7 @@ export default function FAQPage() {
                   className={cn(
                     'rounded-2xl overflow-hidden transition-all duration-300 border',
                     isOpen
-                      ? 'border-orange-500/40 bg-white/5 shadow-lg shadow-orange-900/10'
+                      ? 'border-red-700/40 bg-white/5 shadow-lg shadow-red-900/10'
                       : 'border-white/10 bg-white/[0.03] hover:border-white/20'
                   )}
                 >
@@ -147,7 +147,7 @@ export default function FAQPage() {
                     <div
                       className={cn(
                         'shrink-0 h-10 w-10 flex items-center justify-center transition-all duration-500 rounded-xl',
-                        isOpen ? 'bg-orange-500 text-white rotate-180' : 'bg-white/10 text-slate-400'
+                        isOpen ? 'bg-red-700 text-white rotate-180' : 'bg-white/10 text-slate-400'
                       )}
                     >
                       <ChevronDown className="h-5 w-5" />
@@ -184,7 +184,7 @@ export default function FAQPage() {
             <p className="text-white font-bold text-xl mb-6">Hubungi tim protokoler kami langsung.</p>
             <Link
               href="mailto:protokoler@unp.ac.id"
-              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-3 rounded-full transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 bg-red-700 hover:bg-red-800 text-white font-bold px-8 py-3 rounded-full transition-all hover:scale-105"
             >
               Kirim Email
             </Link>

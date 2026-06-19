@@ -173,7 +173,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-start md:items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-600/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-800/20 text-white">
             <Calendar className="h-7 w-7" />
           </div>
           <div>
@@ -214,7 +214,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           </Link>
           {isAdmin && (
             <Link href={`/kegiatan/buat?edit=${id}`}>
-              <Button className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-md shadow-orange-600/10 h-11 px-5 font-bold transition-all">
+              <Button className="rounded-xl bg-red-800 hover:bg-red-900 text-white shadow-md shadow-red-800/10 h-11 px-5 font-bold transition-all">
                 Edit Kegiatan
               </Button>
             </Link>
@@ -230,8 +230,8 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
             onClick={() => setTab(t.key)}
             className={`px-5 py-2.5 text-sm font-semibold rounded-xl transition-all whitespace-nowrap shadow-sm border ${
               tab === t.key
-                ? "bg-orange-600 border-orange-600 text-white shadow-md shadow-orange-600/20"
-                : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-orange-600"
+                ? "bg-red-800 border-red-800 text-white shadow-md shadow-red-800/20"
+                : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-red-800"
             }`}
           >
             {t.label}
@@ -287,7 +287,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
                     <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Waktu Pelaksanaan</p>
                     <div className="flex items-center gap-2.5">
-                      <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-orange-50 text-orange-600">
+                      <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-red-50 text-red-800">
                         <Clock className="h-4 w-4" />
                       </div>
                       <p className="font-bold text-slate-800 text-[14px]">
@@ -356,7 +356,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                       
                       {(keg as any).rundown_url && (
                         <div className="pt-2">
-                          <a href={(keg as any).rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full sm:w-auto h-10 px-6 bg-orange-600 text-white font-bold text-[13px] rounded-xl shadow-sm hover:bg-orange-700 transition-all">
+                          <a href={(keg as any).rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full sm:w-auto h-10 px-6 bg-red-800 text-white font-bold text-[13px] rounded-xl shadow-sm hover:bg-red-900 transition-all">
                             <FileText className="mr-2 h-4 w-4" /> Buka Link Rundown Acara
                           </a>
                         </div>
@@ -393,7 +393,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                           return (
                             <div key={isString ? idx : t.id} className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all group">
                               <div className="flex items-center gap-3">
-                                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-100 to-orange-50 border border-amber-200 flex items-center justify-center shrink-0 text-amber-600 group-hover:scale-110 transition-transform">
+                                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-100 to-red-50 border border-amber-200 flex items-center justify-center shrink-0 text-amber-600 group-hover:scale-110 transition-transform">
                                   <Crown className="h-4 w-4" />
                                 </div>
                                 <div>
@@ -597,7 +597,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 <TableCell className="py-4">
                                   <Badge variant="outline" className={`rounded-lg capitalize font-bold text-[11px] px-2.5 py-1 ${
                                     p.status === 'diterima' ? 'bg-green-50 text-green-700 border-green-200' :
-                                    p.status === 'ditolak' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-orange-50 text-orange-700 border-orange-200'
+                                    p.status === 'ditolak' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-red-50 text-red-900 border-red-200'
                                   }`}>
                                     {p.status}
                                   </Badge>
@@ -719,11 +719,11 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 <h4 className="font-bold text-slate-700 group-hover:text-green-700">Saya Hadir</h4>
                                 <p className="text-xs text-slate-500 text-center mt-1">Ambil selfie di lokasi</p>
                               </div>
-                              <div className="flex-1 border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-orange-50 hover:border-orange-200 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('izin')}>
-                                <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-orange-100 group-hover:text-orange-600 flex items-center justify-center mb-4 transition-colors">
+                              <div className="flex-1 border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-red-50 hover:border-red-200 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('izin')}>
+                                <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-red-100 group-hover:text-red-800 flex items-center justify-center mb-4 transition-colors">
                                   <XCircle className="h-6 w-6" />
                                 </div>
-                                <h4 className="font-bold text-slate-700 group-hover:text-orange-700">Tidak Hadir</h4>
+                                <h4 className="font-bold text-slate-700 group-hover:text-red-900">Tidak Hadir</h4>
                                 <p className="text-xs text-slate-500 text-center mt-1">Berikan alasan (Izin)</p>
                               </div>
                             </div>
@@ -733,7 +733,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 <label className="text-[13px] font-bold text-slate-700 mb-2 block">Alasan Berhalangan Hadir <span className="text-red-500">*</span></label>
                                 <Textarea 
                                   placeholder="Tuliskan alasan Anda berhalangan hadir..." 
-                                  className="bg-white border-slate-200 focus-visible:ring-orange-500 resize-none h-32"
+                                  className="bg-white border-slate-200 focus-visible:ring-red-700 resize-none h-32"
                                   value={izinReason}
                                   onChange={(e) => setIzinReason(e.target.value)}
                                 />
@@ -743,7 +743,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   if(!izinReason.trim()) return toast.error('Harap isi alasan tidak hadir');
                                   setIsAbsenSuccess(true); toast.success('Status izin berhasil dikirim!'); 
                                 }} 
-                                className="w-full rounded-xl bg-orange-600 hover:bg-orange-700 text-white h-12 font-bold shadow-md shadow-orange-600/20"
+                                className="w-full rounded-xl bg-red-800 hover:bg-red-900 text-white h-12 font-bold shadow-md shadow-red-800/20"
                               >
                                 Kirim Keterangan Izin
                               </Button>
@@ -753,7 +753,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <div>
                               {!isCameraOpen && !photo ? (
                                 <div className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer" onClick={startCamera}>
-                                  <div className="h-14 w-14 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mb-4">
+                                  <div className="h-14 w-14 rounded-full bg-red-100 text-red-800 flex items-center justify-center mb-4">
                                     <Camera className="h-6 w-6" />
                                   </div>
                                   <h4 className="font-bold text-slate-700 mb-1">Buka Kamera</h4>
@@ -768,7 +768,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   </div>
                                   <div className="flex gap-3 w-full">
                                     <Button variant="outline" onClick={stopCamera} className="flex-1 rounded-xl border-slate-200 h-12 font-bold text-slate-600">Batal</Button>
-                                    <Button onClick={capturePhoto} className="flex-1 rounded-xl bg-orange-600 hover:bg-orange-700 text-white h-12 font-bold shadow-md shadow-orange-600/20">Ambil Foto</Button>
+                                    <Button onClick={capturePhoto} className="flex-1 rounded-xl bg-red-800 hover:bg-red-900 text-white h-12 font-bold shadow-md shadow-red-800/20">Ambil Foto</Button>
                                   </div>
                                   <canvas ref={canvasRef} className="hidden" />
                                 </div>
@@ -845,7 +845,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 <TableCell className="py-3">
                                   {a.foto_selfie_url ? (
                                     <a href={a.foto_selfie_url} target="_blank" className="block group w-fit">
-                                      <div className="h-14 w-14 rounded-xl border border-slate-200 overflow-hidden bg-white flex items-center justify-center group-hover:border-orange-300 shadow-sm transition-all relative">
+                                      <div className="h-14 w-14 rounded-xl border border-slate-200 overflow-hidden bg-white flex items-center justify-center group-hover:border-red-300 shadow-sm transition-all relative">
                                         <img src={a.foto_selfie_url} alt="Selfie" className="w-full h-full object-cover" />
                                         <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                           <Camera className="h-5 w-5 text-white drop-shadow-md" />

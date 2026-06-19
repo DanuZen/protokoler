@@ -49,10 +49,10 @@ export default function EvaluasiDashboardPage() {
   const selected = filtered.find((item: any) => item.id === selectedId) ?? filtered[0] ?? null;
 
   const summary = [
-    { label: 'Rata-rata rating', value: '4.2', hint: 'Evaluasi protokoler', icon: Star, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-100' },
-    { label: 'Total evaluasi', value: '12', hint: 'Masuk dalam batas waktu', icon: ClipboardList, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-100' },
-    { label: 'Testimoni tamu', value: '8', hint: 'Sentimen positif dominan', icon: MessageSquare, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-100' },
-    { label: 'Kegiatan selesai', value: selesai.length, hint: 'Sumber dashboard', icon: CalendarCheck, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-100' },
+    { label: 'Rata-rata rating', value: '4.2', hint: 'Evaluasi protokoler', icon: Star, color: 'text-red-800', bg: 'bg-red-50 border-red-100' },
+    { label: 'Total evaluasi', value: '12', hint: 'Masuk dalam batas waktu', icon: ClipboardList, color: 'text-red-800', bg: 'bg-red-50 border-red-100' },
+    { label: 'Testimoni tamu', value: '8', hint: 'Sentimen positif dominan', icon: MessageSquare, color: 'text-red-800', bg: 'bg-red-50 border-red-100' },
+    { label: 'Kegiatan selesai', value: selesai.length, hint: 'Sumber dashboard', icon: CalendarCheck, color: 'text-red-800', bg: 'bg-red-50 border-red-100' },
   ];
 
   const activeDetail = selected ?? filtered[0] ?? null;
@@ -64,12 +64,12 @@ export default function EvaluasiDashboardPage() {
       {/* ─── HEADER SECTION ─── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <BarChart3 className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Data Penilaian
               </span>
             </div>
@@ -140,7 +140,7 @@ export default function EvaluasiDashboardPage() {
                     filtered.map((item: any) => {
                       const active = activeDetail?.id === item.id;
                       return (
-                        <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-orange-500' : 'border-transparent hover:bg-slate-50')}>
+                        <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-red-700' : 'border-transparent hover:bg-slate-50')}>
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0 flex-1">
                               <div className={cn('font-semibold', active ? 'text-slate-900' : 'text-slate-900')}>{item.nama_kegiatan}</div>
@@ -156,7 +156,7 @@ export default function EvaluasiDashboardPage() {
                                 </span>
                               </div>
                             </div>
-                            <ChevronRight className={cn('h-4 w-4 shrink-0', active ? 'text-orange-500' : 'text-slate-300')} />
+                            <ChevronRight className={cn('h-4 w-4 shrink-0', active ? 'text-red-700' : 'text-slate-300')} />
                           </div>
                         </button>
                       );
@@ -183,7 +183,7 @@ export default function EvaluasiDashboardPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       {activeDetail && (
-                        <Button onClick={handleExport} size="sm" className="h-8 rounded-lg bg-orange-600 text-white hover:bg-orange-700 text-[11px] font-bold px-3 shadow-sm transition-colors">
+                        <Button onClick={handleExport} size="sm" className="h-8 rounded-lg bg-red-800 text-white hover:bg-red-900 text-[11px] font-bold px-3 shadow-sm transition-colors">
                           <Download className="mr-1.5 h-3.5 w-3.5" /> Export Data
                         </Button>
                       )}
@@ -206,7 +206,7 @@ export default function EvaluasiDashboardPage() {
                               onClick={() => setTab(item.key as DetailTab)}
                               className={cn(
                                 'border px-3 py-2 text-sm transition-all rounded-xl font-bold',
-                                active ? 'bg-orange-600 border-orange-600 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50',
+                                active ? 'bg-red-800 border-red-800 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50',
                               )}
                             >
                               {item.label}
@@ -226,7 +226,7 @@ export default function EvaluasiDashboardPage() {
                                     <div className="flex items-center gap-2 text-xs mt-1">
                                       <span className="text-slate-500">{item.waktu}</span>
                                       <span className="h-1 w-1 rounded-full bg-slate-300"></span>
-                                      <span className={cn("font-medium", item.status === 'Tepat waktu' ? 'text-emerald-600' : 'text-orange-600')}>{item.status}</span>
+                                      <span className={cn("font-medium", item.status === 'Tepat waktu' ? 'text-emerald-600' : 'text-red-800')}>{item.status}</span>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1 text-amber-500 shrink-0">
@@ -272,7 +272,7 @@ export default function EvaluasiDashboardPage() {
                           <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} className="flex-1 min-h-[160px] rounded-xl border-slate-200 bg-slate-50" />
                           <div className="flex items-center justify-between gap-3 mt-auto pt-2">
                             <p className="text-xs text-slate-400">Feedback ini terlihat oleh admin dan protokoler pada dashboard evaluasi.</p>
-                            <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-orange-600 text-white hover:bg-orange-700 transition-colors">
+                            <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-red-800 text-white hover:bg-red-900 transition-colors">
                               <MessageSquare className="mr-2 h-4 w-4" /> Simpan
                             </Button>
                           </div>

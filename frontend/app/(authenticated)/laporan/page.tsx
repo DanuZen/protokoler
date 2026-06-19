@@ -52,12 +52,12 @@ export default function Page() {
       {/* ─── HEADER SECTION ─── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <FileBarChart className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Data & Analitik
               </span>
             </div>
@@ -103,7 +103,7 @@ export default function Page() {
                   <p className="text-[11px] text-slate-500 mt-0.5">{kegiatan?.length ?? 0} kegiatan ditemukan</p>
                 </div>
               </div>
-              <Button className="rounded-xl bg-orange-600 text-white border border-transparent hover:bg-orange-700 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-orange-500/20" onClick={() => exportCsv(
+              <Button className="rounded-xl bg-red-800 text-white border border-transparent hover:bg-red-900 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-red-700/20" onClick={() => exportCsv(
                 `laporan-kegiatan-${start}-${end}.csv`,
                 [["Tanggal","Nama","Bentuk","Jam","Lokasi","Status"], ...(kegiatan ?? []).map((k: any) => [k.tanggal, k.nama_kegiatan, k.bentuk, `${k.jam_mulai}-${k.jam_selesai}`, k.lokasi, k.status])]
               )}>
@@ -166,7 +166,7 @@ export default function Page() {
                   <p className="text-[11px] text-slate-500 mt-0.5">{rekap.length} mahasiswa dalam periode ini</p>
                 </div>
               </div>
-              <Button className="rounded-xl bg-orange-600 text-white border border-transparent hover:bg-orange-700 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-orange-500/20" onClick={() => exportCsv(
+              <Button className="rounded-xl bg-red-800 text-white border border-transparent hover:bg-red-900 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-red-700/20" onClick={() => exportCsv(
                 `rekap-penugasan-${start}-${end}.csv`,
                 [["NIM","Nama","Prodi","Total Tugas","Dikonfirmasi","Ditolak"], ...rekap.map((r: any) => [r.nim, r.nama_lengkap, r.prodi, r.total_tugas, r.dikonfirmasi, r.ditolak])]
               )}>

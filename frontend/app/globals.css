@@ -4,14 +4,14 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-orange-50: color-mix(in srgb, #6b0000 5%, white);
-  --color-orange-100: color-mix(in srgb, #6b0000 10%, white);
-  --color-orange-200: color-mix(in srgb, #6b0000 20%, white);
+  --color-red-50: color-mix(in srgb, #6b0000 5%, white);
+  --color-red-100: color-mix(in srgb, #6b0000 10%, white);
+  --color-red-200: color-mix(in srgb, #6b0000 20%, white);
   --color-orange-300: color-mix(in srgb, #6b0000 40%, white);
-  --color-orange-400: color-mix(in srgb, #6b0000 75%, white);
-  --color-orange-500: #6b0000;
-  --color-orange-600: color-mix(in srgb, #6b0000 85%, black);
-  --color-orange-700: color-mix(in srgb, #6b0000 70%, black);
+  --color-red-600: color-mix(in srgb, #6b0000 75%, white);
+  --color-red-700: #6b0000;
+  --color-red-800: color-mix(in srgb, #6b0000 85%, black);
+  --color-red-900: color-mix(in srgb, #6b0000 70%, black);
   --color-orange-800: color-mix(in srgb, #6b0000 50%, black);
   --color-orange-900: color-mix(in srgb, #6b0000 30%, black);
   --color-orange-950: color-mix(in srgb, #6b0000 15%, black);
@@ -161,25 +161,25 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--color-orange-400);
+    background: var(--color-red-600);
     border-radius: 6px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-orange-500);
+    background: var(--color-red-700);
   }
   /* Sembunyikan arrow (button) pada scrollbar */
   ::-webkit-scrollbar-button {
     display: none;
   }
   .dark ::-webkit-scrollbar-thumb {
-    background: var(--color-orange-600);
+    background: var(--color-red-800);
   }
   .dark ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-orange-700);
+    background: var(--color-red-900);
   }
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-orange-400) transparent;
+    scrollbar-color: var(--color-red-600) transparent;
   }
 }
 

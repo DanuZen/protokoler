@@ -61,7 +61,7 @@ export function TimerCountdown({ targetDate, onExpire, className }: TimerCountdo
       className={cn(
         "flex items-center gap-2 border px-3 py-2 rounded-none font-mono font-bold tracking-tight transition-colors",
         isWarning
-          ? "bg-orange-50 border-orange-200 text-orange-600 animate-pulse"
+          ? "bg-red-50 border-red-200 text-red-800 animate-pulse"
           : "bg-slate-50 border-slate-200 text-slate-700",
         className
       )}

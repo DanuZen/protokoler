@@ -43,7 +43,7 @@ export default function Dashboard() {
       chart: (
         <div className="flex items-end gap-1 h-10 mt-2">
           {[40, 70, 45, 90].map((h, i) => (
-            <div key={i} className="w-4 bg-orange-500 rounded-sm transition-all hover:opacity-80" style={{ height: `${h}%` }} />
+            <div key={i} className="w-4 bg-red-700 rounded-sm transition-all hover:opacity-80" style={{ height: `${h}%` }} />
           ))}
         </div>
       )
@@ -55,7 +55,7 @@ export default function Dashboard() {
       isUp: true,
       chart: (
         <div className="w-16 h-10 mt-2 relative overflow-hidden">
-          <svg viewBox="0 0 100 40" className="w-full h-full stroke-orange-500 fill-none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg viewBox="0 0 100 40" className="w-full h-full stroke-red-700 fill-none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5,30 L25,15 L45,25 L70,5 L95,15" />
           </svg>
         </div>
@@ -67,7 +67,7 @@ export default function Dashboard() {
       trend: '+12%', 
       isUp: true,
       chart: (
-        <div className="w-10 h-10 mt-2 rounded-full border-4 border-orange-500/20 border-r-orange-500 border-t-orange-500 rotate-45" />
+        <div className="w-10 h-10 mt-2 rounded-full border-4 border-red-700/20 border-r-red-700 border-t-red-700 rotate-45" />
       )
     },
     { 
@@ -78,7 +78,7 @@ export default function Dashboard() {
       chart: (
         <div className="flex items-end gap-0.5 h-10 mt-2 opacity-50">
           {[80, 70, 85, 95, 70, 60, 50, 40].map((h, i) => (
-            <div key={i} className="w-2 bg-orange-500 rounded-sm" style={{ height: `${h}%` }} />
+            <div key={i} className="w-2 bg-red-700 rounded-sm" style={{ height: `${h}%` }} />
           ))}
         </div>
       )
@@ -91,12 +91,12 @@ export default function Dashboard() {
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
       <motion.div {...fadeUp(0)} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <LayoutGrid className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Ringkasan Sistem
               </span>
             </div>
@@ -148,7 +148,7 @@ export default function Dashboard() {
           <div className="flex items-start justify-between mb-8">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <div className="h-8 w-8 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center">
+                <div className="h-8 w-8 rounded-xl bg-red-50 text-red-700 flex items-center justify-center">
                   <Activity className="h-4 w-4" />
                 </div>
                 <h3 className="text-[15px] font-bold text-slate-900">Statistik Kegiatan</h3>
@@ -159,8 +159,8 @@ export default function Dashboard() {
                 <div className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-700">+12%</div>
               </div>
               <div className="flex gap-4 mt-2">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500"><span className="h-2 w-2 rounded-full bg-orange-500" /> Internal</div>
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500"><span className="h-2 w-2 rounded-full bg-orange-100" /> Eksternal</div>
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500"><span className="h-2 w-2 rounded-full bg-red-700" /> Internal</div>
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500"><span className="h-2 w-2 rounded-full bg-red-100" /> Eksternal</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -204,19 +204,19 @@ export default function Dashboard() {
                     onMouseLeave={() => setHoveredBar(null)}
                   >
                     <div className="flex gap-1 items-end w-full max-w-[24px] mx-auto h-[90%] relative">
-                      <div className={cn("w-1/2 rounded-sm transition-all duration-300", isHovered ? "bg-orange-500" : "bg-slate-100 group-hover:bg-slate-200")} style={{ height: `${h1}%` }} />
-                      <div className={cn("w-1/2 rounded-sm transition-all duration-300", isHovered ? "bg-orange-100" : "bg-slate-50 group-hover:bg-slate-100")} style={{ height: `${h2}%` }} />
+                      <div className={cn("w-1/2 rounded-sm transition-all duration-300", isHovered ? "bg-red-700" : "bg-slate-100 group-hover:bg-slate-200")} style={{ height: `${h1}%` }} />
+                      <div className={cn("w-1/2 rounded-sm transition-all duration-300", isHovered ? "bg-red-100" : "bg-slate-50 group-hover:bg-slate-100")} style={{ height: `${h2}%` }} />
 
                       {/* Tooltip — hanya muncul saat hover */}
                       {isHovered && (
                         <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-[#1a1a1a] text-white p-3 rounded-xl shadow-xl w-32 z-10 pointer-events-none animate-fade-in-up">
                           <div className="text-[10px] text-slate-400 mb-1 font-medium">{m} 2026</div>
                           <div className="flex justify-between text-xs font-bold mb-1">
-                            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-orange-500" /> Internal</span>
+                            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-red-700" /> Internal</span>
                             <span>{h1}</span>
                           </div>
                           <div className="flex justify-between text-xs font-bold">
-                            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-orange-200" /> Eksternal</span>
+                            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-red-200" /> Eksternal</span>
                             <span>{h2}</span>
                           </div>
                         </div>
@@ -235,7 +235,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-[15px] font-bold text-slate-900">Aktivitas Terkini</h3>
-              <Link href="/kegiatan" className="text-[11px] font-bold text-orange-500 hover:underline mt-0.5 inline-block">
+              <Link href="/kegiatan" className="text-[11px] font-bold text-red-700 hover:underline mt-0.5 inline-block">
                 Lihat semua aktivitas &gt;
               </Link>
             </div>
@@ -252,11 +252,11 @@ export default function Dashboard() {
                 const d = new Date(k.tanggal);
                 return (
                   <Link key={k.id} href={`/kegiatan/${k.id}`} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
-                    <div className="h-10 w-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 group-hover:bg-white group-hover:text-orange-500 group-hover:shadow-sm border border-slate-200/50 transition-all">
+                    <div className="h-10 w-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 group-hover:bg-white group-hover:text-red-700 group-hover:shadow-sm border border-slate-200/50 transition-all">
                       <CalendarDays className="h-4 w-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-slate-900 truncate group-hover:text-orange-500 transition-colors">{k.nama_kegiatan}</div>
+                      <div className="text-sm font-bold text-slate-900 truncate group-hover:text-red-700 transition-colors">{k.nama_kegiatan}</div>
                       <div className="text-[11px] font-medium text-slate-500 truncate flex items-center gap-2 mt-0.5">
                         <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {k.jam_mulai?.slice(0,5)} WIB</span>
                         <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {k.lokasi || 'Kampus'}</span>

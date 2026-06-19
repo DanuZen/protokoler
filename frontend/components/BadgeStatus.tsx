@@ -28,7 +28,7 @@ export function BadgeStatus({ status = "", className }: BadgeStatusProps) {
     case "draf":
     case "dialihkan":
     case "izin":
-      variantClass = "bg-orange-100 text-orange-800 border-orange-200";
+      variantClass = "bg-red-100 text-red-800 border-red-200";
       break;
 
     // Danger / Red

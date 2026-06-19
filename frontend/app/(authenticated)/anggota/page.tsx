@@ -86,12 +86,12 @@ export default function AnggotaPage() {
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Users className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Manajemen Tim
               </span>
             </div>
@@ -108,7 +108,7 @@ export default function AnggotaPage() {
         {[
           { label: "Menunggu Verifikasi", value: pendingCount, icon: ShieldCheck, hint: "Perlu ditinjau", color: "text-amber-600", bg: "bg-amber-100" },
           { label: "Protokoler Aktif", value: aktifCount, icon: UserCheck, hint: "Anggota aktif", color: "text-emerald-600", bg: "bg-emerald-100" },
-          { label: "Total Terdaftar", value: allData.length, icon: Users, hint: "Seluruh anggota", color: "text-[#ff6b4a]", bg: "bg-orange-50" },
+          { label: "Total Terdaftar", value: allData.length, icon: Users, hint: "Seluruh anggota", color: "text-[#ff6b4a]", bg: "bg-red-50" },
         ].map((stat, i) => (
           <motion.div key={stat.label} variants={fadeUp}>
             <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full">
@@ -158,7 +158,7 @@ export default function AnggotaPage() {
               {pendingCount > 0 && (
                 <span className={cn(
                   "text-[10px] px-1.5 py-0.5 rounded-md font-bold", 
-                  tab === "pending" ? "bg-orange-100 text-orange-700" : "bg-slate-200 text-slate-600"
+                  tab === "pending" ? "bg-red-100 text-red-900" : "bg-slate-200 text-slate-600"
                 )}>
                   {pendingCount}
                 </span>

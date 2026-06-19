@@ -45,7 +45,7 @@ export default function DokumentasiDashboardPage() {
       chart: (
         <div className="flex items-end gap-1 h-10 mt-2">
           {[40, 70, 45, 90].map((h, i) => (
-            <div key={i} className="w-4 bg-orange-500 rounded-sm transition-all hover:opacity-80" style={{ height: `${h}%` }} />
+            <div key={i} className="w-4 bg-red-700 rounded-sm transition-all hover:opacity-80" style={{ height: `${h}%` }} />
           ))}
         </div>
       )
@@ -95,12 +95,12 @@ export default function DokumentasiDashboardPage() {
       {/* ─── HEADER SECTION ─── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Camera className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Manajemen Dokumentasi
               </span>
             </div>
@@ -226,7 +226,7 @@ export default function DokumentasiDashboardPage() {
                               </Link>
                             ) : (
                               <Link href="/dokumentasi/upload">
-                                <Button size="sm" className="rounded-xl bg-orange-500 text-white hover:bg-orange-600 shadow-sm font-medium">
+                                <Button size="sm" className="rounded-xl bg-red-700 text-white hover:bg-red-800 shadow-sm font-medium">
                                   <Upload className="w-3.5 h-3.5 mr-1.5" /> Upload
                                 </Button>
                               </Link>

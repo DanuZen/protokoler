@@ -90,12 +90,12 @@ export default function ManajemenBeritaPage() {
       {/* HEADER */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-600 to-orange-800 shadow-lg shadow-orange-700/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-800 to-red-800 shadow-lg shadow-red-900/20 text-white">
             <BookOpen className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-700">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-900">
                 Workspace Terpadu
               </span>
             </div>
@@ -110,13 +110,13 @@ export default function ManajemenBeritaPage() {
           {/* SUMMARY CARDS */}
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {[
-              { label: "Total Kegiatan", value: totalKegiatan, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-orange-600", bg: "bg-orange-50" },
-              { label: "Acara Selesai", value: selesaiKegiatan, icon: CheckCircle2, hint: "Kegiatan yang telah selesai", color: "text-orange-600", bg: "bg-orange-50" },
-              { label: "Belum Upload", value: belumDokumentasi, icon: AlertCircle, hint: "Acara selesai belum ada berita", color: "text-orange-600", bg: "bg-orange-50" },
-              { label: "Berita Dipublikasi", value: beritaPublished, icon: BookOpen, hint: "Berita yang sudah tayang", color: "text-orange-600", bg: "bg-orange-50" }
+              { label: "Total Kegiatan", value: totalKegiatan, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-red-800", bg: "bg-red-50" },
+              { label: "Acara Selesai", value: selesaiKegiatan, icon: CheckCircle2, hint: "Kegiatan yang telah selesai", color: "text-red-800", bg: "bg-red-50" },
+              { label: "Belum Upload", value: belumDokumentasi, icon: AlertCircle, hint: "Acara selesai belum ada berita", color: "text-red-800", bg: "bg-red-50" },
+              { label: "Berita Dipublikasi", value: beritaPublished, icon: BookOpen, hint: "Berita yang sudah tayang", color: "text-red-800", bg: "bg-red-50" }
             ].map((stat, index) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative overflow-hidden h-full">
+                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-red-50/80 transition-all group relative overflow-hidden h-full">
                   <div className="flex items-center justify-between relative z-10">
                     <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
                     <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
@@ -212,7 +212,7 @@ export default function ManajemenBeritaPage() {
                           <td className="px-6 py-4 text-right">
                             <Button 
                               onClick={() => setSelectedId(keg.id)}
-                              className="bg-orange-700 hover:bg-orange-800 text-white rounded-xl h-8 px-4 text-xs font-bold shadow-sm"
+                              className="bg-red-900 hover:bg-red-800 text-white rounded-xl h-8 px-4 text-xs font-bold shadow-sm"
                             >
                               <UploadCloud className="w-3.5 h-3.5 mr-1.5" /> Upload
                             </Button>
@@ -230,14 +230,14 @@ export default function ManajemenBeritaPage() {
 
         <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
           <div className="mb-6 flex items-center">
-            <Button variant="outline" onClick={() => setSelectedId(null)} className="bg-white border-slate-200 text-slate-700 hover:text-orange-700 hover:bg-orange-50 hover:border-orange-200 shadow-sm rounded-xl px-4 h-10 font-bold transition-all">
+            <Button variant="outline" onClick={() => setSelectedId(null)} className="bg-white border-slate-200 text-slate-700 hover:text-red-900 hover:bg-red-50 hover:border-red-200 shadow-sm rounded-xl px-4 h-10 font-bold transition-all">
               <ArrowLeft className="mr-2 h-4 w-4" /> Kembali ke Daftar Acara
             </Button>
           </div>
           
           <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full">
             <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center gap-4">
-              <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-orange-700 rounded-[14px] shadow-sm">
+              <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-red-900 rounded-[14px] shadow-sm">
                 <UploadCloud className="h-6 w-6" />
               </div>
               <div>
@@ -255,7 +255,7 @@ export default function ManajemenBeritaPage() {
                   <select 
                     value={mediaType}
                     onChange={e => setMediaType(e.target.value)}
-                    className="w-full flex h-12 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-orange-700 focus:border-transparent font-medium"
+                    className="w-full flex h-12 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent font-medium"
                   >
                     <option value="foto">Foto</option>
                     <option value="video">Video</option>
@@ -267,7 +267,7 @@ export default function ManajemenBeritaPage() {
                   <select 
                     value={formData.kategori} 
                     onChange={e => setFormData({...formData, kategori: e.target.value})}
-                    className="w-full flex h-12 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-orange-700 focus:border-transparent font-medium"
+                    className="w-full flex h-12 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent font-medium"
                   >
                     <option value="" disabled>Pilih Kategori</option>
                     <option value="Seremonial">Seremonial</option>
@@ -282,10 +282,10 @@ export default function ManajemenBeritaPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="space-y-2.5 flex flex-col">
                   <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-2 block">Upload File Dokumentasi</label>
-                  <label htmlFor="file-upload" className="flex-1 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 hover:bg-orange-50 hover:border-orange-400 transition-all flex flex-col items-center justify-center py-10 px-6 cursor-pointer group relative overflow-hidden min-h-[220px]">
-                    <div className="absolute inset-0 bg-orange-500/0 group-hover:bg-orange-500/5 transition-colors" />
+                  <label htmlFor="file-upload" className="flex-1 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 hover:bg-red-50 hover:border-red-600 transition-all flex flex-col items-center justify-center py-10 px-6 cursor-pointer group relative overflow-hidden min-h-[220px]">
+                    <div className="absolute inset-0 bg-red-700/0 group-hover:bg-red-700/5 transition-colors" />
                     <div className="h-16 w-16 rounded-full bg-white flex items-center justify-center shadow-sm border border-slate-100 mb-4 group-hover:scale-110 group-hover:shadow-md transition-all">
-                      <UploadCloud className="h-7 w-7 text-orange-600 group-hover:text-orange-700" />
+                      <UploadCloud className="h-7 w-7 text-red-800 group-hover:text-red-900" />
                     </div>
                     <h3 className="text-sm font-bold text-slate-700 mb-1.5 text-center">Klik untuk memilih atau seret & lepas file ke sini</h3>
                     <p className="text-xs text-slate-400 text-center font-medium">Format didukung: JPG, PNG, MP4, PDF. Maksimal 100MB.</p>
@@ -300,7 +300,7 @@ export default function ManajemenBeritaPage() {
               </div>
 
               <div className="pt-2">
-                <Button onClick={handleUpload} disabled={createMutation.isPending} className="w-full rounded-xl bg-orange-700 text-white hover:bg-orange-800 shadow-lg shadow-orange-700/20 h-14 text-sm font-bold">
+                <Button onClick={handleUpload} disabled={createMutation.isPending} className="w-full rounded-xl bg-red-900 text-white hover:bg-red-800 shadow-lg shadow-red-900/20 h-14 text-sm font-bold">
                   <UploadCloud className="mr-2 h-5 w-5" /> {createMutation.isPending ? 'Menyimpan...' : 'Upload & Publish Berita'}
                 </Button>
               </div>
