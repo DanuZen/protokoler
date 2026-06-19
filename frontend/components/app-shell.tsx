@@ -1,8 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
-import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Camera, Bell, Settings, Home, CalendarCheck, BarChart3, Award, BookOpen, UploadCloud } from 'lucide-react';
+import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Camera, Bell, Circle, Settings, Home, CalendarCheck, BarChart3, Award, BookOpen, UploadCloud } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useAuth, useRole } from '@/hooks/use-auth';
@@ -133,10 +134,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-white text-slate-800 font-sans">
       {/* ─── MAIN APP CONTAINER ─── */}
-      <div className="flex flex-1 w-full h-screen overflow-hidden">
+      <div className="flex flex-1 w-full h-screen overflow-hidden relative">
         
+        {/* Mobile Overlay */}
+        {isSidebarOpen && (
+          <div 
+            className="md:hidden fixed inset-0 bg-black/50 z-40" 
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
         {/* ─── SIDEBAR ─────────────────────────────────── */}
-        <aside className={cn("hidden md:flex flex-col transition-all duration-300 border-r border-orange-600 bg-gradient-to-b from-orange-500 to-orange-600 pt-5 pb-6 shadow-xl z-20", isSidebarOpen ? "w-[240px]" : "w-[90px] items-center")}>
+        <aside className={cn(
+          "fixed md:relative flex flex-col transition-all duration-300 border-r border-orange-600 bg-gradient-to-b from-orange-500 to-orange-600 pt-5 pb-6 shadow-xl z-50 md:z-20 h-full", 
+          /* Pada mobile, letakkan di kanan dan geser dari kanan. Pada desktop tetap di kiri. */
+          "right-0 md:left-0 md:right-auto",
+          isSidebarOpen ? "w-[240px] translate-x-0" : "translate-x-full md:translate-x-0 md:w-[90px] md:items-center"
+        )}>
           {/* Logo */}
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -157,7 +171,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <nav className={cn("flex-1 flex flex-col w-full gap-2 overflow-hidden", isSidebarOpen ? "px-4 items-stretch" : "px-4 items-center")}>
             {navItems.map((item) => {
               const active = path === item.to || path.startsWith(item.to + '/');
-              return <NavItem key={item.to} item={item} active={active} isOpen={isSidebarOpen} />;
+              return (
+                <div key={item.to} onClick={() => { if(window.innerWidth < 768) setIsSidebarOpen(false); }}>
+                  <NavItem item={item} active={active} isOpen={isSidebarOpen} />
+                </div>
+              );
             })}
           </nav>
 
@@ -224,8 +242,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* ─── MAIN CONTENT ────────────────────────────── */}
-        <main className="flex-1 flex flex-col min-w-0 bg-slate-50 relative overflow-y-auto overflow-x-hidden">
+        <main className="flex-1 flex flex-col min-w-0 bg-slate-50 relative overflow-x-hidden overflow-y-auto md:overflow-y-hidden">
           
+          {/* Mobile Topbar (Adapted Layout, Original Styling) */}
+          <div className="md:hidden flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-[#5b1511] to-orange-700 shadow-lg border-b border-orange-900/30 z-30 sticky top-0">
+             
+             {/* Left: Brand Logo */}
+             <div className="flex items-center gap-2.5">
+               <div className="relative h-7 w-7 overflow-hidden rounded-full bg-white shadow-sm flex items-center justify-center p-0.5">
+                 <Image src="/logo protokoler.png" alt="Logo" fill sizes="28px" className="object-contain" />
+               </div>
+               <span className="font-black text-[22px] leading-none tracking-tight text-white drop-shadow-sm pb-0.5">Protokoler</span>
+             </div>
+
+             {/* Right: Hamburger Menu */}
+             <div className="flex items-center">
+               <button 
+                 onClick={() => setIsSidebarOpen(true)} 
+                 className="h-9 w-9 flex items-center justify-center bg-white/10 border border-white/20 backdrop-blur-md rounded-xl shadow-sm text-white hover:bg-white/20 hover:scale-105 transition-all"
+               >
+                 <Menu className="h-5 w-5" />
+               </button>
+             </div>
+          </div>
+
           {/* Glassmorphism Background Blobs */}
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-orange-400/20 blur-[120px] pointer-events-none" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-400/10 blur-[120px] pointer-events-none" />
@@ -233,8 +273,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           
 
           {/* Page Content Area */}
-          <div className="flex-1 p-6 md:p-8">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+          <div className="flex-1 flex flex-col min-h-0 w-full overflow-x-hidden">
+            <motion.div className="flex-1 flex flex-col min-h-0" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               {children}
             </motion.div>
           </div>

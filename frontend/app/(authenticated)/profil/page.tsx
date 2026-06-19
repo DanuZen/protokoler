@@ -92,23 +92,20 @@ export default function ProfilPage() {
 
   return (
     <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
-      {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
-            <User className="h-7 w-7" />
+      {/* ─── HEADER SECTION (Adapted Layout) ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6 md:mb-8 pt-2">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              Pengaturan Akun
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
-                Pengaturan Akun
-              </span>
-            </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Profil Saya</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Informasi akun dan data keanggotaan protokoler.</p>
-          </div>
+          <h2 className="font-display text-[28px] md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 md:mb-2 text-slate-900 drop-shadow-sm">Profil Saya</h2>
+          <p className="text-[13px] md:text-base text-slate-600 font-medium max-w-xl">
+            Informasi akun dan data keanggotaan protokoler.
+          </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 font-bold text-sm rounded-xl">
             <Shield className="h-4 w-4" /> {form.tingkat} Member
           </span>

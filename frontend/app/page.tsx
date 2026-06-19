@@ -312,18 +312,26 @@ export default function Landing() {
                 </div>
 
                 {/* Right: Event Details Card */}
-                <div className="bg-white p-8 md:p-10 flex flex-col rounded-3xl border border-slate-200 shadow-lg">
+                <div className="bg-white p-8 md:p-10 flex flex-col rounded-[2rem] border border-slate-200 shadow-lg">
                   {(() => {
                     const event = kegiatanPublik?.find((k: any) => selectedDate && new Date(k.tanggal).toDateString() === selectedDate.toDateString());
 
                     if (!event) {
                       return (
-                        <div className="h-full flex flex-col items-center justify-center text-center py-16">
-                          <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6 bg-slate-100 border border-slate-200">
-                            <CalendarDays className="h-9 w-9 text-slate-400" />
+                        <div className="h-full flex flex-col">
+                          <div>
+                            <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em] mb-1">Detail Acara</p>
+                            <p className="text-slate-900 font-bold text-xl">
+                              {selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) ?? 'Belum ada tanggal dipilih'}
+                            </p>
                           </div>
-                          <p className="font-bold text-lg text-slate-700">Tidak ada agenda pada tanggal ini.</p>
-                          <p className="text-sm mt-2 text-slate-400">Pilih tanggal lain di kalender untuk melihat jadwal kegiatan.</p>
+                          <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
+                            <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6 bg-slate-50 border border-slate-100 shadow-sm">
+                              <CalendarDays className="h-10 w-10 text-slate-300" />
+                            </div>
+                            <p className="font-bold text-lg text-slate-700">Tidak ada agenda</p>
+                            <p className="text-sm mt-2 text-slate-400 max-w-[250px] mx-auto">Tidak ada kegiatan yang dijadwalkan pada tanggal ini.</p>
+                          </div>
                         </div>
                       );
                     }

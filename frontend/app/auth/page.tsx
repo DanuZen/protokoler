@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText } from 'lucide-react';
+import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText, Mail, Lock } from 'lucide-react';
 
 type AuthMode = 'login' | 'register';
 type RegisterStep = 1 | 2 | 3;
@@ -87,43 +87,48 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 overflow-hidden">
-      {/* ── Left Panel (branding) - White Background ── */}
-      <div className="hidden lg:flex flex-col justify-between bg-white relative z-10 p-12 xl:p-20 border-r border-slate-100 shadow-xl shadow-slate-200/50">
-        <div>
-          <div className="flex items-center gap-3 mb-16">
-            <div className="relative h-12 w-12">
-              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="48px" className="object-contain" priority />
+      {/* ── Left Panel (branding) - Primary & Secondary Background ── */}
+      <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#5b1511] via-[#4a100e] to-[#7a2c00] relative z-10 p-12 xl:p-20 shadow-2xl overflow-hidden">
+        {/* Subtle Decorative Gradient Overlays */}
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-[#5b1511]/60 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-20 right-0 w-64 h-64 bg-amber-500/20 rounded-full blur-[80px] pointer-events-none" />
+
+        <div className="relative z-10">
+          <div className="flex items-center gap-4 mb-16">
+            <div className="relative h-14 w-14 bg-white rounded-full shadow-lg border-2 border-white/20 flex-shrink-0">
+              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="56px" className="object-contain p-1.5" priority />
             </div>
             <div>
-              <span className="font-display text-2xl font-bold tracking-tight leading-none block text-slate-900">PROTOKOLER</span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">UNIVERSITAS NEGERI PADANG</span>
+              <span className="font-display text-2xl font-bold tracking-tight leading-none block text-white drop-shadow-sm">PROTOKOLER</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">UNIVERSITAS NEGERI PADANG</span>
             </div>
           </div>
 
           <div className="space-y-8">
             <div>
-              <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 leading-tight mb-4">
+              <h1 className="font-display text-4xl xl:text-5xl font-bold tracking-tight text-white leading-tight mb-4 drop-shadow-sm">
                 Sistem Informasi<br />
-                <span className="text-orange-500">Protokoler UNP</span>
+                <span className="text-amber-400 drop-shadow-sm">Protokoler UNP</span>
               </h1>
-              <p className="text-slate-500 text-base leading-relaxed font-medium">
+              <p className="text-white/90 text-base leading-relaxed font-medium max-w-md drop-shadow-sm">
                 Platform manajemen keprotokolan terintegrasi — absensi, jadwal, evaluasi, dan sertifikasi digital dalam satu sistem.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 max-w-md">
               {[
                 { icon: CalendarDays, label: 'Manajemen Jadwal', desc: 'Pantau kegiatan secara real-time' },
                 { icon: Trophy, label: 'Gamifikasi Kinerja', desc: 'Poin & medali untuk protokoler aktif' },
                 { icon: ScrollText, label: 'e-Sertifikat Otomatis', desc: 'Terbit setelah evaluasi selesai' },
               ].map((f) => (
-                <div key={f.label} className="flex items-center gap-4 p-5 bg-white/60 backdrop-blur-sm border border-white/80 rounded-2xl shadow-sm">
-                  <div className="h-12 w-12 flex items-center justify-center bg-orange-100 text-orange-500 rounded-xl shrink-0">
-                    <f.icon className="h-6 w-6" />
+                <div key={f.label} className="flex items-center gap-4 p-5 bg-black/30 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg hover:bg-black/40 transition-colors">
+                  <div className="h-12 w-12 flex items-center justify-center bg-white/10 text-amber-400 rounded-xl shrink-0 border border-white/5">
+                    <f.icon className="h-6 w-6 drop-shadow-sm" />
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-slate-900">{f.label}</div>
-                    <div className="text-xs text-slate-500">{f.desc}</div>
+                    <div className="text-sm font-bold text-white drop-shadow-sm">{f.label}</div>
+                    <div className="text-xs text-white/80 font-medium">{f.desc}</div>
                   </div>
                 </div>
               ))}
@@ -131,7 +136,7 @@ export default function AuthPage() {
           </div>
         </div>
 
-        <p className="text-xs text-slate-400 font-medium">© 2026 Unit Protokoler Universitas Negeri Padang</p>
+        <p className="text-xs text-white/60 font-medium relative z-10">© 2026 Unit Protokoler Universitas Negeri Padang</p>
       </div>
 
       {/* ── Right Panel: Auth Card & Orange Background ── */}
@@ -147,59 +152,67 @@ export default function AuthPage() {
           className="w-full max-w-md"
         >
           {/* Mobile logo */}
-          <div className="flex items-center gap-3 mb-8 lg:hidden">
-            <div className="relative h-12 w-12">
-              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="48px" className="object-contain" priority />
+          <div className="flex flex-col items-center justify-center gap-2 mb-5 lg:hidden text-center">
+            <div className="relative h-14 w-14 drop-shadow-sm">
+              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="56px" className="object-contain" priority />
             </div>
             <div>
-              <span className="font-display text-xl font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>
-              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500 block">UNIVERSITAS NEGERI PADANG</span>
+              <span className="font-display text-lg font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>
+              <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-500 block">UNIVERSITAS NEGERI PADANG</span>
             </div>
           </div>
 
           {/* Main card */}
-          <div className="bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_20px_60px_rgb(0,0,0,0.08)] rounded-3xl p-8">
+          <div className="bg-white border border-slate-100 shadow-[0_20px_60px_rgb(0,0,0,0.05)] rounded-[2rem] p-6 lg:p-10">
             <AnimatePresence mode="wait">
               {/* ── LOGIN MODE ── */}
               {mode === 'login' && (
                 <motion.div key="login" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}>
-                  <div className="mb-7">
-                    <h2 className="font-display text-2xl font-bold text-slate-900 tracking-tight mb-1">Selamat Datang</h2>
-                    <p className="text-sm text-slate-500 font-medium">Pilih peran untuk masuk ke sistem demo.</p>
+                  <div className="mb-5 text-center">
+                    <h2 className="font-display text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight mb-1 lg:mb-2">Selamat Datang</h2>
+                    <p className="text-xs lg:text-sm text-slate-500 font-medium">Masukkan kredensial Anda untuk melanjutkan.</p>
                   </div>
 
-                  {/* Role selection cards */}
-                  <div className="space-y-3 mb-7">
-                    {roleCards.map(({ role, label, desc, icon: Icon, color, iconBg }) => (
-                      <button
-                        key={role}
-                        onClick={() => enterDemoRole(role)}
-                        className={`w-full flex items-center justify-between gap-4 px-5 py-4 rounded-2xl font-bold transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] ${color}`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`h-10 w-10 flex items-center justify-center rounded-xl ${iconBg}`}>
-                            <Icon className="h-5 w-5" />
-                          </div>
-                          <div className="text-left">
-                            <div className="text-sm font-bold leading-tight">{label}</div>
-                            <div className="text-[11px] opacity-70 font-medium">{desc}</div>
-                          </div>
+                  {/* Login Form */}
+                  <form onSubmit={handleLogin} className="space-y-4 lg:space-y-5 mb-5 lg:mb-8">
+                    <div className="space-y-1.5">
+                      <Label className="text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Email</Label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                          <Mail className="h-4 w-4 text-slate-400" />
                         </div>
-                        <ChevronRight className="h-5 w-5 opacity-60 shrink-0" />
-                      </button>
-                    ))}
-                  </div>
+                        <Input type="email" value={email} onChange={e => setEmail(e.target.value)} className="rounded-xl h-11 lg:h-12 pl-10 border-slate-200 text-sm bg-slate-50 focus:bg-white focus:border-orange-400 transition-colors shadow-sm" placeholder="nama@kampus.ac.id" required />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Password</Label>
+                        <a href="#" className="text-[10px] lg:text-xs font-bold text-orange-500 hover:text-orange-600 transition-colors">Lupa password?</a>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                          <Lock className="h-4 w-4 text-slate-400" />
+                        </div>
+                        <Input type="password" value={password} onChange={e => setPassword(e.target.value)} className="rounded-xl h-11 lg:h-12 pl-10 border-slate-200 text-sm bg-slate-50 focus:bg-white focus:border-orange-400 transition-colors shadow-sm" placeholder="Masukkan password Anda" required />
+                      </div>
+                    </div>
+                    
+                    <Button type="submit" className="w-full rounded-xl h-11 lg:h-12 font-bold bg-[#5b1511] hover:bg-[#4a100e] text-white mt-1 shadow-lg shadow-[#5b1511]/20 transition-all hover:-translate-y-0.5 active:translate-y-0">
+                      Masuk
+                    </Button>
+                  </form>
 
-                  <div className="my-5 flex items-center gap-3">
-                    <div className="h-px flex-1 bg-slate-200" />
-                    <span className="text-xs text-slate-400 font-medium">Belum punya akun?</span>
-                    <div className="h-px flex-1 bg-slate-200" />
+                  <div className="my-4 lg:my-6 flex items-center gap-3">
+                    <div className="h-px flex-1 bg-slate-100" />
+                    <span className="text-[10px] lg:text-xs text-slate-400 font-medium">Belum punya akun?</span>
+                    <div className="h-px flex-1 bg-slate-100" />
                   </div>
 
                   <Button
                     variant="outline"
                     onClick={() => { setMode('register'); setStep(1); }}
-                    className="w-full rounded-xl border-slate-200 h-11 font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                    className="w-full rounded-xl border-slate-200 h-12 font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors"
                   >
                     Daftar Sebagai Protokoler
                   </Button>
@@ -336,6 +349,28 @@ export default function AuthPage() {
                 </motion.div>
               )}
             </AnimatePresence>
+          </div>
+
+          {/* ── QUICK LOGIN DEMO (moved below card) ── */}
+          <div className="mt-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-px flex-1 bg-slate-200" />
+              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.1em]">Akses Cepat Demo</span>
+              <div className="h-px flex-1 bg-slate-200" />
+            </div>
+            
+            <div className="grid grid-cols-3 gap-2">
+              {roleCards.map(({ role, label, icon: Icon, color }) => (
+                <button
+                  key={role}
+                  onClick={() => enterDemoRole(role)}
+                  className={`flex flex-col items-center justify-center gap-1.5 p-2 py-2.5 rounded-xl font-bold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 shadow-sm ${color}`}
+                >
+                  <Icon className="h-4 w-4 opacity-90" />
+                  <span className="text-[9px] leading-none tracking-wide text-center">{label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <p className="mt-6 text-center text-xs text-slate-400 font-medium lg:hidden">

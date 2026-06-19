@@ -24,6 +24,7 @@ export function BadgeStatus({ status = "", className }: BadgeStatusProps) {
 
     // Warning / Yellow-Orange
     case "pending":
+    case "pending verification":
     case "draf":
     case "dialihkan":
     case "izin":

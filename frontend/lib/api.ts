@@ -4,68 +4,10 @@
  * Delay = 0 agar semua halaman render instan (tidak ada buffering).
  */
 
-let mockKegiatan: any[] = [
-  {
-    id: 'keg-1',
-    nama_kegiatan: 'Upacara Wisuda Periode 123',
-    bentuk: 'upacara_resmi',
-    kategori: 'eksternal',
-    status: 'terjadwal',
-    tanggal: '2026-06-25T08:00:00Z',
-    jam_mulai: '08:00',
-    jam_selesai: '12:00',
-    lokasi: 'Auditorium UNP',
-    deskripsi: 'Pelaksanaan upacara wisuda ke-123 Universitas Negeri Padang.',
-    pendaftar: [
-      { id: 'pend-1', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', status: 'diterima' },
-      { id: 'pend-2', protokoler_id: 'prot-2', nama_lengkap: 'Budi Santoso', status: 'pending' },
-    ],
-    tamu_vvip: ['Rektor UNP', 'Gubernur Sumbar'],
-    audience: 'Mahasiswa Baru & Orang Tua',
-    keynote: 'Prof. Dr. Ganefri, Ph.D. (Rektor UNP)',
-    rundown_url: 'https://docs.google.com/document/d/12345/edit',
-  },
-  {
-    id: 'keg-2',
-    nama_kegiatan: 'Penerimaan Mahasiswa Baru',
-    bentuk: 'kegiatan_pimpinan',
-    kategori: 'internal',
-    status: 'berlangsung',
-    tanggal: '2026-06-18T07:00:00Z',
-    jam_mulai: '07:00',
-    jam_selesai: '15:00',
-    lokasi: 'Lapangan Utama UNP',
-    deskripsi: 'Penyambutan mahasiswa baru jalur SNBP dan SNBT.',
-    pendaftar: [
-      { id: 'pend-3', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', status: 'diterima' },
-    ],
-    tamu_vvip: ['Rektor UNP'],
-  },
-  {
-    id: 'keg-3',
-    nama_kegiatan: 'Seminar Nasional Teknologi Pendidikan',
-    bentuk: 'kunjungan_tamu',
-    kategori: 'eksternal',
-    status: 'selesai',
-    tanggal: '2026-05-10T09:00:00Z',
-    jam_mulai: '09:00',
-    jam_selesai: '13:00',
-    lokasi: 'Hotel Pangeran Beach',
-    deskripsi: 'Seminar nasional yang dihadiri oleh Mendikbudristek.',
-    pendaftar: [
-      { id: 'pend-4', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', status: 'diterima' },
-      { id: 'pend-5', protokoler_id: 'prot-2', nama_lengkap: 'Budi Santoso', status: 'diterima' },
-    ],
-    tamu_vvip: ['Menteri Nadiem Makarim'],
-  }
-];
+let mockKegiatan: any[] = [];
 
 // ──────────────── PROTOKOLER ────────────────
-let mockProtokoler: any[] = [
-  { id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', nim: '22001111', prodi: 'Manajemen', status: 'aktif', no_hp: '08123456789' },
-  { id: 'prot-2', nama_lengkap: 'Budi Santoso', nim: '22002222', prodi: 'Ilmu Komputer', status: 'aktif', no_hp: '08987654321' },
-  { id: 'prot-3', nama_lengkap: 'Andi Saputra', nim: '23003333', prodi: 'Teknik Sipil', status: 'pending_verification', no_hp: '081122334455' },
-];
+let mockProtokoler: any[] = [];
 
 export const protokolerApi = {
   list: async (search?: string) => mockProtokoler,
@@ -195,38 +137,7 @@ export const laporanApi = {
 };
 
 // ──────────────── REGULASI ────────────────
-export const regulasiMockData = [
-  {
-    id: 'reg-1',
-    judul: 'Penerimaan Tamu Pribadi & Dinas',
-    subtitle: 'SOP Penyambutan Tamu VVIP',
-    kategori: 'SOP',
-    tanggal_berlaku: '2025-01-01',
-    deskripsi: 'Panduan resmi UNP untuk penerimaan tamu pribadi dan dinas. Pastikan proses penyambutan berjalan efektif dan profesional.',
-    link_dokumen: '#',
-    accentGradient: 'linear-gradient(135deg, #1e293b 0%, #334155 50%, #0f172a 100%)',
-  },
-  {
-    id: 'reg-2',
-    judul: 'Keprotokolan Pimpinan',
-    subtitle: 'SOP Kegiatan Resmi Pimpinan',
-    kategori: 'SOP',
-    tanggal_berlaku: '2025-06-01',
-    deskripsi: 'Panduan resmi keprotokolan UNP untuk setiap acara. Pastikan kegiatan berjalan sesuai standar dan mencerminkan citra positif.',
-    link_dokumen: '#',
-    accentGradient: 'linear-gradient(135deg, #6b0000 0%, #1e293b 50%, #0f172a 100%)',
-  },
-  {
-    id: 'reg-3',
-    judul: 'Penerimaan Tamu Pejabat',
-    subtitle: 'SOP Protokol Tamu Negara',
-    kategori: 'SOP',
-    tanggal_berlaku: '2026-06-10',
-    deskripsi: 'Panduan khusus penerimaan tamu pejabat di UNP. Pastikan proses penyambutan sesuai dengan protokol yang berlaku.',
-    link_dokumen: '#',
-    accentGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #450a0a 100%)',
-  },
-];
+export const regulasiMockData = [];
 
 export const regulasiApi = {
   list: async () => regulasiMockData,
@@ -234,13 +145,7 @@ export const regulasiApi = {
 };
 
 // ──────────────── POSTINGAN / DOKUMENTASI ────────────────
-const defaultPostingan = [
-  { id: 'post-1', judul: 'Persiapan Acara VIP Tingkat Menteri', kategori: 'Seremonial', gambar: '/gallery_1.png', tanggal: '2026-06-15T08:00:00Z', ringkasan: 'Persiapan matang tim protokoler untuk acara VIP tingkat nasional berjalan dengan lancar tanpa hambatan.' },
-  { id: 'post-2', judul: 'Pengarahan Tamu Resmi Universitas', kategori: 'Protokol VIP', gambar: '/gallery_2.png', tanggal: '2026-06-14T08:00:00Z', ringkasan: 'Briefing dan pengarahan khusus diberikan kepada tim yang akan bertugas menyambut tamu VVIP dari kementerian.' },
-  { id: 'post-3', judul: 'Puncak Upacara Wisuda Ke-123', kategori: 'Wisuda', gambar: '/gallery_3.png', tanggal: '2026-06-10T08:00:00Z', ringkasan: 'Momen puncak upacara wisuda periode ke-123. Tim protokoler mengawal jalannya acara dari awal hingga akhir.' },
-  { id: 'post-4', judul: 'Rapat Koordinasi Tim Nasional', kategori: 'Internal', gambar: '/gallery_1.png', tanggal: '2026-06-05T08:00:00Z', ringkasan: 'Koordinasi lintas divisi untuk mempersiapkan serangkaian agenda besar universitas di bulan depan.' },
-  { id: 'post-5', judul: 'Pelatihan Service Excellence', kategori: 'Pelatihan', gambar: '/gallery_2.png', tanggal: '2026-06-01T08:00:00Z', ringkasan: 'Peningkatan kapasitas anggota protokoler dalam memberikan pelayanan prima kepada tamu-tamu kehormatan.' },
-];
+const defaultPostingan: any[] = [];
 
 export const postinganApi = {
   list: async () => {

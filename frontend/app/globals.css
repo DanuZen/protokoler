@@ -181,6 +181,18 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-orange-400) transparent;
   }
+
+  /* Sembunyikan scrollbar di mobile */
+  @media (max-width: 768px) {
+    * {
+      scrollbar-width: none !important;
+    }
+    ::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+  }
 }
 
 @utility bg-gradient-hero { background-image: var(--gradient-hero); }

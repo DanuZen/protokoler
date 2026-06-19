@@ -36,6 +36,7 @@ export default function EvaluasiDashboardPage() {
   const { data: role } = useRole(user);
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [mobileTab, setMobileTab] = useState<'list' | 'detail'>('list');
   const [tab, setTab] = useState<DetailTab>('evaluasi');
   const [feedback, setFeedback] = useState(mockDetail.feedback);
 
@@ -60,43 +61,37 @@ export default function EvaluasiDashboardPage() {
   const handleExport = () => toast.success('File ekspor berhasil disiapkan');
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
-      {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
-            <BarChart3 className="h-7 w-7" />
+    <div className="flex-1 flex flex-col min-h-0 pb-6 px-6 md:px-8 pt-4">
+      {/* ─── HEADER SECTION (Adapted Layout) ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col gap-4 md:gap-6 mb-6 md:mb-8 pt-2">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              Data Penilaian
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
-                Data Penilaian
-              </span>
-            </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Transparansi Hasil Evaluasi</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau ringkasan evaluasi protokoler, testimoni tamu, dan feedback admin.</p>
-          </div>
+          <h2 className="font-display text-[28px] md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 md:mb-2 text-slate-900 drop-shadow-sm">Transparansi Hasil Evaluasi</h2>
+          <p className="text-[13px] md:text-base text-slate-600 font-medium max-w-xl">
+            Pantau ringkasan evaluasi protokoler, testimoni tamu, dan feedback admin.
+          </p>
         </div>
-
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="relative z-20 pb-0">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="relative z-20 pb-0 shrink-0 mb-6 md:mb-8">
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-6">
             {summary.map((stat, index) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
-                  <div className="flex items-center justify-between relative z-10">
-                    <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                    <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors border group-hover:opacity-80", stat.bg, stat.color)}>
-                      <stat.icon className="h-5 w-5" />
+                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-4 md:p-6 flex flex-col justify-between hover:shadow-xl hover:shadow-orange-50/80 transition-all group relative overflow-hidden h-full">
+                  <div className="flex items-center justify-between relative z-10 mb-2 md:mb-0">
+                    <p className="text-xs md:text-sm font-semibold text-slate-500 truncate pr-2">{stat.label}</p>
+                    <div className={cn("flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl transition-colors border group-hover:opacity-80", stat.bg, stat.color)}>
+                      <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
                     </div>
                   </div>
-                  <div className="mt-4 relative z-10">
-                    <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
-                    <div className="flex items-center gap-1.5 mt-1.5">
-                      <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
-                    </div>
+                  <div className="mt-1 md:mt-4 relative z-10">
+                    <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                    <span className="text-[9px] md:text-[11px] font-medium text-slate-400 mt-0.5 md:mt-1 block truncate">{stat.hint}</span>
                   </div>
                 </div>
               </motion.div>
@@ -105,14 +100,30 @@ export default function EvaluasiDashboardPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
-          <div className="w-full">
-            <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden h-[500px] flex flex-col bg-white">
-              <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                <div className="border-b border-slate-100 px-6 py-4 bg-slate-50">
+      <div className="flex-1 flex flex-col min-h-0 mt-8 pb-4">
+        {/* ─── Mobile View Toggle ─── */}
+        <div className="xl:hidden flex bg-slate-100/80 p-1.5 rounded-xl mb-4 shrink-0 border border-slate-200/50">
+          <button
+            onClick={() => setMobileTab('list')}
+            className={cn("flex-1 py-2 text-xs md:text-sm font-bold rounded-lg transition-all", mobileTab === 'list' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700')}
+          >
+            Daftar Kegiatan
+          </button>
+          <button
+            onClick={() => setMobileTab('detail')}
+            className={cn("flex-1 py-2 text-xs md:text-sm font-bold rounded-lg transition-all", mobileTab === 'detail' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700')}
+          >
+            Detail Evaluasi
+          </button>
+        </div>
+
+        <section className="flex-1 min-h-0 grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch pb-0">
+          <div className={cn("w-full flex-col min-h-0", mobileTab === 'list' ? 'flex' : 'hidden xl:flex')}>
+            <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden flex-1 flex flex-col min-h-0">
+              <div className="p-0 flex flex-col flex-1 min-h-0">
+                <div className="shrink-0 border-b border-slate-100 px-6 py-4 bg-white">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
+                    <div className="flex items-center justify-center h-10 w-10 bg-white text-[#5b1511] rounded-xl border border-slate-100 shadow-sm">
                       <ClipboardList className="h-5 w-5" />
                     </div>
                     <div>
@@ -132,15 +143,15 @@ export default function EvaluasiDashboardPage() {
 
                   <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0">
                     {filtered.length === 0 ? (
-                    <div className="p-10 text-center text-slate-400">
-                      <Sparkles className="mx-auto h-10 w-10 mb-3 text-slate-300" />
+                    <div className="h-full flex flex-col items-center justify-center p-10 text-center text-slate-400">
+                      <Sparkles className="mx-auto h-10 w-10 mb-3 text-slate-300 opacity-50" />
                       Belum ada kegiatan selesai yang cocok dengan pencarian.
                     </div>
                   ) : (
                     filtered.map((item: any) => {
                       const active = activeDetail?.id === item.id;
                       return (
-                        <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-orange-500' : 'border-transparent hover:bg-slate-50')}>
+                        <button key={item.id} onClick={() => { setSelectedId(item.id); setMobileTab('detail'); }} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-[#5b1511]' : 'border-transparent hover:bg-slate-50')}>
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0 flex-1">
                               <div className={cn('font-semibold', active ? 'text-slate-900' : 'text-slate-900')}>{item.nama_kegiatan}</div>
@@ -156,7 +167,7 @@ export default function EvaluasiDashboardPage() {
                                 </span>
                               </div>
                             </div>
-                            <ChevronRight className={cn('h-4 w-4 shrink-0', active ? 'text-orange-500' : 'text-slate-300')} />
+                            <ChevronRight className={cn('h-4 w-4 shrink-0', active ? 'text-[#5b1511]' : 'text-slate-300')} />
                           </div>
                         </button>
                       );
@@ -164,16 +175,16 @@ export default function EvaluasiDashboardPage() {
                   )}
                 </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
-          <div className="w-full">
-              <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden h-[500px] flex flex-col bg-white">
-                <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                  <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50">
+          <div className={cn("w-full flex-col min-h-0", mobileTab === 'detail' ? 'flex' : 'hidden xl:flex')}>
+              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden flex-1 flex flex-col min-h-0">
+                <div className="p-0 flex flex-col flex-1 min-h-0">
+                  <div className="shrink-0 flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-white">
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
+                      <div className="flex items-center justify-center h-10 w-10 bg-white text-[#5b1511] rounded-xl border border-slate-100 shadow-sm">
                         <BarChart3 className="h-5 w-5" />
                       </div>
                       <div>
@@ -183,7 +194,7 @@ export default function EvaluasiDashboardPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       {activeDetail && (
-                        <Button onClick={handleExport} size="sm" className="h-8 rounded-lg bg-orange-600 text-white hover:bg-orange-700 text-[11px] font-bold px-3 shadow-sm transition-colors">
+                        <Button onClick={handleExport} size="sm" className="h-8 rounded-lg bg-[#5b1511] text-white hover:bg-[#4a100d] text-[11px] font-bold px-3 shadow-sm transition-colors">
                           <Download className="mr-1.5 h-3.5 w-3.5" /> Export Data
                         </Button>
                       )}
@@ -206,7 +217,7 @@ export default function EvaluasiDashboardPage() {
                               onClick={() => setTab(item.key as DetailTab)}
                               className={cn(
                                 'border px-3 py-2 text-sm transition-all rounded-xl font-bold',
-                                active ? 'bg-orange-600 border-orange-600 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50',
+                                active ? 'bg-[#5b1511] border-[#5b1511] text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50',
                               )}
                             >
                               {item.label}
@@ -272,7 +283,7 @@ export default function EvaluasiDashboardPage() {
                           <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} className="flex-1 min-h-[160px] rounded-xl border-slate-200 bg-slate-50" />
                           <div className="flex items-center justify-between gap-3 mt-auto pt-2">
                             <p className="text-xs text-slate-400">Feedback ini terlihat oleh admin dan protokoler pada dashboard evaluasi.</p>
-                            <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-orange-600 text-white hover:bg-orange-700 transition-colors">
+                            <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-[#5b1511] text-white hover:bg-[#4a100d] transition-colors">
                               <MessageSquare className="mr-2 h-4 w-4" /> Simpan
                             </Button>
                           </div>
@@ -281,11 +292,14 @@ export default function EvaluasiDashboardPage() {
                       </div>
                     </>
                   ) : (
-                    <div className="border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">Pilih kegiatan selesai untuk melihat hasil evaluasi.</div>
+                    <div className="flex-1 flex flex-col items-center justify-center p-10 text-center text-slate-400">
+                      <BarChart3 className="mx-auto h-10 w-10 mb-3 text-slate-300 opacity-50" />
+                      Pilih kegiatan selesai untuk melihat hasil evaluasi.
+                    </div>
                   )}
                 </div>
-              </CardContent>
-              </Card>
+              </div>
+            </div>
             </div>
           </section>
         </div>
