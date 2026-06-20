@@ -4,19 +4,30 @@ import { motion } from "framer-motion";
 import { User, Mail, Phone, GraduationCap, Hash, Shield, Camera, Edit3, CheckCircle2, Building2, Library } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from "@/lib/canvasUtils";
 import { cn } from "@/lib/utils";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { protokolerApi } from "@/lib/api";
 
 const fadeUp = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 const stagger = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 
 export default function ProfilPage() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: protokoler } = useQuery({
+    queryKey: ["protokoler-me"],
+    queryFn: () => protokolerApi.me(),
+    enabled: !!user,
+    retry: false,
+  });
+
   const [editing, setEditing] = useState(false);
-  const [photoHalf, setPhotoHalf] = useState<string | null>(typeof window !== 'undefined' ? window.localStorage.getItem('demo_avatar') : null);
+  const [photoHalf, setPhotoHalf] = useState<string | null>(null);
   const [photoFull, setPhotoFull] = useState<string | null>(null);
   const halfInputRef = useRef<HTMLInputElement>(null);
   const fullInputRef = useRef<HTMLInputElement>(null);
@@ -51,43 +62,93 @@ export default function ProfilPage() {
 
   const handleCropSave = async () => {
     try {
-      if (!currentImageSrc || !croppedAreaPixels) return;
+      if (!currentImageSrc || !croppedAreaPixels || !protokoler) return;
       const croppedImage = await getCroppedImg(currentImageSrc, croppedAreaPixels);
       
+      toast.loading("Sedang memperbarui foto profil...");
+      const formData = new FormData();
+      const response = await fetch(croppedImage);
+      const blob = await response.blob();
+      
       if (currentCropType === 'half') {
+        formData.append('foto_setengah_badan', blob, 'foto_setengah_badan.jpg');
         setPhotoHalf(croppedImage);
         window.localStorage.setItem('demo_avatar', croppedImage);
         window.dispatchEvent(new Event('demo_avatar_updated'));
       } else if (currentCropType === 'full') {
+        formData.append('foto_full_body', blob, 'foto_full_body.jpg');
         setPhotoFull(croppedImage);
       }
       
-      toast.success(`Foto ${currentCropType === 'half' ? '1/2 Badan' : 'Full Body'} berhasil diunggah`);
+      await protokolerApi.update(protokoler.id, formData);
+      await queryClient.invalidateQueries({ queryKey: ["protokoler-me"] });
+      
+      toast.dismiss();
+      toast.success(`Foto ${currentCropType === 'half' ? '1/2 Badan' : 'Full Body'} berhasil diperbarui`);
       setCropModalOpen(false);
       setCurrentImageSrc(null);
-    } catch (e) {
+    } catch (e: any) {
+      toast.dismiss();
       console.error(e);
-      toast.error('Gagal memotong gambar');
+      toast.error('Gagal memperbarui foto: ' + (e.message || 'Error'));
     }
   };
+
   const [form, setForm] = useState({
-    nama:   typeof window !== 'undefined' && window.localStorage.getItem('demo_name') ? window.localStorage.getItem('demo_name')! : user?.user_metadata?.nama_lengkap || "Budi Santoso",
-    nim:    "20010101",
-    prodi:  "Pendidikan Teknik Informatika",
-    departemen: "Teknik Elektronika",
-    fakultas: "Fakultas Teknik",
-    angkatan: "2020",
-    no_hp:  "081234567890",
-    email:  user?.email ?? "budi@example.com",
-    tingkat: "Gold",
-    status: "Aktif",
+    nama: "",
+    nim: "",
+    prodi: "",
+    departemen: "",
+    fakultas: "",
+    angkatan: "",
+    no_hp: "",
+    email: "",
+    tingkat: "Bronze",
+    status: "pending",
   });
 
-  const handleSave = () => {
-    window.localStorage.setItem('demo_name', form.nama);
-    window.dispatchEvent(new Event('demo_name_updated'));
-    toast.success("Profil berhasil diperbarui");
-    setEditing(false);
+  useEffect(() => {
+    if (protokoler) {
+      setForm({
+        nama: protokoler.nama_lengkap || "",
+        nim: protokoler.nim || "",
+        prodi: protokoler.prodi || "",
+        departemen: protokoler.departemen || "",
+        fakultas: protokoler.fakultas || "",
+        angkatan: protokoler.nim ? "20" + protokoler.nim.slice(0, 2) : "2020",
+        no_hp: protokoler.no_hp || "",
+        email: protokoler.user?.email || user?.email || "",
+        tingkat: protokoler.kategori_sertifikat || "Bronze",
+        status: protokoler.status_akun || "pending",
+      });
+      setPhotoHalf(protokoler.foto_setengah_badan_url || null);
+      setPhotoFull(protokoler.foto_full_body_url || null);
+    }
+  }, [protokoler, user]);
+
+  const handleSave = async () => {
+    if (!protokoler) return;
+    toast.loading("Sedang menyimpan data profil...");
+    try {
+      await protokolerApi.update(protokoler.id, {
+        nama_lengkap: form.nama,
+        no_hp: form.no_hp,
+        prodi: form.prodi,
+        departemen: form.departemen,
+        fakultas: form.fakultas,
+      });
+      
+      window.localStorage.setItem('demo_name', form.nama);
+      window.dispatchEvent(new Event('demo_name_updated'));
+      await queryClient.invalidateQueries({ queryKey: ["protokoler-me"] });
+      
+      toast.dismiss();
+      toast.success("Profil berhasil diperbarui");
+      setEditing(false);
+    } catch (err: any) {
+      toast.dismiss();
+      toast.error(err.message || "Gagal memperbarui profil");
+    }
   };
 
   return (

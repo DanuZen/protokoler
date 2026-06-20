@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { SupabaseModule } from './supabase/supabase.module';
+import { AuthModule } from './auth/auth.module';
 import { ProtokolerModule } from './protokoler/protokoler.module';
 import { KegiatanModule } from './kegiatan/kegiatan.module';
 import { PendaftaranModule } from './pendaftaran/pendaftaran.module';
@@ -20,6 +21,7 @@ import { DokumentasiModule } from './dokumentasi/dokumentasi.module';
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     SupabaseModule,
+    AuthModule,
     ProtokolerModule,
     KegiatanModule,
     PendaftaranModule,

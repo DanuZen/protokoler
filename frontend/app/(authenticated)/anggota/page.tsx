@@ -56,8 +56,8 @@ export default function AnggotaPage() {
 
   const updateStatus = useMutation({
     mutationFn: (args: { id: string, status_akun: string, catatan_penolakan?: string }) => 
-      protokolerApi.update(args.id, { status_akun: args.status_akun, catatan_penolakan: args.catatan_penolakan }),
-    onSuccess: (_, variables) => { 
+      protokolerApi.verifikasi(args.id, args.status_akun === "aktif" ? "setujui" : "tolak", args.catatan_penolakan),
+    onSuccess: (_: any, variables: { id: string, status_akun: string, catatan_penolakan?: string }) => { 
       toast.success(variables.status_akun === "aktif" ? "Akun disetujui" : "Akun ditolak"); 
       qc.invalidateQueries({ queryKey: ["protokoler"] }); 
       setDialogMode(null);
@@ -66,10 +66,10 @@ export default function AnggotaPage() {
   });
 
   const allData = data ?? [];
-  const pendingCount = allData.filter(m => m.status_akun === "pending").length;
-  const aktifCount = allData.filter(m => m.status_akun === "aktif").length;
+  const pendingCount = allData.filter((m: Protokoler) => m.status_akun === "pending").length;
+  const aktifCount = allData.filter((m: Protokoler) => m.status_akun === "aktif").length;
 
-  const filtered = allData.filter((m) => {
+  const filtered = allData.filter((m: Protokoler) => {
     const q = search.toLowerCase();
     const matchSearch = !q || m.nama_lengkap.toLowerCase().includes(q) || m.nim.toLowerCase().includes(q);
     const matchTab = tab === "semua" ? m.status_akun !== "pending" : m.status_akun === "pending";
@@ -197,7 +197,7 @@ export default function AnggotaPage() {
               ) : filtered.length === 0 ? (
                 <TableRow><TableCell colSpan={7} className="h-32 text-center text-slate-500">Tidak ada data.</TableCell></TableRow>
               ) : (
-                filtered.map((m) => (
+                filtered.map((m: Protokoler) => (
                   <TableRow key={m.id} className="hover:bg-slate-50 border-b border-slate-100 transition-colors">
                     <TableCell className="pl-6">
                       <div className="font-bold text-slate-800">{m.nama_lengkap}</div>
@@ -254,7 +254,7 @@ export default function AnggotaPage() {
       </motion.div>
 
       {/* Verification Dialogs */}
-      <Dialog open={dialogMode !== null} onOpenChange={(open) => !open && setDialogMode(null)}>
+      <Dialog open={dialogMode !== null} onOpenChange={(open: boolean) => !open && setDialogMode(null)}>
         <DialogContent className="sm:max-w-md rounded-xl border border-slate-200 shadow-xl">
           <DialogHeader>
             <DialogTitle className=" font-bold text-xl">

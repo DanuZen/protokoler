@@ -1,59 +1,82 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// FRONTEND DEMO MODE — Semua koneksi Supabase dinonaktifkan sementara.
-// Ganti nilai DEMO_ROLE di bawah untuk mengubah tampilan berdasarkan peran:
-//   "admin"      → akses penuh (kelola anggota, kegiatan, laporan)
-//   "admin"      → full access
-//   "mahasiswa"  → akses protokoler/user biasa
-//   "dokumentasi"→ akses khusus dokumentasi
-// ─────────────────────────────────────────────────────────────────────────────
-type DemoRole = 'admin' | 'mahasiswa' | 'dokumentasi';
-
-const isDemoRole = (value: string | null): value is DemoRole => value === 'admin' || value === 'mahasiswa' || value === 'dokumentasi';
-
-const getDemoRole = (): DemoRole => {
-  if (typeof window === 'undefined') return 'admin';
-  const stored = window.localStorage.getItem('demo_role');
-  return isDemoRole(stored) ? stored : 'admin';
-};
-
-const createDemoUser = (role: DemoRole) =>
-  ({
-    id: 'demo-user-id',
-    email: `demo@${role}.siproto.id`,
-    user_metadata: {
-      nama_lengkap: role === 'admin' ? 'Pimpinan Demo' : role === 'dokumentasi' ? 'Dokumentasi Demo' : 'Mahasiswa Demo',
-    },
-  }) as unknown as User;
+import { supabase } from '@/lib/supabase';
 
 export function useAuth() {
-  const [role, setRole] = useState<DemoRole>('admin');
-  const [loading] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const syncRole = () => setRole(getDemoRole());
-    syncRole();
-    window.addEventListener('storage', syncRole);
-    return () => window.removeEventListener('storage', syncRole);
-  }, []);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-  const user = useMemo(() => createDemoUser(role), [role]);
-  const session = useMemo(() => ({ user }) as Session, [user]);
+    // Listen for changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return { session, user, loading };
 }
 
-export function useRole(_user?: User | null) {
-  const [role, setRole] = useState<DemoRole>('admin');
+export function useRole(user?: User | null) {
+  const [role, setRole] = useState<'admin' | 'mahasiswa' | 'dokumentasi' | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const syncRole = () => setRole(getDemoRole());
-    syncRole();
-    window.addEventListener('storage', syncRole);
-    return () => window.removeEventListener('storage', syncRole);
-  }, []);
+    if (!user) {
+      setRole(null);
+      setLoading(false);
+      return;
+    }
 
-  return { data: role };
+    const fetchRole = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setRole(null);
+          return;
+        }
+
+        const res = await fetch('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          let mappedRole: 'admin' | 'mahasiswa' | 'dokumentasi' = 'mahasiswa';
+          
+          if (data.role === 'admin') {
+            mappedRole = 'admin';
+          } else if (data.role === 'dokumentasi') {
+            mappedRole = 'dokumentasi';
+          }
+          
+          setRole(mappedRole);
+        } else {
+          setRole(null);
+        }
+      } catch (err) {
+        console.error('Failed to fetch role from backend:', err);
+        setRole(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRole();
+  }, [user]);
+
+  return { data: role, loading };
 }

@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class SupabaseService {
@@ -23,4 +25,52 @@ export class SupabaseService {
   getClient(): SupabaseClient {
     return this.supabase;
   }
+
+  async uploadFile(bucket: string, filePath: string, buffer: Buffer, mimeType: string): Promise<string> {
+    const storageType = this.configService.get<string>('STORAGE_TYPE') || 'supabase';
+
+    if (storageType === 'base64') {
+      const base64Data = buffer.toString('base64');
+      return `data:${mimeType};base64,${base64Data}`;
+    }
+
+    if (storageType === 'local') {
+      const backendUrl = this.configService.get<string>('BACKEND_URL') || 'http://localhost:4000';
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads', bucket);
+      const fullPath = path.join(uploadsDir, filePath);
+
+      // Ensure directory exists
+      fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+      fs.writeFileSync(fullPath, buffer);
+
+      // Return the URL to access the file statically
+      return `${backendUrl}/uploads/${bucket}/${filePath.replace(/\\/g, '/')}`;
+    }
+
+    const client = this.getClient();
+    
+    // Ensure bucket exists (or try uploading directly, Supabase will return error if it doesn't exist)
+    const { data: buckets } = await client.storage.listBuckets();
+    const bucketExists = buckets?.some(b => b.name === bucket);
+    
+    if (!bucketExists) {
+      await client.storage.createBucket(bucket, {
+        public: true,
+        fileSizeLimit: 100 * 1024 * 1024, // 100MB max limit
+      });
+    }
+
+    const { data, error } = await client.storage.from(bucket).upload(filePath, buffer, {
+      contentType: mimeType,
+      upsert: true,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    const { data: publicUrlData } = client.storage.from(bucket).getPublicUrl(filePath);
+    return publicUrlData.publicUrl;
+  }
 }
+

@@ -12,6 +12,7 @@ enum RoleEnum {
   admin
   protokoler
   tamu
+  dokumentasi
 
   @@map("role_enum")
 }
@@ -146,6 +147,8 @@ model Kegiatan {
   checklist_tata_tempat        Boolean?           @default(false)
   checklist_tata_upacara       Boolean?           @default(false)
   checklist_tata_penghormatan  Boolean?           @default(false)
+  feedback_admin               String?
+  feedback_admin_updated_at    DateTime?          @db.Timestamptz()
   dibuat_oleh                  String?            @db.Uuid
   created_at                   DateTime           @default(now()) @db.Timestamptz()
   updated_at                   DateTime           @default(now()) @updatedAt @db.Timestamptz()

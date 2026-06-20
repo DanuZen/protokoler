@@ -30,10 +30,9 @@ export default function BerandaPage() {
 
   const { data: protokoler } = useQuery({
     queryKey: ["protokoler-me"],
-    queryFn: () => protokolerApi.list().then((list: any[]) =>
-      list.find((p: any) => p.user_id === user?.id) ?? null
-    ),
+    queryFn: () => protokolerApi.me(),
     enabled: !!user,
+    retry: false, // Jangan retry jika 403
   });
 
   const { data: kegiatan } = useQuery({

@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
 import { kegiatanApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,13 +25,13 @@ const STEPS = [
 ];
 
 const BENTUK_OPTIONS = [
-  { value: "wisuda",      label: "Wisuda",         icon: GraduationCap },
-  { value: "kunjungan",   label: "Kunjungan Tamu", icon: Handshake },
-  { value: "seminar",     label: "Seminar",         icon: Megaphone },
-  { value: "pelantikan",  label: "Pelantikan",      icon: Landmark },
-  { value: "rapat_resmi", label: "Rapat Resmi",     icon: ClipboardList },
-  { value: "dokumentasi", label: "Dokumentasi",     icon: Camera },
-  { value: "lainnya",     label: "Lainnya",         icon: CalendarDays },
+  { value: "wisuda",       label: "Wisuda",         icon: GraduationCap },
+  { value: "kunjungan_tamu", label: "Kunjungan Tamu", icon: Handshake },
+  { value: "seminar",      label: "Seminar",         icon: Megaphone },
+  { value: "pelantikan",   label: "Pelantikan",      icon: Landmark },
+  { value: "rapat_resmi",  label: "Rapat Resmi",     icon: ClipboardList },
+  { value: "upacara",      label: "Upacara",         icon: Camera },
+  { value: "lainnya",      label: "Lainnya",         icon: CalendarDays },
 ];
 
 function FieldGroup({ label, hint, required, children }: { label: string; hint?: string; required?: boolean; children: React.ReactNode }) {
@@ -48,6 +48,8 @@ function FieldGroup({ label, hint, required, children }: { label: string; hint?:
 
 export default function BuatKegiatanPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
   const qc = useQueryClient();
   const [step, setStep] = useState(1);
 
@@ -69,6 +71,59 @@ export default function BuatKegiatanPage() {
 
   const [tamuVvip, setTamuVvip] = useState<any[]>([]);
 
+  const { data: kegData, isLoading } = useQuery({
+    queryKey: ["kegiatan", editId],
+    queryFn: () => kegiatanApi.get(editId!),
+    enabled: !!editId,
+  });
+
+  useEffect(() => {
+    if (kegData) {
+      // Parse tanggal to YYYY-MM-DD
+      let formattedTanggal = "";
+      if (kegData.tanggal) {
+        formattedTanggal = new Date(kegData.tanggal).toISOString().split('T')[0];
+      }
+
+      // Parse jam_mulai and jam_selesai to HH:MM
+      const formatTime = (timeStr: any) => {
+        if (!timeStr) return "";
+        if (typeof timeStr === 'string' && timeStr.includes(':')) {
+          if (timeStr.includes('T')) {
+            const timePart = timeStr.split('T')[1];
+            return timePart.slice(0, 5);
+          }
+          return timeStr.slice(0, 5);
+        }
+        const d = new Date(timeStr);
+        if (isNaN(d.getTime())) return "";
+        const h = String(d.getHours()).padStart(2, '0');
+        const m = String(d.getMinutes()).padStart(2, '0');
+        return `${h}:${m}`;
+      };
+
+      setForm({
+        nama_kegiatan: kegData.nama_kegiatan || "",
+        bentuk_kegiatan: kegData.bentuk_kegiatan || "lainnya",
+        tanggal: formattedTanggal,
+        jam_mulai: formatTime(kegData.jam_mulai),
+        jam_selesai: formatTime(kegData.jam_selesai),
+        lokasi: kegData.lokasi || "",
+        audience: kegData.audience || "",
+        keynote: kegData.keynote || "",
+        rundown_url: kegData.rundown_url || "",
+        jumlah_protokoler_dibutuhkan: kegData.jumlah_protokoler_dibutuhkan ?? 1,
+        jumlah_lo_dibutuhkan: kegData.jumlah_lo_dibutuhkan ?? 1,
+        jumlah_dokumentasi_dibutuhkan: kegData.jumlah_dokumentasi_dibutuhkan ?? 1,
+        is_open_recruitment: kegData.is_open_recruitment ?? true,
+      });
+
+      if (kegData.tamu_vvip) {
+        setTamuVvip(kegData.tamu_vvip);
+      }
+    }
+  }, [kegData]);
+
   const addTamu = () =>
     setTamuVvip([...tamuVvip, { nama_tamu: "", jabatan: "", instansi: "", tipe: "eksternal", jumlah_rombongan: 1 }]);
 
@@ -83,18 +138,58 @@ export default function BuatKegiatanPage() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const payload = {
-        ...form,
-        status: "terjadwal",
-        tamu_vvip: tamuVvip,
+      const payload: any = {
+        nama_kegiatan: form.nama_kegiatan,
+        bentuk_kegiatan: form.bentuk_kegiatan,
         tanggal: form.tanggal ? new Date(form.tanggal).toISOString() : "",
+        jam_mulai: form.jam_mulai,
+        jam_selesai: form.jam_selesai,
+        lokasi: form.lokasi,
+        audience: form.audience || undefined,
+        keynote: form.keynote || undefined,
+        jumlah_protokoler_dibutuhkan: form.jumlah_protokoler_dibutuhkan,
+        jumlah_lo_dibutuhkan: form.jumlah_lo_dibutuhkan,
+        tamu_vvip: tamuVvip.length > 0 ? tamuVvip.map(t => ({
+          nama_tamu: t.nama_tamu,
+          jabatan: t.jabatan,
+          instansi: t.instansi,
+          tipe: t.tipe,
+          jumlah_rombongan: t.jumlah_rombongan
+        })) : [],
       };
-      return kegiatanApi.create(payload);
+      if (editId) {
+        return kegiatanApi.update(editId, payload);
+      } else {
+        payload.status = "publik";
+        return kegiatanApi.create(payload);
+      }
     },
-    onSuccess: () => {
-      toast.success("Kegiatan berhasil dibuat dan dipublikasikan");
+    onSuccess: (res: any) => {
+      toast.success(editId ? "Kegiatan berhasil diperbarui" : "Kegiatan berhasil dibuat dan dipublikasikan");
+      if (res?.data) {
+        if (editId) {
+          qc.setQueryData(["kegiatan", editId], (old: any) => ({
+            ...old,
+            ...res.data
+          }));
+          qc.setQueryData(["kegiatan"], (old: any) => {
+            if (!Array.isArray(old)) return old;
+            return old.map((k: any) => k.id === editId ? { ...k, ...res.data } : k);
+          });
+        } else {
+          qc.setQueryData(["kegiatan"], (old: any) => {
+            if (!Array.isArray(old)) return [res.data];
+            return [res.data, ...old];
+          });
+        }
+      }
       qc.invalidateQueries({ queryKey: ["kegiatan"] });
-      router.push("/kegiatan");
+      if (editId) {
+        qc.invalidateQueries({ queryKey: ["kegiatan", editId] });
+        router.push(`/kegiatan/${editId}`);
+      } else {
+        router.push("/kegiatan");
+      }
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -114,6 +209,17 @@ export default function BuatKegiatanPage() {
 
   const stepInputCls = "rounded-xl border-slate-200 bg-white h-11 text-sm focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400 transition-all shadow-sm";
 
+  if (editId && isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 border-4 border-slate-300 border-t-orange-500 rounded-full animate-spin" />
+          <p className="text-sm font-semibold text-slate-500">Memuat data kegiatan...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-full px-6 md:px-8 pt-4 pb-24">
       <div className="max-w-3xl mx-auto space-y-8">
@@ -127,7 +233,9 @@ export default function BuatKegiatanPage() {
           </Link>
           <div>
             <p className="text-[11px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Admin</p>
-            <h1 className="font-display text-2xl font-bold text-slate-900 leading-none">Buat Kegiatan Baru</h1>
+            <h1 className="font-display text-2xl font-bold text-slate-900 leading-none">
+              {editId ? "Edit Kegiatan" : "Buat Kegiatan Baru"}
+            </h1>
           </div>
         </div>
 
@@ -421,7 +529,9 @@ export default function BuatKegiatanPage() {
               {saveMutation.isPending ? (
                 <span className="flex items-center gap-2"><span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Menyimpan...</span>
               ) : (
-                <span className="flex items-center gap-2"><Check className="h-4 w-4" /> Buat Kegiatan</span>
+                <span className="flex items-center gap-2">
+                  <Check className="h-4 w-4" /> {editId ? "Simpan Perubahan" : "Buat Kegiatan"}
+                </span>
               )}
             </Button>
           )}

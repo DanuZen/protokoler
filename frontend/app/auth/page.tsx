@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText, Mail, Lock } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 type AuthMode = 'login' | 'register';
 type RegisterStep = 1 | 2 | 3;
@@ -31,26 +32,109 @@ export default function AuthPage() {
   const [fotoSetengahPreview, setFotoSetengahPreview] = useState<string | null>(null);
   const [fotoFullPreview, setFotoFullPreview] = useState<string | null>(null);
 
-  const resolveDashboardRoute = () => {
-    const demoRole = localStorage.getItem('demo_role');
-    if (demoRole === 'mahasiswa') return '/beranda';
-    if (demoRole === 'dokumentasi') return '/dokumentasi/dashboard';
-    return '/dashboard';
-  };
+  const enterDemoRole = async (role: 'admin' | 'dokumentasi' | 'mahasiswa') => {
+    setLoading(true);
+    try {
+      let demoEmail = 'admin@siproto.com';
+      let demoPass = 'admin123';
+      
+      if (role === 'mahasiswa') {
+        demoEmail = 'mhs@siproto.com';
+        demoPass = 'mhs123';
+      } else if (role === 'dokumentasi') {
+        demoEmail = 'dok@siproto.com';
+        demoPass = 'dok123';
+      }
 
-  const enterDemoRole = (role: 'admin' | 'dokumentasi' | 'mahasiswa') => {
-    localStorage.setItem('demo_role', role);
-    router.replace(role === 'mahasiswa' ? '/beranda' : role === 'dokumentasi' ? '/dokumentasi/dashboard' : '/dashboard');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPass,
+      });
+
+      if (error) {
+        toast.error(`Gagal masuk: ${error.message}`);
+        return;
+      }
+
+      // Verifikasi role ke backend
+      const res = await fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${data.session!.access_token}` },
+      });
+
+      if (res.ok) {
+        const userMe = await res.json();
+        toast.success(`Berhasil masuk sebagai ${userMe.role}!`);
+        let route = '/beranda';
+        if (userMe.role === 'admin') route = '/dashboard';
+        else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
+        router.replace(route);
+      } else {
+        toast.error('Gagal memverifikasi role');
+      }
+    } catch (err) {
+      toast.error('Gagal masuk mode demo');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const demoRole = localStorage.getItem('demo_role');
-    if (demoRole) router.replace(resolveDashboardRoute());
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        fetch('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }).then(res => {
+          if (res.ok) {
+            res.json().then(userMe => {
+              let route = '/beranda';
+              if (userMe.role === 'admin') route = '/dashboard';
+              else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
+              router.replace(route);
+            });
+          }
+        });
+      }
+    });
   }, [router]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.info('Gunakan tombol peran di atas untuk masuk dalam mode demo.');
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      toast.success('Login berhasil!');
+      
+      const res = await fetch('/api/auth/me', {
+        headers: {
+          Authorization: `Bearer ${data.session.access_token}`,
+        },
+      });
+      
+      if (res.ok) {
+        const userMe = await res.json();
+        let route = '/beranda';
+        if (userMe.role === 'admin') route = '/dashboard';
+        else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
+        router.replace(route);
+      } else {
+        toast.error('Gagal memverifikasi role di backend');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Gagal login');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRegister = async () => {
@@ -59,9 +143,43 @@ export default function AuthPage() {
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setLoading(false);
-    setRegistered(true);
+    try {
+      const formData = new FormData();
+      formData.append('email', regForm.email);
+      formData.append('password', regForm.password);
+      formData.append('nim', regForm.nim);
+      formData.append('nama_lengkap', regForm.nama_lengkap);
+      formData.append('prodi', regForm.prodi);
+      formData.append('departemen', regForm.departemen || 'Teknik');
+      formData.append('fakultas', regForm.fakultas || 'FT');
+      formData.append('no_hp', regForm.no_hp);
+
+      const responseSetengah = await fetch(fotoSetengahPreview!);
+      const blobSetengah = await responseSetengah.blob();
+      formData.append('foto_setengah_badan', blobSetengah, 'foto_setengah_badan.jpg');
+
+      const responseFull = await fetch(fotoFullPreview!);
+      const blobFull = await responseFull.blob();
+      formData.append('foto_full_body', blobFull, 'foto_full_body.jpg');
+
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const resData = await res.json();
+        toast.success(resData.message || 'Pendaftaran berhasil!');
+        setRegistered(true);
+      } else {
+        const errData = await res.json();
+        toast.error(errData.message || 'Gagal melakukan pendaftaran');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Terjadi kesalahan saat pendaftaran');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFileChange = (file: File | null, type: 'setengah' | 'full') => {

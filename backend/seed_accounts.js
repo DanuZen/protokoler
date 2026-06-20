@@ -1,7 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+import { PrismaClient } from '@prisma/client';
+dotenv.config();
 
-const SUPABASE_URL = "https://gxupxgvprzykvcpllgme.supabase.co";
-const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4dXB4Z3Zwcnp5a3ZjcGxsZ21lIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDU5NjU0NiwiZXhwIjoyMDk2MTcyNTQ2fQ.8OwzflzPpLTD-qk4vAi72b_3PfWbzwIhbw_c8KfDgkE";
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: {
@@ -10,49 +13,88 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   },
 });
 
+const prisma = new PrismaClient();
+
 async function seed() {
   console.log("Memulai pembuatan akun demo...");
 
   const users = [
     { email: 'admin@siproto.com', password: 'admin123', nama: 'Administrator SiProto', role: 'admin' },
-    { email: 'mhs@siproto.com', password: 'mhs123', nama: 'Mahasiswa Demo', role: 'mahasiswa' },
-    { email: 'pimpinan@siproto.com', password: 'pimpinan123', nama: 'Pimpinan Universitas', role: 'pimpinan' },
+    { email: 'mhs@siproto.com', password: 'mhs123', nama: 'Mahasiswa Demo', role: 'protokoler' },
+    { email: 'pimpinan@siproto.com', password: 'pimpinan123', nama: 'Pimpinan Universitas', role: 'tamu' },
   ];
 
   for (const u of users) {
-    // 1. Create User in Auth
-    const { data: authData, error: authErr } = await supabase.auth.admin.createUser({
-      email: u.email,
-      password: u.password,
-      email_confirm: true,
-      user_metadata: { nama_lengkap: u.nama }
-    });
+    let authUser;
+    
+    // Check if user already exists in auth
+    const { data: listData, error: listErr } = await supabase.auth.admin.listUsers();
+    if (listErr) {
+      console.log(`[!] Gagal melist user: ${listErr.message}`);
+    }
+    const existing = listData?.users?.find(usr => usr.email === u.email);
+    
+    if (existing) {
+      console.log(`[-] Akun ${u.email} sudah ada di Auth. Menggunakan user existing.`);
+      authUser = existing;
+    } else {
+      const { data: authData, error: authErr } = await supabase.auth.admin.createUser({
+        email: u.email,
+        password: u.password,
+        email_confirm: true,
+        user_metadata: { nama_lengkap: u.nama }
+      });
 
-    if (authErr) {
-      console.log(`[!] Gagal membuat ${u.email}: ${authErr.message}`);
-      continue;
+      if (authErr) {
+        console.log(`[!] Gagal membuat ${u.email} di Auth: ${authErr.message}`);
+        continue;
+      }
+      console.log(`[+] Akun ${u.email} berhasil dibuat di Auth.`);
+      authUser = authData.user;
     }
 
-    console.log(`[+] Akun ${u.email} berhasil dibuat di Auth.`);
+    // Create User in Prisma
+    const existingPrismaUser = await prisma.user.findUnique({ where: { email: u.email } });
+    if (!existingPrismaUser) {
+      await prisma.user.create({
+        data: {
+          id: authUser.id,
+          email: u.email,
+          role: u.role,
+        }
+      });
+      console.log(`[+] User ${u.email} berhasil dibuat di Prisma.`);
+    } else {
+      console.log(`[-] User ${u.email} sudah ada di Prisma.`);
+    }
 
-    // Note: The trigger handle_new_user() will automatically create a profile and assign 'mahasiswa' role.
-    // So we just need to update the role in user_roles table if it's not mahasiswa.
-    
-    // Wait a second for trigger to finish
-    await new Promise(res => setTimeout(res, 1000));
-
-    if (u.role !== 'mahasiswa') {
-      const { error: roleErr } = await supabase
-        .from('user_roles')
-        .update({ role: u.role })
-        .eq('user_id', authData.user.id);
-        
-      if (roleErr) console.log(`[!] Gagal mengupdate role untuk ${u.email}:`, roleErr);
-      else console.log(`[+] Role ${u.role} berhasil di-set untuk ${u.email}`);
+    // Create Protokoler profile for mahasiswa (role: protokoler)
+    if (u.role === 'protokoler') {
+      const existingProtokoler = await prisma.protokoler.findFirst({
+        where: { user_id: authUser.id }
+      });
+      if (!existingProtokoler) {
+        await prisma.protokoler.create({
+          data: {
+            user_id: authUser.id,
+            nim: '2110001',
+            nama_lengkap: u.nama,
+            prodi: 'Teknik Informatika',
+            departemen: 'Teknik',
+            fakultas: 'FT',
+            no_hp: '08123456789',
+            status_akun: 'aktif',
+          }
+        });
+        console.log(`[+] Profil Protokoler untuk ${u.email} berhasil dibuat.`);
+      } else {
+        console.log(`[-] Profil Protokoler untuk ${u.email} sudah ada.`);
+      }
     }
   }
 
   console.log("Selesai!");
+  await prisma.$disconnect();
 }
 
 seed();

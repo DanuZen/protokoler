@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth, useRole } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { supabase } from '@/lib/supabase';
 
 type Role = 'admin' | 'mahasiswa' | 'dokumentasi';
 
@@ -96,17 +97,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const signOut = () => {
-    // Demo mode: hanya clear localStorage, tidak ada koneksi ke backend
+  const signOut = async () => {
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem('demo_role');
       window.localStorage.removeItem('demo_name');
       window.localStorage.removeItem('demo_avatar');
     }
+    await supabase.auth.signOut();
     router.push('/auth');
   };
 
-  const navItems = role === 'admin' ? adminItems : role === 'dokumentasi' ? dokumentasiItems : role === 'mahasiswa' ? mahasiswaItems : adminItems;
+  const navItems = role === 'admin' ? adminItems : role === 'dokumentasi' ? dokumentasiItems : role === 'mahasiswa' ? mahasiswaItems : [];
 
   const [demoName, setDemoName] = useState<string | null>(null);
   const [demoAvatar, setDemoAvatar] = useState<string | null>(null);
@@ -199,7 +200,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {isSidebarOpen && (
                     <div className="flex-1 min-w-0 text-left">
                       <div className="text-[13px] font-black text-white leading-tight truncate transition-colors">{displayName}</div>
-                      <div className="text-[10px] font-semibold text-orange-200 capitalize tracking-wide">{role ?? 'Admin'}</div>
+                      <div className="text-[10px] font-semibold text-orange-200 capitalize tracking-wide">{role === 'admin' ? 'Admin' : role === 'dokumentasi' ? 'Dokumentasi' : role === 'mahasiswa' ? 'Protokoler' : '...'}</div>
                     </div>
                   )}
                 </div>

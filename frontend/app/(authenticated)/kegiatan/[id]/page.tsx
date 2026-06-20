@@ -12,6 +12,7 @@ import { BadgeStatus } from "@/components/BadgeStatus";
 import { BadgeKategori } from "@/components/BadgeKategori";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -44,6 +45,55 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const [isAbsenSuccess, setIsAbsenSuccess] = useState(false);
   const [attendanceType, setAttendanceType] = useState<'hadir' | 'izin' | null>(null);
   const [izinReason, setIzinReason] = useState('');
+
+
+
+  const dataURLtoBlob = (dataurl: string) => {
+    const arr = dataurl.split(',');
+    const mime = arr[0].match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
+  const handleKirimAbsensi = async () => {
+    if (!photo) return;
+    try {
+      const blob = dataURLtoBlob(photo);
+      const formData = new FormData();
+      formData.append('foto_selfie', blob, 'selfie.jpg');
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            formData.append('latitude', String(position.coords.latitude));
+            formData.append('longitude', String(position.coords.longitude));
+            await absensiApi.create(id, formData);
+            setIsAbsenSuccess(true);
+            toast.success('Absensi berhasil disimpan!');
+            qc.invalidateQueries({ queryKey: ["absensi-kegiatan", id] });
+          },
+          async () => {
+            await absensiApi.create(id, formData);
+            setIsAbsenSuccess(true);
+            toast.success('Absensi berhasil disimpan!');
+            qc.invalidateQueries({ queryKey: ["absensi-kegiatan", id] });
+          }
+        );
+      } else {
+        await absensiApi.create(id, formData);
+        setIsAbsenSuccess(true);
+        toast.success('Absensi berhasil disimpan!');
+        qc.invalidateQueries({ queryKey: ["absensi-kegiatan", id] });
+      }
+    } catch (err: any) {
+      toast.error("Gagal melakukan absensi: " + err.message);
+    }
+  };
 
   const startCamera = async () => {
     try {
@@ -99,6 +149,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     queryFn: () => kegiatanApi.get(id),
   });
 
+  useEffect(() => {
+    if (keg) {
+      setFeedbackText(keg.feedback_admin || '');
+    }
+  }, [keg]);
+
   const { data: protokoler } = useQuery({
     queryKey: ["protokoler-me"],
     queryFn: () => protokolerApi.list().then((list: any[]) =>
@@ -111,13 +167,13 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const { data: pendaftaran } = useQuery({
     queryKey: ["pendaftaran-kegiatan", id],
     queryFn: () => pendaftaranApi.byKegiatan(id),
-    enabled: tab === "rekrutmen",
+    enabled: tab === "rekrutmen" && isAdmin,
   });
 
   const { data: absensi } = useQuery({
     queryKey: ["absensi-kegiatan", id],
     queryFn: () => absensiApi.byKegiatan(id),
-    enabled: tab === "absensi",
+    enabled: tab === "absensi" && isAdmin,
   });
 
   const { data: evaluasi } = useQuery({
@@ -137,14 +193,41 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
   });
 
+  const updateKegiatanStatus = useMutation({
+    mutationFn: async (status: string) => {
+      return kegiatanApi.update(id, { status });
+    },
+    onSuccess: (res: any) => {
+      toast.success("Status kegiatan berhasil diperbarui");
+      if (res?.data) {
+        qc.setQueryData(["kegiatan", id], (old: any) => ({
+          ...old,
+          ...res.data
+        }));
+        qc.setQueryData(["kegiatan"], (old: any) => {
+          if (!Array.isArray(old)) return old;
+          return old.map((k: any) => k.id === id ? { ...k, ...res.data } : k);
+        });
+      }
+      qc.invalidateQueries({ queryKey: ["kegiatan", id] });
+      qc.invalidateQueries({ queryKey: ["kegiatan"] });
+    },
+    onError: (err: any) => {
+      toast.error("Gagal memperbarui status: " + err.message);
+    }
+  });
+
   const daftar = useMutation({
-    mutationFn: async () => { await kegiatanApi.daftar(id, user?.id || "", user?.user_metadata?.nama_lengkap || "Mahasiswa", selectedRole); },
+    mutationFn: async () => {
+      const peran = selectedRole === 'Liaison Officer' ? 'lo' : 'protokoler';
+      await kegiatanApi.daftar(id, peran);
+    },
     onSuccess: () => { toast.success("Berhasil mendaftar ke kegiatan ini!"); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
   });
 
   const verifikasi = useMutation({
     mutationFn: async ({ pId, status }: { pId: string, status: 'diterima' | 'ditolak' }) => { await kegiatanApi.verifikasiPendaftar(id, pId, status); },
-    onSuccess: (_, variables) => { toast.success(`Pendaftar ${variables.status}`); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
+    onSuccess: (_: any, variables: { pId: string, status: 'diterima' | 'ditolak' }) => { toast.success(`Pendaftar ${variables.status}`); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
   });
 
   if (isLoading) {
@@ -156,8 +239,8 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   }
 
   const isDaftarOpen = true; // (keg as any).is_open_recruitment; // Diubah untuk demo agar selalu terbuka
-  const statusPendaftaran = (keg as any).pendaftar?.find((p: any) => p.protokoler_id === user?.id)?.status;
-  const isDiterima = isPendingAccount ? false : true; // Diubah untuk demo, aslinya statusPendaftaran === 'diterima'
+  const statusPendaftaran = (keg as any).pendaftar?.find((p: any) => p.protokoler_id === protokoler?.id)?.status;
+  const isDiterima = isPendingAccount ? false : statusPendaftaran === 'diterima';
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "info", label: "Info" },
@@ -213,11 +296,29 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
             </Button>
           </Link>
           {isAdmin && (
-            <Link href={`/kegiatan/buat?edit=${id}`}>
-              <Button className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-md shadow-orange-600/10 h-11 px-5 font-bold transition-all">
-                Edit Kegiatan
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Select
+                value={keg.status}
+                onValueChange={(val) => updateKegiatanStatus.mutate(val)}
+                disabled={updateKegiatanStatus.isPending}
+              >
+                <SelectTrigger className="w-[160px] rounded-xl border-slate-200 bg-white h-11 text-sm font-semibold focus:ring-2 focus:ring-orange-400/30 shadow-sm">
+                  <SelectValue placeholder="Status Kegiatan" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl shadow-lg border-slate-100">
+                  <SelectItem value="draf" className="font-semibold text-slate-600">Draft</SelectItem>
+                  <SelectItem value="publik" className="font-semibold text-sky-600">Publik</SelectItem>
+                  <SelectItem value="berlangsung" className="font-semibold text-blue-600">Berlangsung</SelectItem>
+                  <SelectItem value="selesai" className="font-semibold text-emerald-600">Selesai</SelectItem>
+                  <SelectItem value="batal" className="font-semibold text-red-600">Batal</SelectItem>
+                </SelectContent>
+              </Select>
+              <Link href={`/kegiatan/buat?edit=${id}`}>
+                <Button className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-md shadow-orange-600/10 h-11 px-5 font-bold transition-all">
+                  Edit Kegiatan
+                </Button>
+              </Link>
+            </div>
           )}
         </div>
       </motion.div>
@@ -444,7 +545,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                       <span className={`text-[13px] font-bold uppercase tracking-wider ${isDaftarOpen ? "text-green-600" : "text-slate-500"}`}>{isDaftarOpen ? "Dibuka" : "Ditutup"}</span>
                       <Switch
                         checked={isDaftarOpen}
-                        onCheckedChange={v => updateChecklist.mutate({ is_open_recruitment: v })}
+                        onCheckedChange={(v: boolean) => updateChecklist.mutate({ is_open_recruitment: v })}
                         className="data-[state=checked]:bg-green-500 shadow-sm"
                       />
                     </div>
@@ -531,7 +632,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                               Status Pengajuan: {statusPendaftaran}
                             </h3>
                             <p className={`text-[13px] font-medium leading-relaxed ${isDiterima ? "text-green-600" : statusPendaftaran === 'ditolak' ? "text-red-600" : "text-amber-800"}`}>
-                              {isDiterima ? "Selamat! Anda telah resmi ditugaskan untuk kegiatan ini. Persiapkan diri Anda dengan baik." : statusPendaftaran === 'ditolak' ? "Mohon maaf, Anda belum terpilih untuk penugasan kali ini. Tetap semangat untuk kegiatan berikutnya." : "Pengajuan Anda sedang menunggu verifikasi dan persetujuan dari pimpinan atau admin."}
+                              {isDiterima ? "Selamat! Anda telah resmi ditugaskan untuk kegiatan ini. Persiapkan diri Anda dengan baik." : statusPendaftaran === 'ditolak' ? "Mohon maaf, Anda belum terpilih untuk penugasan kali ini. Tetap semangat untuk kegiatan berikutnya." : "Terima kasih telah mengajukan diri! Akun protokoler akan menunggu verifikasi dari admin apakah Anda diverifikasi pada tugas ini atau tidak."}
                             </p>
                             {isDiterima && (
                               <Button variant="outline" onClick={() => toast.success("Mendownload Surat Tugas...")} className="mt-5 rounded-xl bg-white/80 border-green-200 text-green-700 hover:bg-white h-10 px-6 text-[13px] font-bold shadow-sm transition-all w-full sm:w-auto">
@@ -779,7 +880,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   </div>
                                   <div className="flex gap-3 w-full mb-4">
                                     <Button variant="outline" onClick={() => { setPhoto(null); startCamera(); }} className="flex-1 rounded-xl border-slate-200 h-12 font-bold text-slate-600">Foto Ulang</Button>
-                                    <Button onClick={() => { setIsAbsenSuccess(true); toast.success('Absensi berhasil disimpan!'); }} className="flex-1 rounded-xl bg-green-600 hover:bg-green-700 text-white h-12 font-bold shadow-md shadow-green-600/20">Kirim Absensi</Button>
+                                    <Button onClick={handleKirimAbsensi} className="flex-1 rounded-xl bg-green-600 hover:bg-green-700 text-white h-12 font-bold shadow-md shadow-green-600/20">Kirim Absensi</Button>
                                   </div>
                                 </div>
                               )}
@@ -938,15 +1039,26 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                        </div>
                        <div className="flex justify-end pt-2">
                           <Button 
-                            onClick={() => {
-                              if (!ratingAcara) return toast.error('Silakan berikan rating acara terlebih dahulu');
-                              setIsSuccessSubmit(true);
-                              toast.success('Evaluasi berhasil dikirim!');
-                            }} 
-                            className="rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold h-11 px-8 shadow-md"
-                          >
-                            Kirim Evaluasi
-                          </Button>
+                             onClick={async () => {
+                               if (!ratingAcara) return toast.error('Silakan berikan rating acara terlebih dahulu');
+                               try {
+                                 await evaluasiApi.create(id, {
+                                   evaluasi_kegiatan: evaluasiDiri || "Evaluasi umum",
+                                   refleksi_diri: "Kendala: " + (kendala || "none") + ". Saran: " + (saran || "none"),
+                                   rating_kegiatan: ratingAcara
+                                 });
+                                 setIsSuccessSubmit(true);
+                                 toast.success('Evaluasi berhasil dikirim!');
+                                 qc.invalidateQueries({ queryKey: ["kegiatan", id] });
+                                 qc.invalidateQueries({ queryKey: ["kegiatan-saya"] });
+                               } catch (err: any) {
+                                 toast.error("Gagal mengirim evaluasi: " + err.message);
+                               }
+                             }} 
+                             className="rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold h-11 px-8 shadow-md"
+                           >
+                             Kirim Evaluasi
+                           </Button>
                        </div>
                     </div>
               </div>
@@ -1111,7 +1223,18 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <Textarea value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} placeholder="Tuliskan catatan atau umpan balik khusus untuk kegiatan ini..." className="flex-1 min-h-[160px] rounded-xl border-slate-200 bg-slate-50 focus:bg-white text-[13px] leading-relaxed p-4" />
                             <div className="flex items-center justify-between gap-3 pt-4">
                               <p className="text-[11px] text-slate-400 font-medium">Feedback ini akan menjadi ringkasan yang terlihat oleh seluruh admin dan protokoler.</p>
-                              <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-6 shadow-md shrink-0">
+                              <Button 
+                                onClick={async () => {
+                                  try {
+                                    await evaluasiApi.updateFeedback(id, feedbackText);
+                                    toast.success('Feedback admin berhasil disimpan');
+                                    qc.invalidateQueries({ queryKey: ["kegiatan", id] });
+                                  } catch (err: any) {
+                                    toast.error("Gagal menyimpan feedback: " + err.message);
+                                  }
+                                }} 
+                                className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-6 shadow-md shrink-0"
+                              >
                                 <MessageSquare className="mr-2 h-4 w-4" /> Simpan
                               </Button>
                             </div>

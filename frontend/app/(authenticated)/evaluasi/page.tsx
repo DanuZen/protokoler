@@ -96,7 +96,11 @@ export default function EvaluasiPage() {
   });
 
   const submitEval = useMutation({
-    mutationFn: () => evaluasiApi.create({ kegiatan_id: selected?.id, ...form }),
+    mutationFn: () => evaluasiApi.create(selected?.id, {
+      evaluasi_kegiatan: form.komentar || "Evaluasi dari anggota",
+      refleksi_diri: `Catatan Diri: ${form.catatan_diri || '-'}. Nilai Diri: Kedisiplinan ${form.diri_kedisiplinan}/5, Penampilan ${form.diri_penampilan}/5, Komunikasi ${form.diri_komunikasi}/5`,
+      rating_kegiatan: form.rating_acara
+    }),
     onSuccess: () => { toast.success("Evaluasi berhasil dikirim!"); closeDialog(); },
     onError:   () => toast.error("Gagal mengirim evaluasi"),
   });
