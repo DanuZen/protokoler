@@ -12,7 +12,6 @@ import { BadgeStatus } from "@/components/BadgeStatus";
 import { BadgeKategori } from "@/components/BadgeKategori";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -45,55 +44,6 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const [isAbsenSuccess, setIsAbsenSuccess] = useState(false);
   const [attendanceType, setAttendanceType] = useState<'hadir' | 'izin' | null>(null);
   const [izinReason, setIzinReason] = useState('');
-
-
-
-  const dataURLtoBlob = (dataurl: string) => {
-    const arr = dataurl.split(',');
-    const mime = arr[0].match(/:(.*?);/)![1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
-  };
-
-  const handleKirimAbsensi = async () => {
-    if (!photo) return;
-    try {
-      const blob = dataURLtoBlob(photo);
-      const formData = new FormData();
-      formData.append('foto_selfie', blob, 'selfie.jpg');
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            formData.append('latitude', String(position.coords.latitude));
-            formData.append('longitude', String(position.coords.longitude));
-            await absensiApi.create(id, formData);
-            setIsAbsenSuccess(true);
-            toast.success('Absensi berhasil disimpan!');
-            qc.invalidateQueries({ queryKey: ["absensi-kegiatan", id] });
-          },
-          async () => {
-            await absensiApi.create(id, formData);
-            setIsAbsenSuccess(true);
-            toast.success('Absensi berhasil disimpan!');
-            qc.invalidateQueries({ queryKey: ["absensi-kegiatan", id] });
-          }
-        );
-      } else {
-        await absensiApi.create(id, formData);
-        setIsAbsenSuccess(true);
-        toast.success('Absensi berhasil disimpan!');
-        qc.invalidateQueries({ queryKey: ["absensi-kegiatan", id] });
-      }
-    } catch (err: any) {
-      toast.error("Gagal melakukan absensi: " + err.message);
-    }
-  };
 
   const startCamera = async () => {
     try {
@@ -149,12 +99,6 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     queryFn: () => kegiatanApi.get(id),
   });
 
-  useEffect(() => {
-    if (keg) {
-      setFeedbackText(keg.feedback_admin || '');
-    }
-  }, [keg]);
-
   const { data: protokoler } = useQuery({
     queryKey: ["protokoler-me"],
     queryFn: () => protokolerApi.list().then((list: any[]) =>
@@ -167,13 +111,13 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const { data: pendaftaran } = useQuery({
     queryKey: ["pendaftaran-kegiatan", id],
     queryFn: () => pendaftaranApi.byKegiatan(id),
-    enabled: tab === "rekrutmen" && isAdmin,
+    enabled: tab === "rekrutmen",
   });
 
   const { data: absensi } = useQuery({
     queryKey: ["absensi-kegiatan", id],
     queryFn: () => absensiApi.byKegiatan(id),
-    enabled: tab === "absensi" && isAdmin,
+    enabled: tab === "absensi",
   });
 
   const { data: evaluasi } = useQuery({
@@ -193,41 +137,14 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
   });
 
-  const updateKegiatanStatus = useMutation({
-    mutationFn: async (status: string) => {
-      return kegiatanApi.update(id, { status });
-    },
-    onSuccess: (res: any) => {
-      toast.success("Status kegiatan berhasil diperbarui");
-      if (res?.data) {
-        qc.setQueryData(["kegiatan", id], (old: any) => ({
-          ...old,
-          ...res.data
-        }));
-        qc.setQueryData(["kegiatan"], (old: any) => {
-          if (!Array.isArray(old)) return old;
-          return old.map((k: any) => k.id === id ? { ...k, ...res.data } : k);
-        });
-      }
-      qc.invalidateQueries({ queryKey: ["kegiatan", id] });
-      qc.invalidateQueries({ queryKey: ["kegiatan"] });
-    },
-    onError: (err: any) => {
-      toast.error("Gagal memperbarui status: " + err.message);
-    }
-  });
-
   const daftar = useMutation({
-    mutationFn: async () => {
-      const peran = selectedRole === 'Liaison Officer' ? 'lo' : 'protokoler';
-      await kegiatanApi.daftar(id, peran);
-    },
+    mutationFn: async () => { await kegiatanApi.daftar(id, user?.id || "", user?.user_metadata?.nama_lengkap || "Mahasiswa", selectedRole); },
     onSuccess: () => { toast.success("Berhasil mendaftar ke kegiatan ini!"); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
   });
 
   const verifikasi = useMutation({
     mutationFn: async ({ pId, status }: { pId: string, status: 'diterima' | 'ditolak' }) => { await kegiatanApi.verifikasiPendaftar(id, pId, status); },
-    onSuccess: (_: any, variables: { pId: string, status: 'diterima' | 'ditolak' }) => { toast.success(`Pendaftar ${variables.status}`); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
+    onSuccess: (_, variables) => { toast.success(`Pendaftar ${variables.status}`); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
   });
 
   if (isLoading) {
@@ -239,8 +156,8 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   }
 
   const isDaftarOpen = true; // (keg as any).is_open_recruitment; // Diubah untuk demo agar selalu terbuka
-  const statusPendaftaran = (keg as any).pendaftar?.find((p: any) => p.protokoler_id === protokoler?.id)?.status;
-  const isDiterima = isPendingAccount ? false : statusPendaftaran === 'diterima';
+  const statusPendaftaran = (keg as any).pendaftar?.find((p: any) => p.protokoler_id === user?.id)?.status;
+  const isDiterima = isPendingAccount ? false : true; // Diubah untuk demo, aslinya statusPendaftaran === 'diterima'
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "info", label: "Info" },
@@ -251,12 +168,11 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   ];
 
   return (
-    <div className="min-h-full relative z-10">
-      <div className="space-y-6 px-6 md:px-8 py-6 pb-20">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4 relative z-10">
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-start md:items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-600/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-800/20 text-white">
             <Calendar className="h-7 w-7" />
           </div>
           <div>
@@ -296,43 +212,25 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
             </Button>
           </Link>
           {isAdmin && (
-            <div className="flex items-center gap-2">
-              <Select
-                value={keg.status}
-                onValueChange={(val) => updateKegiatanStatus.mutate(val)}
-                disabled={updateKegiatanStatus.isPending}
-              >
-                <SelectTrigger className="w-[160px] rounded-xl border-slate-200 bg-white h-11 text-sm font-semibold focus:ring-2 focus:ring-orange-400/30 shadow-sm">
-                  <SelectValue placeholder="Status Kegiatan" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl shadow-lg border-slate-100">
-                  <SelectItem value="draf" className="font-semibold text-slate-600">Draft</SelectItem>
-                  <SelectItem value="publik" className="font-semibold text-sky-600">Publik</SelectItem>
-                  <SelectItem value="berlangsung" className="font-semibold text-blue-600">Berlangsung</SelectItem>
-                  <SelectItem value="selesai" className="font-semibold text-emerald-600">Selesai</SelectItem>
-                  <SelectItem value="batal" className="font-semibold text-red-600">Batal</SelectItem>
-                </SelectContent>
-              </Select>
-              <Link href={`/kegiatan/buat?edit=${id}`}>
-                <Button className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-md shadow-orange-600/10 h-11 px-5 font-bold transition-all">
-                  Edit Kegiatan
-                </Button>
-              </Link>
-            </div>
+            <Link href={`/kegiatan/buat?edit=${id}`}>
+              <Button className="rounded-xl bg-red-800 hover:bg-red-900 text-white shadow-md shadow-red-800/10 h-11 px-5 font-bold transition-all">
+                Edit Kegiatan
+              </Button>
+            </Link>
           )}
         </div>
       </motion.div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-2 overflow-x-auto mb-8 pb-2">
+      <div className="shrink-0 flex gap-2 overflow-x-auto mb-8 pb-2">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
             className={`px-5 py-2.5 text-sm font-semibold rounded-xl transition-all whitespace-nowrap shadow-sm border ${
               tab === t.key
-                ? "bg-orange-600 border-orange-600 text-white shadow-md shadow-orange-600/20"
-                : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-orange-600"
+                ? "bg-red-800 border-red-800 text-white shadow-md shadow-red-800/20"
+                : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-red-800"
             }`}
           >
             {t.label}
@@ -341,9 +239,11 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Tab Panels */}
-      <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
-        
-        {/* ── Tab INFO ── */}
+      <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto pr-2 pb-12">
+          <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="h-full flex flex-col">
+            
+            {/* ── Tab INFO ── */}
         {tab === "info" && (
           <div className="grid lg:grid-cols-3 gap-6 items-stretch min-h-[500px]">
             {/* Left Card: Informasi Kegiatan */}
@@ -388,7 +288,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
                     <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Waktu Pelaksanaan</p>
                     <div className="flex items-center gap-2.5">
-                      <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-orange-50 text-orange-600">
+                      <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-red-50 text-red-800">
                         <Clock className="h-4 w-4" />
                       </div>
                       <p className="font-bold text-slate-800 text-[14px]">
@@ -457,7 +357,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                       
                       {(keg as any).rundown_url && (
                         <div className="pt-2">
-                          <a href={(keg as any).rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full sm:w-auto h-10 px-6 bg-orange-600 text-white font-bold text-[13px] rounded-xl shadow-sm hover:bg-orange-700 transition-all">
+                          <a href={(keg as any).rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full sm:w-auto h-10 px-6 bg-red-800 text-white font-bold text-[13px] rounded-xl shadow-sm hover:bg-red-900 transition-all">
                             <FileText className="mr-2 h-4 w-4" /> Buka Link Rundown Acara
                           </a>
                         </div>
@@ -494,7 +394,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                           return (
                             <div key={isString ? idx : t.id} className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all group">
                               <div className="flex items-center gap-3">
-                                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-100 to-orange-50 border border-amber-200 flex items-center justify-center shrink-0 text-amber-600 group-hover:scale-110 transition-transform">
+                                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-100 to-red-50 border border-amber-200 flex items-center justify-center shrink-0 text-amber-600 group-hover:scale-110 transition-transform">
                                   <Crown className="h-4 w-4" />
                                 </div>
                                 <div>
@@ -545,7 +445,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                       <span className={`text-[13px] font-bold uppercase tracking-wider ${isDaftarOpen ? "text-green-600" : "text-slate-500"}`}>{isDaftarOpen ? "Dibuka" : "Ditutup"}</span>
                       <Switch
                         checked={isDaftarOpen}
-                        onCheckedChange={(v: boolean) => updateChecklist.mutate({ is_open_recruitment: v })}
+                        onCheckedChange={v => updateChecklist.mutate({ is_open_recruitment: v })}
                         className="data-[state=checked]:bg-green-500 shadow-sm"
                       />
                     </div>
@@ -632,7 +532,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                               Status Pengajuan: {statusPendaftaran}
                             </h3>
                             <p className={`text-[13px] font-medium leading-relaxed ${isDiterima ? "text-green-600" : statusPendaftaran === 'ditolak' ? "text-red-600" : "text-amber-800"}`}>
-                              {isDiterima ? "Selamat! Anda telah resmi ditugaskan untuk kegiatan ini. Persiapkan diri Anda dengan baik." : statusPendaftaran === 'ditolak' ? "Mohon maaf, Anda belum terpilih untuk penugasan kali ini. Tetap semangat untuk kegiatan berikutnya." : "Terima kasih telah mengajukan diri! Akun protokoler akan menunggu verifikasi dari admin apakah Anda diverifikasi pada tugas ini atau tidak."}
+                              {isDiterima ? "Selamat! Anda telah resmi ditugaskan untuk kegiatan ini. Persiapkan diri Anda dengan baik." : statusPendaftaran === 'ditolak' ? "Mohon maaf, Anda belum terpilih untuk penugasan kali ini. Tetap semangat untuk kegiatan berikutnya." : "Pengajuan Anda sedang menunggu verifikasi dan persetujuan dari pimpinan atau admin."}
                             </p>
                             {isDiterima && (
                               <Button variant="outline" onClick={() => toast.success("Mendownload Surat Tugas...")} className="mt-5 rounded-xl bg-white/80 border-green-200 text-green-700 hover:bg-white h-10 px-6 text-[13px] font-bold shadow-sm transition-all w-full sm:w-auto">
@@ -698,7 +598,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 <TableCell className="py-4">
                                   <Badge variant="outline" className={`rounded-lg capitalize font-bold text-[11px] px-2.5 py-1 ${
                                     p.status === 'diterima' ? 'bg-green-50 text-green-700 border-green-200' :
-                                    p.status === 'ditolak' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-orange-50 text-orange-700 border-orange-200'
+                                    p.status === 'ditolak' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-red-50 text-red-900 border-red-200'
                                   }`}>
                                     {p.status}
                                   </Badge>
@@ -820,11 +720,11 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 <h4 className="font-bold text-slate-700 group-hover:text-green-700">Saya Hadir</h4>
                                 <p className="text-xs text-slate-500 text-center mt-1">Ambil selfie di lokasi</p>
                               </div>
-                              <div className="flex-1 border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-orange-50 hover:border-orange-200 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('izin')}>
-                                <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-orange-100 group-hover:text-orange-600 flex items-center justify-center mb-4 transition-colors">
+                              <div className="flex-1 border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-red-50 hover:border-red-200 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('izin')}>
+                                <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-red-100 group-hover:text-red-800 flex items-center justify-center mb-4 transition-colors">
                                   <XCircle className="h-6 w-6" />
                                 </div>
-                                <h4 className="font-bold text-slate-700 group-hover:text-orange-700">Tidak Hadir</h4>
+                                <h4 className="font-bold text-slate-700 group-hover:text-red-900">Tidak Hadir</h4>
                                 <p className="text-xs text-slate-500 text-center mt-1">Berikan alasan (Izin)</p>
                               </div>
                             </div>
@@ -834,7 +734,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 <label className="text-[13px] font-bold text-slate-700 mb-2 block">Alasan Berhalangan Hadir <span className="text-red-500">*</span></label>
                                 <Textarea 
                                   placeholder="Tuliskan alasan Anda berhalangan hadir..." 
-                                  className="bg-white border-slate-200 focus-visible:ring-orange-500 resize-none h-32"
+                                  className="bg-white border-slate-200 focus-visible:ring-red-700 resize-none h-32"
                                   value={izinReason}
                                   onChange={(e) => setIzinReason(e.target.value)}
                                 />
@@ -844,7 +744,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   if(!izinReason.trim()) return toast.error('Harap isi alasan tidak hadir');
                                   setIsAbsenSuccess(true); toast.success('Status izin berhasil dikirim!'); 
                                 }} 
-                                className="w-full rounded-xl bg-orange-600 hover:bg-orange-700 text-white h-12 font-bold shadow-md shadow-orange-600/20"
+                                className="w-full rounded-xl bg-red-800 hover:bg-red-900 text-white h-12 font-bold shadow-md shadow-red-800/20"
                               >
                                 Kirim Keterangan Izin
                               </Button>
@@ -854,7 +754,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <div>
                               {!isCameraOpen && !photo ? (
                                 <div className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer" onClick={startCamera}>
-                                  <div className="h-14 w-14 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mb-4">
+                                  <div className="h-14 w-14 rounded-full bg-red-100 text-red-800 flex items-center justify-center mb-4">
                                     <Camera className="h-6 w-6" />
                                   </div>
                                   <h4 className="font-bold text-slate-700 mb-1">Buka Kamera</h4>
@@ -869,7 +769,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   </div>
                                   <div className="flex gap-3 w-full">
                                     <Button variant="outline" onClick={stopCamera} className="flex-1 rounded-xl border-slate-200 h-12 font-bold text-slate-600">Batal</Button>
-                                    <Button onClick={capturePhoto} className="flex-1 rounded-xl bg-orange-600 hover:bg-orange-700 text-white h-12 font-bold shadow-md shadow-orange-600/20">Ambil Foto</Button>
+                                    <Button onClick={capturePhoto} className="flex-1 rounded-xl bg-red-800 hover:bg-red-900 text-white h-12 font-bold shadow-md shadow-red-800/20">Ambil Foto</Button>
                                   </div>
                                   <canvas ref={canvasRef} className="hidden" />
                                 </div>
@@ -880,7 +780,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   </div>
                                   <div className="flex gap-3 w-full mb-4">
                                     <Button variant="outline" onClick={() => { setPhoto(null); startCamera(); }} className="flex-1 rounded-xl border-slate-200 h-12 font-bold text-slate-600">Foto Ulang</Button>
-                                    <Button onClick={handleKirimAbsensi} className="flex-1 rounded-xl bg-green-600 hover:bg-green-700 text-white h-12 font-bold shadow-md shadow-green-600/20">Kirim Absensi</Button>
+                                    <Button onClick={() => { setIsAbsenSuccess(true); toast.success('Absensi berhasil disimpan!'); }} className="flex-1 rounded-xl bg-green-600 hover:bg-green-700 text-white h-12 font-bold shadow-md shadow-green-600/20">Kirim Absensi</Button>
                                   </div>
                                 </div>
                               )}
@@ -946,7 +846,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 <TableCell className="py-3">
                                   {a.foto_selfie_url ? (
                                     <a href={a.foto_selfie_url} target="_blank" className="block group w-fit">
-                                      <div className="h-14 w-14 rounded-xl border border-slate-200 overflow-hidden bg-white flex items-center justify-center group-hover:border-orange-300 shadow-sm transition-all relative">
+                                      <div className="h-14 w-14 rounded-xl border border-slate-200 overflow-hidden bg-white flex items-center justify-center group-hover:border-red-300 shadow-sm transition-all relative">
                                         <img src={a.foto_selfie_url} alt="Selfie" className="w-full h-full object-cover" />
                                         <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                           <Camera className="h-5 w-5 text-white drop-shadow-md" />
@@ -1039,26 +939,15 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                        </div>
                        <div className="flex justify-end pt-2">
                           <Button 
-                             onClick={async () => {
-                               if (!ratingAcara) return toast.error('Silakan berikan rating acara terlebih dahulu');
-                               try {
-                                 await evaluasiApi.create(id, {
-                                   evaluasi_kegiatan: evaluasiDiri || "Evaluasi umum",
-                                   refleksi_diri: "Kendala: " + (kendala || "none") + ". Saran: " + (saran || "none"),
-                                   rating_kegiatan: ratingAcara
-                                 });
-                                 setIsSuccessSubmit(true);
-                                 toast.success('Evaluasi berhasil dikirim!');
-                                 qc.invalidateQueries({ queryKey: ["kegiatan", id] });
-                                 qc.invalidateQueries({ queryKey: ["kegiatan-saya"] });
-                               } catch (err: any) {
-                                 toast.error("Gagal mengirim evaluasi: " + err.message);
-                               }
-                             }} 
-                             className="rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold h-11 px-8 shadow-md"
-                           >
-                             Kirim Evaluasi
-                           </Button>
+                            onClick={() => {
+                              if (!ratingAcara) return toast.error('Silakan berikan rating acara terlebih dahulu');
+                              setIsSuccessSubmit(true);
+                              toast.success('Evaluasi berhasil dikirim!');
+                            }} 
+                            className="rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold h-11 px-8 shadow-md"
+                          >
+                            Kirim Evaluasi
+                          </Button>
                        </div>
                     </div>
               </div>
@@ -1223,18 +1112,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <Textarea value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} placeholder="Tuliskan catatan atau umpan balik khusus untuk kegiatan ini..." className="flex-1 min-h-[160px] rounded-xl border-slate-200 bg-slate-50 focus:bg-white text-[13px] leading-relaxed p-4" />
                             <div className="flex items-center justify-between gap-3 pt-4">
                               <p className="text-[11px] text-slate-400 font-medium">Feedback ini akan menjadi ringkasan yang terlihat oleh seluruh admin dan protokoler.</p>
-                              <Button 
-                                onClick={async () => {
-                                  try {
-                                    await evaluasiApi.updateFeedback(id, feedbackText);
-                                    toast.success('Feedback admin berhasil disimpan');
-                                    qc.invalidateQueries({ queryKey: ["kegiatan", id] });
-                                  } catch (err: any) {
-                                    toast.error("Gagal menyimpan feedback: " + err.message);
-                                  }
-                                }} 
-                                className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-6 shadow-md shrink-0"
-                              >
+                              <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-6 shadow-md shrink-0">
                                 <MessageSquare className="mr-2 h-4 w-4" /> Simpan
                               </Button>
                             </div>
@@ -1293,8 +1171,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           </Card>
         )}
 
-      </motion.div>
-      </div>
+          </motion.div>
+        </div>
+      </main>
     </div>
   );
 }

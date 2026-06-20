@@ -50,16 +50,16 @@ export default function Page() {
   };
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <FileBarChart className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Data & Analitik
               </span>
             </div>
@@ -70,7 +70,7 @@ export default function Page() {
       </motion.div>
 
       {/* ─── Floating Toolbar (Filter) ─── */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-5">
           <div className="flex items-center gap-2 text-slate-500 font-bold text-sm uppercase tracking-wider shrink-0 bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl">
             <Filter className="h-4 w-4 text-slate-400" />
@@ -90,8 +90,9 @@ export default function Page() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
 
           {/* Kegiatan Table */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="h-[500px] flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
@@ -105,7 +106,7 @@ export default function Page() {
                   <p className="text-[11px] text-slate-500 mt-0.5">{kegiatan?.length ?? 0} kegiatan ditemukan</p>
                 </div>
               </div>
-              <Button className="rounded-xl bg-orange-600 text-white border border-transparent hover:bg-orange-700 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-orange-500/20" onClick={() => exportCsv(
+              <Button className="rounded-xl bg-red-800 text-white border border-transparent hover:bg-red-900 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-red-700/20" onClick={() => exportCsv(
                 `laporan-kegiatan-${start}-${end}.csv`,
                 [["Tanggal","Nama","Bentuk","Jam","Lokasi","Status"], ...(kegiatan ?? []).map((k: any) => [k.tanggal, k.nama_kegiatan, k.bentuk, `${k.jam_mulai}-${k.jam_selesai}`, k.lokasi, k.status])]
               )}>
@@ -168,7 +169,7 @@ export default function Page() {
                   <p className="text-[11px] text-slate-500 mt-0.5">{rekap.length} mahasiswa dalam periode ini</p>
                 </div>
               </div>
-              <Button className="rounded-xl bg-orange-600 text-white border border-transparent hover:bg-orange-700 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-orange-500/20" onClick={() => exportCsv(
+              <Button className="rounded-xl bg-red-800 text-white border border-transparent hover:bg-red-900 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-red-700/20" onClick={() => exportCsv(
                 `rekap-penugasan-${start}-${end}.csv`,
                 [["NIM","Nama","Prodi","Total Tugas","Dikonfirmasi","Ditolak"], ...rekap.map((r: any) => [r.nim, r.nama_lengkap, r.prodi, r.total_tugas, r.dikonfirmasi, r.ditolak])]
               )}>
@@ -216,8 +217,9 @@ export default function Page() {
             </Table>
             </div>
           </motion.div>
+          </div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }

@@ -119,16 +119,16 @@ export default function EvaluasiPage() {
   const totalEvaluated = 124;
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <ClipboardCheck className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Penilaian
               </span>
             </div>
@@ -138,7 +138,7 @@ export default function EvaluasiPage() {
         </div>
         <div className="flex items-stretch gap-3 shrink-0">
           <div className="bg-white/70 backdrop-blur-xl border border-white/80 shadow-sm rounded-2xl px-5 py-3 text-center">
-            <div className="text-2xl font-extrabold text-orange-500 leading-none">{avgRating}</div>
+            <div className="text-2xl font-extrabold text-red-700 leading-none">{avgRating}</div>
             <div className="text-[9px] uppercase tracking-widest text-slate-400 mt-1 font-bold">Rata-rata</div>
           </div>
           <div className="bg-white/70 backdrop-blur-xl border border-white/80 shadow-sm rounded-2xl px-5 py-3 text-center">
@@ -149,7 +149,7 @@ export default function EvaluasiPage() {
       </motion.div>
 
       {/* ─── Floating Toolbar ─── */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-5">
             <div className="relative max-w-md w-full">
               <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
@@ -162,8 +162,8 @@ export default function EvaluasiPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 space-y-6">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
 
           {isLoading ? (
             <div className="space-y-4">
@@ -186,7 +186,7 @@ export default function EvaluasiPage() {
                           <Badge variant="outline" className="text-[10px] uppercase tracking-wider font-bold text-emerald-600 border-emerald-200 bg-emerald-50 rounded-md">{k.status}</Badge>
                           <span className="text-slate-500 text-xs uppercase tracking-wider font-bold">{k.bentuk.replace("_", " ")}</span>
                         </div>
-                        <h3 className="font-bold text-slate-900 text-lg group-hover:text-orange-500 transition-colors truncate">{k.nama_kegiatan}</h3>
+                        <h3 className="font-bold text-slate-900 text-lg group-hover:text-red-700 transition-colors truncate">{k.nama_kegiatan}</h3>
                       </div>
                       <div className="flex flex-col gap-1 min-w-[200px]">
                         <div className="flex items-center gap-1.5 text-slate-600 text-sm font-medium">
@@ -199,7 +199,7 @@ export default function EvaluasiPage() {
                         </div>
                       </div>
                       <div className="flex items-center justify-end md:w-[140px]">
-                        <Button onClick={() => { setSelected(k); setStep(1); }} variant="outline" className="rounded-xl border-slate-200 text-slate-700 hover:bg-orange-50 hover:border-orange-200 hover:text-orange-600 transition-colors gap-2">
+                        <Button onClick={() => { setSelected(k); setStep(1); }} variant="outline" className="rounded-xl border-slate-200 text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-red-800 transition-colors gap-2">
                           <Star className="h-4 w-4" /> Nilai
                         </Button>
                       </div>
@@ -210,7 +210,7 @@ export default function EvaluasiPage() {
             </motion.div>
           )}
         </section>
-      </div>
+      </main>
 
       {/* ─── Multi-Step Dialog ─── */}
       <Dialog open={selected !== null} onOpenChange={(o) => !o && closeDialog()}>
@@ -222,10 +222,10 @@ export default function EvaluasiPage() {
             <div className="flex items-center gap-0 mt-4">
               {/* Step 1 tab */}
               <div className={cn("flex-1 flex items-center gap-2 border-b-2 pb-3 pr-4 transition-colors",
-                step === 1 ? "border-orange-500 text-slate-900" : "border-transparent text-slate-400 hover:text-slate-600 cursor-pointer"
+                step === 1 ? "border-red-700 text-slate-900" : "border-transparent text-slate-400 hover:text-slate-600 cursor-pointer"
               )} onClick={() => step === 2 && setStep(1)}>
                 <div className={cn("h-6 w-6 rounded-md flex items-center justify-center text-xs font-bold shrink-0 transition-colors",
-                  step === 1 ? "bg-orange-100 text-orange-600" : step > 1 ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-400"
+                  step === 1 ? "bg-red-100 text-red-800" : step > 1 ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-400"
                 )}>
                   {step > 1 ? <CheckCircle2 className="h-4 w-4" /> : "1"}
                 </div>
@@ -234,10 +234,10 @@ export default function EvaluasiPage() {
               <div className="w-8 border-b-2 border-slate-200 mx-1 mb-3" />
               {/* Step 2 tab */}
               <div className={cn("flex-1 flex items-center gap-2 border-b-2 pb-3 pl-4 transition-colors",
-                step === 2 ? "border-orange-500 text-slate-900" : "border-transparent text-slate-400"
+                step === 2 ? "border-red-700 text-slate-900" : "border-transparent text-slate-400"
               )}>
                 <div className={cn("h-6 w-6 rounded-md flex items-center justify-center text-xs font-bold shrink-0 transition-colors",
-                  step === 2 ? "bg-orange-100 text-orange-600" : "bg-slate-100 text-slate-400"
+                  step === 2 ? "bg-red-100 text-red-800" : "bg-slate-100 text-slate-400"
                 )}>
                   <User className="h-3.5 w-3.5" />
                 </div>

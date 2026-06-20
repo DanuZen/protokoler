@@ -1,6 +1,6 @@
 # API SPECIFICATION
 
-## SiProto – Sistem Informasi Protokoler Universitas
+## Protokoler – Sistem Informasi Protokoler Universitas
 
 **Versi 1.2 | Juni 2025**
 
@@ -9,7 +9,7 @@
 | Info                | Detail                         |
 | ------------------- | ------------------------------ |
 | **Base URL (dev)**  | `http://localhost:3001/api/v1` |
-| **Base URL (prod)** | `https://api.siproto.ac.id/v1` |
+| **Base URL (prod)** | `https://api.Protokoler.ac.id/v1` |
 | **Format**          | JSON                           |
 | **Auth**            | Bearer Token (JWT)             |
 | **Versi Dokumen**   | 1.2                            |
@@ -768,7 +768,7 @@ keterangan  : string (optional, max 500 karakter)
   "data": {
     "id": "uuid",
     "kegiatan_id": "uuid",
-    "file_url": "https://storage.siproto.ac.id/dokumentasi/uuid.jpg",
+    "file_url": "https://storage.Protokoler.ac.id/dokumentasi/uuid.jpg",
     "media_type": "foto",
     "ukuran_file": 2048576,
     "uploaded_at": "2025-01-16T10:30:00Z"
@@ -794,7 +794,7 @@ Lihat semua dokumentasi untuk satu kegiatan.
   "dokumentasi": [
     {
       "id": "uuid",
-      "file_url": "https://storage.siproto.ac.id/dokumentasi/uuid.jpg",
+      "file_url": "https://storage.Protokoler.ac.id/dokumentasi/uuid.jpg",
       "media_type": "foto",
       "ukuran_file": 2048576,
       "keterangan": "Sambutan dari rektor",
@@ -902,7 +902,7 @@ tipe  : string ("setengah_badan" | "full_body")
 **Response `200 OK`:**
 
 ```json
-{ "url": "https://storage.siproto.ac.id/foto/uuid.jpg" }
+{ "url": "https://storage.Protokoler.ac.id/foto/uuid.jpg" }
 ```
 
 ---

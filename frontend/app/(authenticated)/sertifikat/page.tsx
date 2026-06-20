@@ -1,79 +1,119 @@
 "use client";
 import { useAuth, useRole } from "@/hooks/use-auth";
 import { motion, AnimatePresence } from "framer-motion";
-import { Award, Download, BadgeCheck, MapPin, ChevronDown, Clock, Search, Loader2 } from "lucide-react";
+import { Award, Download, BadgeCheck, Calendar, MapPin, ChevronDown, CheckCircle2, Clock, Users, X, Check, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { sertifikatApi } from "@/lib/api";
 
 const stagger = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 const fadeUp  = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } };
 
+// Mock sertifikat data with names
+const mockSertifikat = [
+  {
+    id: "s1",
+    nomor: "SERT/PIMP/2024/001",
+    judul: "Sertifikat Penugasan Protokoler Pimpinan",
+    kegiatan: "Wisuda Periode 129 UNP",
+    tanggal: "2024-10-15",
+    lokasi: "Auditorium UNP",
+    peran: "Protokoler Pimpinan",
+    status: "diterbitkan",
+    kategori: "acara",
+    nama_protokoler: "Ahmad Fauzi",
+  },
+  {
+    id: "s2",
+    nomor: "SERT/PIMP/2024/002",
+    judul: "Sertifikat Pendampingan Pimpinan",
+    kegiatan: "Kunjungan Dubes Amerika Serikat",
+    tanggal: "2024-11-03",
+    lokasi: "Ruang Rektor, UNP",
+    peran: "Ajudan Pimpinan",
+    status: "diterbitkan",
+    kategori: "acara",
+    nama_protokoler: "Budi Santoso",
+  },
+  {
+    id: "s3",
+    nomor: "SERT/PIMP/2025/003",
+    judul: "Sertifikat Keaktifan Protokoler Pimpinan",
+    kegiatan: "Seminar Internasional Pendidikan 2025",
+    tanggal: "2025-02-20",
+    lokasi: "Aula FMIPA, UNP",
+    peran: "Protokoler Utama Pimpinan",
+    status: "dalam_proses",
+    kategori: "acara",
+    nama_protokoler: "Citra Kirana",
+  },
+  {
+    id: "s4",
+    nomor: "AWARD/PIMP/2024/001",
+    judul: "Penghargaan Ajudan Pimpinan Terbaik",
+    kegiatan: "Apresiasi Kinerja Tahunan UNP 2024",
+    tanggal: "2024-12-20",
+    lokasi: "Auditorium UNP",
+    peran: "Penerima Penghargaan",
+    status: "diterbitkan",
+    kategori: "penghargaan",
+    nama_protokoler: "Ahmad Fauzi",
+  },
+];
+
 function AdminSertifikatView() {
-  const [certificates, setCertificates] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<'semua' | 'perak' | 'silver' | 'gold'>('semua');
+  const [tab, setTab] = useState<'semua' | 'acara' | 'penghargaan' | 'pending'>('semua');
   const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    async function fetchCerts() {
-      try {
-        const res = await sertifikatApi.listAll();
-        setCertificates(res || []);
-      } catch (err: any) {
-        toast.error("Gagal mengambil data sertifikat: " + err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchCerts();
-  }, []);
-
-  const totalCount = certificates.length;
-  const goldCount = certificates.filter(s => s.kategori === 'gold').length;
-  const silverCount = certificates.filter(s => s.kategori === 'silver').length;
-
-  const filtered = certificates.filter(s => {
-    const protokolerName = s.protokoler?.nama_lengkap || "";
-    const matchSearch = 
-      protokolerName.toLowerCase().includes(search.toLowerCase()) || 
-      (s.nomor_sertifikat || "").toLowerCase().includes(search.toLowerCase()) ||
-      (s.kegiatan?.nama_kegiatan || "").toLowerCase().includes(search.toLowerCase());
-    
-    const matchTab = tab === 'semua' ? true : s.kategori === tab;
+  
+  const pendingCount = mockSertifikat.filter(s => s.status === 'dalam_proses').length;
+  const issuedCount = mockSertifikat.filter(s => s.status === 'diterbitkan').length;
+  
+  const filtered = mockSertifikat.filter(s => {
+    const matchSearch = s.nama_protokoler.toLowerCase().includes(search.toLowerCase()) || s.judul.toLowerCase().includes(search.toLowerCase());
+    const matchTab = 
+      tab === 'semua' ? true : 
+      tab === 'pending' ? s.status === 'dalam_proses' :
+      s.kategori === tab;
     return matchSearch && matchTab;
   });
 
+  const handleApprove = (id: string) => toast.success(`Sertifikat berhasil diterbitkan.`);
+  const handleReject = (id: string) => toast.success(`Permintaan sertifikat ditolak.`);
+
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* HEADER SECTION */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Award className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Pimpinan
               </span>
             </div>
             <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Sertifikat</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Kelola dan unduh sertifikat kelulusan penugasan tim protokoler.</p>
+            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Verifikasi, kelola, dan terbitkan sertifikat untuk tim protokoler.</p>
           </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Button onClick={() => toast.success("Fitur ini sedang dikembangkan")} className="rounded-xl bg-red-800 text-white hover:bg-red-900 shadow-sm font-bold shadow-red-700/20">
+            <BadgeCheck className="mr-2 h-4 w-4" /> Buat Penghargaan Khusus
+          </Button>
         </div>
       </motion.div>
 
       {/* STATS */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            { label: "Total Diterbitkan", value: totalCount, icon: BadgeCheck, hint: "Total sertifikat sistem", color: "text-orange-600", bg: "bg-orange-50" },
-            { label: "Kategori Gold", value: goldCount, icon: Award, hint: "Total sertifikat Gold", color: "text-amber-600", bg: "bg-amber-50" },
-            { label: "Kategori Silver", value: silverCount, icon: Award, hint: "Total sertifikat Silver", color: "text-slate-600", bg: "bg-slate-50" },
+            { label: "Menunggu Persetujuan", value: pendingCount, icon: Clock, hint: "Butuh verifikasi", color: "text-amber-600", bg: "bg-amber-100" },
+            { label: "Total Diterbitkan", value: issuedCount, icon: BadgeCheck, hint: "Sertifikat & Penghargaan", color: "text-red-800", bg: "bg-red-50" },
+            { label: "Total Pengajuan", value: mockSertifikat.length, icon: Award, hint: "Seluruh riwayat", color: "text-red-800", bg: "bg-red-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
               <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
@@ -96,145 +136,122 @@ function AdminSertifikatView() {
       </section>
 
       {/* BODY CONTENT */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 space-y-6">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
             <div className="flex gap-1 overflow-x-auto pb-1 sm:pb-0 [&::-webkit-scrollbar]:hidden">
-              {(['semua', 'perak', 'silver', 'gold'] as const).map(t => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={cn(
-                    "px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap",
-                    tab === t ? "bg-orange-600 text-white shadow-md shadow-orange-500/20" : "text-slate-600 hover:bg-slate-100"
-                  )}
-                >
-                  {t === 'semua' ? 'Semua Sertifikat' : `Kategori ${t.charAt(0).toUpperCase() + t.slice(1)}`}
-                </button>
-              ))}
+              <button onClick={() => setTab('semua')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'semua' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Semua Sertifikat</button>
+              <button onClick={() => setTab('acara')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'acara' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Sertifikat Acara</button>
+              <button onClick={() => setTab('penghargaan')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'penghargaan' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Penghargaan</button>
+              <button onClick={() => setTab('pending')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'pending' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Menunggu <span className="ml-1.5 inline-flex items-center justify-center bg-white/20 px-1.5 py-0.5 rounded-md text-[10px]">{pendingCount}</span></button>
             </div>
             <div className="relative w-full sm:w-72">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input placeholder="Cari nama atau kegiatan..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-10 rounded-xl bg-slate-50 border-slate-200 text-sm focus-visible:ring-orange-500" />
+              <Input placeholder="Cari nama atau kegiatan..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-10 rounded-xl bg-slate-50 border-slate-200 text-sm focus-visible:ring-red-700" />
             </div>
           </div>
 
-          {loading ? (
-            <div className="flex flex-col items-center justify-center p-20 bg-white border border-slate-200 rounded-2xl">
-              <Loader2 className="h-10 w-10 animate-spin text-orange-600 mb-2" />
-              <p className="text-slate-500 text-sm">Memuat data sertifikat...</p>
-            </div>
-          ) : (
-            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                  <tr>
+                    <th className="px-6 py-4">Protokoler</th>
+                    <th className="px-6 py-4">Sertifikat / Kegiatan</th>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filtered.length === 0 ? (
                     <tr>
-                      <th className="px-6 py-4">Nomor Sertifikat</th>
-                      <th className="px-6 py-4">Nama Kegiatan</th>
-                      <th className="px-6 py-4">Kategori</th>
-                      <th className="px-6 py-4 text-right">Aksi</th>
+                      <td colSpan={4} className="px-6 py-12 text-center text-slate-500">
+                        Tidak ada data yang ditemukan.
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {filtered.length === 0 ? (
-                      <tr>
-                        <td colSpan={4} className="px-6 py-12 text-center text-slate-500">
-                          Tidak ada data sertifikat yang ditemukan.
-                        </td>
-                      </tr>
-                    ) : filtered.map((s) => (
-                      <motion.tr key={s.id} variants={fadeUp} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-6 py-4 align-top">
-                          <div className="font-bold text-slate-900">{s.nomor_sertifikat || "—"}</div>
-                          <div className="text-xs text-slate-500 mt-1">Diterbitkan pada {new Date(s.tanggal_terbit).toLocaleDateString('id-ID')}</div>
-                        </td>
-                        <td className="px-6 py-4 align-top">
-                          <div className="font-bold text-slate-700">{s.kegiatan?.nama_kegiatan || "—"}</div>
-                          <div className="text-xs text-slate-500 mt-1">{new Date(s.kegiatan?.tanggal).toLocaleDateString('id-ID')}</div>
-                        </td>
-                        <td className="px-6 py-4 align-top">
-                          <span className={cn("inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border",
-                            s.kategori === "gold" ? "bg-amber-50 text-amber-700 border-amber-200" :
-                            s.kategori === "silver" ? "bg-slate-50 text-slate-700 border-slate-200" :
-                            "bg-orange-50 text-orange-700 border-orange-200"
-                          )}>
-                            <BadgeCheck className="h-3 w-3" /> {s.kategori}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 align-top text-right">
-                          <a href={`/api/sertifikat/${s.id}/download`} target="_blank" rel="noopener noreferrer">
-                            <Button size="sm" variant="outline" className="h-8 border-slate-200 text-slate-500 hover:bg-slate-50 rounded-lg text-xs px-3 font-medium">
-                              <Download className="h-3.5 w-3.5 mr-1.5" /> PDF
+                  ) : filtered.map((s) => (
+                    <motion.tr key={s.id} variants={fadeUp} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-6 py-4 align-top">
+                        <div className="font-bold text-slate-900">{s.nama_protokoler}</div>
+                        <div className="text-xs text-slate-500 mt-1">{s.peran}</div>
+                      </td>
+                      <td className="px-6 py-4 align-top">
+                        <div className="font-bold text-slate-700">{s.judul}</div>
+                        <div className="text-xs text-slate-500 mt-1">{s.kegiatan}</div>
+                      </td>
+                      <td className="px-6 py-4 align-top">
+                        <span className={cn("inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border",
+                          s.status === "diterbitkan"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            : "bg-amber-50 text-amber-600 border-amber-200"
+                        )}>
+                          {s.status === "diterbitkan" ? <><BadgeCheck className="h-3 w-3" /> Diterbitkan</> : "Dalam Proses"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 align-top text-right">
+                        {s.status === "dalam_proses" ? (
+                          <div className="flex items-center justify-end gap-2">
+                            <Button size="sm" onClick={() => handleApprove(s.id)} className="h-8 bg-emerald-600 text-white hover:bg-emerald-700 rounded-lg shadow-sm text-xs px-3">
+                              <Check className="h-3.5 w-3.5 mr-1" /> Terbitkan
                             </Button>
-                          </a>
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
-          )}
+                            <Button size="sm" variant="outline" onClick={() => handleReject(s.id)} className="h-8 border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900 rounded-lg px-2">
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button size="sm" variant="outline" className="h-8 border-slate-200 text-slate-500 hover:bg-slate-50 rounded-lg text-xs px-3 font-medium">
+                            <Download className="h-3.5 w-3.5 mr-1.5" /> PDF
+                          </Button>
+                        )}
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }
 
 function UserSertifikatView() {
   const [expanded, setExpanded] = useState<string | null>(null);
-  const [kategori, setKategori] = useState<'perak' | 'silver' | 'gold'>('perak');
-  const [certificates, setCertificates] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [kategori, setKategori] = useState<'acara' | 'penghargaan'>('acara');
 
-  useEffect(() => {
-    async function fetchMyCerts() {
-      try {
-        const res = await sertifikatApi.byProtokoler();
-        setCertificates(res || []);
-      } catch (err: any) {
-        toast.error("Gagal memuat sertifikat Anda: " + err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchMyCerts();
-  }, []);
-
-  const totalCount = certificates.length;
-  const goldCount = certificates.filter(s => s.kategori === 'gold').length;
-  const silverCount = certificates.filter(s => s.kategori === 'silver').length;
-
-  const displayedSertifikat = certificates.filter(s => s.kategori === kategori);
+  const issued   = mockSertifikat.filter((s) => s.status === "diterbitkan").length;
+  const inProcess = mockSertifikat.filter((s) => s.status === "dalam_proses").length;
+  
+  const displayedSertifikat = mockSertifikat.filter(s => s.kategori === kategori);
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Award className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Penghargaan
               </span>
             </div>
             <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Sertifikat Saya</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Riwayat sertifikat penugasan dan tingkatan level keaktifan protokoler.</p>
+            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Riwayat sertifikat penugasan dan keaktifan protokoler.</p>
           </div>
         </div>
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            { label: "Level Gold", value: goldCount, icon: BadgeCheck, hint: "Kegiatan > 15", color: "text-amber-600", bg: "bg-amber-50" },
-            { label: "Level Silver", value: silverCount, icon: BadgeCheck, hint: "Kegiatan 6-15", color: "text-slate-600", bg: "bg-slate-50" },
-            { label: "Total Sertifikat", value: totalCount, icon: Award, hint: "Akumulasi jam tugas", color: "text-orange-600", bg: "bg-orange-50" },
+            { label: "Diterbitkan", value: issued, icon: BadgeCheck, hint: "Siap diunduh", color: "text-red-800", bg: "bg-red-50" },
+            { label: "Dalam Proses", value: inProcess, icon: Clock, hint: "Menunggu admin", color: "text-red-800", bg: "bg-red-50" },
+            { label: "Total", value: mockSertifikat.length, icon: Award, hint: "Seluruh riwayat", color: "text-red-800", bg: "bg-red-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
               <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
@@ -257,30 +274,29 @@ function UserSertifikatView() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 space-y-6">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2 space-y-6">
+
           <div className="flex gap-2">
-            {(['perak', 'silver', 'gold'] as const).map(k => (
-              <button 
-                key={k}
-                onClick={() => setKategori(k)} 
-                className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200", kategori === k ? "bg-orange-600 text-white border-orange-600 shadow-md shadow-orange-500/20" : "bg-white text-slate-600 border-white shadow-sm hover:text-slate-900 hover:shadow-md")}
-              >
-                Level {k.charAt(0).toUpperCase() + k.slice(1)}
-              </button>
-            ))}
+            <button 
+              onClick={() => setKategori('acara')} 
+              className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200", kategori === 'acara' ? "bg-red-800 text-white border-red-800 shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-white shadow-sm hover:text-slate-900 hover:shadow-md")}
+            >
+              Sertifikat Acara
+            </button>
+            <button 
+              onClick={() => setKategori('penghargaan')} 
+              className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200", kategori === 'penghargaan' ? "bg-red-800 text-white border-red-800 shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-white shadow-sm hover:text-slate-900 hover:shadow-md")}
+            >
+              Penghargaan
+            </button>
           </div>
 
-          {loading ? (
-            <div className="flex flex-col items-center justify-center p-20 bg-white border border-slate-200 rounded-2xl">
-              <Loader2 className="h-10 w-10 animate-spin text-orange-600 mb-2" />
-              <p className="text-slate-500 text-sm">Memuat sertifikat Anda...</p>
-            </div>
-          ) : displayedSertifikat.length === 0 ? (
+          {displayedSertifikat.length === 0 ? (
             <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-16 text-center">
               <Award className="h-12 w-12 mx-auto mb-4 text-slate-300" />
-              <h3 className="font-bold text-slate-900 text-lg">Belum ada sertifikat level {kategori}</h3>
-              <p className="text-slate-500 text-sm mt-1">Sertifikat tingkat ini akan diterbitkan setelah Anda memenuhi kriteria jumlah penugasan.</p>
+              <h3 className="font-bold text-slate-900 text-lg">Belum ada {kategori === 'acara' ? 'sertifikat' : 'penghargaan'}</h3>
+              <p className="text-slate-500 text-sm mt-1">{kategori === 'acara' ? 'Sertifikat akan diterbitkan setelah kegiatan selesai.' : 'Anda belum menerima penghargaan khusus.'}</p>
             </div>
           ) : (
             <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
@@ -295,18 +311,25 @@ function UserSertifikatView() {
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 py-5">
                         {/* Icon + info */}
                         <div className="flex items-center gap-4 flex-1 min-w-0">
-                          <div className="h-12 w-12 flex items-center justify-center shrink-0 rounded-xl bg-orange-50 text-orange-600">
-                            <Award className="h-5 w-5" />
+                          <div className={cn(
+                            "h-12 w-12 flex items-center justify-center shrink-0 rounded-xl",
+                            s.status === "diterbitkan" ? "bg-emerald-50" : "bg-slate-100"
+                          )}>
+                            <Award className={cn("h-5 w-5", s.status === "diterbitkan" ? "text-emerald-600" : "text-slate-400")} />
                           </div>
                           <div className="min-w-0">
-                            <h3 className="font-bold text-slate-900 text-base group-hover:text-orange-500 transition-colors truncate">Sertifikat Kelulusan Tugas</h3>
-                            <p className="text-slate-500 text-sm truncate">{s.kegiatan?.nama_kegiatan || "—"}</p>
+                            <h3 className="font-bold text-slate-900 text-base group-hover:text-red-700 transition-colors truncate">{s.judul}</h3>
+                            <p className="text-slate-500 text-sm truncate">{s.kegiatan}</p>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-4 md:shrink-0">
-                          <span className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border bg-emerald-50 text-emerald-700 border-emerald-200">
-                            <BadgeCheck className="h-3 w-3" /> Diterbitkan
+                          <span className={cn("inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border",
+                            s.status === "diterbitkan"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              : "bg-amber-50 text-amber-600 border-amber-200"
+                          )}>
+                            {s.status === "diterbitkan" ? <><BadgeCheck className="h-3 w-3" /> Diterbitkan</> : "Dalam Proses"}
                           </span>
                           <ChevronDown className={cn("h-4 w-4 text-slate-400 transition-transform", expanded === s.id && "rotate-180")} />
                         </div>
@@ -324,24 +347,33 @@ function UserSertifikatView() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                           <div>
                             <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Nomor Sertifikat</div>
-                            <div className="text-sm font-mono font-bold text-slate-900">{s.nomor_sertifikat}</div>
+                            <div className="text-sm font-mono font-bold text-slate-900">{s.nomor}</div>
                           </div>
                           <div>
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Kategori Tingkat</div>
-                            <div className="text-sm font-bold text-slate-900 uppercase">{s.kategori}</div>
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Peran Penugasan</div>
+                            <div className="text-sm font-bold text-slate-900">{s.peran}</div>
                           </div>
                           <div>
-                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Tanggal Terbit</div>
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Tanggal Kegiatan</div>
                             <div className="text-sm font-bold text-slate-900">
-                              {new Date(s.tanggal_terbit).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                              {new Date(s.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                            </div>
+                          </div>
+                          <div className="md:col-span-3">
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Lokasi</div>
+                            <div className="text-sm text-slate-700 flex items-center gap-1.5">
+                              <MapPin className="h-3.5 w-3.5 text-slate-400" /> {s.lokasi}
                             </div>
                           </div>
                         </div>
-                        <a href={`/api/sertifikat/${s.id}/download`} target="_blank" rel="noopener noreferrer">
+                        {s.status === "diterbitkan" && (
                           <Button className="rounded-xl bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-sm transition-colors gap-2 font-bold">
                             <Download className="h-4 w-4" /> Unduh Sertifikat PDF
                           </Button>
-                        </a>
+                        )}
+                        {s.status === "dalam_proses" && (
+                          <p className="text-xs text-amber-600 font-medium">Sertifikat sedang diproses oleh admin. Harap tunggu notifikasi.</p>
+                        )}
                       </motion.div>
                     )}
                   </motion.div>
@@ -350,7 +382,7 @@ function UserSertifikatView() {
             </motion.div>
           )}
         </section>
-      </div>
+      </main>
     </div>
   );
 }

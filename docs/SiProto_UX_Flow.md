@@ -1,6 +1,6 @@
 # UX FLOW & HALAMAN APLIKASI
 
-## SiProto – Sistem Informasi Protokoler Universitas
+## Protokoler – Sistem Informasi Protokoler Universitas
 
 **Versi 1.2 | Juni 2025**
 
@@ -10,7 +10,7 @@
 | ----------------- | ------------------------------------------------------- |
 | **Platform**      | Web App (Admin/Pimpinan) + Mobile App (Protokoler/Tamu) |
 | **Versi Dokumen** | 1.2                                                     |
-| **Referensi**     | SiProto_PRD.md v1.2 + SiProto_Alur_Sistem.md v1.2       |
+| **Referensi**     | Protokoler_PRD.md v1.2 + Protokoler_Alur_Sistem.md v1.2       |
 
 ---
 
@@ -18,7 +18,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                        SIPROTO PLATFORM                             │
+│                        Protokoler PLATFORM                             │
 ├─────────────────┬──────────────────┬──────────────┬─────────────────┤
 │   WEB APP       │   WEB APP        │  MOBILE APP  │  PUBLIK / TAMU  │
 │   (Admin)       │   (Dokumentasi)  │  (Protokoler)│  (Tanpa Login)  │
@@ -168,7 +168,7 @@
   │    └── Daftar testimoni tamu
   │
   └── [Dashboard Inovasi]
-       ├── Perbandingan sebelum vs sesudah SiProto
+       ├── Perbandingan sebelum vs sesudah Protokoler
        ├── Total sertifikat diterbitkan
        └── Grafik perkembangan keanggotaan
 ```
@@ -454,7 +454,7 @@ Galeri Dokumentasi Satu Kegiatan:
 
 ```
 [Link unik: /testimoni/<token-kegiatan>]
-  ├── Header: Logo SiProto + Nama Kegiatan
+  ├── Header: Logo Protokoler + Nama Kegiatan
   ├── Form:
   │    ├── Nama Anda (text)
   │    ├── Jabatan/Instansi (text, opsional)

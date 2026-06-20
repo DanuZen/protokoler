@@ -285,34 +285,28 @@ export const laporanApi = {
 export const regulasiMockData = [
   {
     id: 'reg-1',
-    judul: 'Penerimaan Tamu Pribadi & Dinas',
-    subtitle: 'SOP Penyambutan Tamu VVIP',
-    kategori: 'SOP',
-    tanggal_berlaku: '2025-01-01',
-    deskripsi: 'Panduan resmi UNP untuk penerimaan tamu pribadi dan dinas. Pastikan proses penyambutan berjalan efektif dan profesional.',
+    judul: 'SOP Penyambutan Tamu VVIP',
+    deskripsi: 'Panduan lengkap dan standar operasional untuk penyambutan pejabat negara, menteri, dan tamu kehormatan VIP/VVIP.',
+    tanggal_berlaku: '10 Jan 2026',
     link_dokumen: '#',
-    accentGradient: 'linear-gradient(135deg, #1e293b 0%, #334155 50%, #0f172a 100%)',
+    accentGradient: 'linear-gradient(135deg, #6B0000, #9f0000)'
   },
   {
     id: 'reg-2',
-    judul: 'Keprotokolan Pimpinan',
-    subtitle: 'SOP Kegiatan Resmi Pimpinan',
-    kategori: 'SOP',
-    tanggal_berlaku: '2025-06-01',
-    deskripsi: 'Panduan resmi keprotokolan UNP untuk setiap acara. Pastikan kegiatan berjalan sesuai standar dan mencerminkan citra positif.',
+    judul: 'SOP Tata Tempat Upacara',
+    deskripsi: 'Aturan presisi untuk pengaturan letak kursi, mimbar kehormatan, dan penempatan barisan dalam upacara resmi universitas.',
+    tanggal_berlaku: '15 Feb 2026',
     link_dokumen: '#',
-    accentGradient: 'linear-gradient(135deg, #6b0000 0%, #1e293b 50%, #0f172a 100%)',
+    accentGradient: 'linear-gradient(135deg, #D2AD5C, #eecf83)'
   },
   {
     id: 'reg-3',
-    judul: 'Penerimaan Tamu Pejabat',
-    subtitle: 'SOP Protokol Tamu Negara',
-    kategori: 'SOP',
-    tanggal_berlaku: '2026-06-10',
-    deskripsi: 'Panduan khusus penerimaan tamu pejabat di UNP. Pastikan proses penyambutan sesuai dengan protokol yang berlaku.',
+    judul: 'SOP Pelayanan Konsumsi',
+    deskripsi: 'Standar penyajian hidangan tamu (table manner), pengujian keamanan makanan, serta etika pelayanan jamuan resmi.',
+    tanggal_berlaku: '01 Mar 2026',
     link_dokumen: '#',
-    accentGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #450a0a 100%)',
-  },
+    accentGradient: 'linear-gradient(135deg, #1e293b, #334155)'
+  }
 ];
 
 export const regulasiApi = {
@@ -345,13 +339,40 @@ export const regulasiApi = {
   },
 };
 
-// ──────────────── DOKUMENTASI & POSTINGAN ────────────────
-const defaultPostingan = [
-  { id: 'post-1', judul: 'Persiapan Acara VIP Tingkat Menteri', kategori: 'Seremonial', gambar: '/gallery_1.png', tanggal: '2026-06-15T08:00:00Z', ringkasan: 'Persiapan matang tim protokoler untuk acara VIP tingkat nasional berjalan dengan lancar tanpa hambatan.' },
-  { id: 'post-2', judul: 'Pengarahan Tamu Resmi Universitas', kategori: 'Protokol VIP', gambar: '/gallery_2.png', tanggal: '2026-06-14T08:00:00Z', ringkasan: 'Briefing dan pengarahan khusus diberikan kepada tim yang akan bertugas menyambut tamu VVIP dari kementerian.' },
-  { id: 'post-3', judul: 'Puncak Upacara Wisuda Ke-123', kategori: 'Wisuda', gambar: '/gallery_3.png', tanggal: '2026-06-10T08:00:00Z', ringkasan: 'Momen puncak upacara wisuda periode ke-123. Tim protokoler mengawal jalannya acara dari awal hingga akhir.' },
-  { id: 'post-4', judul: 'Rapat Koordinasi Tim Nasional', kategori: 'Internal', gambar: '/gallery_1.png', tanggal: '2026-06-05T08:00:00Z', ringkasan: 'Koordinasi lintas divisi untuk mempersiapkan serangkaian agenda besar universitas di bulan depan.' },
-  { id: 'post-5', judul: 'Pelatihan Service Excellence', kategori: 'Pelatihan', gambar: '/gallery_2.png', tanggal: '2026-06-01T08:00:00Z', ringkasan: 'Peningkatan kapasitas anggota protokoler dalam memberikan pelayanan prima kepada tamu-tamen kehormatan.' },
+// ──────────────── POSTINGAN / DOKUMENTASI ────────────────
+const defaultPostingan: any[] = [
+  {
+    id: 'post-1',
+    kategori: 'Liputan Utama',
+    judul: 'Kunjungan Kerja Menteri Pendidikan ke Universitas Negeri Padang',
+    ringkasan: 'Tim Protokoler UNP sukses mengawal jalannya acara kunjungan kerja Mendikbudristek dalam rangka peresmian gedung laboratorium terpadu baru.',
+    tanggal: '2026-05-12T08:00:00Z',
+    gambar: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80'
+  },
+  {
+    id: 'post-2',
+    kategori: 'Pelatihan',
+    judul: 'Diklat Lanjutan Anggota Protokoler Angkatan 2026',
+    ringkasan: 'Pelatihan intensif mengenai table manner, tata upacara, dan public speaking untuk meningkatkan kualitas dan performa anggota di lapangan.',
+    tanggal: '2026-05-10T08:00:00Z',
+    gambar: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=1200&q=80'
+  },
+  {
+    id: 'post-3',
+    kategori: 'Galeri',
+    judul: 'Persiapan Wisuda Ke-134 UNP Berjalan Lancar',
+    ringkasan: 'Gladi bersih dan persiapan venue wisuda ke-134 yang dipimpin langsung oleh kordinator tata tempat dan tamu VIP.',
+    tanggal: '2026-05-08T08:00:00Z',
+    gambar: 'https://images.unsplash.com/photo-1523580494112-071d384e236c?w=1200&q=80'
+  },
+  {
+    id: 'post-4',
+    kategori: 'Agenda',
+    judul: 'Penyambutan Mahasiswa Baru Internasional',
+    ringkasan: 'Standar penyambutan khusus untuk mahasiswa internasional dalam program pertukaran budaya tingkat universitas.',
+    tanggal: '2026-05-05T08:00:00Z',
+    gambar: 'https://images.unsplash.com/photo-1511629091441-ee46146481b6?w=1200&q=80'
+  }
 ];
 
 export const postinganApi = {

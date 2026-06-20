@@ -152,16 +152,16 @@ export default function ProfilPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 text-white">
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <User className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-orange-600">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Pengaturan Akun
               </span>
             </div>
@@ -170,7 +170,7 @@ export default function ProfilPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 font-bold text-sm rounded-xl">
+          <span className="inline-flex items-center gap-2 bg-red-100 text-red-800 px-4 py-2 font-bold text-sm rounded-xl">
             <Shield className="h-4 w-4" /> {form.tingkat} Member
           </span>
           <span className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2 font-bold text-sm rounded-xl">
@@ -180,8 +180,8 @@ export default function ProfilPage() {
       </motion.div>
 
       {/* ─── Main Content ─── */}
-      <div className="flex-1 mt-8">
-        <div className="space-y-6">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
 
           <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6">
 
@@ -260,7 +260,7 @@ export default function ProfilPage() {
                 ) : (
                   <div className="flex gap-2">
                     <Button variant="ghost" size="sm" onClick={() => setEditing(false)} className="rounded-xl text-slate-500">Batal</Button>
-                    <Button size="sm" onClick={handleSave} className="rounded-xl bg-orange-500 text-white hover:bg-orange-600 transition-colors gap-1.5">
+                    <Button size="sm" onClick={handleSave} className="rounded-xl bg-red-700 text-white hover:bg-red-800 transition-colors gap-1.5">
                       <CheckCircle2 className="h-4 w-4" /> Simpan
                     </Button>
                   </div>
@@ -315,7 +315,7 @@ export default function ProfilPage() {
 
           </motion.div>
         </div>
-      </div>
+      </main>
       {/* ── Crop Modal ── */}
       {cropModalOpen && currentImageSrc && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">

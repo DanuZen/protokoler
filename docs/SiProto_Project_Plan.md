@@ -1,6 +1,6 @@
 # PROJECT PLAN
 
-## SiProto – Sistem Informasi Protokoler Universitas
+## Protokoler – Sistem Informasi Protokoler Universitas
 
 **Versi 1.2 | Juni 2025**
 
@@ -8,7 +8,7 @@
 
 | Info                | Detail                                                            |
 | ------------------- | ----------------------------------------------------------------- |
-| **Nama Proyek**     | SiProto – Sistem Informasi Protokoler Universitas                 |
+| **Nama Proyek**     | Protokoler – Sistem Informasi Protokoler Universitas                 |
 | **Institusi**       | Universitas (Lingkup Internal Kampus)                             |
 | **Versi Dokumen**   | 1.2                                                               |
 | **Tanggal Dibuat**  | Juni 2025                                                         |
@@ -29,7 +29,7 @@ Unit Protokoler di lingkungan universitas berperan penting dalam mendukung kelan
 - Tidak ada mekanisme evaluasi kegiatan yang terdokumentasi
 - Tidak ada rekam jejak pencapaian dan sertifikat bagi anggota
 
-SiProto dibangun sebagai solusi transformasi digital yang menjawab seluruh tantangan tersebut, sekaligus selaras dengan **4 indikator Lomba Anugerah Protokol 2026** dan mengacu pada **Dokumen Alur Sistem Aplikasi Protokol v1.0**.
+Protokoler dibangun sebagai solusi transformasi digital yang menjawab seluruh tantangan tersebut, sekaligus selaras dengan **4 indikator Lomba Anugerah Protokol 2026** dan mengacu pada **Dokumen Alur Sistem Aplikasi Protokol v1.0**.
 
 ---
 
@@ -79,7 +79,7 @@ SiProto dibangun sebagai solusi transformasi digital yang menjawab seluruh tanta
 
 - Gamifikasi pencapaian: Perak / Silver / Gold berdasarkan akumulasi kegiatan
 - Dashboard inovasi & rekap dampak transformasi digital
-- SiProto sebagai produk inovasi layanan keprotokolan kampus
+- Protokoler sebagai produk inovasi layanan keprotokolan kampus
 
 ### 3.2 Di Luar Lingkup (Out of Scope)
 
@@ -138,7 +138,7 @@ Target pengembangan: **1 – 2.5 bulan (10 minggu)** _(Updated: Ditambahkan Dash
 
 ## 7. Pemetaan Modul ke Indikator Lomba Anugerah Protokol 2026
 
-| Indikator          | Sub-indikator                | Modul SiProto                                                | Fase Alur            |
+| Indikator          | Sub-indikator                | Modul Protokoler                                                | Fase Alur            |
 | ------------------ | ---------------------------- | ------------------------------------------------------------ | -------------------- |
 | **1. Pendahuluan** | Peraturan                    | Repositori Regulasi                                          | Lintas Fase          |
 |                    | Pengelolaan SDM              | Pendaftaran Akun + Rekap Anggota                             | Fase ⓪ + ⑤           |
@@ -151,7 +151,7 @@ Target pengembangan: **1 – 2.5 bulan (10 minggu)** _(Updated: Ditambahkan Dash
 |                    | Dashboard Evaluasi           | Ringkasan & detail hasil evaluasi untuk Admin & Protokoler   | Fase ④               |
 |                    | Hasil & Tindak Lanjut        | Rekap Evaluasi + Laporan                                     | Fase ④ + ⑤           |
 | **4. Inovasi**     | Inovasi Layanan              | Absensi Selfie + Sertifikat Digital + Gamifikasi + Dashboard | Fase ③ + ④ + ④.A + ⑤ |
-|                    | Transformasi Digital         | SiProto sebagai produk inovasi layanan keprotokolan          | Keseluruhan          |
+|                    | Transformasi Digital         | Protokoler sebagai produk inovasi layanan keprotokolan          | Keseluruhan          |
 
 ---
 

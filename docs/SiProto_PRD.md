@@ -1,6 +1,6 @@
 # PRODUCT REQUIREMENTS DOCUMENT (PRD)
 
-## SiProto – Sistem Informasi Protokoler Universitas
+## Protokoler – Sistem Informasi Protokoler Universitas
 
 **Versi 1.2 | Juni 2025**
 
@@ -8,7 +8,7 @@
 
 | Info                | Detail                                                            |
 | ------------------- | ----------------------------------------------------------------- |
-| **Nama Produk**     | SiProto                                                           |
+| **Nama Produk**     | Protokoler                                                           |
 | **Versi**           | 1.2 – MVP                                                         |
 | **Status**          | Draft                                                             |
 | **Platform**        | Web App + Mobile App                                              |
@@ -19,7 +19,7 @@
 
 ## 1. Ringkasan Produk
 
-SiProto adalah sistem informasi berbasis web dan mobile yang dirancang untuk membantu unit protokoler universitas dalam mengelola seluruh siklus kegiatan protokoler: dari pendaftaran akun anggota, pembuatan kegiatan, seleksi & penugasan, absensi, evaluasi pasca kegiatan, hingga penerbitan sertifikat dan rekap pencapaian anggota.
+Protokoler adalah sistem informasi berbasis web dan mobile yang dirancang untuk membantu unit protokoler universitas dalam mengelola seluruh siklus kegiatan protokoler: dari pendaftaran akun anggota, pembuatan kegiatan, seleksi & penugasan, absensi, evaluasi pasca kegiatan, hingga penerbitan sertifikat dan rekap pencapaian anggota.
 
 Sistem dirancang selaras dengan **4 indikator Laporan Manajemen Keprotokolan** pada Lomba Anugerah Protokol 2026 (Pendahuluan, Pelaksanaan, Evaluasi, Inovasi) dan mengacu pada **Dokumen Alur Sistem Aplikasi Protokol v1.0**.
 
@@ -38,7 +38,7 @@ Sistem dirancang selaras dengan **4 indikator Laporan Manajemen Keprotokolan** p
 
 ## 3. Masalah yang Dipecahkan
 
-| Masalah Saat Ini                                 | Solusi di SiProto                                            |
+| Masalah Saat Ini                                 | Solusi di Protokoler                                            |
 | ------------------------------------------------ | ------------------------------------------------------------ |
 | Pendaftaran anggota manual & tidak terverifikasi | Modul pendaftaran akun dengan verifikasi admin & upload foto |
 | Tidak ada rekam jejak mahasiswa bertugas         | Riwayat tugas, sertifikat, dan rekap pencapaian per anggota  |
@@ -197,7 +197,7 @@ _(Indikator 1: Peraturan + Indikator 3: Laporan + Indikator 4: Inovasi)_
 | 2   | Laporan Kegiatan Per Periode | Daftar semua kegiatan, detail, evaluasi, dan rekap dalam rentang waktu tertentu                          | HIGH      |
 | 3   | Ekspor Laporan               | Unduh laporan dalam format PDF dan Excel                                                                 | HIGH      |
 | 4   | Dashboard Statistik          | Grafik: total kegiatan, protokoler teraktif, distribusi peran, tren evaluasi                             | MEDIUM    |
-| 5   | Dashboard Inovasi            | Ringkasan transformasi digital: perbandingan sebelum/sesudah SiProto                                     | MEDIUM    |
+| 5   | Dashboard Inovasi            | Ringkasan transformasi digital: perbandingan sebelum/sesudah Protokoler                                     | MEDIUM    |
 | 6   | Dashboard Dokumentasi        | Halaman khusus untuk role dokumentasi: list acara selesai & upload media                                 | MEDIUM    |
 | 7   | Dashboard Evaluasi           | Tampilkan hasil evaluasi dari admin, protokoler, dan tamu dalam satu halaman (akses: Admin & Protokoler) | HIGH      |
 | 8   | Notifikasi & Reminder        | Push notification untuk penugasan, reminder H-1 & H-0 kegiatan, batas waktu angket                       | HIGH      |
@@ -386,7 +386,7 @@ _(Indikator 1: Peraturan + Indikator 3: Laporan + Indikator 4: Inovasi)_
 
 ## 11. Pemetaan Fitur ke Indikator Lomba Anugerah Protokol 2026
 
-| Indikator          | Sub-indikator                | Modul SiProto                                       |
+| Indikator          | Sub-indikator                | Modul Protokoler                                       |
 | ------------------ | ---------------------------- | --------------------------------------------------- |
 | **1. Pendahuluan** | Peraturan                    | Repositori Regulasi & Dasar Hukum                   |
 |                    | Pengelolaan SDM              | Pendaftaran Akun + Verifikasi + Rekap Anggota       |
@@ -397,7 +397,7 @@ _(Indikator 1: Peraturan + Indikator 3: Laporan + Indikator 4: Inovasi)_
 | **3. Evaluasi**    | Mekanisme Evaluasi           | Angket Evaluasi + Testimoni Tamu + Feedback Admin   |
 |                    | Hasil & Tindak Lanjut        | Rekap Evaluasi + Laporan Periodik + Tindak Lanjut   |
 | **4. Inovasi**     | Inovasi Layanan              | Absensi Selfie + Sertifikat Digital + Gamifikasi    |
-|                    | Transformasi Digital         | SiProto sebagai produk inovasi digital keprotokolan |
+|                    | Transformasi Digital         | Protokoler sebagai produk inovasi digital keprotokolan |
 
 ---
 

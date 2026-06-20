@@ -1,6 +1,6 @@
 # UAT CHECKLIST — USER ACCEPTANCE TESTING
 
-## SiProto – Sistem Informasi Protokoler Universitas
+## Protokoler – Sistem Informasi Protokoler Universitas
 
 **Versi 1.2 | Juni 2025**
 
@@ -9,7 +9,7 @@
 | Info              | Detail                                            |
 | ----------------- | ------------------------------------------------- |
 | **Versi Dokumen** | 1.2                                               |
-| **Referensi**     | SiProto_PRD.md v1.2 + SiProto_Alur_Sistem.md v1.2 |
+| **Referensi**     | Protokoler_PRD.md v1.2 + Protokoler_Alur_Sistem.md v1.2 |
 | **Tester**        | Tim Internal + Sample User                        |
 | **Metode**        | Pengujian manual per fase alur sistem             |
 

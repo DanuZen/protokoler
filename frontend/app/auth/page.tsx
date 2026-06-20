@@ -199,7 +199,7 @@ export default function AuthPage() {
 
   const roleCards = [
     { role: 'admin' as const, label: 'Pimpinan', desc: 'Kelola seluruh sistem', icon: Shield, color: 'bg-slate-900 text-white hover:bg-slate-800', iconBg: 'bg-white/10' },
-    { role: 'mahasiswa' as const, label: 'Protokoler', desc: 'Akses tugas & jadwal', icon: GraduationCap, color: 'bg-orange-500 text-white hover:bg-orange-600', iconBg: 'bg-white/20' },
+    { role: 'mahasiswa' as const, label: 'Protokoler', desc: 'Akses tugas & jadwal', icon: GraduationCap, color: 'bg-red-700 text-white hover:bg-red-800', iconBg: 'bg-white/20' },
     { role: 'dokumentasi' as const, label: 'Dokumentasi', desc: 'Kelola galeri & media', icon: Briefcase, color: 'bg-white text-slate-900 hover:bg-slate-50 border border-slate-200', iconBg: 'bg-slate-100' },
   ];
 
@@ -258,10 +258,10 @@ export default function AuthPage() {
       </div>
 
       {/* ── Right Panel: Auth Card & Orange Background ── */}
-      <div className="flex items-center justify-center p-6 relative bg-slate-50 lg:bg-orange-50/50">
+      <div className="flex items-center justify-center p-6 relative bg-slate-50 lg:bg-red-50/50">
         {/* Gradients specific to right panel */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-200/30 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-100/40 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-200/30 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-100/40 rounded-full blur-[100px] pointer-events-none" />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -299,20 +299,20 @@ export default function AuthPage() {
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                           <Mail className="h-4 w-4 text-slate-400" />
                         </div>
-                        <Input type="email" value={email} onChange={e => setEmail(e.target.value)} className="rounded-xl h-11 lg:h-12 pl-10 border-slate-200 text-sm bg-slate-50 focus:bg-white focus:border-orange-400 transition-colors shadow-sm" placeholder="nama@kampus.ac.id" required />
+                        <Input type="email" value={email} onChange={e => setEmail(e.target.value)} className="rounded-xl h-11 lg:h-12 pl-10 border-slate-200 text-sm bg-slate-50 focus:bg-white focus:border-red-600 transition-colors shadow-sm" placeholder="nama@kampus.ac.id" required />
                       </div>
                     </div>
                     
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
                         <Label className="text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Password</Label>
-                        <a href="#" className="text-[10px] lg:text-xs font-bold text-orange-500 hover:text-orange-600 transition-colors">Lupa password?</a>
+                        <a href="#" className="text-[10px] lg:text-xs font-bold text-red-700 hover:text-red-800 transition-colors">Lupa password?</a>
                       </div>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                           <Lock className="h-4 w-4 text-slate-400" />
                         </div>
-                        <Input type="password" value={password} onChange={e => setPassword(e.target.value)} className="rounded-xl h-11 lg:h-12 pl-10 border-slate-200 text-sm bg-slate-50 focus:bg-white focus:border-orange-400 transition-colors shadow-sm" placeholder="Masukkan password Anda" required />
+                        <Input type="password" value={password} onChange={e => setPassword(e.target.value)} className="rounded-xl h-11 lg:h-12 pl-10 border-slate-200 text-sm bg-slate-50 focus:bg-white focus:border-red-600 transition-colors shadow-sm" placeholder="Masukkan password Anda" required />
                       </div>
                     </div>
                     
@@ -348,10 +348,10 @@ export default function AuthPage() {
                   <div className="flex items-center gap-1 mb-6">
                     {steps.map((s, i) => (
                       <div key={i} className="flex items-center gap-1 flex-1">
-                        <div className={`h-7 w-7 flex items-center justify-center text-xs font-bold rounded-lg transition-all ${step > i + 1 ? 'bg-orange-500 text-white' : step === i + 1 ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                        <div className={`h-7 w-7 flex items-center justify-center text-xs font-bold rounded-lg transition-all ${step > i + 1 ? 'bg-red-700 text-white' : step === i + 1 ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-400'}`}>
                           {step > i + 1 ? <Check className="h-3.5 w-3.5" /> : i + 1}
                         </div>
-                        {i < steps.length - 1 && <div className={`h-px flex-1 mx-1 ${step > i + 1 ? 'bg-orange-400' : 'bg-slate-200'}`} />}
+                        {i < steps.length - 1 && <div className={`h-px flex-1 mx-1 ${step > i + 1 ? 'bg-red-600' : 'bg-slate-200'}`} />}
                       </div>
                     ))}
                   </div>
@@ -379,7 +379,7 @@ export default function AuthPage() {
                           <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Program Studi <span className="text-red-500">*</span></Label>
                           <Input className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.prodi} onChange={(e) => setRegForm({ ...regForm, prodi: e.target.value })} />
                         </div>
-                        <Button className="w-full rounded-xl h-11 font-bold bg-orange-500 hover:bg-orange-600 text-white mt-2 transition-colors" disabled={!regForm.nim || !regForm.nama_lengkap || !regForm.prodi} onClick={() => setStep(2)}>
+                        <Button className="w-full rounded-xl h-11 font-bold bg-red-700 hover:bg-red-800 text-white mt-2 transition-colors" disabled={!regForm.nim || !regForm.nama_lengkap || !regForm.prodi} onClick={() => setStep(2)}>
                           Lanjut <ChevronRight className="h-4 w-4 ml-2" />
                         </Button>
                       </motion.div>
@@ -397,7 +397,7 @@ export default function AuthPage() {
                           <div key={type}>
                             <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{label} <span className="text-red-500">*</span></Label>
                             <p className="text-xs text-slate-400 mb-2">{desc}</p>
-                            <label className={`flex flex-col items-center justify-center w-full h-28 border-2 border-dashed cursor-pointer transition-colors rounded-xl ${preview ? 'border-orange-300 bg-orange-50' : 'border-slate-200 bg-slate-50 hover:bg-slate-100'}`}>
+                            <label className={`flex flex-col items-center justify-center w-full h-28 border-2 border-dashed cursor-pointer transition-colors rounded-xl ${preview ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-slate-50 hover:bg-slate-100'}`}>
                               {preview ? (
                                 <div className="relative h-full w-full">
                                   <Image src={preview} alt="preview" fill className="object-contain p-1 rounded-xl" />
@@ -414,7 +414,7 @@ export default function AuthPage() {
                         ))}
                         <div className="flex gap-3 pt-1">
                           <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={() => setStep(1)}><ChevronLeft className="h-4 w-4 mr-1" /> Kembali</Button>
-                          <Button className="flex-1 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white" onClick={() => setStep(3)}>Lanjut <ChevronRight className="h-4 w-4 ml-2" /></Button>
+                          <Button className="flex-1 rounded-xl font-bold bg-red-700 hover:bg-red-800 text-white" onClick={() => setStep(3)}>Lanjut <ChevronRight className="h-4 w-4 ml-2" /></Button>
                         </div>
                       </motion.div>
                     )}
@@ -438,7 +438,7 @@ export default function AuthPage() {
                         </div>
                         <div className="flex gap-3 pt-1">
                           <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={() => setStep(2)}><ChevronLeft className="h-4 w-4 mr-1" /> Kembali</Button>
-                          <Button className="flex-1 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white" disabled={loading || !regForm.email || !regForm.password || regForm.password !== regForm.password_confirm} onClick={handleRegister}>
+                          <Button className="flex-1 rounded-xl font-bold bg-red-700 hover:bg-red-800 text-white" disabled={loading || !regForm.email || !regForm.password || regForm.password !== regForm.password_confirm} onClick={handleRegister}>
                             {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Mendaftarkan...</> : 'Kirim Pendaftaran'}
                           </Button>
                         </div>
@@ -451,14 +451,14 @@ export default function AuthPage() {
               {/* ── REGISTERED: Waiting Verification ── */}
               {mode === 'register' && registered && (
                 <motion.div key="pending" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-4 space-y-5">
-                  <div className="h-20 w-20 mx-auto bg-orange-100 border-2 border-orange-200 rounded-2xl flex items-center justify-center">
-                    <Clock className="h-10 w-10 text-orange-500" />
+                  <div className="h-20 w-20 mx-auto bg-red-100 border-2 border-red-200 rounded-2xl flex items-center justify-center">
+                    <Clock className="h-10 w-10 text-red-700" />
                   </div>
                   <div>
                     <h2 className="font-display text-2xl font-bold text-slate-900 mb-2">Pendaftaran Terkirim!</h2>
                     <p className="text-sm text-slate-500 leading-relaxed">Data Anda sedang ditinjau oleh Admin. Anda akan dinotifikasi setelah akun diverifikasi.</p>
                   </div>
-                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 text-xs text-orange-700 text-left font-medium">
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-xs text-red-900 text-left font-medium">
                     ℹ️ Proses verifikasi biasanya memakan waktu 1×24 jam kerja.
                   </div>
                   <Button variant="outline" onClick={() => { setMode('login'); setRegistered(false); }} className="w-full rounded-xl border-slate-200 font-semibold">

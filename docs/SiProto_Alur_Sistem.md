@@ -1,6 +1,6 @@
 # ALUR SISTEM
 
-## SiProto – Sistem Informasi Protokoler Universitas
+## Protokoler – Sistem Informasi Protokoler Universitas
 
 **Versi 1.2 | Juni 2025**
 
@@ -8,7 +8,7 @@
 
 | Info              | Detail                                       |
 | ----------------- | -------------------------------------------- |
-| **Nama Produk**   | SiProto                                      |
+| **Nama Produk**   | Protokoler                                      |
 | **Versi**         | 1.2                                          |
 | **Dokumen**       | Alur Kerja & Narasi Sistem                   |
 | **Role Terlibat** | Admin, Protokoler, Tamu, Dokumentasi, Sistem |
@@ -29,11 +29,11 @@
 
 ## Gambaran Umum Alur Sistem
 
-Bagian ini merangkum alur utama SiProto dari awal hingga akhir. Intinya, sistem bergerak dari pendaftaran akun, persiapan kegiatan, pendaftaran tugas, pelaksanaan, pasca kegiatan, lalu rekap pencapaian anggota.
+Bagian ini merangkum alur utama Protokoler dari awal hingga akhir. Intinya, sistem bergerak dari pendaftaran akun, persiapan kegiatan, pendaftaran tugas, pelaksanaan, pasca kegiatan, lalu rekap pencapaian anggota.
 
 ```mermaid
 flowchart LR
-   subgraph ALUR_SIPROTO["ALUR SISTEM SIPROTO"]
+   subgraph ALUR_Protokoler["ALUR SISTEM Protokoler"]
       A["⓪ Pendaftaran Akun"] --> B["① Persiapan Kegiatan"]
       B --> C["② Pendaftaran Kegiatan"]
       C --> D["③ Pelaksanaan Kegiatan"]
