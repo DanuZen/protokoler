@@ -91,9 +91,9 @@ export default function ProfilPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <User className="h-7 w-7" />
@@ -119,8 +119,8 @@ export default function ProfilPage() {
       </motion.div>
 
       {/* ─── Main Content ─── */}
-      <div className="flex-1 mt-8">
-        <div className="space-y-6">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
 
           <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6">
 
@@ -254,7 +254,7 @@ export default function ProfilPage() {
 
           </motion.div>
         </div>
-      </div>
+      </main>
       {/* ── Crop Modal ── */}
       {cropModalOpen && currentImageSrc && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">

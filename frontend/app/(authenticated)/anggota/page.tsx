@@ -81,10 +81,10 @@ export default function AnggotaPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60 shrink-0">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Users className="h-7 w-7" />
@@ -102,156 +102,155 @@ export default function AnggotaPage() {
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="relative z-20 pb-0">
-
-      <motion.div initial="hidden" animate="visible" variants={stagger} className="grid gap-4 md:grid-cols-3">
-        {[
-          { label: "Menunggu Verifikasi", value: pendingCount, icon: ShieldCheck, hint: "Perlu ditinjau", color: "text-amber-600", bg: "bg-amber-100" },
-          { label: "Protokoler Aktif", value: aktifCount, icon: UserCheck, hint: "Anggota aktif", color: "text-emerald-600", bg: "bg-emerald-100" },
-          { label: "Total Terdaftar", value: allData.length, icon: Users, hint: "Seluruh anggota", color: "text-[#ff6b4a]", bg: "bg-red-50" },
-        ].map((stat, i) => (
-          <motion.div key={stat.label} variants={fadeUp}>
-            <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full">
-              <div className="flex items-center justify-between relative z-10">
-                <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
-                  <stat.icon className="h-5 w-5" />
+      <section className="relative z-20 pb-0 shrink-0">
+        <motion.div initial="hidden" animate="visible" variants={stagger} className="grid gap-4 md:grid-cols-3">
+          {[
+            { label: "Menunggu Verifikasi", value: pendingCount, icon: ShieldCheck, hint: "Perlu ditinjau", color: "text-amber-600", bg: "bg-amber-100" },
+            { label: "Protokoler Aktif", value: aktifCount, icon: UserCheck, hint: "Anggota aktif", color: "text-emerald-600", bg: "bg-emerald-100" },
+            { label: "Total Terdaftar", value: allData.length, icon: Users, hint: "Seluruh anggota", color: "text-[#ff6b4a]", bg: "bg-red-50" },
+          ].map((stat, i) => (
+            <motion.div key={stat.label} variants={fadeUp}>
+              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full">
+                <div className="flex items-center justify-between relative z-10">
+                  <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
+                  <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                    <stat.icon className="h-5 w-5" />
+                  </div>
+                </div>
+                <div className="mt-4 relative z-10">
+                  <p className={cn("text-[32px] font-bold leading-tight", stat.color || "text-slate-900")}>{stat.value}</p>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
+                  </div>
                 </div>
               </div>
-              <div className="mt-4 relative z-10">
-                <p className={cn("text-[32px] font-bold leading-tight", stat.color || "text-slate-900")}>{stat.value}</p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+            </motion.div>
+          ))}
+        </motion.div>
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
-        
-        {/* Toolbar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-100 px-6 py-4 bg-white">
-          <div className="flex items-center p-1 bg-slate-50 border border-slate-200 rounded-2xl w-full md:w-auto">
-            <button 
-              onClick={() => setTab("semua")} 
-              className={cn(
-                "flex-1 md:flex-none px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-200",
-                tab === "semua" ? "bg-white text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.08)]" : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
-              )}
-            >
-              Semua Anggota
-            </button>
-            <button 
-              onClick={() => setTab("pending")} 
-              className={cn(
-                "flex-1 md:flex-none px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2",
-                tab === "pending" ? "bg-white text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.08)]" : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
-              )}
-            >
-              Menunggu Verifikasi 
-              {pendingCount > 0 && (
-                <span className={cn(
-                  "text-[10px] px-1.5 py-0.5 rounded-md font-bold", 
-                  tab === "pending" ? "bg-red-100 text-red-900" : "bg-slate-200 text-slate-600"
-                )}>
-                  {pendingCount}
-                </span>
-              )}
-            </button>
-          </div>
+      <main className="flex-1 min-h-0 flex flex-col mt-6 overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden flex flex-col h-full">
           
-          <div className="relative w-full md:max-w-xs">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <Input 
-              className="pl-9 rounded-xl border-slate-200 bg-white text-slate-900 placeholder-slate-400 focus-visible:ring-slate-200 shadow-sm h-10" 
-              placeholder="Cari nama, NIM..." 
-              value={search} 
-              onChange={(e) => setSearch(e.target.value)} 
-            />
+          {/* Toolbar */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-100 px-6 py-4 bg-white shrink-0">
+            <div className="flex items-center p-1 bg-slate-50 border border-slate-200 rounded-2xl w-full md:w-auto">
+              <button 
+                onClick={() => setTab("semua")} 
+                className={cn(
+                  "flex-1 md:flex-none px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-200",
+                  tab === "semua" ? "bg-white text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.08)]" : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
+                )}
+              >
+                Semua Anggota
+              </button>
+              <button 
+                onClick={() => setTab("pending")} 
+                className={cn(
+                  "flex-1 md:flex-none px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2",
+                  tab === "pending" ? "bg-white text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.08)]" : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
+                )}
+              >
+                Menunggu Verifikasi 
+                {pendingCount > 0 && (
+                  <span className={cn(
+                    "text-[10px] px-1.5 py-0.5 rounded-md font-bold", 
+                    tab === "pending" ? "bg-red-100 text-red-900" : "bg-slate-200 text-slate-600"
+                  )}>
+                    {pendingCount}
+                  </span>
+                )}
+              </button>
+            </div>
+            
+            <div className="relative w-full md:max-w-xs">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Input 
+                className="pl-9 rounded-xl border-slate-200 bg-white text-slate-900 placeholder-slate-400 focus-visible:ring-slate-200 shadow-sm h-10" 
+                placeholder="Cari nama, NIM..." 
+                value={search} 
+                onChange={(e) => setSearch(e.target.value)} 
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Data Table */}
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-slate-50 border-b border-slate-200">
-              <TableRow className="border-none">
-                <TableHead className="font-bold text-slate-800 pl-6">Protokoler</TableHead>
-                <TableHead className="font-bold text-slate-800">Program Studi</TableHead>
-                <TableHead className="font-bold text-slate-800">Kontak</TableHead>
-                <TableHead className="font-bold text-slate-800 text-center">Kegiatan</TableHead>
-                <TableHead className="font-bold text-slate-800">Status</TableHead>
-                {tab === "semua" && <TableHead className="font-bold text-slate-800 pr-6">Pencapaian</TableHead>}
-                {tab === "pending" && <TableHead className="font-bold text-slate-800 text-right pr-6">Verifikasi</TableHead>}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow><TableCell colSpan={7} className="h-24 text-center">Memuat data...</TableCell></TableRow>
-              ) : filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={7} className="h-32 text-center text-slate-500">Tidak ada data.</TableCell></TableRow>
-              ) : (
-                filtered.map((m) => (
-                  <TableRow key={m.id} className="hover:bg-slate-50 border-b border-slate-100 transition-colors">
-                    <TableCell className="pl-6">
-                      <div className="font-bold text-slate-800">{m.nama_lengkap}</div>
-                      <div className="text-xs text-slate-500 font-mono mt-0.5">{m.nim}</div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-slate-700">{m.prodi}</div>
-                      <div className="text-xs text-slate-500 mt-0.5">{m.fakultas}</div>
-                    </TableCell>
-                    <TableCell className="text-slate-600 text-sm">{m.no_hp}</TableCell>
-                    <TableCell className="text-center">
-                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-800 font-bold text-sm">
-                        {m.total_kegiatan || 0}
-                      </span>
-                    </TableCell>
-                    <TableCell><BadgeStatus status={m.status_akun} /></TableCell>
-                    
-                    {tab === "semua" && (
-                      <TableCell className="pr-6">
-                        <div className="flex flex-col gap-1.5 items-start">
-                          {m.kategori_sertifikat ? <BadgeKategori kategori={m.kategori_sertifikat} /> : <span className="text-xs text-slate-400">—</span>}
-                        </div>
+          {/* Data Table */}
+          <div className="flex-1 overflow-auto">
+            <Table>
+              <TableHeader className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
+                <TableRow className="border-none">
+                  <TableHead className="font-bold text-slate-800 pl-6">Protokoler</TableHead>
+                  <TableHead className="font-bold text-slate-800">Program Studi</TableHead>
+                  <TableHead className="font-bold text-slate-800">Kontak</TableHead>
+                  <TableHead className="font-bold text-slate-800 text-center">Kegiatan</TableHead>
+                  <TableHead className="font-bold text-slate-800">Status</TableHead>
+                  {tab === "semua" && <TableHead className="font-bold text-slate-800 pr-6">Pencapaian</TableHead>}
+                  {tab === "pending" && <TableHead className="font-bold text-slate-800 text-right pr-6">Verifikasi</TableHead>}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <TableRow><TableCell colSpan={7} className="h-24 text-center">Memuat data...</TableCell></TableRow>
+                ) : filtered.length === 0 ? (
+                  <TableRow><TableCell colSpan={7} className="h-32 text-center text-slate-500">Tidak ada data.</TableCell></TableRow>
+                ) : (
+                  filtered.map((m) => (
+                    <TableRow key={m.id} className="hover:bg-slate-50 border-b border-slate-100 transition-colors">
+                      <TableCell className="pl-6">
+                        <div className="font-bold text-slate-800">{m.nama_lengkap}</div>
+                        <div className="text-xs text-slate-500 font-mono mt-0.5">{m.nim}</div>
                       </TableCell>
-                    )}
+                      <TableCell>
+                        <div className="text-slate-700">{m.prodi}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">{m.fakultas}</div>
+                      </TableCell>
+                      <TableCell className="text-slate-600 text-sm">{m.no_hp}</TableCell>
+                      <TableCell className="text-center">
+                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-800 font-bold text-sm">
+                          {m.total_kegiatan || 0}
+                        </span>
+                      </TableCell>
+                      <TableCell><BadgeStatus status={m.status_akun} /></TableCell>
+                      
+                      {tab === "semua" && (
+                        <TableCell className="pr-6">
+                          <div className="flex flex-col gap-1.5 items-start">
+                            {m.kategori_sertifikat ? <BadgeKategori kategori={m.kategori_sertifikat} /> : <span className="text-xs text-slate-400">—</span>}
+                          </div>
+                        </TableCell>
+                      )}
 
-                    {tab === "pending" && (
-                      <TableCell className="text-right pr-6">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="rounded-xl border-green-500 text-green-700 hover:bg-green-50 font-bold"
-                            onClick={() => { setSelected(m); setDialogMode("approve"); }}
-                          >
-                            <Check className="h-4 w-4 mr-1" /> Setujui
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="rounded-xl border-red-500 text-red-700 hover:bg-red-50 font-bold"
-                            onClick={() => { setSelected(m); setDialogMode("reject"); setRejectReason(""); }}
-                          >
-                            <X className="h-4 w-4 mr-1" /> Tolak
-                          </Button>
-                        </div>
-                      </TableCell>
-                    )}
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </motion.div>
+                      {tab === "pending" && (
+                        <TableCell className="text-right pr-6">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="rounded-xl border-green-500 text-green-700 hover:bg-green-50 font-bold"
+                              onClick={() => { setSelected(m); setDialogMode("approve"); }}
+                            >
+                              <Check className="h-4 w-4 mr-1" /> Setujui
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="rounded-xl border-red-500 text-red-700 hover:bg-red-50 font-bold"
+                              onClick={() => { setSelected(m); setDialogMode("reject"); setRejectReason(""); }}
+                            >
+                              <X className="h-4 w-4 mr-1" /> Tolak
+                            </Button>
+                          </div>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </motion.div>
+      </main>
 
       {/* Verification Dialogs */}
       <Dialog open={dialogMode !== null} onOpenChange={(open) => !open && setDialogMode(null)}>
@@ -301,8 +300,6 @@ export default function AnggotaPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-        </section>
-      </div>
     </div>
   );
 }

@@ -168,10 +168,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   ];
 
   return (
-    <div className="min-h-full relative z-10">
-      <div className="space-y-6 px-6 md:px-8 py-6 pb-20">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4 relative z-10">
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-start md:items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-800/20 text-white">
             <Calendar className="h-7 w-7" />
@@ -223,7 +222,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
       </motion.div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-2 overflow-x-auto mb-8 pb-2">
+      <div className="shrink-0 flex gap-2 overflow-x-auto mb-8 pb-2">
         {tabs.map((t) => (
           <button
             key={t.key}
@@ -240,9 +239,11 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Tab Panels */}
-      <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
-        
-        {/* ── Tab INFO ── */}
+      <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto pr-2 pb-12">
+          <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="h-full flex flex-col">
+            
+            {/* ── Tab INFO ── */}
         {tab === "info" && (
           <div className="grid lg:grid-cols-3 gap-6 items-stretch min-h-[500px]">
             {/* Left Card: Informasi Kegiatan */}
@@ -1170,8 +1171,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           </Card>
         )}
 
-      </motion.div>
-      </div>
+          </motion.div>
+        </div>
+      </main>
     </div>
   );
 }

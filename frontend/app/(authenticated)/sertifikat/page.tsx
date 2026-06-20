@@ -83,9 +83,9 @@ function AdminSertifikatView() {
   const handleReject = (id: string) => toast.success(`Permintaan sertifikat ditolak.`);
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* HEADER SECTION */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Award className="h-7 w-7" />
@@ -108,7 +108,7 @@ function AdminSertifikatView() {
       </motion.div>
 
       {/* STATS */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
         <div className="grid gap-4 md:grid-cols-3">
           {[
             { label: "Menunggu Persetujuan", value: pendingCount, icon: Clock, hint: "Butuh verifikasi", color: "text-amber-600", bg: "bg-amber-100" },
@@ -136,8 +136,8 @@ function AdminSertifikatView() {
       </section>
 
       {/* BODY CONTENT */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 space-y-6">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
             <div className="flex gap-1 overflow-x-auto pb-1 sm:pb-0 [&::-webkit-scrollbar]:hidden">
               <button onClick={() => setTab('semua')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'semua' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Semua Sertifikat</button>
@@ -211,7 +211,7 @@ function AdminSertifikatView() {
             </div>
           </motion.div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }
@@ -226,9 +226,9 @@ function UserSertifikatView() {
   const displayedSertifikat = mockSertifikat.filter(s => s.kategori === kategori);
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Award className="h-7 w-7" />
@@ -246,7 +246,7 @@ function UserSertifikatView() {
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
         <div className="grid gap-4 md:grid-cols-3">
           {[
             { label: "Diterbitkan", value: issued, icon: BadgeCheck, hint: "Siap diunduh", color: "text-red-800", bg: "bg-red-50" },
@@ -274,8 +274,8 @@ function UserSertifikatView() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 space-y-6">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2 space-y-6">
 
           <div className="flex gap-2">
             <button 
@@ -382,7 +382,7 @@ function UserSertifikatView() {
             </motion.div>
           )}
         </section>
-      </div>
+      </main>
     </div>
   );
 }

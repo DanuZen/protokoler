@@ -48,9 +48,9 @@ export default function Page() {
   };
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <FileBarChart className="h-7 w-7" />
@@ -68,7 +68,7 @@ export default function Page() {
       </motion.div>
 
       {/* ─── Floating Toolbar (Filter) ─── */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-5">
           <div className="flex items-center gap-2 text-slate-500 font-bold text-sm uppercase tracking-wider shrink-0 bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl">
             <Filter className="h-4 w-4 text-slate-400" />
@@ -88,8 +88,9 @@ export default function Page() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
 
           {/* Kegiatan Table */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="h-[500px] flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
@@ -214,8 +215,9 @@ export default function Page() {
             </Table>
             </div>
           </motion.div>
+          </div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }

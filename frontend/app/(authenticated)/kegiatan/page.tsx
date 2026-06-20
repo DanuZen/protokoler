@@ -90,9 +90,9 @@ export default function KegiatanPage() {
   const todayStr = getLocalISODate(today);
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <CalendarDays className="h-7 w-7" />
@@ -117,7 +117,7 @@ export default function KegiatanPage() {
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {[
             { label: "Akan Datang", value: upcoming, icon: Clock, hint: "Segera dilaksanakan", color: "text-red-800", bg: "bg-red-50" },
@@ -144,12 +144,12 @@ export default function KegiatanPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 space-y-6">
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 flex-1 min-h-0">
 
             {/* ── Calendar Panel ── */}
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="xl:col-span-1 bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden h-[500px] flex flex-col">
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="xl:col-span-1 bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden flex flex-col min-h-0">
               {/* Month nav header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
                 <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-red-700 hover:text-red-700 text-slate-400 bg-white transition-colors shadow-sm">
@@ -225,7 +225,7 @@ export default function KegiatanPage() {
             </motion.div>
 
             {/* ── Agenda List ── */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="xl:col-span-3 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl flex flex-col h-[500px] overflow-hidden">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="xl:col-span-3 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl flex flex-col min-h-0 overflow-hidden">
               
               {/* Top Header & Search */}
               <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 border-b border-slate-100 bg-white">
@@ -354,7 +354,7 @@ export default function KegiatanPage() {
             </motion.div>
           </div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }

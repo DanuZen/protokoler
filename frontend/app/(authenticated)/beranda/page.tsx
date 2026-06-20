@@ -50,10 +50,10 @@ export default function BerandaPage() {
   const displayName = protokoler?.nama_lengkap || user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Protokoler';
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         {/* Left: Title & Description */}
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
@@ -106,7 +106,7 @@ export default function BerandaPage() {
       </motion.div>
 
       {/* ─── FLOATING STATS ─── */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
             { 
@@ -181,8 +181,8 @@ export default function BerandaPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
             {/* Gamification Progress Card */}
             {protokoler?.status_akun === "aktif" && (
@@ -295,7 +295,7 @@ export default function BerandaPage() {
             </motion.div>
           </div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }

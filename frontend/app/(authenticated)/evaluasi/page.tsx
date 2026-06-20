@@ -115,9 +115,9 @@ export default function EvaluasiPage() {
   const totalEvaluated = 124;
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <ClipboardCheck className="h-7 w-7" />
@@ -145,7 +145,7 @@ export default function EvaluasiPage() {
       </motion.div>
 
       {/* ─── Floating Toolbar ─── */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-5">
             <div className="relative max-w-md w-full">
               <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
@@ -158,8 +158,8 @@ export default function EvaluasiPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 space-y-6">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
 
           {isLoading ? (
             <div className="space-y-4">
@@ -206,7 +206,7 @@ export default function EvaluasiPage() {
             </motion.div>
           )}
         </section>
-      </div>
+      </main>
 
       {/* ─── Multi-Step Dialog ─── */}
       <Dialog open={selected !== null} onOpenChange={(o) => !o && closeDialog()}>

@@ -131,9 +131,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
 
   return (
-    <div className="flex min-h-screen bg-white text-slate-800 font-sans">
+    <div className="flex min-h-dvh bg-white text-slate-800 font-sans">
       {/* ─── MAIN APP CONTAINER ─── */}
-      <div className="flex flex-1 w-full h-screen overflow-hidden">
+      <div className="flex flex-1 w-full h-dvh overflow-hidden">
         
         {/* ─── SIDEBAR ─────────────────────────────────── */}
         <aside className={cn("hidden md:flex flex-col transition-all duration-300 border-r border-[#4A0000] bg-[#6B0000] pt-5 pb-6 shadow-xl z-20", isSidebarOpen ? "w-[240px]" : "w-[90px] items-center")}>
@@ -224,7 +224,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* ─── MAIN CONTENT ────────────────────────────── */}
-        <main className="flex-1 flex flex-col min-w-0 bg-slate-50 relative overflow-y-auto overflow-x-hidden">
+        <main className="flex-1 flex flex-col min-w-0 bg-slate-50 relative overflow-hidden">
           
           {/* Glassmorphism Background Blobs */}
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-red-400/20 blur-[120px] pointer-events-none" />
@@ -233,8 +233,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           
 
           {/* Page Content Area */}
-          <div className="flex-1 p-6 md:p-8">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+          <div className="flex-1 flex flex-col min-h-0 relative z-10 p-6 md:p-8">
+            <motion.div className="flex-1 flex flex-col min-h-0 [&>div]:!h-full [&>div]:md:!h-full" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               {children}
             </motion.div>
           </div>

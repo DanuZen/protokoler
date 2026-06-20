@@ -60,9 +60,9 @@ export default function EvaluasiDashboardPage() {
   const handleExport = () => toast.success('File ekspor berhasil disiapkan');
 
   return (
-    <div className="flex flex-col min-h-full pb-10 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <BarChart3 className="h-7 w-7" />
@@ -81,7 +81,7 @@ export default function EvaluasiDashboardPage() {
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {summary.map((stat, index) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
@@ -105,128 +105,154 @@ export default function EvaluasiDashboardPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <div className="flex-1 mt-8">
-        <section className="pb-12 grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
-          <div className="w-full">
-            <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden h-[500px] flex flex-col bg-white">
-              <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                <div className="border-b border-slate-100 px-6 py-4 bg-slate-50">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
-                      <ClipboardList className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Daftar Kegiatan</h2>
-                      <p className="text-[11px] text-slate-500 mt-0.5">Filter dan pilih kegiatan yang ingin ditinjau.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col flex-1 bg-white min-h-0">
-                  <div className="p-4 border-b border-slate-100 bg-white">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                      <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama kegiatan atau lokasi..." className="rounded-xl border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 pl-9 h-11" />
-                    </div>
-                  </div>
-
-                  <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0">
-                    {filtered.length === 0 ? (
-                    <div className="p-10 text-center text-slate-400">
-                      <Sparkles className="mx-auto h-10 w-10 mb-3 text-slate-300" />
-                      Belum ada kegiatan selesai yang cocok dengan pencarian.
-                    </div>
-                  ) : (
-                    filtered.map((item: any) => {
-                      const active = activeDetail?.id === item.id;
-                      return (
-                        <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-red-700' : 'border-transparent hover:bg-slate-50')}>
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                              <div className={cn('font-semibold', active ? 'text-slate-900' : 'text-slate-900')}>{item.nama_kegiatan}</div>
-                              <div className={cn('mt-1 flex flex-wrap items-center gap-3 text-xs', active ? 'text-slate-600' : 'text-slate-500')}>
-                                <span className="inline-flex items-center gap-1">
-                                  <CalendarDays className="h-3.5 w-3.5" /> {new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
-                                </span>
-                                <span className="inline-flex items-center gap-1">
-                                  <Clock className="h-3.5 w-3.5" /> {item.jam_mulai?.slice(0, 5)} WIB
-                                </span>
-                                <span className="inline-flex items-center gap-1">
-                                  <Users className="h-3.5 w-3.5" /> 12 evaluasi
-                                </span>
-                              </div>
-                            </div>
-                            <ChevronRight className={cn('h-4 w-4 shrink-0', active ? 'text-red-700' : 'text-slate-300')} />
-                          </div>
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="w-full">
-              <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden h-[500px] flex flex-col bg-white">
+      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+        <section className="flex-1 flex flex-col min-h-0 pr-2 pb-12">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 flex-1 min-h-0">
+            <div className="w-full min-h-0 flex flex-col">
+              <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
                 <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                  <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50">
+                  <div className="border-b border-slate-100 px-6 py-4 bg-slate-50 shrink-0">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
-                        <BarChart3 className="h-5 w-5" />
+                        <ClipboardList className="h-5 w-5" />
                       </div>
                       <div>
-                        <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Detail Hasil Evaluasi</h2>
-                        <p className="text-[11px] text-slate-500 mt-0.5">Ringkasan evaluasi, testimoni, dan feedback admin.</p>
+                        <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Daftar Kegiatan</h2>
+                        <p className="text-[11px] text-slate-500 mt-0.5">Filter dan pilih kegiatan yang ingin ditinjau.</p>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {activeDetail && (
-                        <Button onClick={handleExport} size="sm" className="h-8 rounded-lg bg-red-800 text-white hover:bg-red-900 text-[11px] font-bold px-3 shadow-sm transition-colors">
-                          <Download className="mr-1.5 h-3.5 w-3.5" /> Export Data
-                        </Button>
-                      )}
                     </div>
                   </div>
-                  <div className="p-6 flex flex-col flex-1 min-h-0 space-y-4">
 
-                  {activeDetail ? (
-                    <>
-                      <div className="grid grid-cols-3 gap-2 shrink-0">
-                        {[
-                          { key: 'evaluasi', label: 'Evaluasi' },
-                          { key: 'testimoni', label: 'Testimoni' },
-                          { key: 'feedback', label: 'Feedback' },
-                        ].map((item) => {
-                          const active = tab === item.key;
-                          return (
-                            <button
-                              key={item.key}
-                              onClick={() => setTab(item.key as DetailTab)}
-                              className={cn(
-                                'border px-3 py-2 text-sm transition-all rounded-xl font-bold',
-                                active ? 'bg-red-800 border-red-800 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50',
-                              )}
-                            >
-                              {item.label}
-                            </button>
-                          );
-                        })}
+                  <div className="flex flex-col flex-1 bg-white min-h-0">
+                    <div className="p-4 border-b border-slate-100 bg-white shrink-0">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama kegiatan atau lokasi..." className="rounded-xl border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 pl-9 h-11" />
                       </div>
+                    </div>
 
-                      <div className="flex-1 overflow-y-auto min-h-0 pr-1 pt-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                      {tab === 'evaluasi' && (
-                        <div className="space-y-3">
-                            {mockDetail.evaluasi.map((item) => (
+                    <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0">
+                      {filtered.length === 0 ? (
+                      <div className="p-10 text-center text-slate-400">
+                        <Sparkles className="mx-auto h-10 w-10 mb-3 text-slate-300" />
+                        Belum ada kegiatan selesai yang cocok dengan pencarian.
+                      </div>
+                    ) : (
+                      filtered.map((item: any) => {
+                        const active = activeDetail?.id === item.id;
+                        return (
+                          <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-red-700' : 'border-transparent hover:bg-slate-50')}>
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0 flex-1">
+                                <div className={cn('font-semibold', active ? 'text-slate-900' : 'text-slate-900')}>{item.nama_kegiatan}</div>
+                                <div className={cn('mt-1 flex flex-wrap items-center gap-3 text-xs', active ? 'text-slate-600' : 'text-slate-500')}>
+                                  <span className="inline-flex items-center gap-1">
+                                    <CalendarDays className="h-3.5 w-3.5" /> {new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                  </span>
+                                  <span className="inline-flex items-center gap-1">
+                                    <Clock className="h-3.5 w-3.5" /> {item.jam_mulai?.slice(0, 5)} WIB
+                                  </span>
+                                  <span className="inline-flex items-center gap-1">
+                                    <Users className="h-3.5 w-3.5" /> 12 evaluasi
+                                  </span>
+                                </div>
+                              </div>
+                              <ChevronRight className={cn('h-4 w-4 shrink-0', active ? 'text-red-700' : 'text-slate-300')} />
+                            </div>
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="w-full min-h-0 flex flex-col">
+                <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
+                  <CardContent className="p-0 flex flex-col flex-1 min-h-0">
+                    <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50 shrink-0">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
+                          <BarChart3 className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Detail Hasil Evaluasi</h2>
+                          <p className="text-[11px] text-slate-500 mt-0.5">Ringkasan evaluasi, testimoni, dan feedback admin.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {activeDetail && (
+                          <Button onClick={handleExport} size="sm" className="h-8 rounded-lg bg-red-800 text-white hover:bg-red-900 text-[11px] font-bold px-3 shadow-sm transition-colors">
+                            <Download className="mr-1.5 h-3.5 w-3.5" /> Export Data
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    <div className="p-6 flex flex-col flex-1 min-h-0 space-y-4">
+
+                    {activeDetail ? (
+                      <>
+                        <div className="grid grid-cols-3 gap-2 shrink-0">
+                          {[
+                            { key: 'evaluasi', label: 'Evaluasi' },
+                            { key: 'testimoni', label: 'Testimoni' },
+                            { key: 'feedback', label: 'Feedback' },
+                          ].map((item) => {
+                            const active = tab === item.key;
+                            return (
+                              <button
+                                key={item.key}
+                                onClick={() => setTab(item.key as DetailTab)}
+                                className={cn(
+                                  'border px-3 py-2 text-sm transition-all rounded-xl font-bold',
+                                  active ? 'bg-red-800 border-red-800 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50',
+                                )}
+                              >
+                                {item.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto min-h-0 pr-1 pt-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                        {tab === 'evaluasi' && (
+                          <div className="space-y-3">
+                              {mockDetail.evaluasi.map((item) => (
+                                <div key={item.nama} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <div className="font-semibold text-slate-800">{item.nama}</div>
+                                      <div className="flex items-center gap-2 text-xs mt-1">
+                                        <span className="text-slate-500">{item.waktu}</span>
+                                        <span className="h-1 w-1 rounded-full bg-slate-300"></span>
+                                        <span className={cn("font-medium", item.status === 'Tepat waktu' ? 'text-emerald-600' : 'text-red-800')}>{item.status}</span>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-1 text-amber-500 shrink-0">
+                                      {[...Array(item.rating)].map((_, index) => (
+                                        <Star key={index} className="h-3.5 w-3.5 fill-current" />
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.ringkasan}</p>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+
+                        {tab === 'testimoni' && (
+                          <div className="space-y-3">
+                            {mockDetail.testimoni.map((item) => (
                               <div key={item.nama} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
                                 <div className="flex items-start justify-between gap-3">
                                   <div>
                                     <div className="font-semibold text-slate-800">{item.nama}</div>
                                     <div className="flex items-center gap-2 text-xs mt-1">
-                                      <span className="text-slate-500">{item.waktu}</span>
+                                      <span className="text-slate-500">Tamu Undangan</span>
                                       <span className="h-1 w-1 rounded-full bg-slate-300"></span>
-                                      <span className={cn("font-medium", item.status === 'Tepat waktu' ? 'text-emerald-600' : 'text-red-800')}>{item.status}</span>
+                                      <span className={cn("font-medium", item.sentimen === 'Positif' ? 'text-emerald-600' : 'text-slate-500')}>{item.sentimen}</span>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-1 text-amber-500 shrink-0">
@@ -235,60 +261,36 @@ export default function EvaluasiDashboardPage() {
                                     ))}
                                   </div>
                                 </div>
-                                <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.ringkasan}</p>
+                                <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.isi}</p>
                               </div>
                             ))}
-                        </div>
-                      )}
-
-                      {tab === 'testimoni' && (
-                        <div className="space-y-3">
-                          {mockDetail.testimoni.map((item) => (
-                            <div key={item.nama} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
-                              <div className="flex items-start justify-between gap-3">
-                                <div>
-                                  <div className="font-semibold text-slate-800">{item.nama}</div>
-                                  <div className="flex items-center gap-2 text-xs mt-1">
-                                    <span className="text-slate-500">Tamu Undangan</span>
-                                    <span className="h-1 w-1 rounded-full bg-slate-300"></span>
-                                    <span className={cn("font-medium", item.sentimen === 'Positif' ? 'text-emerald-600' : 'text-slate-500')}>{item.sentimen}</span>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-1 text-amber-500 shrink-0">
-                                  {[...Array(item.rating)].map((_, index) => (
-                                    <Star key={index} className="h-3.5 w-3.5 fill-current" />
-                                  ))}
-                                </div>
-                              </div>
-                              <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.isi}</p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {tab === 'feedback' && (
-                        <div className="space-y-3 flex flex-col flex-1">
-                          <div className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Catatan Admin</div>
-                          <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} className="flex-1 min-h-[160px] rounded-xl border-slate-200 bg-slate-50" />
-                          <div className="flex items-center justify-between gap-3 mt-auto pt-2">
-                            <p className="text-xs text-slate-400">Feedback ini terlihat oleh admin dan protokoler pada dashboard evaluasi.</p>
-                            <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-red-800 text-white hover:bg-red-900 transition-colors">
-                              <MessageSquare className="mr-2 h-4 w-4" /> Simpan
-                            </Button>
                           </div>
+                        )}
+
+                        {tab === 'feedback' && (
+                          <div className="space-y-3 flex flex-col flex-1">
+                            <div className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Catatan Admin</div>
+                            <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} className="flex-1 min-h-[160px] rounded-xl border-slate-200 bg-slate-50" />
+                            <div className="flex items-center justify-between gap-3 mt-auto pt-2">
+                              <p className="text-xs text-slate-400">Feedback ini terlihat oleh admin dan protokoler pada dashboard evaluasi.</p>
+                              <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-red-800 text-white hover:bg-red-900 transition-colors">
+                                <MessageSquare className="mr-2 h-4 w-4" /> Simpan
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                         </div>
-                      )}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">Pilih kegiatan selesai untuk melihat hasil evaluasi.</div>
-                  )}
-                </div>
-              </CardContent>
-              </Card>
+                      </>
+                    ) : (
+                      <div className="border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">Pilih kegiatan selesai untuk melihat hasil evaluasi.</div>
+                    )}
+                  </div>
+                </CardContent>
+                </Card>
+              </div>
             </div>
           </section>
-        </div>
+        </main>
     </div>
   );
 }
