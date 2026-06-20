@@ -1,6 +1,6 @@
 # DATABASE SCHEMA
 
-## SiProto – Sistem Informasi Protokoler Universitas
+## Protokoler – Sistem Informasi Protokoler Universitas
 
 **Versi 1.2 | Juni 2025**
 
@@ -11,7 +11,7 @@
 | **Database**      | PostgreSQL                                        |
 | **ORM**           | Prisma / TypeORM (rekomendasi)                    |
 | **Versi Dokumen** | 1.2                                               |
-| **Referensi**     | SiProto_PRD.md v1.2 + SiProto_Alur_Sistem.md v1.2 |
+| **Referensi**     | Protokoler_PRD.md v1.2 + Protokoler_Alur_Sistem.md v1.2 |
 
 ---
 

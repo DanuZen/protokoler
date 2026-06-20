@@ -1,5 +1,5 @@
 /**
- * API client MOCK untuk keperluan Frontend Demo SiProto v1.2.
+ * API client MOCK untuk keperluan Frontend Demo Protokoler.
  * Semua request mengembalikan data dummy langsung tanpa memanggil backend.
  * Delay = 0 agar semua halaman render instan (tidak ada buffering).
  */
@@ -137,7 +137,32 @@ export const laporanApi = {
 };
 
 // ──────────────── REGULASI ────────────────
-export const regulasiMockData = [];
+export const regulasiMockData = [
+  {
+    id: 'reg-1',
+    judul: 'SOP Penyambutan Tamu VVIP',
+    deskripsi: 'Panduan lengkap dan standar operasional untuk penyambutan pejabat negara, menteri, dan tamu kehormatan VIP/VVIP.',
+    tanggal_berlaku: '10 Jan 2026',
+    link_dokumen: '#',
+    accentGradient: 'linear-gradient(135deg, #6B0000, #9f0000)'
+  },
+  {
+    id: 'reg-2',
+    judul: 'SOP Tata Tempat Upacara',
+    deskripsi: 'Aturan presisi untuk pengaturan letak kursi, mimbar kehormatan, dan penempatan barisan dalam upacara resmi universitas.',
+    tanggal_berlaku: '15 Feb 2026',
+    link_dokumen: '#',
+    accentGradient: 'linear-gradient(135deg, #D2AD5C, #eecf83)'
+  },
+  {
+    id: 'reg-3',
+    judul: 'SOP Pelayanan Konsumsi',
+    deskripsi: 'Standar penyajian hidangan tamu (table manner), pengujian keamanan makanan, serta etika pelayanan jamuan resmi.',
+    tanggal_berlaku: '01 Mar 2026',
+    link_dokumen: '#',
+    accentGradient: 'linear-gradient(135deg, #1e293b, #334155)'
+  }
+];
 
 export const regulasiApi = {
   list: async () => regulasiMockData,
@@ -145,7 +170,40 @@ export const regulasiApi = {
 };
 
 // ──────────────── POSTINGAN / DOKUMENTASI ────────────────
-const defaultPostingan: any[] = [];
+const defaultPostingan: any[] = [
+  {
+    id: 'post-1',
+    kategori: 'Liputan Utama',
+    judul: 'Kunjungan Kerja Menteri Pendidikan ke Universitas Negeri Padang',
+    ringkasan: 'Tim Protokoler UNP sukses mengawal jalannya acara kunjungan kerja Mendikbudristek dalam rangka peresmian gedung laboratorium terpadu baru.',
+    tanggal: '2026-05-12T08:00:00Z',
+    gambar: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80'
+  },
+  {
+    id: 'post-2',
+    kategori: 'Pelatihan',
+    judul: 'Diklat Lanjutan Anggota Protokoler Angkatan 2026',
+    ringkasan: 'Pelatihan intensif mengenai table manner, tata upacara, dan public speaking untuk meningkatkan kualitas dan performa anggota di lapangan.',
+    tanggal: '2026-05-10T08:00:00Z',
+    gambar: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=1200&q=80'
+  },
+  {
+    id: 'post-3',
+    kategori: 'Galeri',
+    judul: 'Persiapan Wisuda Ke-134 UNP Berjalan Lancar',
+    ringkasan: 'Gladi bersih dan persiapan venue wisuda ke-134 yang dipimpin langsung oleh kordinator tata tempat dan tamu VIP.',
+    tanggal: '2026-05-08T08:00:00Z',
+    gambar: 'https://images.unsplash.com/photo-1523580494112-071d384e236c?w=1200&q=80'
+  },
+  {
+    id: 'post-4',
+    kategori: 'Agenda',
+    judul: 'Penyambutan Mahasiswa Baru Internasional',
+    ringkasan: 'Standar penyambutan khusus untuk mahasiswa internasional dalam program pertukaran budaya tingkat universitas.',
+    tanggal: '2026-05-05T08:00:00Z',
+    gambar: 'https://images.unsplash.com/photo-1511629091441-ee46146481b6?w=1200&q=80'
+  }
+];
 
 export const postinganApi = {
   list: async () => {

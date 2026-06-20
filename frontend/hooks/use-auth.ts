@@ -22,7 +22,7 @@ const getDemoRole = (): DemoRole => {
 const createDemoUser = (role: DemoRole) =>
   ({
     id: 'demo-user-id',
-    email: `demo@${role}.siproto.id`,
+    email: `demo@${role}.protokoler.unp.ac.id`,
     user_metadata: {
       nama_lengkap: role === 'admin' ? 'Pimpinan Demo' : role === 'dokumentasi' ? 'Dokumentasi Demo' : 'Mahasiswa Demo',
     },
