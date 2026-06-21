@@ -181,8 +181,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <DropdownMenuTrigger asChild>
                 <div className={cn("cursor-pointer group flex items-center rounded-xl transition-colors hover:bg-white/10", isSidebarOpen ? "gap-3 py-2.5 px-3 border border-transparent hover:border-white/20 shadow-sm" : "p-3 justify-center")}>
                   <div className="h-8 w-8 bg-white text-[#6B0000] rounded-full flex items-center justify-center font-extrabold overflow-hidden text-[13px] shrink-0 shadow-md ring-2 ring-white/50">
-                    {demoAvatar ? (
-                      <img src={demoAvatar} alt="Avatar" className="w-full h-full object-cover" />
+                    {demoAvatar || user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url ? (
+                      <img src={demoAvatar || user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url} alt="Avatar" className="w-full h-full object-cover" />
                     ) : (
                       initials
                     )}

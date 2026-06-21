@@ -2,10 +2,15 @@ import { Injectable, NotFoundException, ForbiddenException, BadRequestException 
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateKegiatanDto } from './dto/create-kegiatan.dto';
 import { StatusKegiatanEnum, RoleEnum } from '@prisma/client';
+import { autoUpdateStatuses } from '../utils/status-updater';
 
 @Injectable()
 export class KegiatanService {
   constructor(private prisma: PrismaService) {}
+
+  private isValidUuid(id: string): boolean {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  }
 
   private parseTimeToDate(timeStr: string): Date {
     const [hours, minutes] = timeStr.split(':');
@@ -79,6 +84,7 @@ export class KegiatanService {
     page?: number;
     limit?: number;
   }, userRole: string) {
+    await autoUpdateStatuses(this.prisma);
     const page = Number(params.page) || 1;
     const limit = Number(params.limit) || 10;
     const skip = (page - 1) * limit;
@@ -87,7 +93,14 @@ export class KegiatanService {
 
     // Enforce role-based restrictions
     if (userRole !== RoleEnum.admin) {
-      where.status = StatusKegiatanEnum.publik;
+      if (params.status) {
+        if (params.status === StatusKegiatanEnum.draf) {
+          throw new ForbiddenException('Anda tidak memiliki akses ke kegiatan draf');
+        }
+        where.status = params.status as StatusKegiatanEnum;
+      } else {
+        where.status = { not: StatusKegiatanEnum.draf };
+      }
     } else if (params.status) {
       where.status = params.status as StatusKegiatanEnum;
     }
@@ -142,6 +155,10 @@ export class KegiatanService {
   }
 
   async findOne(id: string, userRole: string) {
+    if (!this.isValidUuid(id)) {
+      throw new NotFoundException('Kegiatan tidak ditemukan');
+    }
+    await autoUpdateStatuses(this.prisma);
     const kegiatan = await this.prisma.kegiatan.findUnique({
       where: { id },
       include: {
@@ -184,6 +201,9 @@ export class KegiatanService {
   }
 
   async update(id: string, dto: Partial<CreateKegiatanDto>) {
+    if (!this.isValidUuid(id)) {
+      throw new NotFoundException('Kegiatan tidak ditemukan');
+    }
     const existing = await this.prisma.kegiatan.findUnique({ where: { id } });
     if (!existing) {
       throw new NotFoundException('Kegiatan tidak ditemukan');
@@ -238,6 +258,9 @@ export class KegiatanService {
     checklist_tata_upacara?: boolean;
     checklist_tata_penghormatan?: boolean;
   }) {
+    if (!this.isValidUuid(id)) {
+      throw new NotFoundException('Kegiatan tidak ditemukan');
+    }
     const existing = await this.prisma.kegiatan.findUnique({ where: { id } });
     if (!existing) {
       throw new NotFoundException('Kegiatan tidak ditemukan');
@@ -255,6 +278,9 @@ export class KegiatanService {
   }
 
   async remove(id: string) {
+    if (!this.isValidUuid(id)) {
+      throw new NotFoundException('Kegiatan tidak ditemukan');
+    }
     const existing = await this.prisma.kegiatan.findUnique({ where: { id } });
     if (!existing) {
       throw new NotFoundException('Kegiatan tidak ditemukan');

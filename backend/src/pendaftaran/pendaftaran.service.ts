@@ -77,7 +77,11 @@ startxref
     if (!kegiatan) {
       throw new NotFoundException('Kegiatan tidak ditemukan');
     }
-    if (kegiatan.status !== StatusKegiatanEnum.publik) {
+    if (
+      kegiatan.status !== StatusKegiatanEnum.publik &&
+      kegiatan.status !== StatusKegiatanEnum.terjadwal &&
+      kegiatan.status !== StatusKegiatanEnum.terkonfirmasi
+    ) {
       throw new BadRequestException('Kegiatan tidak dapat didaftar (status draf/batal/selesai)');
     }
 
