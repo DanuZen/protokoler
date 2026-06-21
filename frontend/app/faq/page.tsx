@@ -71,10 +71,10 @@ export default function FAQPage() {
             variants={staggerContainer}
             className="text-center mb-20"
           >
-            <motion.div variants={fadeUp} className="inline-flex items-center gap-4 mb-6">
-              <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
-              <span className="text-sm font-bold text-[#6B0000] uppercase tracking-[0.25em]">Pusat Bantuan</span>
-              <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-3 md:gap-4 mb-6">
+              <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
+              <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Pusat Bantuan</span>
+              <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
             <motion.h1 variants={fadeUp} className="font-display text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-6">
               Pertanyaan <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">Sering Diajukan</span>

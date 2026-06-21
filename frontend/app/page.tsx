@@ -102,10 +102,10 @@ export default function Landing() {
             <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col items-center max-w-5xl">
               
               {/* Premium Badge */}
-              <motion.div variants={fadeUp} className="flex items-center justify-center gap-4 mb-8">
-                <div className="w-8 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
-                <span className="text-sm font-bold text-[#D2AD5C] uppercase tracking-[0.25em]">Garda Terdepan Universitas</span>
-                <div className="w-8 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
+              <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 md:gap-4 mb-8">
+                <div className="w-6 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
+                <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#D2AD5C] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Garda Terdepan Universitas</span>
+                <div className="w-6 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
               </motion.div>
 
               {/* Main Headline */}
@@ -119,10 +119,9 @@ export default function Landing() {
                 Menjaga kehormatan institusi melalui <span className="text-white font-bold">tata tempat, tata upacara, dan tata penghormatan</span> yang presisi. Kami adalah garda terdepan dalam pelayanan prima.
               </motion.p>
               
-              {/* Actions */}
-              <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="#profil" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto h-14 px-10 rounded-full bg-gradient-to-r from-[#6B0000] to-[#8B0A1A] hover:from-[#8B0A1A] hover:to-[#6B0000] text-white font-bold uppercase tracking-widest text-[11px] shadow-[0_0_30px_rgba(107,0,0,0.5)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(107,0,0,0.7)] border-none">
+              <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full px-6 sm:px-0 sm:w-auto">
+                <a href="#profil" className="w-full sm:w-auto flex justify-center">
+                  <Button className="w-full max-w-[260px] sm:max-w-none sm:w-auto h-12 md:h-14 px-8 md:px-10 rounded-full bg-gradient-to-r from-[#6B0000] to-[#8B0A1A] hover:from-[#8B0A1A] hover:to-[#6B0000] text-white font-bold uppercase tracking-widest text-[11px] shadow-[0_0_30px_rgba(107,0,0,0.5)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(107,0,0,0.7)] border-none">
                     Eksplorasi Profil
                   </Button>
                 </a>
@@ -151,14 +150,14 @@ export default function Landing() {
         {/* Profil & Nilai Inti (About Us) */}
         <section id="profil" className="py-16 md:py-32 relative overflow-hidden bg-white">
           <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
-            <div className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+            <div className="flex flex-col-reverse lg:flex-row-reverse items-center gap-12 lg:gap-20">
               
               {/* Left: Image Collage */}
               <motion.div 
                 initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={fadeRight}
-                className="w-full lg:w-[45%] relative"
+                className="w-full lg:w-[45%] relative mt-4 lg:mt-0"
               >
-                <div className="relative w-full aspect-[4/5] md:aspect-[3/4] lg:aspect-square max-w-[500px] mx-auto lg:mx-0">
+                <div className="relative w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[500px] aspect-square mx-auto lg:mx-0">
                    {/* Main Image */}
                    <div className="absolute top-0 right-0 w-[85%] h-[85%] rounded-[2rem] overflow-hidden shadow-2xl">
                      <Image src="/team-collab.png" alt="Tim Protokoler" fill className="object-cover" />
@@ -172,6 +171,15 @@ export default function Landing() {
                      <Image src="/rektorat.jpg" alt="Rektorat UNP" fill className="object-cover" />
                    </motion.div>
                 </div>
+                
+                {/* Mobile Action Button (Bottom of Image) */}
+                <div className="flex lg:hidden justify-center mt-10">
+                   <Link href="/tentang" className="w-full max-w-[260px] sm:max-w-none sm:w-auto">
+                     <Button className="w-full bg-[#6B0000] hover:bg-[#6A0814] text-white rounded-full px-8 py-6 text-sm font-bold tracking-wide shadow-lg shadow-red-900/20 group">
+                       Kenali Kami Lebih Dekat <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                     </Button>
+                   </Link>
+                </div>
               </motion.div>
 
               {/* Right: Content */}
@@ -179,16 +187,17 @@ export default function Landing() {
                 initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={fadeLeft}
                 className="w-full lg:w-[55%] flex flex-col justify-center"
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
-                  <span className="text-sm font-bold text-[#6B0000] uppercase tracking-[0.25em]">Tentang Kami</span>
+                <div className="flex items-center justify-center lg:justify-start gap-3 md:gap-4 mb-3">
+                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
+                  <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Tentang Kami</span>
+                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C] block lg:hidden"></div>
                 </div>
                 
-                <h2 className="font-display text-3xl md:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.2] tracking-tight mb-6 text-balance">
+                <h2 className="font-display text-3xl md:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.2] tracking-tight mb-6 text-balance text-center lg:text-left">
                   Menjaga Kehormatan, Memastikan <span className="text-[#6B0000]">Kesempurnaan</span> Acara.
                 </h2>
                 
-                <p className="text-slate-600 text-lg md:text-xl leading-relaxed mb-10 max-w-2xl">
+                <p className="text-slate-600 text-lg md:text-xl leading-relaxed mb-10 max-w-2xl text-center lg:text-left">
                   Unit Protokoler Universitas Negeri Padang adalah garda terdepan dalam menjaga <span className="font-semibold text-slate-800">tata aturan, tata tempat, tata upacara, dan tata penghormatan</span>. Kami memastikan standar tertinggi dalam penyambutan VVIP dan kesuksesan agenda institusi.
                 </p>
 
@@ -222,7 +231,7 @@ export default function Landing() {
                   </div>
                 </div>
 
-                <Link href="/tentang">
+                <Link href="/tentang" className="hidden lg:block w-fit">
                   <Button className="w-fit bg-[#6B0000] hover:bg-[#6A0814] text-white rounded-full px-8 py-6 text-sm font-bold tracking-wide shadow-lg shadow-red-900/20 group">
                     Kenali Kami Lebih Dekat <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -242,10 +251,10 @@ export default function Landing() {
           <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
             {/* Header */}
             <div className="mb-16 text-center">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
-                <span className="text-sm font-bold text-[#6B0000] uppercase tracking-[0.25em]">Agenda</span>
-                <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center justify-center gap-3 md:gap-4 mb-4">
+                <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
+                <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Agenda</span>
+                <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
               </motion.div>
               <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl md:text-5xl font-bold tracking-tight text-slate-900">
                 Kegiatan <span className="text-[#6B0000]">Mendatang</span>
@@ -268,21 +277,23 @@ export default function Landing() {
                 className="grid lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr] gap-5 md:gap-8"
               >
                 {/* Left: Calendar Card */}
-                <div className="bg-white p-7 md:p-9 flex flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg">
+                <div className="bg-white p-5 sm:p-7 md:p-9 flex flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg w-full max-w-full overflow-hidden">
                   <div>
                     <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em] mb-1">Kalender Acara</p>
                     <p className="text-slate-900 font-bold text-xl">Pilih Tanggal</p>
                   </div>
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    locale={id}
-                    className="rounded-2xl border border-slate-100 p-3 text-slate-900 w-full bg-slate-50"
-                    modifiers={{
-                      hasEvent: kegiatanPublik?.map((k: any) => new Date(k.tanggal)) || [],
-                    }}
-                  />
+                  <div className="w-full overflow-x-auto pb-1 flex justify-center custom-scrollbar">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      locale={id}
+                      className="rounded-2xl border border-slate-100 p-2 sm:p-3 text-slate-900 bg-slate-50"
+                      modifiers={{
+                        hasEvent: kegiatanPublik?.map((k: any) => new Date(k.tanggal)) || [],
+                      }}
+                    />
+                  </div>
                   <div className="mt-auto pt-4 border-t border-white/10">
                     <p className="text-slate-400 text-xs uppercase tracking-widest mb-1">Tanggal Dipilih</p>
                     <p className="text-[#6B0000] font-bold text-sm">
@@ -292,7 +303,7 @@ export default function Landing() {
                 </div>
 
                 {/* Right: Event Details Card */}
-                <div className="bg-white p-8 md:p-10 flex flex-col rounded-[2rem] border border-slate-200 shadow-lg">
+                <div className="bg-white p-6 sm:p-8 md:p-10 flex flex-col rounded-[2rem] border border-slate-200 shadow-lg w-full max-w-full overflow-hidden">
                   {(() => {
                     const event = kegiatanPublik?.find((k: any) => selectedDate && new Date(k.tanggal).toDateString() === selectedDate.toDateString());
 
@@ -365,17 +376,18 @@ export default function Landing() {
               
               {/* Left Side: Sticky Intro */}
               <div className="lg:w-1/3 lg:sticky lg:top-32 lg:pt-4">
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
-                  <span className="text-sm font-bold text-[#6B0000] uppercase tracking-[0.25em]">Prosedur</span>
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center justify-center lg:justify-start gap-3 md:gap-4 mb-5">
+                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
+                  <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Prosedur</span>
+                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C] block lg:hidden"></div>
                 </motion.div>
-                <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6 leading-tight">
+                <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6 leading-tight text-center lg:text-left">
                   SOP Praktis <span className="text-[#6B0000]">Protokol</span>
                 </motion.h2>
-                <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-slate-500 text-lg mb-10 leading-relaxed">
+                <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-slate-500 text-lg mb-10 leading-relaxed text-center lg:text-left">
                   Temukan Standard Operating Procedure (SOP) penting dan mendasar untuk menjamin kelancaran setiap kegiatan resmi Universitas.
                 </motion.p>
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="hidden lg:flex">
                    <Button className="rounded-xl bg-[#6B0000] text-white hover:bg-red-900 h-14 px-8 font-bold shadow-lg shadow-red-900/20 text-sm tracking-wide flex items-center gap-3 group transition-all duration-300">
                      Lihat Semua SOP
                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -420,6 +432,14 @@ export default function Landing() {
                     </div>
                   </motion.a>
                 ))}
+                
+                {/* Mobile Action Button (Bottom) */}
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex lg:hidden justify-center mt-4">
+                   <Button className="rounded-xl bg-[#6B0000] text-white hover:bg-red-900 h-12 px-8 font-bold shadow-lg shadow-red-900/20 text-sm tracking-wide flex items-center gap-3 group transition-all duration-300 w-full max-w-[260px] sm:max-w-none sm:w-auto">
+                     Lihat Semua SOP
+                     <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                   </Button>
+                </motion.div>
               </div>
 
             </div>
@@ -434,18 +454,19 @@ export default function Landing() {
           <div className="container mx-auto px-6 relative z-10">
             <div className="grid lg:grid-cols-3 gap-16 items-center">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeLeft} className="lg:col-span-1">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-8 h-[2px] bg-[#D2AD5C]/50"></div>
-                  <span className="text-sm font-bold text-[#D2AD5C] uppercase tracking-[0.25em]">Apa Kata Mereka</span>
+                <div className="flex items-center justify-center lg:justify-start gap-3 md:gap-4 mb-5">
+                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]/50"></div>
+                  <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#D2AD5C] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Apa Kata Mereka</span>
+                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]/50 block lg:hidden"></div>
                 </div>
-                <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+                <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-6 leading-tight text-center lg:text-left">
                   Suara dari <br />
                   <span className="bg-gradient-to-r from-[#D2AD5C] to-amber-300 bg-clip-text text-transparent drop-shadow-sm">Tim &amp; Tamu</span>
                 </h2>
-                <p className="text-slate-400 text-base leading-relaxed">Dampak langsung dari penggunaan sistem terpadu keprotokolan, dinilai langsung oleh tim lapangan dan tamu VVIP.</p>
+                <p className="text-slate-400 text-lg mb-10 leading-relaxed text-center lg:text-left">Dampak langsung dari penggunaan sistem terpadu keprotokolan, dinilai langsung oleh tim lapangan dan tamu VVIP.</p>
                 
                 {/* Glowing Animated Stars */}
-                <div className="flex gap-2 mt-10">
+                <div className="flex gap-2 mt-10 justify-center lg:justify-start">
                   {[...Array(5)].map((_, i) => (
                     <motion.div 
                       key={i} 
@@ -492,11 +513,12 @@ export default function Landing() {
         {/* Berita & Dokumentasi (Postingan) */}
         <section id="postingan" className="py-16 md:py-32 relative overflow-hidden bg-white border-t border-slate-100">
           <div className="container mx-auto px-6 relative z-10">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-16 gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-16 gap-6 text-center md:text-left">
               <div className="max-w-2xl">
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
-                  <span className="text-sm font-bold text-[#6B0000] uppercase tracking-[0.25em]">Postingan Terkini</span>
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center justify-center md:justify-start gap-3 md:gap-4 mb-4">
+                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
+                  <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Postingan Terkini</span>
+                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C] block md:hidden"></div>
                 </motion.div>
                 <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl md:text-5xl font-bold tracking-tight text-slate-900">
                   Postingan <span className="text-[#6B0000]">Terbaru</span>
@@ -688,10 +710,10 @@ export default function Landing() {
               transition={{ duration: 0.7 }}
               className="max-w-4xl mx-auto flex flex-col items-center"
             >
-              <div className="flex items-center justify-center gap-4 mb-8">
-                <div className="w-8 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
-                <span className="text-sm font-bold text-[#D2AD5C] uppercase tracking-[0.25em]">Pendaftaran Dibuka</span>
-                <div className="w-8 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
+              <div className="flex items-center justify-center gap-3 md:gap-4 mb-8">
+                <div className="w-6 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
+                <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#D2AD5C] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Pendaftaran Dibuka</span>
+                <div className="w-6 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
               </div>
               
               <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
@@ -702,12 +724,12 @@ export default function Landing() {
                 Asah kemampuan kepemimpinan, tingkatkan keterampilan <span className="text-white italic">public speaking</span>, dan pelajari standar pelayanan VVIP tingkat nasional dengan bergabung bersama Unit Protokoler Universitas Negeri Padang.
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-                <Button className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-r from-[#D2AD5C] to-[#b39045] hover:from-[#eecf83] hover:to-[#D2AD5C] text-slate-900 font-bold uppercase tracking-widest text-[11px] shadow-[0_0_30px_rgba(210,173,92,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(210,173,92,0.5)] border-none">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto px-6 sm:px-0">
+                <Button className="w-full max-w-[260px] sm:max-w-none sm:w-auto h-12 md:h-14 px-8 rounded-full bg-gradient-to-r from-[#D2AD5C] to-[#b39045] hover:from-[#eecf83] hover:to-[#D2AD5C] text-slate-900 font-bold uppercase tracking-widest text-[11px] shadow-[0_0_30px_rgba(210,173,92,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(210,173,92,0.5)] border-none">
                   Daftar Sekarang
                 </Button>
-                <Link href="/persyaratan" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto h-14 px-8 rounded-full bg-transparent border-2 border-white/20 text-white hover:bg-white hover:text-[#5a0000] font-bold uppercase tracking-widest text-[11px] transition-all shadow-none">
+                <Link href="/persyaratan" className="w-full max-w-[260px] sm:max-w-none sm:w-auto flex justify-center">
+                  <Button className="w-full h-12 md:h-14 px-8 rounded-full bg-transparent border-2 border-white/20 text-white hover:bg-white hover:text-[#5a0000] font-bold uppercase tracking-widest text-[11px] transition-all shadow-none">
                     Pelajari Persyaratan
                   </Button>
                 </Link>

@@ -60,10 +60,10 @@ export default function TimPengembang() {
         <div className="container mx-auto px-6 max-w-6xl relative z-10">
           
           <div className="text-center mb-20">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex justify-center items-center gap-3 mb-6">
-              <div className="w-12 h-[2px] bg-[#D2AD5C]"></div>
-              <span className="text-sm font-bold text-[#6B0000] uppercase tracking-[0.25em]">Credit</span>
-              <div className="w-12 h-[2px] bg-[#D2AD5C]"></div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex justify-center items-center gap-3 md:gap-4 mb-6">
+              <div className="w-6 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
+              <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Credit</span>
+              <div className="w-6 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
             
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="font-display text-4xl md:text-5xl lg:text-[4rem] font-bold tracking-tight text-slate-900 leading-tight mb-6 text-balance">

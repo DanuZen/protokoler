@@ -31,10 +31,10 @@ export default function TentangKami() {
         
         <div className="container mx-auto px-6 relative z-10 text-center">
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="max-w-3xl mx-auto flex flex-col items-center">
-            <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
-              <span className="text-sm font-bold text-[#D2AD5C] uppercase tracking-[0.25em]">Mengenal Kami</span>
-              <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
+            <motion.div variants={fadeUp} className="flex items-center gap-3 md:gap-4 mb-6">
+              <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
+              <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#D2AD5C] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Mengenal Kami</span>
+              <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
             <motion.h1 variants={fadeUp} className="font-display text-4xl md:text-6xl font-bold text-white leading-tight mb-6 drop-shadow-lg">
               Garda Terdepan <span className="text-[#D2AD5C]">Institusi</span>
@@ -170,7 +170,7 @@ export default function TentangKami() {
         </section>
 
         {/* Nilai-Nilai Inti (Core Values) */}
-        <section className="py-20 bg-slate-100">
+        <section className="py-20 bg-slate-50 relative">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="font-display text-3xl md:text-5xl font-bold text-slate-900 mb-4">Nilai-Nilai <span className="text-[#6B0000]">Inti</span></h2>

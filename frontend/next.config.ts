@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
+      },
+    ],
+  },
   // ─── DEMO MODE ───────────────────────────────────────────────────────────
   // Rewrite ke backend dinonaktifkan. Semua data menggunakan mock API lokal.
   // Aktifkan kembali blok di bawah jika backend sudah siap digunakan:

@@ -35,7 +35,7 @@ export function LandingNavbar({ alwaysDark = false }: { alwaysDark?: boolean }) 
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={cn('fixed top-0 left-0 right-0 z-50 transition-all duration-500', (isScrolled || alwaysDark) ? 'bg-[#4A0000]/95 backdrop-blur-lg shadow-2xl border-b border-[#D2AD5C]/20 py-3' : 'bg-[#4A0000]/20 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none py-4 lg:py-6')}
+      className={cn('fixed top-0 left-0 right-0 z-50 transition-all duration-500', (isScrolled || alwaysDark || isMobileMenuOpen) ? `bg-[#4A0000]/95 backdrop-blur-lg shadow-2xl py-3 ${isMobileMenuOpen ? '' : 'border-b border-[#D2AD5C]/20'}` : 'bg-[#4A0000]/20 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none py-4 lg:py-6')}
     >
       <div className="container mx-auto flex items-center justify-between px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
