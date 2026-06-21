@@ -2,7 +2,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { CalendarDays, ClipboardList, Users, ShieldCheck, ArrowRight, ChevronDown, Star, ArrowUpRight, Megaphone, Quote, Play, Camera, Trophy, MessageSquare, MapPin, Clock, BookOpen, FileText, ExternalLink, X, ChevronLeft, ChevronRight, Mail, Phone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
@@ -372,44 +374,38 @@ export default function Landing() {
           <div className="absolute top-0 right-0 w-full h-full opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#6B0000 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
           <div className="container mx-auto px-6 relative z-10">
-            <div className="flex flex-col lg:flex-row gap-16 lg:items-start">
+            <div className="flex flex-col items-center gap-12 lg:gap-16">
               
-              {/* Left Side: Sticky Intro */}
-              <div className="lg:w-1/3 lg:sticky lg:top-32 lg:pt-4">
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center justify-center lg:justify-start gap-3 md:gap-4 mb-5">
+              {/* Top Side: Intro (Centered) */}
+              <div className="flex flex-col items-center text-center max-w-3xl">
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center justify-center gap-3 md:gap-4 mb-5">
                   <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
                   <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Prosedur</span>
-                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C] block lg:hidden"></div>
+                  <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
                 </motion.div>
-                <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4 sm:mb-6 leading-tight text-center lg:text-left">
+                <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4 sm:mb-6 leading-tight">
                   SOP Praktis <span className="text-[#6B0000]">Protokol</span>
                 </motion.h2>
-                <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-slate-500 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 leading-relaxed text-center lg:text-left px-4 lg:px-0">
+                <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-slate-500 text-sm sm:text-base md:text-lg leading-relaxed px-4 lg:px-0">
                   Temukan Standard Operating Procedure (SOP) penting dan mendasar untuk menjamin kelancaran setiap kegiatan resmi Universitas.
                 </motion.p>
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="hidden lg:flex">
-                   <Button className="rounded-xl bg-[#6B0000] text-white hover:bg-red-900 h-14 px-8 font-bold shadow-lg shadow-red-900/20 text-sm tracking-wide flex items-center gap-3 group transition-all duration-300">
-                     Lihat Semua SOP
-                     <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                   </Button>
-                </motion.div>
               </div>
 
-              {/* Right Side: Interactive List */}
-              <div className="lg:w-2/3 flex flex-col gap-5">
+              {/* Bottom Side: Interactive Cards */}
+              <div className="w-full flex flex-col lg:grid lg:grid-cols-3 gap-5 lg:gap-8">
                 {regulasiMockData.map((reg: any, i: number) => (
                   <motion.a
                     href={reg.link_dokumen}
                     key={reg.id}
-                    initial={{ opacity: 0, x: 50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-50px' }}
                     transition={{ duration: 0.5, delay: i * 0.15 }}
-                    whileHover={{ scale: 1.02, x: -8 }}
-                    className="group relative flex flex-row items-start sm:items-center gap-4 sm:gap-6 md:gap-8 p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-2xl hover:border-red-200 transition-all duration-500 overflow-hidden cursor-pointer"
+                    whileHover={{ scale: 1.02, y: -8 }}
+                    className="group relative flex flex-row lg:flex-col items-start sm:items-center lg:items-start gap-4 sm:gap-6 md:gap-8 p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-2xl hover:border-red-200 transition-all duration-500 overflow-hidden cursor-pointer"
                   >
                     {/* Hover Glow Effect */}
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-48 h-48 bg-red-100 rounded-full opacity-0 group-hover:opacity-30 blur-3xl transition-opacity duration-500 pointer-events-none" />
+                    <div className="absolute right-0 top-0 w-48 h-48 bg-red-100 rounded-full opacity-0 group-hover:opacity-30 blur-3xl transition-opacity duration-500 pointer-events-none" />
                     
                     {/* Icon Block */}
                     <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner relative z-10 transition-transform duration-500 group-hover:scale-105 mt-1 sm:mt-0" style={{ background: reg.accentGradient }}>
@@ -417,29 +413,21 @@ export default function Landing() {
                     </div>
                     
                     {/* Content */}
-                    <div className="flex-1 relative z-10 min-w-0">
-                       <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                         <span className="px-2 sm:px-3 py-1 rounded-full bg-slate-100 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-slate-500 group-hover:bg-red-50 group-hover:text-red-700 transition-colors">SOP Resmi</span>
-                         <span className="text-[10px] sm:text-xs text-slate-400 font-medium tracking-wide whitespace-nowrap">{reg.tanggal_berlaku}</span>
-                       </div>
-                       <h3 className="font-display font-bold text-lg sm:text-xl md:text-2xl text-slate-900 group-hover:text-[#6B0000] transition-colors mb-1 sm:mb-2 truncate sm:whitespace-normal">{reg.judul}</h3>
-                       <p className="text-slate-500 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-none">{reg.deskripsi}</p>
+                    <div className="flex-1 relative z-10 min-w-0 flex flex-col justify-center">
+                       <h3 className="font-display font-bold text-lg sm:text-xl md:text-2xl text-slate-900 group-hover:text-[#6B0000] transition-colors mb-2 truncate sm:whitespace-normal">{reg.judul}</h3>
+                       <p className="text-slate-500 text-xs sm:text-sm leading-relaxed line-clamp-2 lg:line-clamp-none">{reg.deskripsi}</p>
                     </div>
 
                     {/* Action Button */}
-                    <div className="hidden md:flex w-14 h-14 rounded-full border-2 border-slate-100 items-center justify-center flex-shrink-0 text-slate-400 group-hover:bg-[#6B0000] group-hover:text-white group-hover:border-[#6B0000] transition-all duration-300 relative z-10">
+                    <div className="hidden lg:flex mt-auto w-12 h-12 rounded-full border-2 border-slate-100 items-center justify-center text-slate-400 group-hover:bg-[#6B0000] group-hover:text-white group-hover:border-[#6B0000] transition-all duration-300 relative z-10">
+                       <ArrowUpRight className="h-5 w-5 group-hover:rotate-45 transition-transform duration-300" />
+                    </div>
+                    {/* Desktop/Tablet Arrow for row layout */}
+                    <div className="hidden md:flex lg:hidden w-14 h-14 rounded-full border-2 border-slate-100 items-center justify-center flex-shrink-0 text-slate-400 group-hover:bg-[#6B0000] group-hover:text-white group-hover:border-[#6B0000] transition-all duration-300 relative z-10">
                        <ArrowUpRight className="h-6 w-6 group-hover:rotate-45 transition-transform duration-300" />
                     </div>
                   </motion.a>
                 ))}
-                
-                {/* Mobile Action Button (Bottom) */}
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex lg:hidden justify-center mt-4">
-                   <Button className="rounded-xl bg-[#6B0000] text-white hover:bg-red-900 h-12 px-8 font-bold shadow-lg shadow-red-900/20 text-sm tracking-wide flex items-center gap-3 group transition-all duration-300 w-full max-w-[260px] sm:max-w-none sm:w-auto">
-                     Lihat Semua SOP
-                     <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                   </Button>
-                </motion.div>
               </div>
 
             </div>
@@ -480,32 +468,45 @@ export default function Landing() {
                   ))}
                 </div>
               </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="lg:col-span-2 grid md:grid-cols-2 gap-5">
-                {[
-                  { name: 'Dr. Budi Santoso', role: 'Pembina Protokoler', initial: 'BS', text: 'Fitur evaluasi 3 Tata Protokol memastikan tidak ada celah di lapangan. Modul gamifikasi juga memacu mahasiswa untuk terus aktif.' },
-                  { name: 'Siti Nurhaliza', role: 'Protokoler (Gold)', initial: 'SN', text: 'Absensi selfie membuat kami lebih teratur dan adil. Poin kegiatan langsung terakumulasi untuk mengejar sertifikat tertinggi!' },
-                ].map((testi, i) => (
-                  <motion.div
-                    whileHover={{ scale: 1.03, y: -8 }}
-                    variants={fadeUp}
-                    key={i}
-                    className="p-6 md:p-8 rounded-[2rem] bg-gradient-to-br from-[#2A0000]/90 to-[#1A0000]/90 backdrop-blur-xl border border-white/5 relative transition-all duration-300 shadow-2xl hover:shadow-[#D2AD5C]/10 hover:border-[#D2AD5C]/30 group"
-                  >
-                    {/* Big decorative quote */}
-                    <div className="absolute top-4 right-6 font-display text-8xl font-black leading-none select-none text-[#D2AD5C]/10 group-hover:text-[#D2AD5C]/20 transition-colors duration-300">&ldquo;</div>
-                    <p className="text-slate-300 leading-relaxed mb-10 text-base relative z-10 font-medium tracking-wide">&ldquo;{testi.text}&rdquo;</p>
-                    <div className="flex items-center gap-4 mt-auto relative z-10 pt-4 border-t border-white/5 group-hover:border-white/10 transition-colors">
-                      {/* Avatar */}
-                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black text-white flex-shrink-0 shadow-lg shadow-black/50" style={{ background: 'linear-gradient(135deg, #8B0A1A, #D2AD5C)' }}>
-                        {testi.initial}
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-white text-[15px] tracking-wide">{testi.name}</h4>
-                        <p className="text-[10px] text-amber-400 font-bold uppercase tracking-[0.2em] mt-0.5">{testi.role}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="lg:col-span-2">
+                {/* Testimonial: Looping Carousel (All Screens) */}
+                <div className="w-full max-w-[100vw] lg:max-w-full overflow-hidden -mx-6 px-6 sm:-mx-8 sm:px-8 lg:mx-0 lg:px-0">
+                  <Carousel opts={{ loop: true, align: 'center' }} plugins={[Autoplay({ delay: 4000 })]} className="w-full">
+                    <CarouselContent className="-ml-4">
+                      {[
+                        { name: 'Dr. Budi Santoso', role: 'Pembina Protokoler', image: '/tim_pengembang/danu.webp', text: 'Fitur evaluasi 3 Tata Protokol memastikan tidak ada celah di lapangan. Modul gamifikasi juga memacu mahasiswa untuk terus aktif.' },
+                        { name: 'Siti Nurhaliza', role: 'Protokoler (Gold)', image: '/tim_pengembang/hafiz.webp', text: 'Absensi selfie membuat kami lebih teratur dan adil. Poin kegiatan langsung terakumulasi untuk mengejar sertifikat tertinggi!' },
+                        { name: 'Ahmad Fauzi', role: 'Ketua Pelaksana', image: '/tim_pengembang/danu.webp', text: 'Koordinasi tim jauh lebih mudah berkat sistem terpusat. Informasi jadwal dan SOP bisa diakses secara real-time kapan pun.' },
+                      ].map((testi, i) => (
+                        <CarouselItem key={i} className="pl-4 basis-[85vw] sm:basis-[75vw] lg:basis-full">
+                          <motion.div
+                            variants={fadeUp}
+                            className="p-6 sm:p-10 lg:p-12 rounded-[2rem] bg-gradient-to-br from-[#2A0000]/90 to-[#1A0000]/90 backdrop-blur-xl border border-white/10 relative shadow-2xl group flex flex-col lg:flex-row-reverse items-center gap-6 lg:gap-12 w-full lg:max-w-5xl lg:mx-auto mt-8 lg:mt-16 transition-all duration-500"
+                          >
+                            <div className="absolute top-4 right-6 lg:right-auto lg:left-8 font-display text-8xl font-black leading-none select-none text-[#D2AD5C]/10 transition-colors duration-300 z-0">&ldquo;</div>
+                            
+                            {/* Pop-out Image Section */}
+                            <div className="relative w-36 h-36 sm:w-40 sm:h-40 lg:w-64 lg:h-64 shrink-0 z-20 mx-auto lg:mx-0">
+                               <div className="absolute inset-0 bg-[#3A0000] scale-x-[1.15] rounded-[2rem] shadow-inner flex flex-col items-center justify-center border border-white/5 transition-transform duration-500">
+                                 <div className="w-12 h-12 rounded-full border border-white/10 bg-white/5" />
+                               </div>
+                               <Image src={testi.image} alt={testi.name} fill sizes="(max-width: 1024px) 160px, 300px" className="object-contain object-bottom relative z-20 grayscale-0 scale-[1.35] lg:scale-[1.45] drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] origin-bottom transition-transform duration-500" />
+                            </div>
+
+                            {/* Text Section */}
+                            <div className="flex-1 flex flex-col justify-center relative z-10 w-full mt-2 lg:mt-0 text-center lg:text-left">
+                              <p className="text-slate-300/90 leading-relaxed mb-6 text-sm sm:text-base lg:text-lg italic font-medium tracking-wide">&ldquo;{testi.text}&rdquo;</p>
+                              <div className="border-t border-white/10 pt-5 mt-auto">
+                                <h4 className="font-bold text-white text-[15px] sm:text-lg tracking-wide">{testi.name}</h4>
+                                <p className="text-[10px] sm:text-xs text-[#D2AD5C] font-bold uppercase tracking-[0.2em] mt-1">{testi.role}</p>
+                              </div>
+                            </div>
+                          </motion.div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                  </Carousel>
+                </div>
               </motion.div>
             </div>
           </div>

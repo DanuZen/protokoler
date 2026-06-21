@@ -109,16 +109,16 @@ export default function FAQPage() {
                     onClick={() => setOpenFaq(isOpen ? null : i)}
                     className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
                   >
-                    <span className={cn('font-bold text-lg pr-8 transition-colors duration-300', isOpen ? 'text-red-700' : 'text-slate-900')}>
+                    <span className={cn('font-bold text-base md:text-lg pr-4 md:pr-8 transition-colors duration-300', isOpen ? 'text-red-700' : 'text-slate-900')}>
                       {faq.q}
                     </span>
                     <div
                       className={cn(
-                        'shrink-0 h-10 w-10 flex items-center justify-center transition-all duration-500 rounded-xl',
+                        'shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center transition-all duration-500 rounded-lg md:rounded-xl',
                         isOpen ? 'bg-red-100 text-red-700 rotate-180' : 'bg-slate-100 text-slate-500'
                       )}
                     >
-                      <ChevronDown className="h-5 w-5" />
+                      <ChevronDown className="h-4 w-4 md:h-5 md:w-5" />
                     </div>
                   </button>
                   <AnimatePresence>
@@ -130,7 +130,7 @@ export default function FAQPage() {
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
                         className="overflow-hidden"
                       >
-                        <div className="px-6 pb-6 text-slate-600 text-base leading-relaxed border-t border-red-100/50 pt-4">
+                        <div className="px-5 md:px-6 pb-5 md:pb-6 text-slate-600 text-sm md:text-base leading-relaxed border-t border-red-100/50 pt-4">
                           {faq.a}
                         </div>
                       </motion.div>

@@ -142,7 +142,7 @@ export default function PersyaratanPage() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="rounded-[3rem] bg-white border border-slate-200 shadow-sm p-8 md:p-12"
+            className="rounded-3xl md:rounded-[3rem] bg-white border border-slate-200 shadow-sm p-6 sm:p-8 md:p-12"
           >
             <motion.h2 variants={fadeUp} className="text-2xl font-bold text-slate-900 mb-8 text-center">Berkas yang Perlu Disiapkan</motion.h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
