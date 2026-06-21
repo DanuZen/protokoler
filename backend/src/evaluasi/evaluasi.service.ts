@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SupabaseService } from '../supabase/supabase.service';
-import { StatusKegiatanEnum, StatusHadirEnum, KategoriSertifikatEnum, RoleEnum } from '@prisma/client';
+import { StatusKegiatanEnum, StatusHadirEnum, KategoriSertifikatEnum, RoleEnum, StatusPendaftaranEnum } from '@prisma/client';
 import { autoUpdateStatuses } from '../utils/status-updater';
 
 @Injectable()
@@ -67,6 +67,21 @@ startxref
     });
     if (!kegiatan) {
       throw new NotFoundException('Kegiatan tidak ditemukan');
+    }
+
+    // 1.5. Registration Check: user must be accepted/redirected
+    const registration = await this.prisma.pendaftaranKegiatan.findFirst({
+      where: {
+        protokoler_id: protokolerId,
+        OR: [
+          { kegiatan_id: kegiatanId, status: StatusPendaftaranEnum.diterima },
+          { kegiatan_dialihkan_id: kegiatanId, status: StatusPendaftaranEnum.dialihkan }
+        ]
+      }
+    });
+
+    if (!registration) {
+      throw new ForbiddenException('Anda tidak terdaftar sebagai petugas pada kegiatan ini');
     }
 
     // 2. Presence check: must have checked in and status = hadir
@@ -270,7 +285,7 @@ startxref
     };
   }
 
-  async getHasil(kegiatanId: string, userRole: RoleEnum) {
+  async getHasil(kegiatanId: string, userRole: RoleEnum, userProtokolerId?: string) {
     await autoUpdateStatuses(this.prisma);
     const kegiatan = await this.prisma.kegiatan.findUnique({
       where: { id: kegiatanId }
@@ -278,6 +293,26 @@ startxref
 
     if (!kegiatan) {
       throw new NotFoundException('Kegiatan tidak ditemukan');
+    }
+
+    if (userRole === RoleEnum.protokoler) {
+      if (!userProtokolerId) {
+        return [];
+      }
+
+      const registration = await this.prisma.pendaftaranKegiatan.findFirst({
+        where: {
+          protokoler_id: userProtokolerId,
+          OR: [
+            { kegiatan_id: kegiatanId, status: StatusPendaftaranEnum.diterima },
+            { kegiatan_dialihkan_id: kegiatanId, status: StatusPendaftaranEnum.dialihkan }
+          ]
+        }
+      });
+
+      if (!registration) {
+        return [];
+      }
     }
 
     const evaluasiList = await this.prisma.evaluasiKegiatan.findMany({
@@ -289,6 +324,7 @@ startxref
 
     return evaluasiList.map(e => ({
       ...e,
+      protokoler_id: e.protokoler.user_id,
       saran: e.evaluasi_kegiatan
     }));
   }

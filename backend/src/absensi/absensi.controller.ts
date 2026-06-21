@@ -40,8 +40,8 @@ export class AbsensiController {
   }
 
   @Get(':id/absensi')
-  @Roles(RoleEnum.admin)
-  async getAbsensiRecap(@Param('id') kegiatanId: string) {
-    return this.absensiService.getRecap(kegiatanId);
+  @Roles(RoleEnum.admin, RoleEnum.protokoler, RoleEnum.dokumentasi)
+  async getAbsensiRecap(@Param('id') kegiatanId: string, @Req() req: any) {
+    return this.absensiService.getRecap(kegiatanId, req.user.role, req.user.protokolerId);
   }
 }

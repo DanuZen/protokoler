@@ -37,7 +37,7 @@ export class KegiatanController {
   @Get(':id')
   @Roles(RoleEnum.admin, RoleEnum.protokoler, RoleEnum.dokumentasi)
   async findOne(@Param('id') id: string, @Req() req: any) {
-    return this.kegiatanService.findOne(id, req.user.role);
+    return this.kegiatanService.findOne(id, req.user.role, req.user.id);
   }
 
   @Patch(':id')

@@ -200,8 +200,8 @@ export default function Dashboard() {
                       {[1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
                         <div key={i} className="flex flex-col items-center gap-2 flex-1 h-full justify-end">
                           <div className="flex gap-2 items-end w-full max-w-[64px] lg:max-w-[76px] mx-auto h-[90%]">
-                            <Skeleton className="w-1/2 rounded-t-md" style={{ height: `${Math.floor(Math.random() * 60) + 20}%` }} />
-                            <Skeleton className="w-1/2 rounded-t-md" style={{ height: `${Math.floor(Math.random() * 60) + 20}%` }} />
+                            <Skeleton className="w-1/2 rounded-t-md" style={{ height: `${[40, 60, 35, 70, 50, 80, 45, 65, 55, 75, 40, 60][i % 12]}%` }} />
+                            <Skeleton className="w-1/2 rounded-t-md" style={{ height: `${[25, 40, 20, 50, 35, 60, 30, 45, 38, 55, 30, 42][i % 12]}%` }} />
                           </div>
                           <Skeleton className="h-3 w-6 mt-1" />
                         </div>

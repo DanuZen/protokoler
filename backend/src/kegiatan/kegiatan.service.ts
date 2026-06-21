@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateKegiatanDto } from './dto/create-kegiatan.dto';
-import { StatusKegiatanEnum, RoleEnum } from '@prisma/client';
+import { StatusKegiatanEnum, RoleEnum, StatusPendaftaranEnum } from '@prisma/client';
 import { autoUpdateStatuses } from '../utils/status-updater';
 
 @Injectable()
@@ -154,7 +154,7 @@ export class KegiatanService {
     };
   }
 
-  async findOne(id: string, userRole: string) {
+  async findOne(id: string, userRole: string, userId?: string) {
     if (!this.isValidUuid(id)) {
       throw new NotFoundException('Kegiatan tidak ditemukan');
     }
@@ -164,6 +164,11 @@ export class KegiatanService {
       include: {
         tamu_vvip: true,
         pendaftaran: {
+          include: {
+            protokoler: true,
+          },
+        },
+        pendaftaran_dialihkan: {
           include: {
             protokoler: true,
           },
@@ -182,10 +187,26 @@ export class KegiatanService {
       throw new ForbiddenException('Anda tidak memiliki akses ke kegiatan ini');
     }
 
-    const { _count, pendaftaran, ...rest } = kegiatan;
-    const pendaftar = pendaftaran.map(p => ({
+    const { _count, pendaftaran, pendaftaran_dialihkan, ...rest } = kegiatan;
+    
+    // Combine original and redirected penugasan
+    let allPendaftaran = [...pendaftaran];
+    if (pendaftaran_dialihkan) {
+      allPendaftaran = [...allPendaftaran, ...pendaftaran_dialihkan];
+    }
+
+    // Filter pendaftar for protokoler role: only show assigned ones or the user's own registration
+    if (userRole === RoleEnum.protokoler) {
+      allPendaftaran = allPendaftaran.filter(p => 
+        (p.kegiatan_id === id && p.status === StatusPendaftaranEnum.diterima) ||
+        (p.kegiatan_dialihkan_id === id && p.status === StatusPendaftaranEnum.dialihkan) ||
+        (p.protokoler.user_id === userId)
+      );
+    }
+
+    const pendaftar = allPendaftaran.map(p => ({
       id: p.id,
-      protokoler_id: p.protokoler_id,
+      protokoler_id: p.protokoler.user_id,
       nama_lengkap: p.protokoler.nama_lengkap,
       nim: p.protokoler.nim,
       role: p.peran,

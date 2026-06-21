@@ -150,6 +150,24 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     onSuccess: (_, variables) => { toast.success(`Pendaftar ${variables.status}`); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
   });
 
+  const kirimEvaluasi = useMutation({
+    mutationFn: async () => {
+      await evaluasiApi.create(id, {
+        evaluasi_kegiatan: saran,
+        refleksi_diri: evaluasiDiri,
+        rating_kegiatan: ratingAcara
+      });
+    },
+    onSuccess: () => {
+      setIsSuccessSubmit(true);
+      toast.success('Evaluasi berhasil dikirim!');
+      qc.invalidateQueries({ queryKey: ["evaluasi-kegiatan", id] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || 'Gagal mengirim evaluasi');
+    }
+  });
+
   if (isLoading) {
     return <div className="flex items-center justify-center h-64 text-slate-400">Memuat detail kegiatan...</div>;
   }
@@ -944,12 +962,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                           <Button 
                             onClick={() => {
                               if (!ratingAcara) return toast.error('Silakan berikan rating acara terlebih dahulu');
-                              setIsSuccessSubmit(true);
-                              toast.success('Evaluasi berhasil dikirim!');
+                              kirimEvaluasi.mutate();
                             }} 
                             className="rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold h-11 px-8 shadow-md"
+                            disabled={kirimEvaluasi.isPending}
                           >
-                            Kirim Evaluasi
+                            {kirimEvaluasi.isPending ? 'Mengirim...' : 'Kirim Evaluasi'}
                           </Button>
                        </div>
                     </div>
