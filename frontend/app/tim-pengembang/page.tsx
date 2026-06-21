@@ -3,30 +3,20 @@ import { motion } from 'framer-motion';
 import { ChevronLeft, GitBranch, ExternalLink, Mail, Code } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { LandingNavbar } from '@/components/landing-navbar';
+import { LandingFooter } from '@/components/landing-footer';
 
 const team = [
   {
-    name: "John Doe",
-    role: "Project Manager",
-    description: "Memastikan proyek berjalan sesuai timeline dan standar protokol institusi.",
-    image: "https://i.pravatar.cc/300?img=11",
-  },
-  {
-    name: "Jane Smith",
-    role: "Lead UI/UX Designer",
-    description: "Merancang antarmuka pengguna yang elegan dan intuitif bernuansa premium.",
-    image: "https://i.pravatar.cc/300?img=5",
-  },
-  {
-    name: "Wira",
-    role: "Fullstack Developer",
-    description: "Membangun arsitektur frontend dan backend yang solid untuk aplikasi Protokoler.",
+    name: "Wira Fikri Ramadanu",
+    role: "Project Manager & Frontend Developer",
+    description: "Memimpin manajemen proyek sekaligus merancang dan membangun arsitektur antarmuka pengguna yang modern.",
     image: "https://i.pravatar.cc/300?img=15",
   },
   {
-    name: "Ahmad",
-    role: "Backend Engineer",
-    description: "Mengoptimalkan database dan fungsionalitas manajemen kegiatan.",
+    name: "Hafiz Hafrienda",
+    role: "Backend Developer & Quality Assurance",
+    description: "Mengoptimalkan sistem database dan logika server, serta memastikan keandalan fungsionalitas seluruh fitur.",
     image: "https://i.pravatar.cc/300?img=8",
   }
 ];
@@ -35,21 +25,7 @@ export default function TimPengembang() {
   return (
     <div className="min-h-screen bg-slate-50 selection:bg-red-100 flex flex-col font-sans">
       
-      {/* Header Minimalis */}
-      <header className="absolute top-0 left-0 right-0 z-50 p-6 md:p-10 flex justify-between items-center">
-        <Link href="/" className="inline-flex items-center gap-2 text-slate-600 hover:text-[#6B0000] font-medium transition-colors group">
-          <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:shadow-md transition-all border border-slate-100">
-            <ChevronLeft className="w-5 h-5" />
-          </div>
-          <span className="hidden md:block">Kembali ke Beranda</span>
-        </Link>
-        <div className="flex items-center gap-3">
-            <div className="relative h-8 w-8">
-              <Image src="/logo protokoler.png" alt="Logo" fill sizes="32px" className="object-contain" />
-            </div>
-            <span className="font-display font-bold text-slate-900 tracking-widest text-sm">PROTOKOLER</span>
-        </div>
-      </header>
+      <LandingNavbar alwaysDark={true} />
 
       {/* Main Content */}
       <main className="flex-1 relative pt-32 pb-24">
@@ -75,7 +51,7 @@ export default function TimPengembang() {
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {team.map((member, i) => (
               <motion.div 
                 key={i}
@@ -116,11 +92,6 @@ export default function TimPengembang() {
 
         </div>
       </main>
-      
-      {/* Footer Minimalis */}
-      <footer className="py-8 border-t border-slate-100 text-center relative z-20 bg-slate-50">
-        <p className="text-xs font-medium text-slate-400">© {new Date().getFullYear()} Unit Protokoler Universitas. Dibuat dengan presisi.</p>
-      </footer>
     </div>
   );
 }
