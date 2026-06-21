@@ -36,10 +36,10 @@ export default function TentangKami() {
               <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#D2AD5C] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Mengenal Kami</span>
               <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
-            <motion.h1 variants={fadeUp} className="font-display text-4xl md:text-6xl font-bold text-white leading-tight mb-6 drop-shadow-lg">
+            <motion.h1 variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-4 sm:mb-6 drop-shadow-lg px-4 sm:px-0">
               Garda Terdepan <span className="text-[#D2AD5C]">Institusi</span>
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-lg md:text-xl text-slate-300 leading-relaxed text-justify">
+            <motion.p variants={fadeUp} className="text-sm sm:text-base md:text-xl text-slate-300 leading-relaxed text-justify px-4 sm:px-0">
               Unit Protokoler Universitas Negeri Padang (UNP) berdiri untuk menjaga kehormatan, ketertiban, dan keagungan dalam setiap agenda resmi universitas.
             </motion.p>
           </motion.div>

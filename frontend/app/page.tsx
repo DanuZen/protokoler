@@ -109,19 +109,19 @@ export default function Landing() {
               </motion.div>
 
               {/* Main Headline */}
-              <motion.h1 variants={fadeUp} className="font-display text-4xl md:text-6xl lg:text-[5.5rem] font-extrabold leading-[1.1] tracking-tight text-white drop-shadow-2xl mb-8">
+              <motion.h1 variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-[5.5rem] font-extrabold leading-[1.1] tracking-tight text-white drop-shadow-2xl mb-8">
                 Protokoler <br className="hidden md:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D2AD5C] via-[#eecf83] to-[#D2AD5C]">Universitas Negeri Padang</span>
               </motion.h1>
 
               {/* Subtitle */}
-              <motion.p variants={fadeUp} className="text-base md:text-xl text-slate-300 leading-relaxed font-medium max-w-3xl drop-shadow-md mb-12">
+              <motion.p variants={fadeUp} className="text-sm sm:text-base md:text-xl text-slate-300 leading-relaxed font-medium max-w-3xl drop-shadow-md mb-12 px-4 sm:px-0">
                 Menjaga kehormatan institusi melalui <span className="text-white font-bold">tata tempat, tata upacara, dan tata penghormatan</span> yang presisi. Kami adalah garda terdepan dalam pelayanan prima.
               </motion.p>
               
               <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full px-6 sm:px-0 sm:w-auto">
                 <a href="#profil" className="w-full sm:w-auto flex justify-center">
-                  <Button className="w-full max-w-[260px] sm:max-w-none sm:w-auto h-12 md:h-14 px-8 md:px-10 rounded-full bg-gradient-to-r from-[#6B0000] to-[#8B0A1A] hover:from-[#8B0A1A] hover:to-[#6B0000] text-white font-bold uppercase tracking-widest text-[11px] shadow-[0_0_30px_rgba(107,0,0,0.5)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(107,0,0,0.7)] border-none">
+                  <Button className="w-auto sm:w-auto h-11 md:h-14 px-8 md:px-10 rounded-full bg-gradient-to-r from-[#6B0000] to-[#8B0A1A] hover:from-[#8B0A1A] hover:to-[#6B0000] text-white font-bold uppercase tracking-widest text-[11px] shadow-[0_0_30px_rgba(107,0,0,0.5)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(107,0,0,0.7)] border-none">
                     Eksplorasi Profil
                   </Button>
                 </a>
@@ -193,11 +193,11 @@ export default function Landing() {
                   <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C] block lg:hidden"></div>
                 </div>
                 
-                <h2 className="font-display text-3xl md:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.2] tracking-tight mb-6 text-balance text-center lg:text-left">
+                <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.2] tracking-tight mb-6 text-balance text-center lg:text-left">
                   Menjaga Kehormatan, Memastikan <span className="text-[#6B0000]">Kesempurnaan</span> Acara.
                 </h2>
                 
-                <p className="text-slate-600 text-lg md:text-xl leading-relaxed mb-10 max-w-2xl text-center lg:text-left">
+                <p className="text-slate-600 text-sm sm:text-base md:text-xl leading-relaxed mb-10 max-w-2xl text-center lg:text-left px-4 lg:px-0">
                   Unit Protokoler Universitas Negeri Padang adalah garda terdepan dalam menjaga <span className="font-semibold text-slate-800">tata aturan, tata tempat, tata upacara, dan tata penghormatan</span>. Kami memastikan standar tertinggi dalam penyambutan VVIP dan kesuksesan agenda institusi.
                 </p>
 
@@ -256,10 +256,10 @@ export default function Landing() {
                 <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Agenda</span>
                 <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
               </motion.div>
-              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl md:text-5xl font-bold tracking-tight text-slate-900">
+              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
                 Kegiatan <span className="text-[#6B0000]">Mendatang</span>
               </motion.h2>
-              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-4 text-slate-500 text-lg max-w-2xl mx-auto">
+              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-2 sm:mt-4 text-slate-500 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4 sm:px-0">
                 Jadwal kegiatan resmi tingkat universitas yang akan dan sedang berlangsung.
               </motion.p>
             </div>
@@ -381,10 +381,10 @@ export default function Landing() {
                   <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Prosedur</span>
                   <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C] block lg:hidden"></div>
                 </motion.div>
-                <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6 leading-tight text-center lg:text-left">
+                <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4 sm:mb-6 leading-tight text-center lg:text-left">
                   SOP Praktis <span className="text-[#6B0000]">Protokol</span>
                 </motion.h2>
-                <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-slate-500 text-lg mb-10 leading-relaxed text-center lg:text-left">
+                <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-slate-500 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 leading-relaxed text-center lg:text-left px-4 lg:px-0">
                   Temukan Standard Operating Procedure (SOP) penting dan mendasar untuk menjamin kelancaran setiap kegiatan resmi Universitas.
                 </motion.p>
                 <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="hidden lg:flex">
@@ -406,24 +406,24 @@ export default function Landing() {
                     viewport={{ once: true, margin: '-50px' }}
                     transition={{ duration: 0.5, delay: i * 0.15 }}
                     whileHover={{ scale: 1.02, x: -8 }}
-                    className="group relative flex flex-col sm:flex-row items-start sm:items-center gap-6 md:gap-8 p-6 md:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-2xl hover:border-red-200 transition-all duration-500 overflow-hidden cursor-pointer"
+                    className="group relative flex flex-row items-start sm:items-center gap-4 sm:gap-6 md:gap-8 p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-2xl hover:border-red-200 transition-all duration-500 overflow-hidden cursor-pointer"
                   >
                     {/* Hover Glow Effect */}
                     <div className="absolute right-0 top-1/2 -translate-y-1/2 w-48 h-48 bg-red-100 rounded-full opacity-0 group-hover:opacity-30 blur-3xl transition-opacity duration-500 pointer-events-none" />
                     
                     {/* Icon Block */}
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner relative z-10 transition-transform duration-500 group-hover:scale-105" style={{ background: reg.accentGradient }}>
-                       <FileText className="h-8 w-8 text-white/90 drop-shadow-md" />
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner relative z-10 transition-transform duration-500 group-hover:scale-105 mt-1 sm:mt-0" style={{ background: reg.accentGradient }}>
+                       <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-white/90 drop-shadow-md" />
                     </div>
                     
                     {/* Content */}
-                    <div className="flex-1 relative z-10">
-                       <div className="flex items-center gap-3 mb-3">
-                         <span className="px-3 py-1 rounded-full bg-slate-100 text-[10px] font-bold uppercase tracking-widest text-slate-500 group-hover:bg-red-50 group-hover:text-red-700 transition-colors">SOP Resmi</span>
-                         <span className="text-xs text-slate-400 font-medium tracking-wide">{reg.tanggal_berlaku}</span>
+                    <div className="flex-1 relative z-10 min-w-0">
+                       <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                         <span className="px-2 sm:px-3 py-1 rounded-full bg-slate-100 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-slate-500 group-hover:bg-red-50 group-hover:text-red-700 transition-colors">SOP Resmi</span>
+                         <span className="text-[10px] sm:text-xs text-slate-400 font-medium tracking-wide whitespace-nowrap">{reg.tanggal_berlaku}</span>
                        </div>
-                       <h3 className="font-display font-bold text-2xl text-slate-900 group-hover:text-[#6B0000] transition-colors mb-2">{reg.judul}</h3>
-                       <p className="text-slate-500 text-sm leading-relaxed">{reg.deskripsi}</p>
+                       <h3 className="font-display font-bold text-lg sm:text-xl md:text-2xl text-slate-900 group-hover:text-[#6B0000] transition-colors mb-1 sm:mb-2 truncate sm:whitespace-normal">{reg.judul}</h3>
+                       <p className="text-slate-500 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-none">{reg.deskripsi}</p>
                     </div>
 
                     {/* Action Button */}
@@ -459,11 +459,11 @@ export default function Landing() {
                   <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#D2AD5C] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Apa Kata Mereka</span>
                   <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]/50 block lg:hidden"></div>
                 </div>
-                <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-6 leading-tight text-center lg:text-left">
+                <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight text-center lg:text-left">
                   Suara dari <br />
                   <span className="bg-gradient-to-r from-[#D2AD5C] to-amber-300 bg-clip-text text-transparent drop-shadow-sm">Tim &amp; Tamu</span>
                 </h2>
-                <p className="text-slate-400 text-lg mb-10 leading-relaxed text-center lg:text-left">Dampak langsung dari penggunaan sistem terpadu keprotokolan, dinilai langsung oleh tim lapangan dan tamu VVIP.</p>
+                <p className="text-slate-400 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 leading-relaxed text-center lg:text-left px-4 lg:px-0">Dampak langsung dari penggunaan sistem terpadu keprotokolan, dinilai langsung oleh tim lapangan dan tamu VVIP.</p>
                 
                 {/* Glowing Animated Stars */}
                 <div className="flex gap-2 mt-10 justify-center lg:justify-start">
@@ -520,11 +520,11 @@ export default function Landing() {
                   <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Postingan Terkini</span>
                   <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C] block md:hidden"></div>
                 </motion.div>
-                <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl md:text-5xl font-bold tracking-tight text-slate-900">
+                <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
                   Postingan <span className="text-[#6B0000]">Terbaru</span>
                 </motion.h2>
               </div>
-              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-slate-500 text-lg md:text-xl max-w-lg md:text-right">
+              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-slate-500 text-sm sm:text-base md:text-xl max-w-lg md:text-right px-4 md:px-0 mt-2 md:mt-0">
                 Informasi, berita, dan dokumentasi kegiatan resmi terbaru yang dirangkum langsung oleh tim Protokoler.
               </motion.p>
             </div>
@@ -716,11 +716,11 @@ export default function Landing() {
                 <div className="w-6 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
               </div>
               
-              <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-4 sm:mb-6 px-4 sm:px-0">
                 Siap Menjadi <span className="text-[#D2AD5C]">Garda Terdepan</span> Universitas?
               </h2>
               
-              <p className="text-base md:text-lg text-white/70 max-w-2xl leading-relaxed mb-10 font-medium">
+              <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-2xl leading-relaxed mb-8 sm:mb-10 font-medium px-4 sm:px-0">
                 Asah kemampuan kepemimpinan, tingkatkan keterampilan <span className="text-white italic">public speaking</span>, dan pelajari standar pelayanan VVIP tingkat nasional dengan bergabung bersama Unit Protokoler Universitas Negeri Padang.
               </p>
               
