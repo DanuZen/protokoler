@@ -67,16 +67,16 @@ export default function TimPengembang() {
               <div className="w-6 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
             
-            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="font-display text-4xl md:text-5xl lg:text-[4rem] font-bold tracking-tight text-slate-900 leading-tight mb-6 text-balance">
+            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-bold tracking-tight text-slate-900 leading-tight mb-4 sm:mb-6 text-balance">
               Tim <span className="text-[#6B0000]">Pengembang</span>
             </motion.h1>
             
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="text-sm sm:text-base md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed px-4">
               Orang-orang di balik layar yang merancang dan mengembangkan sistem informasi modern untuk Unit Protokoler Universitas.
             </motion.p>
           </div>
 
-          <div className="flex flex-col items-center gap-12 max-w-sm md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto w-full">
+          <div className="flex flex-col items-center gap-24 md:gap-16 max-w-sm md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto w-full">
             {team.map((member, i) => (
               <motion.div 
                 key={i}
@@ -86,14 +86,14 @@ export default function TimPengembang() {
                 className={`group w-full relative z-10 hover:z-50 flex flex-col ${i % 2 === 0 ? 'md:flex-row md:text-left' : 'md:flex-row-reverse md:text-right'} items-center bg-white rounded-3xl p-6 md:p-10 border border-slate-100 hover:border-red-100 shadow-sm hover:shadow-xl transition-all duration-500 gap-6 md:gap-24`}
               >
                 {/* Image Section */}
-                <div className="relative w-32 h-32 md:w-56 md:h-48 shrink-0 z-20">
+                <div className="relative w-44 h-36 sm:w-48 sm:h-40 md:w-56 md:h-48 shrink-0 z-20 mx-auto">
                    {/* Background Box (The one that expands and changes color) */}
-                   <div className="absolute inset-0 bg-slate-200 rounded-[2rem] shadow-md group-hover:bg-[#6B0000] group-hover:scale-x-[1.15] transition-all duration-500 flex flex-col items-center justify-center">
+                   <div className="absolute inset-0 bg-[#6B0000] scale-x-[1.25] md:bg-slate-200 md:scale-x-100 md:group-hover:bg-[#6B0000] md:group-hover:scale-x-[1.15] rounded-[2rem] shadow-md transition-all duration-500 flex flex-col items-center justify-center">
                      <Code className="w-8 h-8 md:w-16 md:h-16 text-slate-300" />
                    </div>
                    
                    {/* Profile Image (The one that pops out) */}
-                   <Image src={member.image} alt={member.name} fill sizes="(max-width: 768px) 128px, 256px" className="object-contain object-bottom relative z-20 grayscale group-hover:grayscale-0 group-hover:scale-[1.45] group-hover:drop-shadow-2xl transition-all duration-500 origin-bottom" />
+                   <Image src={member.image} alt={member.name} fill sizes="(max-width: 768px) 192px, 256px" className="object-contain object-bottom relative z-20 grayscale-0 scale-[1.75] drop-shadow-2xl md:drop-shadow-none md:grayscale md:scale-100 md:group-hover:grayscale-0 md:group-hover:scale-[1.45] md:group-hover:drop-shadow-2xl transition-all duration-500 origin-bottom" />
                 </div>
                 
                 {/* Text Section */}
@@ -106,7 +106,7 @@ export default function TimPengembang() {
                 </div>
                 
                 {/* Socials Hover */}
-                <div className={`absolute top-1/2 -translate-y-1/2 ${i % 2 === 0 ? 'right-6 md:right-8' : 'left-6 md:left-8'} opacity-0 ${i % 2 === 0 ? 'translate-x-2 group-hover:translate-x-0' : '-translate-x-2 group-hover:translate-x-0'} group-hover:opacity-100 transition-all duration-300 flex flex-col gap-3 z-30`}>
+                <div className={`relative mt-6 md:mt-0 md:absolute md:top-1/2 md:-translate-y-1/2 ${i % 2 === 0 ? 'md:right-8' : 'md:left-8'} opacity-100 translate-x-0 md:opacity-0 ${i % 2 === 0 ? 'md:translate-x-2' : 'md:-translate-x-2'} md:group-hover:translate-x-0 md:group-hover:opacity-100 transition-all duration-300 flex flex-row md:flex-col justify-center gap-4 md:gap-3 z-30`}>
                   {member.socials?.instagram && (
                     <a href={member.socials.instagram} target="_blank" rel="noopener noreferrer" className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 text-[#6B0000] hover:bg-[#6B0000] hover:text-white flex items-center justify-center shadow-sm transition-colors duration-300">
                       <InstagramIcon className="w-4 h-4 md:w-5 md:h-5" />
