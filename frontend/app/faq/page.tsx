@@ -76,10 +76,10 @@ export default function FAQPage() {
               <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Pusat Bantuan</span>
               <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
-            <motion.h1 variants={fadeUp} className="font-display text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-6">
+            <motion.h1 variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-4 sm:mb-6">
               Pertanyaan <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">Sering Diajukan</span>
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
+            <motion.p variants={fadeUp} className="mt-4 sm:mt-6 text-slate-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
               Temukan jawaban atas pertanyaan umum seputar fitur dan alur kerja platform <span className="text-slate-900 font-semibold">Protokoler</span>.
             </motion.p>
           </motion.div>
