@@ -85,9 +85,8 @@ export default function Landing() {
           {/* Background Video (YouTube) & Overlays */}
           <div className="absolute inset-0 z-0 bg-slate-950">
             <iframe 
-              src="https://www.youtube.com/embed/t6gKixOHNuc?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=t6gKixOHNuc&playsinline=1&start=43" 
-              allow="autoplay; encrypted-media"
-              className="absolute top-1/2 left-1/2 w-[300vw] md:w-[150vw] h-[300vh] md:h-[150vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-60 mix-blend-luminosity"
+              src="https://www.youtube.com/embed/t6gKixOHNuc?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=t6gKixOHNuc&playsinline=1&start=43&cc_load_policy=0&iv_load_policy=3" 
+              className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-60 mix-blend-luminosity"
               style={{ border: 'none' }}
             />
             
@@ -99,7 +98,7 @@ export default function Landing() {
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#D2AD5C]/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen z-10"></div>
           </div>
 
-          <div className="container mx-auto px-6 relative z-20 flex flex-col items-center text-center mt-16">
+          <div className="container mx-auto px-6 relative z-20 flex flex-col items-center text-center mt-16 pb-24 md:pb-0">
             <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col items-center max-w-5xl">
               
               {/* Premium Badge */}
@@ -204,7 +203,7 @@ export default function Landing() {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0 text-amber-600">
+                    <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 text-[#6B0000]">
                       <Star className="w-6 h-6" />
                     </div>
                     <div>
@@ -213,7 +212,7 @@ export default function Landing() {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-600">
+                    <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 text-[#6B0000]">
                       <Users className="w-6 h-6" />
                     </div>
                     <div>
@@ -223,9 +222,11 @@ export default function Landing() {
                   </div>
                 </div>
 
-                <Button className="w-fit bg-[#6B0000] hover:bg-[#6A0814] text-white rounded-full px-8 py-6 text-sm font-bold tracking-wide shadow-lg shadow-red-900/20 group">
-                  Kenali Kami Lebih Dekat <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                <Link href="/tentang">
+                  <Button className="w-fit bg-[#6B0000] hover:bg-[#6A0814] text-white rounded-full px-8 py-6 text-sm font-bold tracking-wide shadow-lg shadow-red-900/20 group">
+                    Kenali Kami Lebih Dekat <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
               </motion.div>
               
             </div>
@@ -264,7 +265,7 @@ export default function Landing() {
                 whileInView="visible"
                 viewport={{ once: true, margin: '-100px' }}
                 variants={fadeUp}
-                className="grid md:grid-cols-[400px_1fr] gap-5"
+                className="grid lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr] gap-5 md:gap-8"
               >
                 {/* Left: Calendar Card */}
                 <div className="bg-white p-7 md:p-9 flex flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg">
@@ -467,7 +468,7 @@ export default function Landing() {
                     whileHover={{ scale: 1.03, y: -8 }}
                     variants={fadeUp}
                     key={i}
-                    className="p-8 rounded-[2rem] bg-gradient-to-br from-[#2A0000]/90 to-[#1A0000]/90 backdrop-blur-xl border border-white/5 relative transition-all duration-300 shadow-2xl hover:shadow-[#D2AD5C]/10 hover:border-[#D2AD5C]/30 group"
+                    className="p-6 md:p-8 rounded-[2rem] bg-gradient-to-br from-[#2A0000]/90 to-[#1A0000]/90 backdrop-blur-xl border border-white/5 relative transition-all duration-300 shadow-2xl hover:shadow-[#D2AD5C]/10 hover:border-[#D2AD5C]/30 group"
                   >
                     {/* Big decorative quote */}
                     <div className="absolute top-4 right-6 font-display text-8xl font-black leading-none select-none text-[#D2AD5C]/10 group-hover:text-[#D2AD5C]/20 transition-colors duration-300">&ldquo;</div>
@@ -491,7 +492,7 @@ export default function Landing() {
         {/* Berita & Dokumentasi (Postingan) */}
         <section id="postingan" className="py-16 md:py-32 relative overflow-hidden bg-white border-t border-slate-100">
           <div className="container mx-auto px-6 relative z-10">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-16 gap-6">
               <div className="max-w-2xl">
                 <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
@@ -506,66 +507,76 @@ export default function Landing() {
               </motion.p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(postinganDokumentasi || []).map((post: any, i: number) => {
-                const isFeatured = i === 0;
-                
-                // Distribusi grid lebih praktis dan seimbang
-                let gridClass = "h-[360px] md:h-[400px]";
-                if (isFeatured) {
-                  gridClass += " lg:col-span-2";
-                }
+            {postinganDokumentasi && postinganDokumentasi.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {postinganDokumentasi.map((post: any, i: number) => {
+                  const isFeatured = i === 0;
+                  
+                  // Distribusi grid lebih praktis dan seimbang
+                  let gridClass = "h-[360px] md:h-[400px]";
+                  if (isFeatured) {
+                    gridClass += " md:col-span-2 lg:col-span-2";
+                  }
 
-                return (
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-100px' }}
-                    transition={{ duration: 0.6, delay: i * 0.15 }}
-                    key={post.id}
-                    whileHover={{ scale: 1.02 }}
-                    onClick={() => setSelectedPost(post)}
-                    className={cn(
-                      "group relative overflow-hidden cursor-pointer rounded-3xl w-full",
-                      gridClass
-                    )}
-                    style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05)' }}
-                  >
-                    <Image src={post.gambar} alt={post.judul} fill sizes={isFeatured ? "(max-width: 1024px) 100vw, 60vw" : "(max-width: 1024px) 100vw, 40vw"} className="object-cover transition-transform duration-1000 group-hover:scale-108" />
-                    {/* Overlays */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(135deg, rgba(139,10,26,0.4) 0%, transparent 60%)' }} />
-                    <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ boxShadow: 'inset 0 0 0 2px rgba(139,10,26,0.6)' }} />
-                    
-                    {/* Tag */}
-                    <div className="absolute top-6 left-6 flex gap-2 z-20">
-                      <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#6B0000]/90 backdrop-blur-md text-white shadow-lg">
-                        {post.kategori}
-                      </span>
-                    </div>
-
-                    {/* Content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 z-20 flex flex-col justify-end">
-                      <p className="text-[#D2AD5C] text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2">
-                        {new Date(post.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                      </p>
-                      <h3 className={cn("text-white font-bold drop-shadow-lg leading-tight mb-3", isFeatured ? "text-2xl md:text-3xl" : "text-xl md:text-2xl")}>
-                        {post.judul}
-                      </h3>
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, y: 50 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: '-100px' }}
+                      transition={{ duration: 0.6, delay: i * 0.15 }}
+                      key={post.id}
+                      whileHover={{ scale: 1.02 }}
+                      onClick={() => setSelectedPost(post)}
+                      className={cn(
+                        "group relative overflow-hidden cursor-pointer rounded-3xl w-full",
+                        gridClass
+                      )}
+                      style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05)' }}
+                    >
+                      <Image src={post.gambar} alt={post.judul} fill sizes={isFeatured ? "(max-width: 1024px) 100vw, 60vw" : "(max-width: 1024px) 100vw, 40vw"} className="object-cover transition-transform duration-1000 group-hover:scale-108" />
+                      {/* Overlays */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(135deg, rgba(139,10,26,0.4) 0%, transparent 60%)' }} />
+                      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ boxShadow: 'inset 0 0 0 2px rgba(139,10,26,0.6)' }} />
                       
-                      <p className={cn("text-white/80 transition-all duration-500 line-clamp-2", isFeatured ? "text-sm md:text-base mb-5 opacity-100" : "text-sm mb-0 h-0 opacity-0 group-hover:h-auto group-hover:mb-4 group-hover:opacity-100")}>
-                        {post.ringkasan}
-                      </p>
-
-                      <div className={cn("flex items-center gap-3 transition-opacity duration-500", isFeatured ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
-                        <div className="w-8 h-[2px] rounded-full bg-[#D2AD5C]" />
-                        <span className="text-white text-[10px] md:text-xs font-bold uppercase tracking-widest group-hover:text-[#D2AD5C] transition-colors">Baca Selengkapnya</span>
+                      {/* Tag */}
+                      <div className="absolute top-6 left-6 flex gap-2 z-20">
+                        <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#6B0000]/90 backdrop-blur-md text-white shadow-lg">
+                          {post.kategori}
+                        </span>
                       </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+
+                      {/* Content */}
+                      <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 z-20 flex flex-col justify-end">
+                        <p className="text-[#D2AD5C] text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2">
+                          {new Date(post.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </p>
+                        <h3 className={cn("text-white font-bold drop-shadow-lg leading-tight mb-3", isFeatured ? "text-2xl md:text-3xl" : "text-xl md:text-2xl")}>
+                          {post.judul}
+                        </h3>
+                        
+                        <p className={cn("text-white/80 transition-all duration-500 line-clamp-2", isFeatured ? "text-sm md:text-base mb-5 opacity-100" : "text-sm mb-0 h-0 opacity-0 group-hover:h-auto group-hover:mb-4 group-hover:opacity-100")}>
+                          {post.ringkasan}
+                        </p>
+
+                        <div className={cn("flex items-center gap-3 transition-opacity duration-500", isFeatured ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
+                          <div className="w-8 h-[2px] rounded-full bg-[#D2AD5C]" />
+                          <span className="text-white text-[10px] md:text-xs font-bold uppercase tracking-widest group-hover:text-[#D2AD5C] transition-colors">Baca Selengkapnya</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 px-6 bg-slate-50 border border-slate-100 rounded-[2rem] text-center">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
+                  <Megaphone className="w-6 h-6 text-slate-300" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Belum ada postingan</h3>
+                <p className="text-slate-500 max-w-sm">Informasi, berita, dan dokumentasi terbaru akan segera hadir di sini.</p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -589,7 +600,7 @@ export default function Landing() {
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Left Side: Image (Instagram style) */}
-                <div className="w-full md:w-[60%] h-[40vh] md:h-full bg-slate-950 relative flex items-center justify-center overflow-hidden group/image">
+                <div className="w-full md:w-[60%] h-[40%] md:h-full bg-slate-950 relative flex items-center justify-center overflow-hidden group/image">
                    {/* Blur Background */}
                    <Image src={selectedPost.gambar} alt={selectedPost.judul} fill className="object-cover opacity-30 blur-2xl pointer-events-none scale-110" />
                    {/* Main Image */}
@@ -619,7 +630,7 @@ export default function Landing() {
                 </div>
 
                 {/* Right Side: Content */}
-                <div className="w-full md:w-[40%] h-[50vh] md:h-full flex flex-col bg-white overflow-hidden">
+                <div className="w-full md:w-[40%] h-[60%] md:h-full flex flex-col bg-white overflow-hidden">
                    {/* Header Sticky */}
                    <div className="px-6 py-5 md:px-8 md:py-6 border-b border-slate-100 flex items-center justify-between bg-white z-10 shadow-sm">
                      <div className="flex items-center gap-4">
@@ -663,7 +674,7 @@ export default function Landing() {
         </AnimatePresence>
 
         {/* Call to Action (Recruitment) */}
-        <section className="relative py-24 md:py-32 overflow-hidden bg-[#5a0000]">
+        <section className="relative py-16 md:py-32 overflow-hidden bg-[#5a0000]">
           {/* Decorative Background Elements */}
           <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-500/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
@@ -683,7 +694,7 @@ export default function Landing() {
                 <div className="w-8 md:w-12 h-[2px] bg-[#D2AD5C]"></div>
               </div>
               
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+              <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
                 Siap Menjadi <span className="text-[#D2AD5C]">Garda Terdepan</span> Universitas?
               </h2>
               
