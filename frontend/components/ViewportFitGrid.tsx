@@ -30,6 +30,7 @@ interface ViewportFitGridProps {
   gap?: number;
   className?: string;
   gridTemplateColumns?: string;
+  forceScaleOnMobile?: boolean;
 }
 
 export function ViewportFitGrid({
@@ -39,11 +40,13 @@ export function ViewportFitGrid({
   gap = 16,
   className = "",
   gridTemplateColumns,
+  forceScaleOnMobile = false,
 }: ViewportFitGridProps) {
   const outerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [shouldScale, setShouldScale] = useState(true);
 
   const recalculate = useCallback(() => {
     const outer = outerRef.current;
@@ -52,8 +55,11 @@ export function ViewportFitGrid({
 
     const mobile = window.innerWidth < MOBILE_BREAKPOINT_PX;
     setIsMobile(mobile);
+    
+    const scaleEnabled = !mobile || forceScaleOnMobile;
+    setShouldScale(scaleEnabled);
 
-    if (mobile) {
+    if (!scaleEnabled) {
       setScale(1);
       return;
     }
@@ -70,7 +76,7 @@ export function ViewportFitGrid({
     const nextScale = Math.min(1, scaleX, scaleY);
 
     setScale(Math.max(minScale, nextScale));
-  }, [minScale]);
+  }, [minScale, forceScaleOnMobile]);
 
   useEffect(() => {
     recalculate();
@@ -97,7 +103,7 @@ export function ViewportFitGrid({
     <div
       ref={outerRef}
       style={
-        isMobile
+        !shouldScale
           ? { overflow: "visible", height: "auto", width: "100%" }
           : { overflow: "hidden", height: "100%", width: "100%", position: "relative" }
       }
@@ -111,9 +117,10 @@ export function ViewportFitGrid({
             ? "1fr"
             : (gridTemplateColumns || `repeat(auto-fit, minmax(${minCardWidth}px, 1fr))`),
           gap: `${gap}px`,
-          transform: isMobile ? "none" : `scale(${scale})`,
-          transformOrigin: "top center",
-          width: isMobile ? "100%" : `${100 / scale}%`,
+          transform: !shouldScale ? "none" : `scale(${scale})`,
+          transformOrigin: "top left",
+          width: !shouldScale ? "100%" : `${100 / scale}%`,
+          height: !shouldScale ? "100%" : `${100 / scale}%`,
           transition: "transform 120ms ease-out",
         }}
       >

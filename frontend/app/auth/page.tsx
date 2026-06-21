@@ -205,10 +205,10 @@ export default function AuthPage() {
   ];
 
   return (
-    <div className="flex flex-col h-auto lg:h-dvh lg:overflow-hidden bg-slate-50">
-      <main className="flex-1 min-h-0 overflow-visible lg:overflow-hidden relative">
-        <ViewportFitGrid gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full max-h-full">
-          <div className="grid lg:grid-cols-2 w-full h-full min-h-[750px]">
+    <div className="flex flex-col h-dvh overflow-hidden bg-slate-50">
+      <main className="flex-1 min-h-0 overflow-hidden relative">
+        <ViewportFitGrid forceScaleOnMobile gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full">
+          <div className="grid lg:grid-cols-2 w-full h-full lg:min-h-[750px]">
             {/* ── Left Panel (branding) - Primary & Secondary Background ── */}
             <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#5b1511] via-[#4a100e] to-[#7a2c00] relative z-10 p-12 xl:p-20 shadow-2xl overflow-hidden">
         {/* Subtle Decorative Gradient Overlays */}
@@ -265,7 +265,7 @@ export default function AuthPage() {
       </div>
 
       {/* ── Right Panel: Auth Card & Orange Background ── */}
-      <div className="flex items-center justify-center p-6 relative bg-slate-50 lg:bg-red-50/50">
+      <div className="flex items-center justify-center h-full p-4 lg:p-6 relative bg-slate-50 lg:bg-red-50/50">
         {/* Gradients specific to right panel */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-200/30 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-100/40 rounded-full blur-[100px] pointer-events-none" />
@@ -277,13 +277,13 @@ export default function AuthPage() {
           className="w-full max-w-md"
         >
           {/* Mobile logo */}
-          <div className="flex flex-col items-center justify-center gap-2 mb-5 lg:hidden text-center">
-            <div className="relative h-14 w-14 drop-shadow-sm">
-              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="56px" className="object-contain" priority />
+          <div className="flex flex-col items-center justify-center gap-3 mb-6 lg:hidden text-center">
+            <div className="relative h-20 w-20 drop-shadow-sm">
+              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
             </div>
             <div>
-              <span className="font-display text-lg font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>
-              <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-500 block">UNIVERSITAS NEGERI PADANG</span>
+              <span className="font-display text-2xl font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 block">UNIVERSITAS NEGERI PADANG</span>
             </div>
           </div>
 
@@ -294,14 +294,14 @@ export default function AuthPage() {
               {mode === 'login' && (
                 <motion.div key="login" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}>
                   <div className="mb-5 text-center">
-                    <h2 className="font-display text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight mb-1 lg:mb-2">Selamat Datang</h2>
-                    <p className="text-xs lg:text-sm text-slate-500 font-medium">Masukkan kredensial Anda untuk melanjutkan.</p>
+                    <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight mb-1 lg:mb-2">Selamat Datang</h2>
+                    <p className="text-sm text-slate-500 font-medium">Masukkan kredensial Anda untuk melanjutkan.</p>
                   </div>
 
                   {/* Login Form */}
                   <form onSubmit={handleLogin} className="space-y-4 lg:space-y-5 mb-5 lg:mb-8">
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Email</Label>
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Email</Label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                           <Mail className="h-4 w-4 text-slate-400" />
@@ -312,8 +312,8 @@ export default function AuthPage() {
                     
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <Label className="text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Password</Label>
-                        <a href="#" className="text-[10px] lg:text-xs font-bold text-red-700 hover:text-red-800 transition-colors">Lupa password?</a>
+                        <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Password</Label>
+                        <a href="#" className="text-xs font-bold text-red-700 hover:text-red-800 transition-colors">Lupa password?</a>
                       </div>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -330,7 +330,7 @@ export default function AuthPage() {
 
                   <div className="my-4 lg:my-6 flex items-center gap-3">
                     <div className="h-px flex-1 bg-slate-100" />
-                    <span className="text-[10px] lg:text-xs text-slate-400 font-medium">Belum punya akun?</span>
+                    <span className="text-xs text-slate-400 font-medium">Belum punya akun?</span>
                     <div className="h-px flex-1 bg-slate-100" />
                   </div>
 
@@ -477,7 +477,7 @@ export default function AuthPage() {
           </div>
 
           {/* ── QUICK LOGIN DEMO (moved below card) ── */}
-          <div className="mt-6">
+          <div className="mt-6 hidden lg:block">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px flex-1 bg-slate-200" />
               <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.1em]">Akses Cepat Demo</span>
