@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText, Mail, Lock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { ViewportFitGrid } from '@/components/ViewportFitGrid';
 
 type AuthMode = 'login' | 'register';
 type RegisterStep = 1 | 2 | 3;
@@ -204,25 +205,30 @@ export default function AuthPage() {
   ];
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 overflow-hidden">
-      {/* ── Left Panel (branding) - Primary & Secondary Background ── */}
-      <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#5b1511] via-[#4a100e] to-[#7a2c00] relative z-10 p-12 xl:p-20 shadow-2xl overflow-hidden">
+    <div className="flex flex-col h-auto lg:h-dvh lg:overflow-hidden bg-slate-50">
+      <main className="flex-1 min-h-0 overflow-visible lg:overflow-hidden relative">
+        <ViewportFitGrid gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full max-h-full">
+          <div className="grid lg:grid-cols-2 w-full h-full min-h-[750px]">
+            {/* ── Left Panel (branding) - Primary & Secondary Background ── */}
+            <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#5b1511] via-[#4a100e] to-[#7a2c00] relative z-10 p-12 xl:p-20 shadow-2xl overflow-hidden">
         {/* Subtle Decorative Gradient Overlays */}
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
         <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-[#5b1511]/60 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute top-20 right-0 w-64 h-64 bg-amber-500/20 rounded-full blur-[80px] pointer-events-none" />
 
-        <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-16">
-            <div className="relative h-14 w-14 bg-white rounded-full shadow-lg border-2 border-white/20 flex-shrink-0">
-              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="56px" className="object-contain p-1.5" priority />
-            </div>
-            <div>
-              <span className="font-display text-2xl font-bold tracking-tight leading-none block text-white drop-shadow-sm">PROTOKOLER</span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">UNIVERSITAS NEGERI PADANG</span>
-            </div>
+        {/* Header: Logo ditaruh paling atas */}
+        <div className="relative z-10 flex items-center gap-5">
+          <div className="relative h-20 w-20 bg-white rounded-full shadow-lg border border-white/10 flex-shrink-0 overflow-hidden">
+            <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
           </div>
+          <div>
+            <span className="font-display text-3xl font-bold tracking-tight leading-none block text-white drop-shadow-sm mb-1">PROTOKOLER</span>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/80">UNIVERSITAS NEGERI PADANG</span>
+          </div>
+        </div>
 
+        {/* Body: Konten teks di tengah secara vertikal, namun rata kiri */}
+        <div className="relative z-10 flex-1 flex flex-col justify-center w-full max-w-xl">
           <div className="space-y-8">
             <div>
               <h1 className="font-display text-4xl xl:text-5xl font-bold tracking-tight text-white leading-tight mb-4 drop-shadow-sm">
@@ -254,6 +260,7 @@ export default function AuthPage() {
           </div>
         </div>
 
+        {/* Footer */}
         <p className="text-xs text-white/60 font-medium relative z-10">© 2026 Unit Protokoler Universitas Negeri Padang</p>
       </div>
 
@@ -496,6 +503,9 @@ export default function AuthPage() {
           </p>
         </motion.div>
       </div>
+          </div>
+        </ViewportFitGrid>
+      </main>
     </div>
   );
 }

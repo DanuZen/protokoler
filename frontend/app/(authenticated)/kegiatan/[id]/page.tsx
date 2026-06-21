@@ -138,7 +138,10 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   });
 
   const daftar = useMutation({
-    mutationFn: async () => { await kegiatanApi.daftar(id, user?.id || "", user?.user_metadata?.nama_lengkap || "Mahasiswa", selectedRole); },
+    mutationFn: async () => { 
+      const mappedRole = selectedRole === 'Protokoler' ? 'protokoler' : 'lo';
+      await kegiatanApi.daftar(id, mappedRole); 
+    },
     onSuccess: () => { toast.success("Berhasil mendaftar ke kegiatan ini!"); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
   });
 

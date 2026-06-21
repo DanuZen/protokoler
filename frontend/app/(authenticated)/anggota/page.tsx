@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Users, UserCheck, ShieldCheck, Check, X } from "lucide-react";
+import { Search, Users, UserCheck, ShieldCheck, Check, X, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { BadgeStatus } from "@/components/BadgeStatus";
@@ -25,6 +25,7 @@ type Protokoler = {
   status_akun: "pending" | "aktif" | "ditolak" | "tidak_aktif";
   total_kegiatan: number;
   kategori_sertifikat: "perak" | "silver" | "gold" | null;
+  catatan_penolakan?: string;
 };
 
 const fadeUp = {
@@ -39,12 +40,12 @@ const stagger = {
 
 export default function AnggotaPage() {
   const { user } = useAuth();
-  const { data: role } = useRole(user);
+  const { data: role, loading: isRoleLoading } = useRole(user);
   const isAdmin = role === "admin";
   const qc = useQueryClient();
   
   const [search, setSearch] = useState("");
-  const [tab, setTab] = useState<"semua" | "pending">("semua");
+  const [tab, setTab] = useState<"semua" | "pending" | "ditolak">("semua");
   const [selected, setSelected] = useState<Protokoler | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [dialogMode, setDialogMode] = useState<"approve" | "reject" | null>(null);
@@ -68,16 +69,36 @@ export default function AnggotaPage() {
   const allData = data ?? [];
   const pendingCount = allData.filter(m => m.status_akun === "pending").length;
   const aktifCount = allData.filter(m => m.status_akun === "aktif").length;
+  const ditolakCount = allData.filter(m => m.status_akun === "ditolak").length;
 
   const filtered = allData.filter((m) => {
     const q = search.toLowerCase();
     const matchSearch = !q || m.nama_lengkap.toLowerCase().includes(q) || m.nim.toLowerCase().includes(q);
-    const matchTab = tab === "semua" ? m.status_akun !== "pending" : m.status_akun === "pending";
+    let matchTab = false;
+    if (tab === "semua") {
+      matchTab = m.status_akun !== "pending" && m.status_akun !== "ditolak";
+    } else if (tab === "pending") {
+      matchTab = m.status_akun === "pending";
+    } else if (tab === "ditolak") {
+      matchTab = m.status_akun === "ditolak";
+    }
     return matchSearch && matchTab;
   });
 
+  if (isRoleLoading) return null;
+
   if (!isAdmin) {
-    return <div className="p-8 text-red-500 font-bold">Akses Ditolak</div>;
+    return (
+      <div className="flex-1 h-dvh flex flex-col items-center justify-center p-8 bg-slate-50/50">
+        <div className="bg-red-100 text-red-700 p-5 rounded-full mb-6 shadow-sm border border-red-200">
+          <ShieldCheck className="h-12 w-12" />
+        </div>
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Akses Ditolak</h1>
+        <p className="text-slate-500 max-w-md text-center text-sm md:text-base leading-relaxed">
+          Maaf, Anda tidak memiliki izin untuk mengakses halaman ini. Halaman manajemen anggota hanya diperuntukkan bagi Administrator.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -105,20 +126,20 @@ export default function AnggotaPage() {
       <section className="relative z-20 pb-0 shrink-0">
         <motion.div initial="hidden" animate="visible" variants={stagger} className="grid gap-4 md:grid-cols-3">
           {[
-            { label: "Menunggu Verifikasi", value: pendingCount, icon: ShieldCheck, hint: "Perlu ditinjau", color: "text-amber-600", bg: "bg-amber-100" },
-            { label: "Protokoler Aktif", value: aktifCount, icon: UserCheck, hint: "Anggota aktif", color: "text-emerald-600", bg: "bg-emerald-100" },
-            { label: "Total Terdaftar", value: allData.length, icon: Users, hint: "Seluruh anggota", color: "text-[#ff6b4a]", bg: "bg-red-50" },
+            { label: "Menunggu Verifikasi", value: pendingCount, icon: ShieldCheck, hint: "Perlu ditinjau" },
+            { label: "Protokoler Aktif", value: aktifCount, icon: UserCheck, hint: "Anggota aktif" },
+            { label: "Total Terdaftar", value: allData.length, icon: Users, hint: "Seluruh anggota" },
           ].map((stat, i) => (
             <motion.div key={stat.label} variants={fadeUp}>
-              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full">
+              <div className="bg-white border border-slate-200 shadow-sm rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden h-full">
                 <div className="flex items-center justify-between relative z-10">
                   <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                  <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                  <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl bg-red-50 text-red-800 transition-colors">
                     <stat.icon className="h-5 w-5" />
                   </div>
                 </div>
                 <div className="mt-4 relative z-10">
-                  <p className={cn("text-[32px] font-bold leading-tight", stat.color || "text-slate-900")}>{stat.value}</p>
+                  <p className="text-[32px] font-bold leading-tight text-red-800">{stat.value}</p>
                   <div className="flex items-center gap-1.5 mt-1.5">
                     <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
                   </div>
@@ -134,49 +155,78 @@ export default function AnggotaPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden flex flex-col h-full">
           
           {/* Toolbar */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-100 px-6 py-4 bg-white shrink-0">
-            <div className="flex items-center p-1 bg-slate-50 border border-slate-200 rounded-2xl w-full md:w-auto">
-              <button 
-                onClick={() => setTab("semua")} 
-                className={cn(
-                  "flex-1 md:flex-none px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-200",
-                  tab === "semua" ? "bg-white text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.08)]" : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
-                )}
-              >
-                Semua Anggota
-              </button>
-              <button 
-                onClick={() => setTab("pending")} 
-                className={cn(
-                  "flex-1 md:flex-none px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2",
-                  tab === "pending" ? "bg-white text-slate-900 shadow-[0_2px_8px_rgb(0,0,0,0.08)]" : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
-                )}
-              >
-                Menunggu Verifikasi 
-                {pendingCount > 0 && (
-                  <span className={cn(
-                    "text-[10px] px-1.5 py-0.5 rounded-md font-bold", 
-                    tab === "pending" ? "bg-red-100 text-red-900" : "bg-slate-200 text-slate-600"
-                  )}>
-                    {pendingCount}
-                  </span>
-                )}
-              </button>
+          <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col xl:flex-row justify-between xl:items-center gap-4 shrink-0">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                <Users className="h-6 w-6 text-red-700" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Anggota</h2>
+                <p className="text-sm text-slate-500 mt-1 line-clamp-1">Kelola dan filter data seluruh anggota protokoler.</p>
+              </div>
             </div>
             
-            <div className="relative w-full md:max-w-xs">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <Input 
-                className="pl-9 rounded-xl border-slate-200 bg-white text-slate-900 placeholder-slate-400 focus-visible:ring-slate-200 shadow-sm h-10" 
-                placeholder="Cari nama, NIM..." 
-                value={search} 
-                onChange={(e) => setSearch(e.target.value)} 
-              />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 shrink-0">
+              <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto [&::-webkit-scrollbar]:hidden">
+                <button 
+                  onClick={() => setTab("semua")} 
+                  className={cn(
+                    "px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 whitespace-nowrap",
+                    tab === "semua" ? "bg-[#6B0000] text-white border-[#6B0000] shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-slate-200 shadow-sm hover:text-slate-900 hover:shadow-md"
+                  )}
+                >
+                  Semua Anggota
+                </button>
+                <button 
+                  onClick={() => setTab("pending")} 
+                  className={cn(
+                    "px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 whitespace-nowrap flex items-center",
+                    tab === "pending" ? "bg-[#6B0000] text-white border-[#6B0000] shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-slate-200 shadow-sm hover:text-slate-900 hover:shadow-md"
+                  )}
+                >
+                  Menunggu Verifikasi 
+                  {pendingCount > 0 && (
+                    <span className={cn(
+                      "ml-2 inline-flex items-center justify-center px-1.5 py-0.5 rounded-md text-[10px]", 
+                      tab === "pending" ? "bg-white/20" : "bg-slate-100 text-slate-500"
+                    )}>
+                      {pendingCount}
+                    </span>
+                  )}
+                </button>
+                <button 
+                  onClick={() => setTab("ditolak")} 
+                  className={cn(
+                    "px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 whitespace-nowrap flex items-center",
+                    tab === "ditolak" ? "bg-[#6B0000] text-white border-[#6B0000] shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-slate-200 shadow-sm hover:text-slate-900 hover:shadow-md"
+                  )}
+                >
+                  Ditolak 
+                  {ditolakCount > 0 && (
+                    <span className={cn(
+                      "ml-2 inline-flex items-center justify-center px-1.5 py-0.5 rounded-md text-[10px]", 
+                      tab === "ditolak" ? "bg-white/20" : "bg-slate-100 text-slate-500"
+                    )}>
+                      {ditolakCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+              
+              <div className="relative w-full sm:w-64 shrink-0">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Input 
+                  className="pl-9 h-10 rounded-xl bg-white border-slate-200 text-sm shadow-sm focus-visible:ring-red-700 w-full text-slate-900 placeholder-slate-400" 
+                  placeholder="Cari nama, NIM..." 
+                  value={search} 
+                  onChange={(e) => setSearch(e.target.value)} 
+                />
+              </div>
             </div>
           </div>
 
           {/* Data Table */}
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-auto flex flex-col min-h-0 relative">
             <Table>
               <TableHeader className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
                 <TableRow className="border-none">
@@ -187,14 +237,15 @@ export default function AnggotaPage() {
                   <TableHead className="font-bold text-slate-800">Status</TableHead>
                   {tab === "semua" && <TableHead className="font-bold text-slate-800 pr-6">Pencapaian</TableHead>}
                   {tab === "pending" && <TableHead className="font-bold text-slate-800 text-right pr-6">Verifikasi</TableHead>}
+                  {tab === "ditolak" && <TableHead className="font-bold text-slate-800 pr-6">Catatan Penolakan</TableHead>}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {isLoading ? (
+                {isLoading && (
                   <TableRow><TableCell colSpan={7} className="h-24 text-center">Memuat data...</TableCell></TableRow>
-                ) : filtered.length === 0 ? (
-                  <TableRow><TableCell colSpan={7} className="h-32 text-center text-slate-500">Tidak ada data.</TableCell></TableRow>
-                ) : (
+                )}
+                
+                {!isLoading && filtered.length > 0 && (
                   filtered.map((m) => (
                     <TableRow key={m.id} className="hover:bg-slate-50 border-b border-slate-100 transition-colors">
                       <TableCell className="pl-6">
@@ -243,11 +294,29 @@ export default function AnggotaPage() {
                           </div>
                         </TableCell>
                       )}
+
+                      {tab === "ditolak" && (
+                        <TableCell className="pr-6 align-top">
+                          {m.catatan_penolakan ? (
+                            <p className="text-xs text-slate-600 bg-red-50 p-2 rounded-lg border border-red-100 leading-relaxed max-w-xs">{m.catatan_penolakan}</p>
+                          ) : (
+                            <span className="text-xs text-slate-400 italic">Tidak ada catatan</span>
+                          )}
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))
                 )}
               </TableBody>
             </Table>
+            
+            {!isLoading && filtered.length === 0 && (
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-10 min-h-[350px]">
+                <Sparkles className="mx-auto h-12 w-12 mb-4 text-slate-300" />
+                <h3 className="text-sm font-bold text-slate-700 mb-1">Tidak Ada Data</h3>
+                <p className="text-xs">Belum ada anggota yang cocok dengan filter atau pencarian Anda.</p>
+              </div>
+            )}
           </div>
         </motion.div>
       </main>

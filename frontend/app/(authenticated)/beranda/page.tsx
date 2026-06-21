@@ -5,7 +5,7 @@ import { protokolerApi, kegiatanApi } from "@/lib/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Calendar, ChevronRight, MapPin, Clock, Trophy, Star, Medal, CheckCircle2, AlertCircle, ShieldCheck, Info, ArrowRight } from "lucide-react";
+import { Calendar, ChevronRight, MapPin, Clock, Trophy, Star, Medal, Award, CheckCircle2, AlertCircle, ShieldCheck, Info, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -13,9 +13,9 @@ const stagger = { visible: { transition: { staggerChildren: 0.07 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 
 const GAMIFICATION = [
-  { level: "Perak", min: 1, max: 9, color: "from-slate-400 to-slate-600", textColor: "text-white", icon: "🥈" },
-  { level: "Silver", min: 10, max: 19, color: "from-zinc-500 to-zinc-700", textColor: "text-white", icon: "🥇" },
-  { level: "Gold", min: 20, max: Infinity, color: "from-yellow-400 to-amber-600", textColor: "text-white", icon: "🏆" },
+  { level: "Perak", min: 1, max: 9, icon: Medal, color: "text-slate-500", bg: "bg-slate-100", activeBg: "bg-slate-600 text-white", border: "border-slate-200" },
+  { level: "Silver", min: 10, max: 19, icon: Award, color: "text-slate-400", bg: "bg-slate-100", activeBg: "bg-slate-700 text-white", border: "border-slate-200" },
+  { level: "Gold", min: 20, max: Infinity, icon: Trophy, color: "text-amber-500", bg: "bg-amber-50", activeBg: "bg-amber-500 text-white", border: "border-amber-200" },
 ];
 
 function getNextLevel(total: number) {
@@ -148,7 +148,7 @@ export default function BerandaPage() {
             },
           ].map((s, index) => (
             <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all duration-300 h-full">
+              <div className="bg-white border border-slate-100 shadow-sm rounded-[24px] p-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all duration-300 h-full">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-1.5 text-slate-500">
@@ -181,56 +181,76 @@ export default function BerandaPage() {
 
       {/* ─── BODY CONTENT ─── */}
       <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 flex-1 min-h-0">
             {/* Gamification Progress Card */}
             {protokoler?.status_akun === "aktif" && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="xl:col-span-5">
                 <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl h-full flex flex-col relative overflow-hidden">
-                  <div className="border-b border-slate-100 px-6 py-4 bg-slate-50 rounded-t-[24px]">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
-                        <Trophy className="h-5 w-5" />
+                  <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                        <Trophy className="h-6 w-6" />
                       </div>
-                      <div>
-                        <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Pencapaian</h2>
-                        <p className="text-[11px] text-slate-500 mt-0.5">Pantau target sertifikat Anda.</p>
+                      <div className="flex-1">
+                        <h2 className="text-xl font-bold text-slate-900 leading-tight">Pencapaian</h2>
+                        <p className="text-sm text-slate-500 mt-1 line-clamp-1">Pantau target sertifikat Anda.</p>
                       </div>
                     </div>
                   </div>
 
-                  <CardContent className="pt-6 flex-1 flex flex-col">
-                    {next ? (
-                      <div className="mb-6">
-                        <p className="text-sm text-slate-600 mb-3">Butuh <span className="font-bold text-slate-900">{remaining} kegiatan</span> lagi untuk mencapai level <strong className="text-red-800">{next}</strong></p>
-                        <div className="w-full h-3 bg-slate-100 border border-slate-200 overflow-hidden rounded-xl relative">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progress}%` }}
-                            transition={{ duration: 1, ease: "easeOut" }}
-                            className="absolute top-0 bottom-0 left-0 bg-red-700"
-                          />
+                  <CardContent className="p-6 md:p-8 flex-1 flex flex-col justify-center">
+                    <div className="max-w-md mx-auto w-full">
+                      {next ? (
+                        <div className="mb-10 text-center">
+                          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 text-red-700 mb-4 shadow-inner border border-red-100">
+                            <Trophy className="h-8 w-8" />
+                          </div>
+                          <h3 className="text-xl font-bold text-slate-900 mb-2">Menuju Level {next}</h3>
+                          <p className="text-sm text-slate-600 mb-6">Butuh <span className="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">{remaining} kegiatan</span> lagi untuk mencapai level berikutnya.</p>
+                          
+                          <div className="relative">
+                            <div className="flex justify-between mb-2 px-1">
+                              <span className="text-xs font-bold text-slate-500 tracking-wider uppercase">Progres Anda</span>
+                              <span className="text-xs font-bold text-red-700">{total} / {target}</span>
+                            </div>
+                            <div className="w-full h-4 bg-slate-100 border border-slate-200/60 overflow-hidden rounded-full relative shadow-inner">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress}%` }}
+                                transition={{ duration: 1, ease: "easeOut" }}
+                                className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-red-600 to-red-500 rounded-full"
+                              />
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex justify-between mt-2">
-                          <span className="text-xs font-bold text-slate-500">{total} / {target} Kegiatan</span>
-                          <span className="text-xs font-bold text-red-800">{progress}%</span>
+                      ) : (
+                        <div className="flex flex-col items-center text-center mb-10 bg-gradient-to-br from-amber-50 to-amber-100/50 border border-amber-200/60 rounded-3xl p-8 shadow-sm">
+                          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-500 text-white mb-5 shadow-lg shadow-amber-500/30 border-4 border-white">
+                            <Trophy className="h-10 w-10" />
+                          </div>
+                          <h3 className="text-2xl font-bold text-amber-900 mb-2">Pencapaian Tertinggi!</h3>
+                          <p className="text-sm font-medium text-amber-700/80 leading-relaxed">Luar biasa! Anda telah menyelesaikan seluruh target kegiatan dan berhasil mencapai level <strong>Gold</strong>.</p>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-4 mb-6 bg-yellow-50 border border-yellow-200 p-4">
-                        <span className="text-3xl">🏆</span>
-                        <p className="text-sm font-bold text-yellow-800 leading-relaxed">Selamat! Anda telah menyelesaikan seluruh target kegiatan dan mencapai level <strong>Gold</strong>!</p>
-                      </div>
-                    )}
+                      )}
 
-                    <div className="flex gap-3 mt-auto">
-                      {GAMIFICATION.map(g => (
-                        <div key={g.level} className={`flex flex-col items-center justify-center flex-1 py-3 px-2 text-center border transition-colors rounded-xl ${kategori === g.level.toLowerCase() ? "border-red-700 bg-red-700 text-white shadow-md" : "border-slate-200 text-slate-500 bg-slate-50"}`}>
-                          <div className="text-xl mb-1.5">{g.icon}</div>
-                          <div className="text-[11px] font-bold uppercase tracking-wider">{g.level}</div>
-                          <div className="text-[10px] font-medium mt-1 opacity-80">{g.min === 20 ? "≥20" : `${g.min}–${g.max}`} keg.</div>
-                        </div>
-                      ))}
+                      <div className="grid grid-cols-3 gap-3">
+                        {GAMIFICATION.map((g) => {
+                          const isActive = kategori === g.level.toLowerCase();
+                          const Icon = g.icon;
+                          return (
+                            <div key={g.level} className={`flex flex-col items-center justify-center py-4 px-2 text-center border transition-all duration-300 rounded-2xl ${isActive ? g.activeBg + ' shadow-md scale-105 border-transparent z-10' : 'bg-white ' + g.border}`}>
+                              <div className={`mb-2.5 p-2 rounded-full ${isActive ? 'bg-white/20 text-white' : g.bg + ' ' + g.color}`}>
+                                <Icon className="h-5 w-5" />
+                              </div>
+                              <div className={`text-[11px] font-bold uppercase tracking-widest ${isActive ? 'text-white' : 'text-slate-700'}`}>{g.level}</div>
+                              <div className={`text-[10px] font-medium mt-1 ${isActive ? 'text-white/80' : 'text-slate-400'}`}>
+                                {g.min === 20 ? "≥20" : `${g.min}–${g.max}`} keg.
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -238,59 +258,69 @@ export default function BerandaPage() {
             )}
 
             {/* Kegiatan Tersedia */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className={`space-y-4 ${protokoler?.status_akun === 'aktif' ? 'xl:col-span-7' : 'xl:col-span-12'}`}>
-              <div className="flex justify-between items-end mb-2">
-                <div>
-                  <h2 className=" text-xl font-bold text-slate-800">Kegiatan Terbaru</h2>
-                  <p className="text-sm text-slate-500 mt-1">Kegiatan yang baru saja diterbitkan.</p>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className={`h-full flex flex-col ${protokoler?.status_akun === 'aktif' ? 'xl:col-span-7' : 'xl:col-span-12'}`}>
+              <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] h-full flex flex-col relative overflow-hidden">
+                <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                      <Calendar className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h2 className="text-xl font-bold text-slate-900 leading-tight">Kegiatan Terbaru</h2>
+                      <p className="text-sm text-slate-500 mt-1 line-clamp-1">Kegiatan yang baru saja diterbitkan.</p>
+                    </div>
+                  </div>
+                  <Link href="/kegiatan">
+                    <Button variant="outline" className="rounded-xl border-slate-300 text-slate-700 font-bold bg-white hover:bg-slate-100 hover:text-slate-800 h-10 px-4">
+                      Semua Kegiatan <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  </Link>
                 </div>
-                <Link href="/kegiatan">
-                  <Button variant="outline" className="rounded-xl border-slate-300 text-slate-700 font-bold bg-white hover:bg-white/50 hover:text-slate-800">
-                    Semua Kegiatan <ChevronRight className="h-4 w-4 ml-1" />
-                  </Button>
-                </Link>
-              </div>
 
-              {recentKegiatan.length === 0 ? (
-                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-10 text-center text-slate-400">
-                  <Calendar className="h-10 w-10 mx-auto mb-3 text-slate-300" />
-                  <p className="font-medium text-sm">Belum ada kegiatan yang tersedia saat ini.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {recentKegiatan.map((k: any) => (
-                    <Link key={k.id} href={`/kegiatan/${k.id}`} className="block">
-                      <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-5 hover:shadow-xl hover:shadow-red-50/80 transition-all group relative">
-                        <div className="flex justify-between items-start gap-4">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold text-slate-600 bg-slate-100 uppercase tracking-wider">{k.bentuk_kegiatan?.replace(/_/g, " ")}</span>
-                            </div>
-                            <h3 className="font-bold text-slate-900 text-lg group-hover:text-red-700 transition-colors line-clamp-1">{k.nama_kegiatan}</h3>
-                            <div className="flex flex-wrap items-center gap-4 mt-3 text-xs font-medium text-slate-500">
-                              <span className="flex items-center gap-1.5">
-                                <Calendar className="h-3.5 w-3.5 text-slate-400" />
-                                {new Date(k.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
-                              </span>
-                              <span className="flex items-center gap-1.5">
-                                <Clock className="h-3.5 w-3.5 text-slate-400" />
-                                {k.jam_mulai?.slice(0, 5)} WIB
-                              </span>
-                              <span className="flex items-center gap-1.5">
-                                <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                                <span className="line-clamp-1">{k.lokasi}</span>
-                              </span>
+                <CardContent className="p-6 flex-1 flex flex-col overflow-y-auto">
+                  {recentKegiatan.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center flex-1 text-center text-slate-400 p-10 h-full">
+                      <Calendar className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                      <h3 className="text-sm font-bold text-slate-700 mb-1">Tidak Ada Kegiatan</h3>
+                      <p className="text-xs">Belum ada kegiatan terbaru yang tersedia saat ini.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {recentKegiatan.map((k: any) => (
+                        <Link key={k.id} href={`/kegiatan/${k.id}`} className="block">
+                          <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 hover:shadow-md hover:border-red-200 transition-all group relative">
+                            <div className="flex justify-between items-start gap-4">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold text-slate-600 bg-slate-100 uppercase tracking-wider">{k.bentuk_kegiatan?.replace(/_/g, " ")}</span>
+                                </div>
+                                <h3 className="font-bold text-slate-900 text-lg group-hover:text-red-700 transition-colors line-clamp-1">{k.nama_kegiatan}</h3>
+                                <div className="flex flex-wrap items-center gap-4 mt-3 text-xs font-medium text-slate-500">
+                                  <span className="flex items-center gap-1.5">
+                                    <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                                    {new Date(k.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                                  </span>
+                                  <span className="flex items-center gap-1.5">
+                                    <Clock className="h-3.5 w-3.5 text-slate-400" />
+                                    {k.jam_mulai?.slice(0, 5)} WIB
+                                  </span>
+                                  <span className="flex items-center gap-1.5">
+                                    <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                                    <span className="line-clamp-1">{k.lokasi}</span>
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-red-50 transition-colors border border-slate-200 group-hover:border-red-200">
+                                <ChevronRight className="h-5 w-5 text-slate-400 group-hover:text-red-700" />
+                              </div>
                             </div>
                           </div>
-                          <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-red-50 transition-colors border border-slate-200 group-hover:border-red-200">
-                            <ChevronRight className="h-5 w-5 text-slate-400 group-hover:text-red-700" />
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </motion.div>
           </div>
         </section>

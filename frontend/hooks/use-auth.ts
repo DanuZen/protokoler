@@ -30,6 +30,13 @@ export function useAuth() {
 
 export function useRole(user?: User | null) {
   const [role, setRole] = useState<'admin' | 'mahasiswa' | 'dokumentasi' | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const cached = window.localStorage.getItem('cached_role');
+      if (cached) setRole(cached as 'admin' | 'mahasiswa' | 'dokumentasi');
+    }
+  }, []);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,6 +47,7 @@ export function useRole(user?: User | null) {
     }
 
     const fetchRole = async () => {
+      setLoading(true);
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
@@ -64,12 +72,15 @@ export function useRole(user?: User | null) {
           }
           
           setRole(mappedRole);
+          if (typeof window !== 'undefined') {
+            window.localStorage.setItem('cached_role', mappedRole);
+          }
         } else {
           setRole(null);
+          if (typeof window !== 'undefined') window.localStorage.removeItem('cached_role');
         }
       } catch (err) {
         console.error('Failed to fetch role from backend:', err);
-        setRole(null);
       } finally {
         setLoading(false);
       }

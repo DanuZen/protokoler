@@ -132,13 +132,7 @@ export default function ManajemenBeritaPage() {
             ))}
           </motion.div>
 
-          {/* FILTER */}
-          <div className="shrink-0 mb-6 flex items-center justify-between">
-            <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-sm w-full max-w-md">
-              <Search className="h-4 w-4 text-slate-400" />
-              <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Cari nama acara atau lokasi..." className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-1" />
-            </div>
-          </div>
+
         </>
       )}
 
@@ -146,10 +140,19 @@ export default function ManajemenBeritaPage() {
         {!selectedId ? (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col h-full overflow-hidden">
             <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white flex flex-col h-full">
-              <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">Daftar Acara & Status Dokumentasi</h2>
-                  <p className="text-sm text-slate-500 mt-1">Pilih acara pada tabel di bawah ini untuk mengunggah dokumentasi.</p>
+              <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                    <ListTodo className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Acara & Status Dokumentasi</h2>
+                    <p className="text-sm text-slate-500 mt-1">Pilih acara pada tabel di bawah ini untuk mengunggah dokumentasi.</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-sm w-full md:max-w-xs">
+                  <Search className="h-4 w-4 text-slate-400" />
+                  <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Cari nama acara atau lokasi..." className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-1 h-8 text-sm" />
                 </div>
               </div>
               

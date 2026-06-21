@@ -111,31 +111,30 @@ export default function EvaluasiDashboardPage() {
             <div className="w-full min-h-0 flex flex-col">
               <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
                 <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                  <div className="border-b border-slate-100 px-6 py-4 bg-slate-50 shrink-0">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
-                        <ClipboardList className="h-5 w-5" />
+                  <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col lg:flex-row justify-between lg:items-center gap-4 shrink-0">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                        <ClipboardList className="h-6 w-6" />
                       </div>
-                      <div>
-                        <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Daftar Kegiatan</h2>
-                        <p className="text-[11px] text-slate-500 mt-0.5">Filter dan pilih kegiatan yang ingin ditinjau.</p>
+                      <div className="flex-1">
+                        <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Kegiatan</h2>
+                        <p className="text-sm text-slate-500 mt-1 line-clamp-1">Filter dan pilih kegiatan yang ingin ditinjau.</p>
                       </div>
+                    </div>
+                    <div className="relative w-full lg:w-72 shrink-0">
+                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama kegiatan atau lokasi..." className="rounded-xl border-slate-200 bg-white text-slate-900 placeholder-slate-400 pl-9 h-10 shadow-sm" />
                     </div>
                   </div>
 
                   <div className="flex flex-col flex-1 bg-white min-h-0">
-                    <div className="p-4 border-b border-slate-100 bg-white shrink-0">
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                        <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama kegiatan atau lokasi..." className="rounded-xl border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 pl-9 h-11" />
-                      </div>
-                    </div>
 
                     <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0">
                       {filtered.length === 0 ? (
-                      <div className="p-10 text-center text-slate-400">
-                        <Sparkles className="mx-auto h-10 w-10 mb-3 text-slate-300" />
-                        Belum ada kegiatan selesai yang cocok dengan pencarian.
+                      <div className="flex-1 flex flex-col items-center justify-center p-10 text-center text-slate-400 h-full min-h-[200px]">
+                        <Sparkles className="mx-auto h-12 w-12 mb-4 text-slate-300" />
+                        <h3 className="text-sm font-bold text-slate-700 mb-1">Tidak Ada Kegiatan</h3>
+                        <p className="text-xs">Belum ada kegiatan selesai yang cocok dengan pencarian Anda.</p>
                       </div>
                     ) : (
                       filtered.map((item: any) => {
@@ -172,20 +171,20 @@ export default function EvaluasiDashboardPage() {
             <div className="w-full min-h-0 flex flex-col">
                 <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
                   <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                    <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50 shrink-0">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
-                          <BarChart3 className="h-5 w-5" />
+                    <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                          <BarChart3 className="h-6 w-6" />
                         </div>
-                        <div>
-                          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Detail Hasil Evaluasi</h2>
-                          <p className="text-[11px] text-slate-500 mt-0.5">Ringkasan evaluasi, testimoni, dan feedback admin.</p>
+                        <div className="flex-1">
+                          <h2 className="text-xl font-bold text-slate-900 leading-tight">Detail Hasil Evaluasi</h2>
+                          <p className="text-sm text-slate-500 mt-1 line-clamp-1">Ringkasan evaluasi, testimoni, dan feedback admin.</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         {activeDetail && (
-                          <Button onClick={handleExport} size="sm" className="h-8 rounded-lg bg-red-800 text-white hover:bg-red-900 text-[11px] font-bold px-3 shadow-sm transition-colors">
-                            <Download className="mr-1.5 h-3.5 w-3.5" /> Export Data
+                          <Button onClick={handleExport} size="sm" className="h-10 rounded-xl bg-[#6B0000] text-white hover:bg-[#4A0000] text-[13px] font-bold px-4 shadow-sm transition-colors">
+                            <Download className="mr-1.5 h-4 w-4" /> Export Data
                           </Button>
                         )}
                       </div>
@@ -282,7 +281,11 @@ export default function EvaluasiDashboardPage() {
                         </div>
                       </>
                     ) : (
-                      <div className="border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">Pilih kegiatan selesai untuk melihat hasil evaluasi.</div>
+                      <div className="flex-1 flex flex-col items-center justify-center p-10 text-center text-slate-400 h-full">
+                        <BarChart3 className="mx-auto h-12 w-12 mb-4 text-slate-300" />
+                        <h3 className="text-sm font-bold text-slate-700 mb-1">Belum Ada Pilihan</h3>
+                        <p className="text-xs">Pilih salah satu kegiatan selesai di daftar sebelah kiri untuk melihat hasil evaluasi.</p>
+                      </div>
                     )}
                   </div>
                 </CardContent>

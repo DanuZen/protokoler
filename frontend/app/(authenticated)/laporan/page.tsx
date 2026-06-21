@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, FileBarChart, Users, CalendarDays, Filter, CheckCircle2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { Download, FileBarChart, Users, CalendarDays, Filter, CheckCircle2, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -28,6 +29,7 @@ export default function Page() {
   const firstOfMonth = new Date(); firstOfMonth.setDate(1);
   const [start, setStart] = useState(firstOfMonth.toISOString().slice(0, 10));
   const [end, setEnd] = useState(new Date().toISOString().slice(0, 10));
+  const [tab, setTab] = useState<"kegiatan" | "rekap">("kegiatan");
 
   const { data: kegiatan } = useQuery({
     queryKey: ["laporan-kegiatan", start, end],
@@ -69,33 +71,53 @@ export default function Page() {
         </div>
       </motion.div>
 
-      {/* ─── Floating Toolbar (Filter) ─── */}
+      {/* ─── Floating Toolbar (Filter & Tabs) ─── */}
       <section className="shrink-0 relative z-20 pb-0">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-5">
-          <div className="flex items-center gap-2 text-slate-500 font-bold text-sm uppercase tracking-wider shrink-0 bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl">
-            <Filter className="h-4 w-4 text-slate-400" />
-            Filter Periode
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col xl:flex-row items-center justify-between gap-4 border border-slate-200 bg-white shadow-sm rounded-[24px] p-5">
+          
+          {/* TABS */}
+          <div className="flex gap-2 overflow-x-auto w-full xl:w-auto [&::-webkit-scrollbar]:hidden shrink-0 pb-2 xl:pb-0">
+            <button 
+              onClick={() => setTab("kegiatan")} 
+              className={cn(
+                "px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 whitespace-nowrap",
+                tab === "kegiatan" ? "bg-[#6B0000] text-white border-[#6B0000] shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-slate-200 shadow-sm hover:text-slate-900 hover:shadow-md"
+              )}
+            >
+              Laporan Kegiatan
+            </button>
+            <button 
+              onClick={() => setTab("rekap")} 
+              className={cn(
+                "px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 whitespace-nowrap",
+                tab === "rekap" ? "bg-[#6B0000] text-white border-[#6B0000] shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-slate-200 shadow-sm hover:text-slate-900 hover:shadow-md"
+              )}
+            >
+              Rekap Penugasan Mahasiswa
+            </button>
           </div>
-          <div className="flex flex-wrap items-end gap-4 w-full md:w-auto">
-            <div className="space-y-1.5 flex-1 min-w-[150px]">
-              <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Dari Tanggal</Label>
-              <Input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="rounded-xl h-10 bg-white border-slate-200 text-slate-900 shadow-sm focus-visible:ring-slate-200" />
-            </div>
-            <div className="space-y-1.5 flex-1 min-w-[150px]">
-              <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Sampai Tanggal</Label>
-              <Input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="rounded-xl h-10 bg-white border-slate-200 text-slate-900 shadow-sm focus-visible:ring-slate-200" />
+
+          <div className="flex flex-wrap items-center gap-4 w-full xl:w-auto">
+            <div className="flex flex-1 items-center gap-3">
+              <div className="space-y-1.5 flex-1 min-w-[130px]">
+                <Input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="rounded-xl h-10 bg-white border-slate-200 text-slate-900 shadow-sm focus-visible:ring-slate-200" />
+              </div>
+              <div className="text-slate-400 font-bold">-</div>
+              <div className="space-y-1.5 flex-1 min-w-[130px]">
+                <Input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="rounded-xl h-10 bg-white border-slate-200 text-slate-900 shadow-sm focus-visible:ring-slate-200" />
+              </div>
             </div>
           </div>
         </motion.div>
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+      <main className="flex-1 min-h-0 flex flex-col mt-6 overflow-hidden">
+        <section className="flex-1 flex flex-col pb-12 pr-2 min-h-0">
 
           {/* Kegiatan Table */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="h-[500px] flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
+          {tab === "kegiatan" && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex-1 flex flex-col bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden min-h-0">
             <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
@@ -113,10 +135,10 @@ export default function Page() {
                 <Download className="h-4 w-4" /> Export CSV
               </Button>
             </div>
-            <div className="flex-1 overflow-auto [&::-webkit-scrollbar]:hidden">
+            <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
-                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50">
+                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50 sticky top-0 z-10">
                   <TableHead className="font-bold text-slate-600 py-4 pl-6 w-[160px]">Tanggal</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Kegiatan</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Bentuk</TableHead>
@@ -125,15 +147,7 @@ export default function Page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {!kegiatan?.length && (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center text-slate-400 py-14">
-                      <FileBarChart className="h-10 w-10 mx-auto mb-3 opacity-20" />
-                      <p className="font-medium">Tidak ada kegiatan pada periode ini.</p>
-                    </TableCell>
-                  </TableRow>
-                )}
-                {kegiatan?.map((k: any, i: number) => (
+                {kegiatan?.length > 0 && kegiatan.map((k: any, i: number) => (
                   <motion.tr
                     key={k.id}
                     initial={{ opacity: 0 }}
@@ -154,11 +168,21 @@ export default function Page() {
                 ))}
               </TableBody>
             </Table>
+            
+            {!kegiatan?.length && (
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-10 min-h-[300px]">
+                <Sparkles className="mx-auto h-12 w-12 mb-4 text-slate-300" />
+                <h3 className="text-sm font-bold text-slate-700 mb-1">Tidak Ada Data</h3>
+                <p className="text-xs">Tidak ada laporan kegiatan pada periode ini.</p>
+              </div>
+            )}
             </div>
           </motion.div>
+          )}
 
           {/* Rekap Table */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="h-[500px] flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
+          {tab === "rekap" && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex-1 flex flex-col bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden min-h-0">
             <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
@@ -176,10 +200,10 @@ export default function Page() {
                 <Download className="h-4 w-4" /> Export CSV
               </Button>
             </div>
-            <div className="flex-1 overflow-auto [&::-webkit-scrollbar]:hidden">
+            <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
-                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50">
+                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50 sticky top-0 z-10">
                   <TableHead className="font-bold text-slate-600 py-4 pl-6 w-[120px]">NIM</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Nama</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Prodi</TableHead>
@@ -189,15 +213,7 @@ export default function Page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {!rekap?.length && (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center text-slate-400 py-14">
-                      <Users className="h-10 w-10 mx-auto mb-3 opacity-20" />
-                      <p className="font-medium">Belum ada data penugasan pada periode ini.</p>
-                    </TableCell>
-                  </TableRow>
-                )}
-                {rekap?.map((r: any, i: number) => (
+                {rekap?.length > 0 && rekap.map((r: any, i: number) => (
                   <motion.tr key={r.nim} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                     <TableCell className="font-mono text-sm text-slate-500 py-4 pl-6">{r.nim}</TableCell>
                     <TableCell className="font-bold text-slate-900 py-4">{r.nama_lengkap}</TableCell>
@@ -215,9 +231,18 @@ export default function Page() {
                 ))}
               </TableBody>
             </Table>
+            
+            {!rekap?.length && (
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-10 min-h-[300px]">
+                <Sparkles className="mx-auto h-12 w-12 mb-4 text-slate-300" />
+                <h3 className="text-sm font-bold text-slate-700 mb-1">Tidak Ada Data</h3>
+                <p className="text-xs">Belum ada data penugasan mahasiswa pada periode ini.</p>
+              </div>
+            )}
             </div>
           </motion.div>
-          </div>
+          )}
+          
         </section>
       </main>
     </div>
