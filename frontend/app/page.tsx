@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CalendarDays, ClipboardList, Users, ShieldCheck, ArrowRight, ChevronDown, Star, ArrowUpRight, Megaphone, Quote, Play, Camera, Trophy, MessageSquare, MapPin, Clock, BookOpen, FileText, ExternalLink, X, ChevronLeft, ChevronRight, Mail, Phone } from 'lucide-react';
+import { CalendarDays, ClipboardList, Users, ShieldCheck, ArrowRight, ChevronDown, Star, ArrowUpRight, Megaphone, Quote, Play, Camera, Trophy, MessageSquare, MapPin, Clock, BookOpen, FileText, ExternalLink, X, ChevronLeft, ChevronRight, Mail, Phone, Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
@@ -195,8 +195,8 @@ export default function Landing() {
                   <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C] block lg:hidden"></div>
                 </div>
                 
-                <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.2] tracking-tight mb-6 text-balance text-center lg:text-left">
-                  Menjaga Kehormatan, Memastikan <span className="text-[#6B0000]">Kesempurnaan</span> Acara.
+                <h2 className="font-display text-2xl sm:text-3xl md:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.3] md:leading-[1.2] tracking-tight mb-6 text-balance text-center lg:text-left">
+                  Menjaga Kehormatan,<br className="block md:hidden" /> Memastikan<br className="block md:hidden" /> <span className="text-[#6B0000]">Kesempurnaan</span> Acara.
                 </h2>
                 
                 <p className="text-slate-600 text-sm sm:text-base md:text-xl leading-relaxed mb-10 max-w-2xl text-center lg:text-left px-4 lg:px-0">
@@ -267,8 +267,27 @@ export default function Landing() {
             </div>
 
             {isLoading ? (
-              <div className="flex items-center justify-center py-20 text-slate-500">
-                <span className="animate-pulse text-sm tracking-widest uppercase">Memuat jadwal kegiatan...</span>
+              <div className="grid lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr] gap-5 md:gap-8 animate-pulse">
+                {/* Skeleton Left: Calendar */}
+                <div className="bg-white p-5 sm:p-7 md:p-9 flex flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg w-full h-[400px]">
+                  <div>
+                    <div className="h-3 bg-slate-200 rounded w-1/3 mb-3"></div>
+                    <div className="h-6 bg-slate-200 rounded w-1/2 mb-6"></div>
+                  </div>
+                  <div className="flex-1 bg-slate-100 rounded-xl"></div>
+                </div>
+                {/* Skeleton Right: Details */}
+                <div className="bg-white p-6 sm:p-8 md:p-10 flex flex-col rounded-[2rem] border border-slate-200 shadow-lg w-full h-[400px]">
+                  <div className="h-3 bg-slate-200 rounded w-1/4 mb-4"></div>
+                  <div className="h-10 bg-slate-200 rounded w-3/4 mb-4"></div>
+                  <div className="h-4 bg-slate-200 rounded w-1/3 mb-10"></div>
+                  <div className="grid sm:grid-cols-2 gap-4 mt-auto">
+                    <div className="h-24 bg-slate-100 rounded-2xl"></div>
+                    <div className="h-24 bg-slate-100 rounded-2xl"></div>
+                    <div className="h-24 bg-slate-100 rounded-2xl"></div>
+                    <div className="h-24 bg-slate-100 rounded-2xl"></div>
+                  </div>
+                </div>
               </div>
             ) : (
               <motion.div
@@ -396,6 +415,9 @@ export default function Landing() {
                 {regulasiMockData.map((reg: any, i: number) => (
                   <motion.a
                     href={reg.link_dokumen}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
                     key={reg.id}
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -407,6 +429,11 @@ export default function Landing() {
                     {/* Hover Glow Effect */}
                     <div className="absolute right-0 top-0 w-48 h-48 bg-red-100 rounded-full opacity-0 group-hover:opacity-30 blur-3xl transition-opacity duration-500 pointer-events-none" />
                     
+                    {/* Watermark Logo Background */}
+                    <div className="absolute -right-8 -bottom-8 w-40 h-40 sm:w-56 sm:h-56 lg:w-64 lg:h-64 opacity-[0.02] group-hover:opacity-[0.06] transition-all duration-700 pointer-events-none transform group-hover:scale-110 group-hover:-rotate-6 z-0">
+                      <Image src="/logo protokoler.png" alt="Watermark" fill className="object-contain" />
+                    </div>
+
                     {/* Icon Block */}
                     <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner relative z-10 transition-transform duration-500 group-hover:scale-105 mt-1 sm:mt-0" style={{ background: reg.accentGradient }}>
                        <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-white/90 drop-shadow-md" />
@@ -420,11 +447,11 @@ export default function Landing() {
 
                     {/* Action Button */}
                     <div className="hidden lg:flex mt-auto w-12 h-12 rounded-full border-2 border-slate-100 items-center justify-center text-slate-400 group-hover:bg-[#6B0000] group-hover:text-white group-hover:border-[#6B0000] transition-all duration-300 relative z-10">
-                       <ArrowUpRight className="h-5 w-5 group-hover:rotate-45 transition-transform duration-300" />
+                       <Download className="h-5 w-5 group-hover:-translate-y-1 transition-transform duration-300" />
                     </div>
                     {/* Desktop/Tablet Arrow for row layout */}
                     <div className="hidden md:flex lg:hidden w-14 h-14 rounded-full border-2 border-slate-100 items-center justify-center flex-shrink-0 text-slate-400 group-hover:bg-[#6B0000] group-hover:text-white group-hover:border-[#6B0000] transition-all duration-300 relative z-10">
-                       <ArrowUpRight className="h-6 w-6 group-hover:rotate-45 transition-transform duration-300" />
+                       <Download className="h-6 w-6 group-hover:-translate-y-1 transition-transform duration-300" />
                     </div>
                   </motion.a>
                 ))}
@@ -449,9 +476,9 @@ export default function Landing() {
                 </div>
                 <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight text-center lg:text-left">
                   Suara dari <br />
-                  <span className="bg-gradient-to-r from-[#D2AD5C] to-amber-300 bg-clip-text text-transparent drop-shadow-sm">Tim &amp; Tamu</span>
+                  <span className="bg-gradient-to-r from-[#D2AD5C] to-amber-300 bg-clip-text text-transparent drop-shadow-sm">Tim &amp; Pimpinan</span>
                 </h2>
-                <p className="text-slate-400 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 leading-relaxed text-center lg:text-left px-4 lg:px-0">Dampak langsung dari penggunaan sistem terpadu keprotokolan, dinilai langsung oleh tim lapangan dan tamu VVIP.</p>
+                <p className="text-slate-400 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 leading-relaxed text-center lg:text-left px-4 lg:px-0">Dampak langsung dari penggunaan sistem terpadu keprotokolan, dinilai langsung oleh tim lapangan dan pimpinan.</p>
                 
                 {/* Glowing Animated Stars */}
                 <div className="flex gap-2 mt-10 justify-center lg:justify-start">
@@ -470,20 +497,21 @@ export default function Landing() {
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="lg:col-span-2">
                 {/* Testimonial: Looping Carousel (All Screens) */}
-                <div className="w-full max-w-[100vw] lg:max-w-full overflow-hidden -mx-6 px-6 sm:-mx-8 sm:px-8 lg:mx-0 lg:px-0">
+                <div className="w-full max-w-[100vw] lg:max-w-full overflow-hidden -mx-6 sm:-mx-8 lg:mx-0 mt-8 lg:mt-0">
                   <Carousel opts={{ loop: true, align: 'center' }} plugins={[Autoplay({ delay: 4000 })]} className="w-full">
-                    <CarouselContent className="-ml-4">
+                    <CarouselContent className="ml-0 lg:-ml-4">
                       {[
                         { name: 'Dr. Budi Santoso', role: 'Pembina Protokoler', image: '/tim_pengembang/danu.webp', text: 'Fitur evaluasi 3 Tata Protokol memastikan tidak ada celah di lapangan. Modul gamifikasi juga memacu mahasiswa untuk terus aktif.' },
                         { name: 'Siti Nurhaliza', role: 'Protokoler (Gold)', image: '/tim_pengembang/hafiz.webp', text: 'Absensi selfie membuat kami lebih teratur dan adil. Poin kegiatan langsung terakumulasi untuk mengejar sertifikat tertinggi!' },
                         { name: 'Ahmad Fauzi', role: 'Ketua Pelaksana', image: '/tim_pengembang/danu.webp', text: 'Koordinasi tim jauh lebih mudah berkat sistem terpusat. Informasi jadwal dan SOP bisa diakses secara real-time kapan pun.' },
                       ].map((testi, i) => (
-                        <CarouselItem key={i} className="pl-4 basis-[85vw] sm:basis-[75vw] lg:basis-full">
-                          <motion.div
-                            variants={fadeUp}
-                            className="p-6 sm:p-10 lg:p-12 rounded-[2rem] bg-gradient-to-br from-[#2A0000]/90 to-[#1A0000]/90 backdrop-blur-xl border border-white/10 relative shadow-2xl group flex flex-col lg:flex-row-reverse items-center gap-6 lg:gap-12 w-full lg:max-w-5xl lg:mx-auto mt-8 lg:mt-16 transition-all duration-500"
-                          >
-                            <div className="absolute top-4 right-6 lg:right-auto lg:left-8 font-display text-8xl font-black leading-none select-none text-[#D2AD5C]/10 transition-colors duration-300 z-0">&ldquo;</div>
+                        <CarouselItem key={i} className="pl-0 basis-full lg:pl-4">
+                          <div className="w-full px-4 sm:px-6 lg:px-0">
+                            <motion.div
+                              variants={fadeUp}
+                              className="p-6 sm:p-10 lg:p-12 rounded-[2rem] bg-gradient-to-br from-[#2A0000]/90 to-[#1A0000]/90 backdrop-blur-xl border border-white/10 relative shadow-2xl group flex flex-col lg:flex-row-reverse items-center gap-6 lg:gap-12 w-full lg:max-w-5xl lg:mx-auto mt-8 lg:mt-16 transition-all duration-500"
+                            >
+                              <div className="absolute top-4 right-6 lg:right-auto lg:left-8 font-display text-8xl font-black leading-none select-none text-[#D2AD5C]/10 transition-colors duration-300 z-0">&ldquo;</div>
                             
                             {/* Pop-out Image Section */}
                             <div className="relative w-36 h-36 sm:w-40 sm:h-40 lg:w-64 lg:h-64 shrink-0 z-20 mx-auto lg:mx-0">
@@ -502,6 +530,7 @@ export default function Landing() {
                               </div>
                             </div>
                           </motion.div>
+                          </div>
                         </CarouselItem>
                       ))}
                     </CarouselContent>

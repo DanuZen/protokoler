@@ -80,10 +80,10 @@ export default function PersyaratanPage() {
               <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Rekrutmen 2026</span>
               <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
-            <motion.h1 variants={fadeUp} className="font-display text-3xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-6">
-              Persyaratan <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-900">Pendaftaran</span>
+            <motion.h1 variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-4 sm:mb-6">
+              Syarat <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-900">Pendaftaran</span>
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
+            <motion.p variants={fadeUp} className="text-slate-500 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
               Pastikan Anda memenuhi kriteria dasar di bawah ini sebelum mengajukan pendaftaran sebagai calon anggota Protokoler Universitas.
             </motion.p>
           </motion.div>
@@ -142,14 +142,22 @@ export default function PersyaratanPage() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="rounded-3xl md:rounded-[3rem] bg-white border border-slate-200 shadow-sm p-6 sm:p-8 md:p-12"
+            className="rounded-3xl md:rounded-[3rem] bg-white border border-slate-100 shadow-xl shadow-slate-200/50 p-6 sm:p-10 md:p-12 relative overflow-hidden"
           >
-            <motion.h2 variants={fadeUp} className="text-2xl font-bold text-slate-900 mb-8 text-center">Berkas yang Perlu Disiapkan</motion.h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Dekorasi halus */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+
+            <motion.div variants={fadeUp} className="text-center mb-8 sm:mb-12 relative z-10">
+              <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-tight">Berkas yang Perlu Disiapkan</h2>
+            </motion.div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10">
               {['Pas Foto Resmi', 'KTM / Bukti Mahasiswa', 'Curriculum Vitae', 'Surat Izin Orang Tua'].map((item, i) => (
-                <motion.div variants={fadeUp} key={i} className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
-                  <span className="text-sm font-semibold text-slate-700">{item}</span>
+                <motion.div variants={fadeUp} key={i} className="group flex items-center gap-4 p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-emerald-100 transition-all duration-300">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <span className="text-sm sm:text-base font-semibold text-slate-800">{item}</span>
                 </motion.div>
               ))}
             </div>
