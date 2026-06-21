@@ -81,7 +81,7 @@ export default function PersyaratanPage() {
               <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
             <motion.h1 variants={fadeUp} className="font-display text-3xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-6">
-              Persyaratan <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D2AD5C] to-[#997a3d]">Pendaftaran</span>
+              Persyaratan <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-900">Pendaftaran</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
               Pastikan Anda memenuhi kriteria dasar di bawah ini sebelum mengajukan pendaftaran sebagai calon anggota Protokoler Universitas.
@@ -115,17 +115,21 @@ export default function PersyaratanPage() {
             {/* Final Highlight Card */}
             <motion.div
               variants={fadeUp}
-              className="col-span-2 md:col-span-1 p-6 md:p-8 rounded-3xl md:rounded-[2rem] bg-gradient-to-br from-[#6B0000] to-[#3a0000] border border-red-500/30 flex flex-col justify-center relative overflow-hidden text-center md:text-left"
+              className="col-span-2 md:col-span-2 lg:col-span-3 p-8 md:p-12 rounded-3xl md:rounded-[2rem] bg-gradient-to-br from-[#6B0000] to-[#3a0000] border border-red-500/30 flex flex-col md:flex-row items-center justify-between relative overflow-hidden text-center md:text-left gap-6 md:gap-10"
             >
-              <div className="absolute -right-10 -bottom-10 opacity-20">
-                <CheckCircle2 className="w-32 h-32 md:w-48 md:h-48 text-white" />
+              <div className="absolute -right-10 -bottom-10 opacity-20 pointer-events-none">
+                <CheckCircle2 className="w-48 h-48 md:w-64 md:h-64 text-white" />
               </div>
-              <div className="relative z-10">
-                <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Penuhi Syarat?</h3>
-                <p className="text-red-100/80 text-[11px] md:text-sm mb-4 md:mb-6">Jika Anda memenuhi seluruh kriteria, Anda adalah kandidat yang kami cari!</p>
+              <div className="relative z-10 flex-1">
+                <h3 className="text-xl md:text-3xl font-display font-bold text-white mb-2 md:mb-3">Sudah Penuhi Syarat?</h3>
+                <p className="text-red-100/90 text-sm md:text-base max-w-xl mx-auto md:mx-0">
+                  Jika Anda merasa memiliki seluruh kriteria di atas, berarti Anda adalah kandidat unggulan yang sedang kami cari untuk bergabung bersama kami!
+                </p>
+              </div>
+              <div className="relative z-10 shrink-0 w-full md:w-auto">
                 <Link href="/auth">
-                  <Button className="w-full bg-white text-[#6B0000] hover:bg-slate-100 rounded-full font-bold uppercase tracking-widest text-[9px] md:text-[10px] h-10 md:h-12 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all">
-                    Ke Pendaftaran
+                  <Button className="w-full md:w-auto bg-white text-[#6B0000] hover:bg-slate-50 rounded-full font-bold uppercase tracking-widest text-[10px] md:text-xs px-8 h-12 md:h-14 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all">
+                    Lanjut Ke Pendaftaran
                   </Button>
                 </Link>
               </div>

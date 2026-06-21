@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
-import { ChevronDown, ArrowLeft } from 'lucide-react';
+import { ChevronDown, ArrowLeft, Mail, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LandingNavbar } from '@/components/landing-navbar';
 import { LandingFooter } from '@/components/landing-footer';
@@ -146,16 +146,28 @@ export default function FAQPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="mt-16 text-center p-10 rounded-3xl border border-white/10 bg-white/[0.03]"
+            className="mt-20 relative overflow-hidden text-center p-10 md:p-14 rounded-3xl bg-gradient-to-br from-[#6B0000] to-red-950 shadow-2xl border border-red-800/50"
           >
-            <p className="text-slate-400 text-lg mb-2">Masih ada pertanyaan lain?</p>
-            <p className="text-white font-bold text-xl mb-6">Hubungi tim protokoler kami langsung.</p>
-            <Link
-              href="mailto:protokoler@unp.ac.id"
-              className="inline-flex items-center gap-2 bg-red-700 hover:bg-red-800 text-white font-bold px-8 py-3 rounded-full transition-all hover:scale-105"
-            >
-              Kirim Email
-            </Link>
+            {/* Background decoration for the card */}
+            <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 rounded-full bg-white opacity-5 blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 rounded-full bg-red-500 opacity-20 blur-3xl pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-white/5 backdrop-blur-sm">
+                <Mail className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-white font-display text-2xl md:text-3xl font-bold mb-3">Masih ada pertanyaan lain?</h2>
+              <p className="text-red-100/90 text-sm md:text-base mb-8 max-w-lg mx-auto leading-relaxed">
+                Tim kami siap membantu. Jangan ragu untuk menghubungi divisi kami secara langsung apabila Anda membutuhkan informasi lebih spesifik.
+              </p>
+              <Link
+                href="mailto:protokoler@unp.ac.id"
+                className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-[#6B0000] font-bold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:-translate-y-1 group"
+              >
+                Kirim Pesan Sekarang
+                <ExternalLink className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </Link>
+            </div>
           </motion.div>
         </div>
       </main>
