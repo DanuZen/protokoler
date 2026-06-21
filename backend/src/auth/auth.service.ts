@@ -69,6 +69,15 @@ export class AuthService {
         fotoFullFile.mimetype,
       );
 
+      // Sync avatar and photo URLs to Supabase Auth metadata
+      await supabase.auth.admin.updateUserById(userId, {
+        user_metadata: {
+          nama_lengkap: dto.nama_lengkap,
+          avatar_url: fotoSetengahUrl,
+          foto_setengah_badan_url: fotoSetengahUrl,
+        },
+      });
+
       // 4. Save to Database using Prisma transaction
       const newUser = await this.prisma.$transaction(async (tx) => {
         const user = await tx.user.create({
@@ -143,6 +152,8 @@ export class AuthService {
         email: dbUser.email,
         role: dbUser.role,
         nama_lengkap: dbUser.protokoler?.nama_lengkap || 'Administrator',
+        avatar_url: dbUser.protokoler?.foto_setengah_badan_url || null,
+        foto_setengah_badan_url: dbUser.protokoler?.foto_setengah_badan_url || null,
       },
     };
   }

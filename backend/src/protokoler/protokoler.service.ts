@@ -143,16 +143,6 @@ export class ProtokolerService {
     }
     if (body.nama_lengkap) {
       updateData.nama_lengkap = body.nama_lengkap;
-      
-      // Sync name metadata in Supabase Auth
-      try {
-        const supabase = this.supabaseService.getClient();
-        await supabase.auth.admin.updateUserById(userId, {
-          user_metadata: { nama_lengkap: body.nama_lengkap },
-        });
-      } catch (err) {
-        this.logger.warn(`Failed to sync auth display name: ${err.message}`);
-      }
     }
     if (body.prodi) {
       updateData.prodi = body.prodi;
@@ -190,6 +180,27 @@ export class ProtokolerService {
       }
     }
 
+    // Sync metadata to Supabase Auth
+    try {
+      const supabase = this.supabaseService.getClient();
+      const metadata: any = {};
+      if (body.nama_lengkap) {
+        metadata.nama_lengkap = body.nama_lengkap;
+      }
+      if (updateData.foto_setengah_badan_url) {
+        metadata.avatar_url = updateData.foto_setengah_badan_url;
+        metadata.foto_setengah_badan_url = updateData.foto_setengah_badan_url;
+      }
+
+      if (Object.keys(metadata).length > 0) {
+        await supabase.auth.admin.updateUserById(userId, {
+          user_metadata: metadata,
+        });
+      }
+    } catch (err) {
+      this.logger.warn(`Failed to sync auth metadata: ${err.message}`);
+    }
+
     const updated = await this.prisma.protokoler.update({
       where: { id },
       data: updateData,
@@ -199,5 +210,44 @@ export class ProtokolerService {
       message: 'Profil berhasil diperbarui',
       data: updated,
     };
+  }
+
+  async createProfileForUser(userId: string, role: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User tidak ditemukan');
+    }
+
+    let name = role === 'admin' ? 'Administrator' : 'Staf';
+
+    try {
+      const supabase = this.supabaseService.getClient();
+      const { data: authUser } = await supabase.auth.admin.getUserById(userId);
+      if (authUser?.user?.user_metadata?.nama_lengkap) {
+        name = authUser.user.user_metadata.nama_lengkap;
+      }
+    } catch (err) {
+      this.logger.warn(`Failed to fetch auth user metadata: ${err.message}`);
+    }
+
+    const nim = `${role.toUpperCase()}-${userId.substring(0, 8)}`;
+
+    const newProfile = await this.prisma.protokoler.create({
+      data: {
+        user_id: userId,
+        nim: nim,
+        nama_lengkap: name,
+        prodi: 'Sistem Informasi',
+        departemen: 'Teknik',
+        fakultas: 'FT',
+        no_hp: '08123456789',
+        status_akun: 'aktif',
+      },
+    });
+
+    return newProfile;
   }
 }

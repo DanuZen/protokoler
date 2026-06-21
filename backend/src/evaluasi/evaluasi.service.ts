@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ForbiddenException, BadRequestException,
 import { PrismaService } from '../prisma/prisma.service';
 import { SupabaseService } from '../supabase/supabase.service';
 import { StatusKegiatanEnum, StatusHadirEnum, KategoriSertifikatEnum, RoleEnum } from '@prisma/client';
+import { autoUpdateStatuses } from '../utils/status-updater';
 
 @Injectable()
 export class EvaluasiService {
@@ -203,6 +204,7 @@ startxref
   }
 
   async getDashboard(params: { status?: string; search?: string; page?: number; limit?: number }) {
+    await autoUpdateStatuses(this.prisma);
     const page = Number(params.page) || 1;
     const limit = Number(params.limit) || 20;
     const skip = (page - 1) * limit;
@@ -269,6 +271,7 @@ startxref
   }
 
   async getHasil(kegiatanId: string, userRole: RoleEnum) {
+    await autoUpdateStatuses(this.prisma);
     const kegiatan = await this.prisma.kegiatan.findUnique({
       where: { id: kegiatanId }
     });

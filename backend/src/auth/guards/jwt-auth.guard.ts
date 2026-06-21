@@ -45,7 +45,10 @@ export class JwtAuthGuard implements CanActivate {
       id: dbUser.id,
       email: dbUser.email,
       role: dbUser.role,
+      nama_lengkap: dbUser.protokoler?.nama_lengkap || 'Administrator',
       protokolerId: dbUser.protokoler?.id || null,
+      avatar_url: dbUser.protokoler?.foto_setengah_badan_url || null,
+      foto_setengah_badan_url: dbUser.protokoler?.foto_setengah_badan_url || null,
     };
 
     return true;

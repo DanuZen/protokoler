@@ -25,11 +25,13 @@ export class ProtokolerController {
 
   @Get('me')
   async findMe(@Req() req: any) {
-    if (!req.user.protokolerId) {
-      // User bukan protokoler (admin/dokumentasi) — kembalikan null tanpa error
-      return null;
+    let protokolerId = req.user.protokolerId;
+    if (!protokolerId) {
+      // Create a profile for this user on the fly (for admin/dokumentasi/etc.)
+      const profile = await this.protokolerService.createProfileForUser(req.user.id, req.user.role);
+      protokolerId = profile.id;
     }
-    return this.protokolerService.findOne(req.user.protokolerId);
+    return this.protokolerService.findOne(protokolerId);
   }
 
   @Get(':id')
@@ -52,7 +54,7 @@ export class ProtokolerController {
   }
 
   @Patch(':id')
-  @Roles(RoleEnum.protokoler)
+  @Roles(RoleEnum.protokoler, RoleEnum.admin, RoleEnum.dokumentasi)
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'foto_setengah_badan', maxCount: 1 },
@@ -65,8 +67,9 @@ export class ProtokolerController {
     @Body() body: { no_hp?: string; nama_lengkap?: string; prodi?: string; departemen?: string; fakultas?: string },
     @UploadedFiles() files: { foto_setengah_badan?: any[]; foto_full_body?: any[] },
   ) {
-    // Enforce owner-only profile updates
-    if (req.user.protokolerId !== id) {
+    // Enforce owner-only profile updates: check either protokolerId or user_id
+    const targetProfile = await this.protokolerService.findOne(id);
+    if (req.user.protokolerId !== id && req.user.id !== targetProfile.user_id) {
       throw new ForbiddenException('Anda hanya dapat memperbarui profil Anda sendiri');
     }
     return this.protokolerService.updateProfile(id, body, files);

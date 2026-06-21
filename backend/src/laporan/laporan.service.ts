@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StatusKegiatanEnum, StatusPendaftaranEnum } from '@prisma/client';
+import { autoUpdateStatuses } from '../utils/status-updater';
 
 @Injectable()
 export class LaporanService {
@@ -17,6 +18,7 @@ export class LaporanService {
   }
 
   async getKegiatanList(params: { dari?: string; sampai?: string; bentuk?: string }) {
+    await autoUpdateStatuses(this.prisma);
     const where: any = {};
     if (params.dari || params.sampai) {
       where.tanggal = {};
@@ -182,6 +184,7 @@ startxref
   }
 
   async getDashboardStats() {
+    await autoUpdateStatuses(this.prisma);
     // 1. Total kegiatan bulan ini
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
@@ -198,13 +201,13 @@ startxref
       where: { status_akun: 'aktif' }
     });
 
-    // 3. Kegiatan mendatang (status publik / draf, tanggal >= hari ini)
+    // 3. Kegiatan mendatang (status publik / terjadwal / terkonfirmasi / draf, tanggal >= hari ini)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const kegiatanMendatang = await this.prisma.kegiatan.count({
       where: {
         tanggal: { gte: today },
-        status: { in: [StatusKegiatanEnum.publik, StatusKegiatanEnum.draf] }
+        status: { in: [StatusKegiatanEnum.publik, StatusKegiatanEnum.terjadwal, StatusKegiatanEnum.terkonfirmasi, StatusKegiatanEnum.draf] }
       }
     });
 

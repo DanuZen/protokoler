@@ -74,6 +74,14 @@ export function useRole(user?: User | null) {
           setRole(mappedRole);
           if (typeof window !== 'undefined') {
             window.localStorage.setItem('cached_role', mappedRole);
+            if (data.nama_lengkap) {
+              window.localStorage.setItem('demo_name', data.nama_lengkap);
+              window.dispatchEvent(new Event('demo_name_updated'));
+            }
+            if (data.foto_setengah_badan_url) {
+              window.localStorage.setItem('demo_avatar', data.foto_setengah_badan_url);
+              window.dispatchEvent(new Event('demo_avatar_updated'));
+            }
           }
         } else {
           setRole(null);
