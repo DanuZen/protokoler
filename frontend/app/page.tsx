@@ -495,9 +495,9 @@ export default function Landing() {
                   ))}
                 </div>
               </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="lg:col-span-2">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="lg:col-span-2 min-w-0 w-full">
                 {/* Testimonial: Looping Carousel (All Screens) */}
-                <div className="w-full max-w-[100vw] lg:max-w-full overflow-hidden -mx-6 sm:-mx-8 lg:mx-0 mt-8 lg:mt-0">
+                <div className="-mx-6 sm:-mx-8 lg:mx-0 overflow-hidden mt-8 lg:mt-0">
                   <Carousel opts={{ loop: true, align: 'center' }} plugins={[Autoplay({ delay: 4000 })]} className="w-full">
                     <CarouselContent className="ml-0 lg:-ml-4">
                       {[
@@ -506,7 +506,7 @@ export default function Landing() {
                         { name: 'Ahmad Fauzi', role: 'Ketua Pelaksana', image: '/tim_pengembang/danu.webp', text: 'Koordinasi tim jauh lebih mudah berkat sistem terpusat. Informasi jadwal dan SOP bisa diakses secara real-time kapan pun.' },
                       ].map((testi, i) => (
                         <CarouselItem key={i} className="pl-0 basis-full lg:pl-4">
-                          <div className="w-full px-4 sm:px-6 lg:px-0">
+                          <div className="w-full px-6 lg:px-0">
                             <motion.div
                               variants={fadeUp}
                               className="p-6 sm:p-10 lg:p-12 rounded-[2rem] bg-gradient-to-br from-[#2A0000]/90 to-[#1A0000]/90 backdrop-blur-xl border border-white/10 relative shadow-2xl group flex flex-col lg:flex-row-reverse items-center gap-6 lg:gap-12 w-full lg:max-w-5xl lg:mx-auto mt-8 lg:mt-16 transition-all duration-500"
