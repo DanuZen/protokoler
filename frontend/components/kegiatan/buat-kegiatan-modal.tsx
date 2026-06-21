@@ -232,7 +232,6 @@ export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClos
                                   setForm({ ...form, tanggal: "" });
                                 }
                               }}
-                              initialFocus
                             />
                           </div>
 
