@@ -23,7 +23,7 @@ export class DokumentasiController {
   }
 
   @Get('list')
-  @Roles(RoleEnum.dokumentasi)
+  @Roles(RoleEnum.admin, RoleEnum.dokumentasi)
   async getDocumentationList(
     @Query('status') status?: string,
     @Query('search') search?: string,
@@ -34,7 +34,7 @@ export class DokumentasiController {
   }
 
   @Post('upload')
-  @Roles(RoleEnum.dokumentasi)
+  @Roles(RoleEnum.admin, RoleEnum.dokumentasi)
   @UseInterceptors(FileInterceptor('file'))
   async uploadDocumentation(
     @Req() req: any,

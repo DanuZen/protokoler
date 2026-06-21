@@ -124,7 +124,27 @@ export class AbsensiService {
     };
   }
 
-  async getRecap(kegiatanId: string) {
+  async getRecap(kegiatanId: string, userRole?: string, userProtokolerId?: string) {
+    if (userRole === 'protokoler') {
+      if (!userProtokolerId) {
+        return { data: [] };
+      }
+
+      const registration = await this.prisma.pendaftaranKegiatan.findFirst({
+        where: {
+          protokoler_id: userProtokolerId,
+          OR: [
+            { kegiatan_id: kegiatanId, status: StatusPendaftaranEnum.diterima },
+            { kegiatan_dialihkan_id: kegiatanId, status: StatusPendaftaranEnum.dialihkan }
+          ]
+        }
+      });
+
+      if (!registration) {
+        return { data: [] };
+      }
+    }
+
     const data = await this.prisma.absensi.findMany({
       where: { kegiatan_id: kegiatanId },
       include: {

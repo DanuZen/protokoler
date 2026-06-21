@@ -24,9 +24,9 @@ export class PendaftaranController {
   }
 
   @Get('kegiatan/:id/pendaftar')
-  @Roles(RoleEnum.admin)
-  async getApplicants(@Param('id') kegiatanId: string) {
-    return this.pendaftaranService.getApplicants(kegiatanId);
+  @Roles(RoleEnum.admin, RoleEnum.protokoler, RoleEnum.dokumentasi)
+  async getApplicants(@Param('id') kegiatanId: string, @Req() req: any) {
+    return this.pendaftaranService.getApplicants(kegiatanId, req.user.role);
   }
 
   @Patch('pendaftaran/:id/seleksi')

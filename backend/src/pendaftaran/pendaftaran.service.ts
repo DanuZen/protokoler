@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, ForbiddenException 
 import { PrismaService } from '../prisma/prisma.service';
 import { SupabaseService } from '../supabase/supabase.service';
 import { StatusPendaftaranEnum, StatusKegiatanEnum, PeranKegiatanEnum, StatusAkunEnum } from '@prisma/client';
+import { autoUpdateStatuses } from '../utils/status-updater';
 
 @Injectable()
 export class PendaftaranService {
@@ -59,6 +60,8 @@ startxref
   }
 
   async register(kegiatanId: string, protokolerId: string, peran: 'protokoler' | 'lo') {
+    await autoUpdateStatuses(this.prisma);
+
     // 1. Check protokoler status
     const protokoler = await this.prisma.protokoler.findUnique({
       where: { id: protokolerId }
@@ -77,6 +80,16 @@ startxref
     if (!kegiatan) {
       throw new NotFoundException('Kegiatan tidak ditemukan');
     }
+
+    // Block registration if activity is selesai, berlangsung, or batal
+    if (
+      kegiatan.status === StatusKegiatanEnum.selesai ||
+      kegiatan.status === StatusKegiatanEnum.berlangsung ||
+      kegiatan.status === StatusKegiatanEnum.batal
+    ) {
+      throw new BadRequestException('Rekrutmen telah ditutup atau kegiatan sudah berjalan/selesai');
+    }
+
     if (
       kegiatan.status !== StatusKegiatanEnum.publik &&
       kegiatan.status !== StatusKegiatanEnum.terjadwal &&
@@ -147,9 +160,19 @@ startxref
     };
   }
 
-  async getApplicants(kegiatanId: string) {
+  async getApplicants(kegiatanId: string, userRole?: string) {
+    const where: any = {};
+    if (userRole === 'protokoler') {
+      where.OR = [
+        { kegiatan_id: kegiatanId, status: StatusPendaftaranEnum.diterima },
+        { kegiatan_dialihkan_id: kegiatanId, status: StatusPendaftaranEnum.dialihkan }
+      ];
+    } else {
+      where.kegiatan_id = kegiatanId;
+    }
+
     const data = await this.prisma.pendaftaranKegiatan.findMany({
-      where: { kegiatan_id: kegiatanId },
+      where,
       include: {
         protokoler: {
           select: {

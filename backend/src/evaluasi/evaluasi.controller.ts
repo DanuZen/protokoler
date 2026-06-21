@@ -37,7 +37,7 @@ export class EvaluasiController {
   @Get('evaluasi/kegiatan/:id/hasil')
   @Roles(RoleEnum.admin, RoleEnum.protokoler)
   async getEvaluasiHasil(@Param('id') kegiatanId: string, @Req() req: any) {
-    return this.evaluasiService.getHasil(kegiatanId, req.user.role);
+    return this.evaluasiService.getHasil(kegiatanId, req.user.role, req.user.protokolerId);
   }
 
   @Patch('evaluasi/kegiatan/:id/feedback')

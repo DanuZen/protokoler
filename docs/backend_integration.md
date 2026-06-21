@@ -31,16 +31,18 @@ Tabel-tabel database dipetakan ke dalam model Prisma dengan relasi kunci sebagai
 
 Backend menggunakan **Supabase Auth** untuk mengelola data user kredensial (email & password) dan sesi login.
 
-### A. Alur Registrasi Akun dengan Rollback Transaction
+### A. Alur Registrasi Akun dengan Rollback Transaction & Sinkronisasi Metadata
 Selama registrasi (`POST /api/auth/register`), backend menjalankan alur transaksi terpadu:
 1. **Validasi Awal**: Mengecek keunikan Email (di tabel `User`) dan NIM (di tabel `Protokoler`) via Prisma.
 2. **Autentikasi Supabase**: Membuat user di Supabase Auth menggunakan API admin SDK (`supabase.auth.admin.createUser`) dengan status email terkonfirmasi langsung.
-3. **Database Insertion (Prisma Transaction)**: Membuka transaksi PostgreSQL untuk memasukkan data ke tabel `users` dan `protokoler` secara simultan.
-4. **Mekanisme Rollback Otomatis**: Jika proses pembuatan rekam di PostgreSQL gagal (misalnya karena gangguan koneksi DB atau format data salah), backend menangkap error di blok `catch` dan **otomatis menghapus** user Supabase Auth yang baru dibuat (`supabase.auth.admin.deleteUser(userId)`). Ini mencegah terjadinya inkonsistensi data di mana akun terbuat di auth Supabase namun gagal terdaftar di database sistem utama.
+3. **Penyimpanan Gambar & Sinkronisasi Metadata**: Mengunggah foto setengah badan dan foto full body ke Supabase Storage, lalu memperbarui metadata user Supabase Auth (`user_metadata`) dengan menyisipkan `avatar_url` dan `foto_setengah_badan_url` yang merujuk pada berkas tersebut.
+4. **Database Insertion (Prisma Transaction)**: Membuka transaksi PostgreSQL untuk memasukkan data ke tabel `users` dan `protokoler` secara simultan dengan menyertakan URL gambar yang berhasil diunggah.
+5. **Mekanisme Rollback Otomatis**: Jika proses di atas gagal, backend menangkap error dan **otomatis menghapus** user Supabase Auth yang baru dibuat (`supabase.auth.admin.deleteUser(userId)`). Ini mencegah terjadinya inkonsistensi data di mana akun terbuat di auth Supabase namun gagal terdaftar di database sistem utama.
 
 ### B. Guard Keamanan & Hak Akses (Role-based Access)
-- **`JwtAuthGuard`**: Menguji token JWT dari request header. Token didekode untuk memverifikasi keaslian sesi user, lalu melampirkan payload user (`userId`, `email`, `role`, `protokolerId`) ke objek request NestJS.
+- **`JwtAuthGuard`**: Menguji token JWT dari request header. Token didekode untuk memverifikasi keaslian sesi user, lalu melampirkan payload user (`userId`, `email`, `role`, `nama_lengkap`, `protokolerId`, `avatar_url`, `foto_setengah_badan_url`) ke objek request NestJS. Guard ini juga dilengkapi mekanisme **auto-sync metadata** yang otomatis memperbarui metadata avatar Supabase Auth jika data di database memiliki foto profil tetapi di Supabase Auth masih kosong.
 - **`RolesGuard`**: Membaca decorator `@Roles(...)` pada setiap route. Hanya pengguna dengan role yang sesuai (`admin`, `protokoler`, `dokumentasi`, `tamu`) yang diizinkan untuk memanggil fungsi tersebut.
+- **Response Autentikasi**: Endpoint `/api/auth/me` dan response `/api/auth/login` mengembalikan detail profil pengguna lengkap dengan `avatar_url` dan `foto_setengah_badan_url` agar mempermudah frontend menyinkronisasikan avatar profil secara langsung.
 
 ---
 
@@ -65,15 +67,21 @@ Modul penyimpanan berkas (`SupabaseService.uploadFile`) diintegrasikan dengan ko
 ## 4. Modul Manajemen Kegiatan & Tamu VVIP
 
 Modul `Kegiatan` mencakup seluruh siklus manajemen acara keprotokolan:
-- **Status Transitions**: Alur siklus kegiatan dikontrol menggunakan status enum: `draf` ➡️ `publik` ➡️ `berlangsung` ➡️ `selesai` ➡️ `batal`. Status transisi hanya dapat diubah oleh Admin (Pimpinan).
+- **Status Transitions (Manual & Otomatis)**: Alur siklus kegiatan dikontrol menggunakan status enum: `draf` ➡️ `publik`/`terjadwal` ➡️ `berlangsung` ➡️ `selesai` ➡️ `batal`.
+  - Status `draf` tidak dapat berubah otomatis (harus diubah manual oleh Admin ke `publik`).
+  - Status `publik` / `terjadwal` secara otomatis diperbarui (real-time) menjadi `berlangsung` ketika waktu kegiatan dimulai.
+  - Status `berlangsung` secara otomatis diperbarui menjadi `selesai` ketika waktu selesai kegiatan telah terlampaui.
+  - Logika transisi otomatis ini disematkan pada API listing/detail kegiatan, dashboard laporan, dan modul evaluasi.
 - **Checklist Tata Upacara**: Menyediakan boolean checks untuk `checklist_tata_tempat`, `checklist_tata_upacara`, dan `checklist_tata_penghormatan` sesuai aturan resmi keprotokolan negara.
-- **Format Waktu Sinkron**: Menambahkan formatter waktu di `kegiatan.service.ts` untuk mengubah format kolom `@db.Time` PostgreSQL (yang secara default dibaca Prisma sebagai format ISO lengkap `1970-01-01T...`) menjadi string waktu bersih `HH:mm:ss`. Hal ini menjamin keselarasan tampilan waktu pelaksanaan kegiatan di frontend.
+- **Format Waktu Sinkron**: Menambahkan formatter waktu di `kegiatan.service.ts` untuk mengubah format kolom `@db.Time` PostgreSQL menjadi string waktu bersih `HH:mm:ss`. Hal ini menjamin keselarasan tampilan waktu pelaksanaan kegiatan di frontend.
+- **Validasi Graceful Format UUID**: Mencegah terjadinya crashing (Internal Server Error 500) pada API detail seperti `GET /api/kegiatan/:id` dengan menyaring parameter menggunakan Regex UUID. Jika format ID tidak valid (seperti `/api/kegiatan/buat`), backend langsung merespons dengan HTTP `404 Not Found` alih-alih mengalami crash kueri database.
 
 ---
 
 ## 5. Alur Pengajuan Tugas (Rekrutmen) & Real-time Updates
 
 - **Pengajuan Diri (Tugas)**: Mahasiswa dengan akun protokoler aktif dapat melamar peran (`peran` berupa `protokoler` atau `lo`) pada kegiatan berstatus `publik`. Data masuk ke tabel `pendaftaran_kegiatan` dengan status awal `pending`.
+- **Aksesibilitas Pendaftar**: Endpoint `GET /api/kegiatan/:id/pendaftar` dapat diakses oleh peran `admin`, `protokoler`, dan `dokumentasi` guna menjamin frontend dapat memverifikasi status rekrutmen/penugasan dan menampilkan kesiapan personil.
 - **Verifikasi Tugas**: Admin meninjau data pendaftar dan dapat menyetujui (`diterima`) atau menolak (`ditolak`).
 - **Real-time Event**: Supabase Realtime diaktifkan pada tingkat tabel database PostgreSQL. Perubahan status pendaftaran atau kegiatan langsung memicu broadcast ke client frontend secara instan tanpa perlu memuat ulang halaman browser (manual refresh).
 
@@ -84,6 +92,7 @@ Modul `Kegiatan` mencakup seluruh siklus manajemen acara keprotokolan:
 Modul absensi memastikan keaslian kehadiran protokoler di lokasi penugasan:
 - **Unggah Selfie**: Protokoler wajib mengunggah foto selfie yang disimpan sesuai konfigurasi storage aktif.
 - **Validasi Koordinat GPS**: Menerima input koordinat latitude dan longitude dari perangkat GPS frontend. Tipe data kolom disetel sebagai `Decimal(10,8)` dan `Decimal(11,8)` di database untuk menampung presisi koordinat bumi secara tepat guna mencegah manipulasi lokasi.
+- **Rekap Absensi**: Endpoint `GET /api/kegiatan/:id/absensi` dapat diakses oleh peran `admin`, `protokoler`, dan `dokumentasi` agar seluruh pihak berwenang dapat memantau rekaman absensi penugasan.
 
 ---
 
@@ -99,6 +108,14 @@ Modul ini mengizinkan tamu VVIP memberikan feedback/testimoni acara secara insta
 
 - **Agregasi Statistik**: Mengagregasikan total kegiatan, persentase konfirmasi penugasan protokoler, dan status absensi.
 - **Date-Range Parsing**: Route penugasan laporan dirancang fleksibel untuk mendeteksi filter range tanggal (`dari_tanggal` dan `sampai_tanggal`). API membaca format tanggal ISO dari frontend dan melakukan query `where: { tanggal: { gte: start, lte: end } }` untuk menghasilkan rekapitulasi data penugasan mahasiswa secara akurat.
+
+---
+
+## 9. Profil Pengguna Non-Mahasiswa (Admin & Staf)
+
+Backend mendukung pengelolaan profil secara mandiri bagi pengguna dengan hak akses non-protokoler (Admin dan Dokumentasi):
+- **On-the-Fly Profile Provisioning**: Saat pemanggilan `GET /api/protokoler/me` dilakukan oleh akun Admin atau Staf Dokumentasi yang belum memiliki record profil di tabel database, backend mendeteksi hal ini secara dinamis. Backend akan otomatis membuatkan record profil baru (`Protokoler`) dengan mengambil data nama lengkap dari Supabase Auth, dan membuat NIM berformat `ADMIN-<8_digit_id>` atau `DOKUMENTASI-<8_digit_id>`.
+- **Akses Pengeditan Data**: Route `PATCH /api/protokoler/:id` telah dikonfigurasi untuk menerima role `admin` dan `dokumentasi`. Proteksi data diterapkan dengan verifikasi kesesuaian antara token user ID dengan data profil `user_id` di database (owner-only check) guna menjamin keamanan hak akses data pribadi.
 
 ---
 

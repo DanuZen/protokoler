@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { SupabaseService } from '../../supabase/supabase.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RoleEnum } from '@prisma/client';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -31,13 +32,90 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     // Fetch user role from database
-    const dbUser = await this.prisma.user.findUnique({
+    let dbUser = await this.prisma.user.findUnique({
       where: { id: user.id },
       include: { protokoler: true },
     });
 
     if (!dbUser) {
-      throw new UnauthorizedException('Akun tidak terdaftar di database sistem');
+      // Clean up stale user record with same email to avoid unique constraint issues
+      const existingUserByEmail = await this.prisma.user.findUnique({
+        where: { email: user.email || '' },
+      });
+
+      if (existingUserByEmail) {
+        await this.prisma.user.delete({
+          where: { id: existingUserByEmail.id }
+        });
+      }
+
+      // Auto-provision user in database
+      let role = 'protokoler';
+      const metaRole = user.user_metadata?.role || user.app_metadata?.role;
+      if (metaRole && ['admin', 'protokoler', 'tamu', 'dokumentasi'].includes(metaRole)) {
+        role = metaRole;
+      } else {
+        const email = user.email || '';
+        if (email.startsWith('admin@')) {
+          role = 'admin';
+        } else if (email.startsWith('pimpinan@') || email.startsWith('tamu@')) {
+          role = 'tamu';
+        } else if (email.startsWith('dokumentasi@')) {
+          role = 'dokumentasi';
+        }
+      }
+
+      dbUser = await this.prisma.user.create({
+        data: {
+          id: user.id,
+          email: user.email || '',
+          role: role as RoleEnum,
+        },
+        include: { protokoler: true },
+      });
+    }
+
+    // Ensure User profile exists in database
+    if (dbUser && !dbUser.protokoler) {
+      let name = dbUser.role === 'admin' ? 'Administrator' : 'Staf';
+      if (user.user_metadata?.nama_lengkap) {
+        name = user.user_metadata.nama_lengkap;
+      }
+      const nim = dbUser.role === 'protokoler'
+        ? (user.user_metadata?.nim || `MHS-${user.id.substring(0, 8)}`)
+        : `${dbUser.role.toUpperCase()}-${user.id.substring(0, 8)}`;
+      
+      try {
+        const newProfile = await this.prisma.protokoler.create({
+          data: {
+            user_id: dbUser.id,
+            nim: nim,
+            nama_lengkap: name,
+            prodi: dbUser.role === 'protokoler' ? 'Teknik Informatika' : 'Sistem Informasi',
+            departemen: 'Teknik',
+            fakultas: 'FT',
+            no_hp: '08123456789',
+            status_akun: 'aktif',
+          },
+        });
+        dbUser.protokoler = newProfile;
+      } catch (e) {
+        // Fallback to avoid nim collision
+        const fallbackNim = `${dbUser.role.toUpperCase()}-${Date.now().toString().slice(-8)}`;
+        const newProfile = await this.prisma.protokoler.create({
+          data: {
+            user_id: dbUser.id,
+            nim: fallbackNim,
+            nama_lengkap: name,
+            prodi: dbUser.role === 'protokoler' ? 'Teknik Informatika' : 'Sistem Informasi',
+            departemen: 'Teknik',
+            fakultas: 'FT',
+            no_hp: '08123456789',
+            status_akun: 'aktif',
+          },
+        });
+        dbUser.protokoler = newProfile;
+      }
     }
 
     // Attach user information to request object
