@@ -30,6 +30,17 @@ export function LandingNavbar({ alwaysDark = false }: { alwaysDark?: boolean }) 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [alwaysDark]);
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -107,26 +118,26 @@ export function LandingNavbar({ alwaysDark = false }: { alwaysDark?: boolean }) 
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="absolute top-full left-0 right-0 bg-[#4A0000]/95 backdrop-blur-xl border-b border-[#D2AD5C]/20 py-4 px-6 lg:hidden shadow-2xl flex flex-col gap-4"
+            className="fixed inset-0 z-40 bg-[#4A0000] pt-[100px] pb-6 px-8 lg:hidden flex flex-col gap-2 overflow-y-auto"
           >
             {[{ label: 'Profil', href: '/#profil' }, { label: 'Jadwal', href: '/#jadwal' }, { label: 'Prosedur', href: '/#prosedur' }, { label: 'Berita', href: '/#postingan' }, { label: 'Persyaratan', href: '/persyaratan' }, { label: 'FAQ', href: '/faq' }].map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-sm font-bold text-white/90 hover:text-[#D2AD5C] transition-colors uppercase tracking-widest py-2 border-b border-white/5"
+                className="text-base font-bold text-white/90 hover:text-[#D2AD5C] transition-colors uppercase tracking-[0.2em] py-4 border-b border-white/10 text-center"
               >
                 {item.label}
               </Link>
             ))}
-            <div className="pt-2">
+            <div className="pt-6 mt-auto">
               {user ? (
                 <Link href={dashboardHref} onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full rounded-full shadow-[0_0_20px_rgba(210,173,92,0.2)] bg-gradient-to-r from-[#D2AD5C] to-[#b39045] text-white hover:shadow-[0_0_25px_rgba(210,173,92,0.4)] border-none h-12 font-bold tracking-wider uppercase text-[10px]">Dashboard</Button>
+                  <Button className="w-full rounded-full shadow-[0_0_20px_rgba(210,173,92,0.2)] bg-gradient-to-r from-[#D2AD5C] to-[#b39045] text-white hover:shadow-[0_0_25px_rgba(210,173,92,0.4)] border-none h-14 font-bold tracking-widest uppercase text-xs">Dashboard</Button>
                 </Link>
               ) : (
                 <Link href="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full rounded-full shadow-[0_0_20px_rgba(210,173,92,0.2)] bg-gradient-to-r from-[#D2AD5C] to-[#b39045] text-white hover:shadow-[0_0_25px_rgba(210,173,92,0.4)] border-none h-12 font-bold tracking-wider uppercase text-[10px]">Masuk Sistem</Button>
+                  <Button className="w-full rounded-full shadow-[0_0_20px_rgba(210,173,92,0.2)] bg-gradient-to-r from-[#D2AD5C] to-[#b39045] text-white hover:shadow-[0_0_25px_rgba(210,173,92,0.4)] border-none h-14 font-bold tracking-widest uppercase text-xs">Masuk Sistem</Button>
                 </Link>
               )}
             </div>
