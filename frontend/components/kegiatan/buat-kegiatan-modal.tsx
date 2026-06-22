@@ -128,7 +128,7 @@ export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClos
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="[&>button]:hidden max-w-5xl p-0 overflow-hidden bg-transparent border-none shadow-none h-[90vh] md:h-[85vh] flex flex-col sm:rounded-[2rem]">
+      <DialogContent className="[&>button]:hidden max-w-7xl p-0 overflow-hidden bg-transparent border-none shadow-none h-[90vh] md:h-[85vh] flex flex-col sm:rounded-[2rem]">
         {/* Screen Reader Only Title/Desc */}
         <div className="sr-only">
           <DialogTitle>Buat Kegiatan Baru</DialogTitle>
@@ -354,13 +354,28 @@ export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClos
                                     <Label className="text-[11px] font-bold text-slate-500">Nama Lengkap</Label>
                                     <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Nama tamu" value={tamu.nama_tamu} onChange={e => updateTamu(idx, "nama_tamu", e.target.value)} />
                                   </div>
-                                  <div className="space-y-1">
-                                    <Label className="text-[11px] font-bold text-slate-500">Jabatan</Label>
-                                    <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Jabatan" value={tamu.jabatan} onChange={e => updateTamu(idx, "jabatan", e.target.value)} />
+                                  <div className="col-span-2 sm:col-span-1 space-y-1">
+                                    <Label className="text-[11px] font-bold text-slate-500">Tipe Tamu</Label>
+                                    <select 
+                                      className="flex h-9 w-full rounded-lg border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400/20 focus-visible:border-[#6B0000]"
+                                      value={tamu.tipe} 
+                                      onChange={e => updateTamu(idx, "tipe", e.target.value)}
+                                    >
+                                      <option value="eksternal">Eksternal</option>
+                                      <option value="internal">Internal</option>
+                                    </select>
                                   </div>
-                                  <div className="space-y-1">
-                                    <Label className="text-[11px] font-bold text-slate-500">Rombongan</Label>
+                                  <div className="col-span-2 sm:col-span-1 space-y-1">
+                                    <Label className="text-[11px] font-bold text-slate-500">Jumlah Rombongan</Label>
                                     <Input type="number" min={1} className="h-9 rounded-lg border-slate-200 text-sm" value={tamu.jumlah_rombongan} onChange={e => updateTamu(idx, "jumlah_rombongan", Number(e.target.value))} />
+                                  </div>
+                                  <div className="col-span-2 sm:col-span-1 space-y-1">
+                                    <Label className="text-[11px] font-bold text-slate-500">Jabatan</Label>
+                                    <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Contoh: Rektor" value={tamu.jabatan} onChange={e => updateTamu(idx, "jabatan", e.target.value)} />
+                                  </div>
+                                  <div className="col-span-2 sm:col-span-1 space-y-1">
+                                    <Label className="text-[11px] font-bold text-slate-500">Instansi</Label>
+                                    <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Contoh: UNP" value={tamu.instansi} onChange={e => updateTamu(idx, "instansi", e.target.value)} />
                                   </div>
                                 </div>
                               </div>
@@ -418,24 +433,6 @@ export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClos
                 </AnimatePresence>
               </div>
 
-              {/* Navigasi Kiri-Kanan Bawah */}
-              <div className="flex justify-between items-center mt-auto px-6 md:px-8 py-6 border-t border-slate-100 shrink-0 bg-white">
-                {step > 1 ? (
-                  <Button type="button" variant="outline" className="rounded-xl border-slate-200 bg-white text-slate-600 hover:text-slate-900 shadow-sm h-11 px-5 font-bold transition-all" onClick={handlePrev}>
-                    <ChevronLeft className="h-4 w-4 mr-1" /> Kembali
-                  </Button>
-                ) : <div />}
-
-                {step < 3 ? (
-                  <Button type="button" className="rounded-xl bg-[#0F172A] hover:bg-black text-white h-11 px-8 font-bold shadow-md transition-all" onClick={handleNext}>
-                    Lanjut <ChevronRight className="h-4 w-4 ml-1" />
-                  </Button>
-                ) : (
-                  <Button type="button" className="rounded-xl bg-[#6B0000] hover:bg-red-950 text-white h-11 px-8 font-bold shadow-md shadow-red-900/20 transition-all" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
-                    {saveMutation.isPending ? "Menyimpan..." : <><Check className="h-4 w-4 mr-2" /> Buat Acara</>}
-                  </Button>
-                )}
-              </div>
             </div>
 
             {/* Kolom Kanan: Vertical Stepper */}
@@ -479,6 +476,25 @@ export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClos
               </div>
             </div>
 
+          </div>
+
+          {/* Navigasi Kiri-Kanan Bawah */}
+          <div className="flex justify-between items-center mt-auto px-6 md:px-8 py-6 border-t border-slate-100 shrink-0 bg-white relative z-20">
+            {step > 1 ? (
+              <Button type="button" variant="outline" className="rounded-xl border-slate-200 bg-white text-slate-600 hover:text-slate-900 shadow-sm h-11 px-5 font-bold transition-all" onClick={handlePrev}>
+                <ChevronLeft className="h-4 w-4 mr-1" /> Kembali
+              </Button>
+            ) : <div />}
+
+            {step < 3 ? (
+              <Button type="button" className="rounded-xl bg-[#0F172A] hover:bg-black text-white h-11 px-8 font-bold shadow-md transition-all" onClick={handleNext}>
+                Lanjut <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            ) : (
+              <Button type="button" className="rounded-xl bg-[#6B0000] hover:bg-red-950 text-white h-11 px-8 font-bold shadow-md shadow-red-900/20 transition-all" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
+                {saveMutation.isPending ? "Menyimpan..." : <><Check className="h-4 w-4 mr-2" /> Buat Acara</>}
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>
