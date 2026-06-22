@@ -94,10 +94,38 @@ function AdminSertifikatView() {
 
       {/* BODY CONTENT */}
       <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-
+        <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
+          
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden flex flex-col flex-1 min-h-0">
+            <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col xl:flex-row justify-between xl:items-center gap-4 shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                  <BadgeCheck className="h-6 w-6 text-red-700" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Sertifikat</h2>
+                  <p className="text-sm text-slate-500 mt-1 line-clamp-1">Kelola dan filter data seluruh sertifikat protokoler.</p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 shrink-0">
+                <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto [&::-webkit-scrollbar]:hidden">
+                  <button onClick={() => setTab('semua')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 whitespace-nowrap", tab === 'semua' ? "bg-[#6B0000] text-white border-[#6B0000] shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-slate-200 shadow-sm hover:text-slate-900 hover:shadow-md")}>Semua Sertifikat</button>
+                  <button onClick={() => setTab('acara')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 whitespace-nowrap", tab === 'acara' ? "bg-[#6B0000] text-white border-[#6B0000] shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-slate-200 shadow-sm hover:text-slate-900 hover:shadow-md")}>Sertifikat Acara</button>
+                  <button onClick={() => setTab('penghargaan')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 whitespace-nowrap", tab === 'penghargaan' ? "bg-[#6B0000] text-white border-[#6B0000] shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-slate-200 shadow-sm hover:text-slate-900 hover:shadow-md")}>Penghargaan</button>
+                  <button onClick={() => setTab('pending')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 whitespace-nowrap flex items-center", tab === 'pending' ? "bg-[#6B0000] text-white border-[#6B0000] shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-slate-200 shadow-sm hover:text-slate-900 hover:shadow-md")}>
+                    Menunggu <span className={cn("ml-2 inline-flex items-center justify-center px-1.5 py-0.5 rounded-md text-[10px]", tab === 'pending' ? "bg-white/20" : "bg-slate-100 text-slate-500")}>{pendingCount}</span>
+                  </button>
+                </div>
+                <div className="relative w-full sm:w-64 shrink-0">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input placeholder="Cari nama atau kegiatan..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-10 rounded-xl bg-white border-slate-200 text-sm shadow-sm focus-visible:ring-red-700 w-full" />
+                </div>
+              </div>
             </div>
 
-
+            <div className="flex-1 min-h-0 bg-white overflow-auto flex flex-col relative">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-white text-slate-500 font-semibold border-b border-slate-200 sticky top-0 z-10">
                   <tr>
                     <th className="px-6 py-4">Protokoler</th>
                     <th className="px-6 py-4">Sertifikat / Kegiatan</th>
