@@ -39,16 +39,16 @@ export class DokumentasiController {
   async uploadDocumentation(
     @Req() req: any,
     @UploadedFile() file: any,
-    @Body() body: { kegiatan_id: string; media_type: 'foto' | 'video'; keterangan?: string },
+    @Body() body: { kegiatan_id: string; media_type: 'foto' | 'video' | 'dokumen'; keterangan?: string },
   ) {
-    if (!file) {
+    if (!file && body.media_type !== 'video') {
       throw new BadRequestException('File dokumentasi wajib diunggah');
     }
     if (!body.kegiatan_id) {
       throw new BadRequestException('kegiatan_id wajib diisi');
     }
-    if (!body.media_type || !['foto', 'video'].includes(body.media_type)) {
-      throw new BadRequestException('media_type harus foto atau video');
+    if (!body.media_type || !['foto', 'video', 'dokumen'].includes(body.media_type)) {
+      throw new BadRequestException('media_type harus foto, video, atau dokumen');
     }
 
     return this.dokumentasiService.upload(req.user.id, file, body);
