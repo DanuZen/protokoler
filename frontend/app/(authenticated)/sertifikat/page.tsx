@@ -137,8 +137,8 @@ function AdminSertifikatView() {
 
       {/* BODY CONTENT */}
       <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
+        <section className="flex-1 overflow-hidden pb-12 pr-2 flex flex-col gap-6">
+          <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
             <div className="flex gap-1 overflow-x-auto pb-1 sm:pb-0 [&::-webkit-scrollbar]:hidden">
               <button onClick={() => setTab('semua')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'semua' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Semua Sertifikat</button>
               <button onClick={() => setTab('acara')} className={cn("px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap", tab === 'acara' ? "bg-red-800 text-white shadow-md shadow-red-700/20" : "text-slate-600 hover:bg-slate-100")}>Sertifikat Acara</button>
@@ -151,10 +151,10 @@ function AdminSertifikatView() {
             </div>
           </div>
 
-          <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden">
-            <div className="overflow-x-auto">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="flex-1 flex flex-col bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden min-h-0">
+            <div className="overflow-auto flex-1 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb]:rounded-full">
               <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 sticky top-0 z-10 shadow-sm">
                   <tr>
                     <th className="px-6 py-4">Protokoler</th>
                     <th className="px-6 py-4">Sertifikat / Kegiatan</th>
@@ -275,9 +275,9 @@ function UserSertifikatView() {
 
       {/* ─── BODY CONTENT ─── */}
       <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2 space-y-6">
+        <section className="flex-1 overflow-hidden pb-12 pr-2 flex flex-col gap-6">
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 shrink-0">
             <button 
               onClick={() => setKategori('acara')} 
               className={cn("px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200", kategori === 'acara' ? "bg-red-800 text-white border-red-800 shadow-md shadow-red-700/20" : "bg-white text-slate-600 border-white shadow-sm hover:text-slate-900 hover:shadow-md")}
@@ -293,14 +293,14 @@ function UserSertifikatView() {
           </div>
 
           {displayedSertifikat.length === 0 ? (
-            <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-16 text-center">
+            <div className="flex-1 flex flex-col items-center justify-center bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-16 text-center min-h-0">
               <Award className="h-12 w-12 mx-auto mb-4 text-slate-300" />
               <h3 className="font-bold text-slate-900 text-lg">Belum ada {kategori === 'acara' ? 'sertifikat' : 'penghargaan'}</h3>
               <p className="text-slate-500 text-sm mt-1">{kategori === 'acara' ? 'Sertifikat akan diterbitkan setelah kegiatan selesai.' : 'Anda belum menerima penghargaan khusus.'}</p>
             </div>
           ) : (
-            <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
-              <div className="divide-y divide-slate-100">
+            <motion.div initial="hidden" animate="visible" variants={stagger} className="flex-1 flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden min-h-0">
+              <div className="divide-y divide-slate-100 overflow-y-auto flex-1 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb]:rounded-full">
                 {displayedSertifikat.map((s) => (
                   <motion.div key={s.id} variants={fadeUp}>
                     {/* Row */}

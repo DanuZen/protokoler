@@ -26,6 +26,7 @@ export default function Page() {
   const firstOfMonth = new Date(); firstOfMonth.setDate(1);
   const [start, setStart] = useState(firstOfMonth.toISOString().slice(0, 10));
   const [end, setEnd] = useState(new Date().toISOString().slice(0, 10));
+  const [activeTab, setActiveTab] = useState<"kegiatan" | "rekap">("kegiatan");
 
   const { data: kegiatan } = useQuery({
     queryKey: ["laporan-kegiatan", start, end],
@@ -70,9 +71,21 @@ export default function Page() {
       {/* ─── Floating Toolbar (Filter) ─── */}
       <section className="shrink-0 relative z-20 pb-0">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-5">
-          <div className="flex items-center gap-2 text-slate-500 font-bold text-sm uppercase tracking-wider shrink-0 bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl">
-            <Filter className="h-4 w-4 text-slate-400" />
-            Filter Periode
+          <div className="flex items-center gap-1 p-1.5 bg-slate-100/80 border border-slate-200 rounded-2xl shrink-0">
+            <button
+              onClick={() => setActiveTab('kegiatan')}
+              className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all ${activeTab === 'kegiatan' ? 'bg-[#6B0000] text-white shadow-md' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
+            >
+              <FileBarChart className="w-4 h-4" />
+              Kegiatan
+            </button>
+            <button
+              onClick={() => setActiveTab('rekap')}
+              className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all ${activeTab === 'rekap' ? 'bg-[#6B0000] text-white shadow-md' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
+            >
+              <Users className="w-4 h-4" />
+              Rekap Penugasan
+            </button>
           </div>
           <div className="flex flex-wrap items-end gap-4 w-full md:w-auto">
             <div className="space-y-1.5 flex-1 min-w-[150px]">
@@ -90,10 +103,11 @@ export default function Page() {
       {/* ─── BODY CONTENT ─── */}
       <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
         <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+          <div className="h-full flex flex-col items-stretch">
 
           {/* Kegiatan Table */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="h-[500px] flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
+          {activeTab === 'kegiatan' && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex-1 flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden min-h-0">
             <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
@@ -154,9 +168,11 @@ export default function Page() {
             </Table>
             </div>
           </motion.div>
+          )}
 
           {/* Rekap Table */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="h-[500px] flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden">
+          {activeTab === 'rekap' && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex-1 flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden min-h-0">
             <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
@@ -215,6 +231,7 @@ export default function Page() {
             </Table>
             </div>
           </motion.div>
+          )}
           </div>
         </section>
       </main>
