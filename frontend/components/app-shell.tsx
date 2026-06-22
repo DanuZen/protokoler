@@ -5,7 +5,9 @@ import { useRouter, usePathname } from 'next/navigation';
 import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Camera, Bell, Settings, Home, CalendarCheck, BarChart3, Award, BookOpen, UploadCloud } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useRole } from '@/hooks/use-auth';
+import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -15,9 +17,9 @@ const adminItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/anggota', icon: Users, label: 'Anggota' },
   { to: '/kegiatan', icon: CalendarDays, label: 'Kegiatan' },
-  { to: '/evaluasi/dashboard', icon: BarChart3, label: 'Evaluasi' },
   { to: '/dokumentasi/dashboard', icon: Camera, label: 'Dokumentasi' },
   { to: '/sertifikat', icon: Award, label: 'Sertifikat' },
+  { to: '/evaluasi/dashboard', icon: BarChart3, label: 'Evaluasi' },
   { to: '/laporan', icon: FileBarChart, label: 'Laporan' },
 ];
 
@@ -32,6 +34,7 @@ const dokumentasiItems = [
   { to: '/dokumentasi/dashboard', icon: Camera, label: 'Dashboard' },
   { to: '/kegiatan', icon: CalendarDays, label: 'Kegiatan' },
   { to: '/dokumentasi/berita', icon: BookOpen, label: 'Berita' },
+  { to: '/evaluasi/dashboard', icon: BarChart3, label: 'Evaluasi' },
 ];
 
 function NavItem({ item, active, isOpen }: { item: { to: string; icon: any; label: string }; active: boolean; isOpen: boolean }) {
@@ -96,17 +99,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const signOut = () => {
+  const signOut = async () => {
     // Demo mode: hanya clear localStorage, tidak ada koneksi ke backend
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem('demo_role');
       window.localStorage.removeItem('demo_name');
       window.localStorage.removeItem('demo_avatar');
+      window.localStorage.removeItem('cached_role');
     }
+    await supabase.auth.signOut();
     router.push('/auth');
   };
 
-  const navItems = role === 'admin' ? adminItems : role === 'dokumentasi' ? dokumentasiItems : role === 'mahasiswa' ? mahasiswaItems : adminItems;
+  const navItems = role === 'admin' ? adminItems : role === 'dokumentasi' ? dokumentasiItems : role === 'mahasiswa' ? mahasiswaItems : [];
 
   const [demoName, setDemoName] = useState<string | null>(null);
   const [demoAvatar, setDemoAvatar] = useState<string | null>(null);
@@ -155,7 +160,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           {/* Nav */}
           <nav className={cn("flex-1 flex flex-col w-full gap-2 overflow-hidden", isSidebarOpen ? "px-4 items-stretch" : "px-4 items-center")}>
-            {navItems.map((item) => {
+            {role === null ? (
+              Array(4).fill(0).map((_, i) => (
+                <Skeleton key={i} className={cn("mb-1 rounded-xl bg-white/20", isSidebarOpen ? "w-full h-[46px]" : "w-12 h-12")} />
+              ))
+            ) : navItems.map((item) => {
               const active = path === item.to || path.startsWith(item.to + '/');
               return <NavItem key={item.to} item={item} active={active} isOpen={isSidebarOpen} />;
             })}
@@ -167,31 +176,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {/* Divider */}
             <div className="h-px bg-white/20 mb-2 mx-1" />
 
-            {/* Home */}
-            <Link
-              href={role === 'admin' ? '/dashboard' : role === 'mahasiswa' ? '/beranda' : '/dokumentasi/dashboard'}
-              className={cn("text-red-100 hover:text-white transition-colors flex items-center rounded-xl", isSidebarOpen ? "gap-3 py-3 px-4 hover:bg-white/10" : "p-3 hover:bg-white/10 justify-center")}
-            >
-              <Home className="h-5 w-5 shrink-0" />
-              {isSidebarOpen && <span className="text-sm font-semibold whitespace-nowrap">Beranda</span>}
-            </Link>
-
-            {/* Settings */}
-            <button className={cn("text-red-100 hover:text-white transition-colors flex items-center rounded-xl", isSidebarOpen ? "gap-3 py-3 px-4 hover:bg-white/10" : "p-3 hover:bg-white/10 justify-center")}>
-              <Settings className="h-5 w-5 shrink-0" />
-              {isSidebarOpen && <span className="text-sm font-semibold whitespace-nowrap">Pengaturan</span>}
-            </button>
-
-            {/* Divider */}
-            <div className="h-px bg-white/20 my-1 mx-1" />
-
             {/* User Profile */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className={cn("cursor-pointer group flex items-center rounded-xl transition-colors hover:bg-white/10", isSidebarOpen ? "gap-3 py-2.5 px-3 border border-transparent hover:border-white/20 shadow-sm" : "p-3 justify-center")}>
                   <div className="h-8 w-8 bg-white text-[#6B0000] rounded-full flex items-center justify-center font-extrabold overflow-hidden text-[13px] shrink-0 shadow-md ring-2 ring-white/50">
-                    {demoAvatar ? (
-                      <img src={demoAvatar} alt="Avatar" className="w-full h-full object-cover" />
+                    {demoAvatar || user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url ? (
+                      <img src={demoAvatar || user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url} alt="Avatar" className="w-full h-full object-cover" />
                     ) : (
                       initials
                     )}
@@ -209,7 +200,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <UserCircle2 className="mr-2 h-4 w-4" />
                   <span>Profil Saya</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer font-medium text-sm text-slate-700 focus:bg-red-50 focus:text-[#6B0000] rounded-lg py-2 px-3" onClick={() => router.push('/auth')}>
+                <DropdownMenuItem className="cursor-pointer font-medium text-sm text-slate-700 focus:bg-red-50 focus:text-[#6B0000] rounded-lg py-2 px-3" onClick={signOut}>
                   <Users className="mr-2 h-4 w-4" />
                   <span>Ganti Akun</span>
                 </DropdownMenuItem>
@@ -220,6 +211,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Home */}
+            <Link
+              href="/"
+              className={cn("text-red-100 hover:text-white transition-colors flex items-center rounded-xl mt-1", isSidebarOpen ? "gap-3 py-3 px-4 hover:bg-white/10" : "p-3 hover:bg-white/10 justify-center")}
+            >
+              <Home className="h-5 w-5 shrink-0" />
+              {isSidebarOpen && <span className="text-sm font-semibold whitespace-nowrap">Beranda</span>}
+            </Link>
           </div>
         </aside>
 

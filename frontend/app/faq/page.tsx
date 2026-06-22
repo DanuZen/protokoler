@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
-import { ChevronDown, ArrowLeft } from 'lucide-react';
+import { ChevronDown, ArrowLeft, Mail, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LandingNavbar } from '@/components/landing-navbar';
 import { LandingFooter } from '@/components/landing-footer';
@@ -71,15 +71,15 @@ export default function FAQPage() {
             variants={staggerContainer}
             className="text-center mb-20"
           >
-            <motion.div variants={fadeUp} className="inline-flex items-center gap-4 mb-6">
-              <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
-              <span className="text-sm font-bold text-[#6B0000] uppercase tracking-[0.25em]">Pusat Bantuan</span>
-              <div className="w-8 h-[2px] bg-[#D2AD5C]"></div>
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-3 md:gap-4 mb-6">
+              <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
+              <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Pusat Bantuan</span>
+              <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
-            <motion.h1 variants={fadeUp} className="font-display text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-6">
+            <motion.h1 variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-4 sm:mb-6">
               Pertanyaan <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">Sering Diajukan</span>
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
+            <motion.p variants={fadeUp} className="mt-4 sm:mt-6 text-slate-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
               Temukan jawaban atas pertanyaan umum seputar fitur dan alur kerja platform <span className="text-slate-900 font-semibold">Protokoler</span>.
             </motion.p>
           </motion.div>
@@ -109,16 +109,16 @@ export default function FAQPage() {
                     onClick={() => setOpenFaq(isOpen ? null : i)}
                     className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
                   >
-                    <span className={cn('font-bold text-lg pr-8 transition-colors duration-300', isOpen ? 'text-red-700' : 'text-slate-900')}>
+                    <span className={cn('font-bold text-base md:text-lg pr-4 md:pr-8 transition-colors duration-300', isOpen ? 'text-red-700' : 'text-slate-900')}>
                       {faq.q}
                     </span>
                     <div
                       className={cn(
-                        'shrink-0 h-10 w-10 flex items-center justify-center transition-all duration-500 rounded-xl',
+                        'shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center transition-all duration-500 rounded-lg md:rounded-xl',
                         isOpen ? 'bg-red-100 text-red-700 rotate-180' : 'bg-slate-100 text-slate-500'
                       )}
                     >
-                      <ChevronDown className="h-5 w-5" />
+                      <ChevronDown className="h-4 w-4 md:h-5 md:w-5" />
                     </div>
                   </button>
                   <AnimatePresence>
@@ -130,7 +130,7 @@ export default function FAQPage() {
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
                         className="overflow-hidden"
                       >
-                        <div className="px-6 pb-6 text-slate-600 text-base leading-relaxed border-t border-red-100/50 pt-4">
+                        <div className="px-5 md:px-6 pb-5 md:pb-6 text-slate-600 text-sm md:text-base leading-relaxed border-t border-red-100/50 pt-4">
                           {faq.a}
                         </div>
                       </motion.div>
@@ -146,16 +146,28 @@ export default function FAQPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="mt-16 text-center p-10 rounded-3xl border border-white/10 bg-white/[0.03]"
+            className="mt-20 relative overflow-hidden text-center p-10 md:p-14 rounded-3xl bg-gradient-to-br from-[#6B0000] to-red-950 shadow-2xl border border-red-800/50"
           >
-            <p className="text-slate-400 text-lg mb-2">Masih ada pertanyaan lain?</p>
-            <p className="text-white font-bold text-xl mb-6">Hubungi tim protokoler kami langsung.</p>
-            <Link
-              href="mailto:protokoler@unp.ac.id"
-              className="inline-flex items-center gap-2 bg-red-700 hover:bg-red-800 text-white font-bold px-8 py-3 rounded-full transition-all hover:scale-105"
-            >
-              Kirim Email
-            </Link>
+            {/* Background decoration for the card */}
+            <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 rounded-full bg-white opacity-5 blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 rounded-full bg-red-500 opacity-20 blur-3xl pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-white/5 backdrop-blur-sm">
+                <Mail className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-white font-display text-2xl md:text-3xl font-bold mb-3">Masih ada pertanyaan lain?</h2>
+              <p className="text-red-100/90 text-sm md:text-base mb-8 max-w-lg mx-auto leading-relaxed">
+                Tim kami siap membantu. Jangan ragu untuk menghubungi divisi kami secara langsung apabila Anda membutuhkan informasi lebih spesifik.
+              </p>
+              <Link
+                href="mailto:protokoler@unp.ac.id"
+                className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-[#6B0000] font-bold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:-translate-y-1 group"
+              >
+                Kirim Pesan Sekarang
+                <ExternalLink className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </Link>
+            </div>
           </motion.div>
         </div>
       </main>

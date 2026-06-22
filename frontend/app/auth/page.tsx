@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText, Mail, Lock } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { ViewportFitGrid } from '@/components/ViewportFitGrid';
 
 type AuthMode = 'login' | 'register';
 type RegisterStep = 1 | 2 | 3;
@@ -31,26 +33,109 @@ export default function AuthPage() {
   const [fotoSetengahPreview, setFotoSetengahPreview] = useState<string | null>(null);
   const [fotoFullPreview, setFotoFullPreview] = useState<string | null>(null);
 
-  const resolveDashboardRoute = () => {
-    const demoRole = localStorage.getItem('demo_role');
-    if (demoRole === 'mahasiswa') return '/beranda';
-    if (demoRole === 'dokumentasi') return '/dokumentasi/dashboard';
-    return '/dashboard';
-  };
+  const enterDemoRole = async (role: 'admin' | 'dokumentasi' | 'mahasiswa') => {
+    setLoading(true);
+    try {
+      let demoEmail = 'admin@siproto.com';
+      let demoPass = 'admin123';
+      
+      if (role === 'mahasiswa') {
+        demoEmail = 'mhs@siproto.com';
+        demoPass = 'mhs123';
+      } else if (role === 'dokumentasi') {
+        demoEmail = 'dok@siproto.com';
+        demoPass = 'dok123';
+      }
 
-  const enterDemoRole = (role: 'admin' | 'dokumentasi' | 'mahasiswa') => {
-    localStorage.setItem('demo_role', role);
-    router.replace(role === 'mahasiswa' ? '/beranda' : role === 'dokumentasi' ? '/dokumentasi/dashboard' : '/dashboard');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPass,
+      });
+
+      if (error) {
+        toast.error(`Gagal masuk: ${error.message}`);
+        return;
+      }
+
+      // Verifikasi role ke backend
+      const res = await fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${data.session!.access_token}` },
+      });
+
+      if (res.ok) {
+        const userMe = await res.json();
+        toast.success(`Berhasil masuk sebagai ${userMe.role}!`);
+        let route = '/beranda';
+        if (userMe.role === 'admin') route = '/dashboard';
+        else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
+        router.replace(route);
+      } else {
+        toast.error('Gagal memverifikasi role');
+      }
+    } catch (err) {
+      toast.error('Gagal masuk mode demo');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const demoRole = localStorage.getItem('demo_role');
-    if (demoRole) router.replace(resolveDashboardRoute());
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        fetch('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }).then(res => {
+          if (res.ok) {
+            res.json().then(userMe => {
+              let route = '/beranda';
+              if (userMe.role === 'admin') route = '/dashboard';
+              else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
+              router.replace(route);
+            });
+          }
+        });
+      }
+    });
   }, [router]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.info('Gunakan tombol peran di atas untuk masuk dalam mode demo.');
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      toast.success('Login berhasil!');
+      
+      const res = await fetch('/api/auth/me', {
+        headers: {
+          Authorization: `Bearer ${data.session.access_token}`,
+        },
+      });
+      
+      if (res.ok) {
+        const userMe = await res.json();
+        let route = '/beranda';
+        if (userMe.role === 'admin') route = '/dashboard';
+        else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
+        router.replace(route);
+      } else {
+        toast.error('Gagal memverifikasi role di backend');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Gagal login');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRegister = async () => {
@@ -59,9 +144,43 @@ export default function AuthPage() {
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setLoading(false);
-    setRegistered(true);
+    try {
+      const formData = new FormData();
+      formData.append('email', regForm.email);
+      formData.append('password', regForm.password);
+      formData.append('nim', regForm.nim);
+      formData.append('nama_lengkap', regForm.nama_lengkap);
+      formData.append('prodi', regForm.prodi);
+      formData.append('departemen', regForm.departemen || 'Teknik');
+      formData.append('fakultas', regForm.fakultas || 'FT');
+      formData.append('no_hp', regForm.no_hp);
+
+      const responseSetengah = await fetch(fotoSetengahPreview!);
+      const blobSetengah = await responseSetengah.blob();
+      formData.append('foto_setengah_badan', blobSetengah, 'foto_setengah_badan.jpg');
+
+      const responseFull = await fetch(fotoFullPreview!);
+      const blobFull = await responseFull.blob();
+      formData.append('foto_full_body', blobFull, 'foto_full_body.jpg');
+
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const resData = await res.json();
+        toast.success(resData.message || 'Pendaftaran berhasil!');
+        setRegistered(true);
+      } else {
+        const errData = await res.json();
+        toast.error(errData.message || 'Gagal melakukan pendaftaran');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Terjadi kesalahan saat pendaftaran');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFileChange = (file: File | null, type: 'setengah' | 'full') => {
@@ -86,25 +205,30 @@ export default function AuthPage() {
   ];
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 overflow-hidden">
-      {/* ── Left Panel (branding) - Primary & Secondary Background ── */}
-      <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#5b1511] via-[#4a100e] to-[#7a2c00] relative z-10 p-12 xl:p-20 shadow-2xl overflow-hidden">
+    <div className="flex flex-col h-dvh overflow-hidden bg-slate-50">
+      <main className="flex-1 min-h-0 overflow-hidden relative">
+        <ViewportFitGrid forceScaleOnMobile gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full">
+          <div className="grid lg:grid-cols-2 w-full h-full lg:min-h-[750px]">
+            {/* ── Left Panel (branding) - Primary & Secondary Background ── */}
+            <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#5b1511] via-[#4a100e] to-[#7a2c00] relative z-10 p-12 xl:p-20 shadow-2xl overflow-hidden">
         {/* Subtle Decorative Gradient Overlays */}
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
         <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-[#5b1511]/60 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute top-20 right-0 w-64 h-64 bg-amber-500/20 rounded-full blur-[80px] pointer-events-none" />
 
-        <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-16">
-            <div className="relative h-14 w-14 bg-white rounded-full shadow-lg border-2 border-white/20 flex-shrink-0">
-              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="56px" className="object-contain p-1.5" priority />
-            </div>
-            <div>
-              <span className="font-display text-2xl font-bold tracking-tight leading-none block text-white drop-shadow-sm">PROTOKOLER</span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">UNIVERSITAS NEGERI PADANG</span>
-            </div>
+        {/* Header: Logo ditaruh paling atas */}
+        <div className="relative z-10 flex items-center gap-5">
+          <div className="relative h-20 w-20 bg-white rounded-full shadow-lg border border-white/10 flex-shrink-0 overflow-hidden">
+            <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
           </div>
+          <div>
+            <span className="font-display text-3xl font-bold tracking-tight leading-none block text-white drop-shadow-sm mb-1">PROTOKOLER</span>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/80">UNIVERSITAS NEGERI PADANG</span>
+          </div>
+        </div>
 
+        {/* Body: Konten teks di tengah secara vertikal, namun rata kiri */}
+        <div className="relative z-10 flex-1 flex flex-col justify-center w-full max-w-xl">
           <div className="space-y-8">
             <div>
               <h1 className="font-display text-4xl xl:text-5xl font-bold tracking-tight text-white leading-tight mb-4 drop-shadow-sm">
@@ -136,11 +260,12 @@ export default function AuthPage() {
           </div>
         </div>
 
+        {/* Footer */}
         <p className="text-xs text-white/60 font-medium relative z-10">© 2026 Unit Protokoler Universitas Negeri Padang</p>
       </div>
 
       {/* ── Right Panel: Auth Card & Orange Background ── */}
-      <div className="flex items-center justify-center p-6 relative bg-slate-50 lg:bg-red-50/50">
+      <div className="flex items-center justify-center h-full p-4 lg:p-6 relative bg-slate-50 lg:bg-red-50/50">
         {/* Gradients specific to right panel */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-200/30 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-100/40 rounded-full blur-[100px] pointer-events-none" />
@@ -152,13 +277,13 @@ export default function AuthPage() {
           className="w-full max-w-md"
         >
           {/* Mobile logo */}
-          <div className="flex flex-col items-center justify-center gap-2 mb-5 lg:hidden text-center">
-            <div className="relative h-14 w-14 drop-shadow-sm">
-              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="56px" className="object-contain" priority />
+          <div className="flex flex-col items-center justify-center gap-3 mb-6 lg:hidden text-center">
+            <div className="relative h-20 w-20 drop-shadow-sm">
+              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
             </div>
             <div>
-              <span className="font-display text-lg font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>
-              <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-500 block">UNIVERSITAS NEGERI PADANG</span>
+              <span className="font-display text-2xl font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 block">UNIVERSITAS NEGERI PADANG</span>
             </div>
           </div>
 
@@ -169,14 +294,14 @@ export default function AuthPage() {
               {mode === 'login' && (
                 <motion.div key="login" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}>
                   <div className="mb-5 text-center">
-                    <h2 className="font-display text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight mb-1 lg:mb-2">Selamat Datang</h2>
-                    <p className="text-xs lg:text-sm text-slate-500 font-medium">Masukkan kredensial Anda untuk melanjutkan.</p>
+                    <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight mb-1 lg:mb-2">Selamat Datang</h2>
+                    <p className="text-sm text-slate-500 font-medium">Masukkan kredensial Anda untuk melanjutkan.</p>
                   </div>
 
                   {/* Login Form */}
                   <form onSubmit={handleLogin} className="space-y-4 lg:space-y-5 mb-5 lg:mb-8">
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Email</Label>
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Email</Label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                           <Mail className="h-4 w-4 text-slate-400" />
@@ -187,8 +312,8 @@ export default function AuthPage() {
                     
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <Label className="text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Password</Label>
-                        <a href="#" className="text-[10px] lg:text-xs font-bold text-red-700 hover:text-red-800 transition-colors">Lupa password?</a>
+                        <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Password</Label>
+                        <a href="#" className="text-xs font-bold text-red-700 hover:text-red-800 transition-colors">Lupa password?</a>
                       </div>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -205,7 +330,7 @@ export default function AuthPage() {
 
                   <div className="my-4 lg:my-6 flex items-center gap-3">
                     <div className="h-px flex-1 bg-slate-100" />
-                    <span className="text-[10px] lg:text-xs text-slate-400 font-medium">Belum punya akun?</span>
+                    <span className="text-xs text-slate-400 font-medium">Belum punya akun?</span>
                     <div className="h-px flex-1 bg-slate-100" />
                   </div>
 
@@ -352,7 +477,7 @@ export default function AuthPage() {
           </div>
 
           {/* ── QUICK LOGIN DEMO (moved below card) ── */}
-          <div className="mt-6">
+          <div className="mt-6 hidden lg:block">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px flex-1 bg-slate-200" />
               <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.1em]">Akses Cepat Demo</span>
@@ -378,6 +503,9 @@ export default function AuthPage() {
           </p>
         </motion.div>
       </div>
+          </div>
+        </ViewportFitGrid>
+      </main>
     </div>
   );
 }

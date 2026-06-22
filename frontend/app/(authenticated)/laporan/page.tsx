@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, FileBarChart, Users, CalendarDays, Filter, CheckCircle2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { Download, FileBarChart, Users, CalendarDays, Filter, CheckCircle2, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -19,6 +20,8 @@ const statusBadgeColor: Record<string, string> = {
   selesai: "bg-emerald-100 text-emerald-700 border-emerald-200",
   terkonfirmasi: "bg-blue-100 text-blue-700 border-blue-200",
   draft: "bg-slate-100 text-slate-500 border-slate-200",
+  draf: "bg-slate-100 text-slate-500 border-slate-200",
+  publik: "bg-sky-100 text-sky-700 border-sky-200",
   batal: "bg-red-100 text-red-600 border-red-200",
 };
 
@@ -68,9 +71,9 @@ export default function Page() {
         </div>
       </motion.div>
 
-      {/* ─── Floating Toolbar (Filter) ─── */}
+      {/* ─── Floating Toolbar (Filter & Tabs) ─── */}
       <section className="shrink-0 relative z-20 pb-0">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col md:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-5">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col xl:flex-row items-center justify-between gap-4 border border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-5">
           <div className="flex items-center gap-1 p-1.5 bg-slate-100/80 border border-slate-200 rounded-2xl shrink-0">
             <button
               onClick={() => setActiveTab('kegiatan')}
@@ -87,14 +90,16 @@ export default function Page() {
               Rekap Penugasan
             </button>
           </div>
-          <div className="flex flex-wrap items-end gap-4 w-full md:w-auto">
-            <div className="space-y-1.5 flex-1 min-w-[150px]">
-              <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Dari Tanggal</Label>
-              <Input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="rounded-xl h-10 bg-white border-slate-200 text-slate-900 shadow-sm focus-visible:ring-slate-200" />
-            </div>
-            <div className="space-y-1.5 flex-1 min-w-[150px]">
-              <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Sampai Tanggal</Label>
-              <Input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="rounded-xl h-10 bg-white border-slate-200 text-slate-900 shadow-sm focus-visible:ring-slate-200" />
+
+          <div className="flex flex-wrap items-center gap-4 w-full xl:w-auto">
+            <div className="flex flex-1 items-center gap-3">
+              <div className="space-y-1.5 flex-1 min-w-[130px]">
+                <Input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="rounded-xl h-10 bg-white border-slate-200 text-slate-900 shadow-sm focus-visible:ring-slate-200" />
+              </div>
+              <div className="text-slate-400 font-bold">-</div>
+              <div className="space-y-1.5 flex-1 min-w-[130px]">
+                <Input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="rounded-xl h-10 bg-white border-slate-200 text-slate-900 shadow-sm focus-visible:ring-slate-200" />
+              </div>
             </div>
           </div>
         </motion.div>
@@ -125,10 +130,10 @@ export default function Page() {
                 <Download className="h-4 w-4" /> Export CSV
               </Button>
             </div>
-            <div className="flex-1 overflow-auto [&::-webkit-scrollbar]:hidden">
+            <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
-                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50">
+                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50 sticky top-0 z-10">
                   <TableHead className="font-bold text-slate-600 py-4 pl-6 w-[160px]">Tanggal</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Kegiatan</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Bentuk</TableHead>
@@ -137,15 +142,7 @@ export default function Page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {!kegiatan?.length && (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center text-slate-400 py-14">
-                      <FileBarChart className="h-10 w-10 mx-auto mb-3 opacity-20" />
-                      <p className="font-medium">Tidak ada kegiatan pada periode ini.</p>
-                    </TableCell>
-                  </TableRow>
-                )}
-                {kegiatan?.map((k: any, i: number) => (
+                {kegiatan?.length > 0 && kegiatan.map((k: any, i: number) => (
                   <motion.tr
                     key={k.id}
                     initial={{ opacity: 0 }}
@@ -166,6 +163,14 @@ export default function Page() {
                 ))}
               </TableBody>
             </Table>
+            
+            {!kegiatan?.length && (
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-10 min-h-[300px]">
+                <Sparkles className="mx-auto h-12 w-12 mb-4 text-slate-300" />
+                <h3 className="text-sm font-bold text-slate-700 mb-1">Tidak Ada Data</h3>
+                <p className="text-xs">Tidak ada laporan kegiatan pada periode ini.</p>
+              </div>
+            )}
             </div>
           </motion.div>
           )}
@@ -190,10 +195,10 @@ export default function Page() {
                 <Download className="h-4 w-4" /> Export CSV
               </Button>
             </div>
-            <div className="flex-1 overflow-auto [&::-webkit-scrollbar]:hidden">
+            <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
-                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50">
+                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50 sticky top-0 z-10">
                   <TableHead className="font-bold text-slate-600 py-4 pl-6 w-[120px]">NIM</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Nama</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Prodi</TableHead>
@@ -203,15 +208,7 @@ export default function Page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {!rekap?.length && (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center text-slate-400 py-14">
-                      <Users className="h-10 w-10 mx-auto mb-3 opacity-20" />
-                      <p className="font-medium">Belum ada data penugasan pada periode ini.</p>
-                    </TableCell>
-                  </TableRow>
-                )}
-                {rekap?.map((r: any, i: number) => (
+                {rekap?.length > 0 && rekap.map((r: any, i: number) => (
                   <motion.tr key={r.nim} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                     <TableCell className="font-mono text-sm text-slate-500 py-4 pl-6">{r.nim}</TableCell>
                     <TableCell className="font-bold text-slate-900 py-4">{r.nama_lengkap}</TableCell>
@@ -229,6 +226,14 @@ export default function Page() {
                 ))}
               </TableBody>
             </Table>
+            
+            {!rekap?.length && (
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-10 min-h-[300px]">
+                <Sparkles className="mx-auto h-12 w-12 mb-4 text-slate-300" />
+                <h3 className="text-sm font-bold text-slate-700 mb-1">Tidak Ada Data</h3>
+                <p className="text-xs">Belum ada data penugasan mahasiswa pada periode ini.</p>
+              </div>
+            )}
             </div>
           </motion.div>
           )}

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { testimoniApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { Star, CheckCircle2, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 export default function TestimoniPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = React.use(params);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     nama_tamu: "",
@@ -21,7 +22,7 @@ export default function TestimoniPage({ params }: { params: Promise<{ token: str
   const [hoveredStar, setHoveredStar] = useState(0);
 
   const submitMutation = useMutation({
-    mutationFn: () => testimoniApi.create(form),
+    mutationFn: () => testimoniApi.create(token, form),
     onSuccess: () => setSubmitted(true),
   });
 

@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -8,10 +9,210 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model User {
+  id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                String                @unique @db.VarChar(255)
+  role                 RoleEnum              @default(protokoler)
+  created_at           DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime              @default(now()) @updatedAt @db.Timestamptz(6)
+  dokumentasi_diupload DokumentasiKegiatan[] @relation("DiunggahOleh")
+  kegiatan_dibuat      Kegiatan[]            @relation("DibuatOleh")
+  pendaftaran_direview PendaftaranKegiatan[] @relation("ReviewedBy")
+  protokoler           Protokoler?
+  regulasi_diupload    Regulasi[]            @relation("RegulasiDiunggahOleh")
+
+  @@map("users")
+}
+
+model Protokoler {
+  id                      String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                 String                  @unique @db.Uuid
+  nim                     String                  @unique @db.VarChar(20)
+  nama_lengkap            String                  @db.VarChar(255)
+  prodi                   String                  @db.VarChar(100)
+  departemen              String                  @db.VarChar(100)
+  fakultas                String                  @db.VarChar(100)
+  no_hp                   String                  @db.VarChar(20)
+  foto_setengah_badan_url String?
+  foto_full_body_url      String?
+  status_akun             StatusAkunEnum          @default(pending)
+  catatan_penolakan       String?
+  total_kegiatan          Int                     @default(0)
+  kategori_sertifikat     KategoriSertifikatEnum?
+  created_at              DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime                @default(now()) @updatedAt @db.Timestamptz(6)
+  absensi                 Absensi[]
+  evaluasi                EvaluasiKegiatan[]
+  pendaftaran             PendaftaranKegiatan[]
+  user                    User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  sertifikat              Sertifikat[]
+
+  @@map("protokoler")
+}
+
+model Kegiatan {
+  id                           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nama_kegiatan                String                @db.VarChar(255)
+  bentuk_kegiatan              BentukKegiatanEnum
+  tanggal                      DateTime              @db.Date
+  jam_mulai                    DateTime              @db.Time(6)
+  jam_selesai                  DateTime              @db.Time(6)
+  lokasi                       String                @db.VarChar(255)
+  audience                     String?
+  keynote                      String?               @db.VarChar(255)
+  rundown_url                  String?
+  status                       StatusKegiatanEnum    @default(draf)
+  jumlah_protokoler_dibutuhkan Int                   @default(0)
+  jumlah_lo_dibutuhkan         Int                   @default(0)
+  checklist_tata_tempat        Boolean?              @default(false)
+  checklist_tata_upacara       Boolean?              @default(false)
+  checklist_tata_penghormatan  Boolean?              @default(false)
+  dibuat_oleh                  String?               @db.Uuid
+  created_at                   DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at                   DateTime              @default(now()) @updatedAt @db.Timestamptz(6)
+  feedback_admin               String?
+  feedback_admin_updated_at    DateTime?             @db.Timestamptz(6)
+  absensi                      Absensi[]
+  dokumentasi                  DokumentasiKegiatan[]
+  evaluasi                     EvaluasiKegiatan[]
+  user_pembuat                 User?                 @relation("DibuatOleh", fields: [dibuat_oleh], references: [id])
+  pendaftaran_dialihkan        PendaftaranKegiatan[] @relation("KegiatanDialihkan")
+  pendaftaran                  PendaftaranKegiatan[] @relation("PendaftaranKegiatan")
+  sertifikat                   Sertifikat[]
+  tamu_vvip                    TamuVVIP[]
+  testimoni                    TestimoniTamu[]
+
+  @@map("kegiatan")
+}
+
+model TamuVVIP {
+  id               String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kegiatan_id      String       @db.Uuid
+  nama_tamu        String       @db.VarChar(255)
+  jabatan          String       @db.VarChar(255)
+  instansi         String       @db.VarChar(255)
+  tipe             TipeTamuEnum
+  jumlah_rombongan Int?         @default(1)
+  created_at       DateTime?    @default(now()) @db.Timestamptz(6)
+  kegiatan         Kegiatan     @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
+
+  @@map("tamu_vvip")
+}
+
+model PendaftaranKegiatan {
+  id                    String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kegiatan_id           String                @db.Uuid
+  protokoler_id         String                @db.Uuid
+  peran                 PeranKegiatanEnum
+  status                StatusPendaftaranEnum @default(pending)
+  kegiatan_dialihkan_id String?               @db.Uuid
+  surat_tugas_url       String?
+  catatan_admin         String?
+  reviewed_at           DateTime?             @db.Timestamptz(6)
+  reviewed_by           String?               @db.Uuid
+  created_at            DateTime?             @default(now()) @db.Timestamptz(6)
+  kegiatan_dialihkan    Kegiatan?             @relation("KegiatanDialihkan", fields: [kegiatan_dialihkan_id], references: [id])
+  kegiatan              Kegiatan              @relation("PendaftaranKegiatan", fields: [kegiatan_id], references: [id], onDelete: Cascade)
+  protokoler            Protokoler            @relation(fields: [protokoler_id], references: [id], onDelete: Cascade)
+  reviewer              User?                 @relation("ReviewedBy", fields: [reviewed_by], references: [id])
+
+  @@unique([kegiatan_id, protokoler_id])
+  @@map("pendaftaran_kegiatan")
+}
+
+model Absensi {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kegiatan_id     String          @db.Uuid
+  protokoler_id   String          @db.Uuid
+  foto_selfie_url String
+  waktu_absen     DateTime        @default(now()) @db.Timestamptz(6)
+  status          StatusHadirEnum @default(hadir)
+  latitude        Decimal?        @db.Decimal(10, 8)
+  longitude       Decimal?        @db.Decimal(11, 8)
+  kegiatan        Kegiatan        @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
+  protokoler      Protokoler      @relation(fields: [protokoler_id], references: [id], onDelete: Cascade)
+
+  @@unique([kegiatan_id, protokoler_id])
+  @@map("absensi")
+}
+
+model EvaluasiKegiatan {
+  id                String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kegiatan_id       String     @db.Uuid
+  protokoler_id     String     @db.Uuid
+  evaluasi_kegiatan String
+  refleksi_diri     String
+  rating_kegiatan   Int?       @db.SmallInt
+  waktu_pengisian   DateTime   @default(now()) @db.Timestamptz(6)
+  dalam_batas_waktu Boolean
+  kegiatan          Kegiatan   @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
+  protokoler        Protokoler @relation(fields: [protokoler_id], references: [id], onDelete: Cascade)
+
+  @@unique([kegiatan_id, protokoler_id])
+  @@map("evaluasi_kegiatan")
+}
+
+model TestimoniTamu {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kegiatan_id     String    @db.Uuid
+  nama_tamu       String    @db.VarChar(255)
+  jabatan_tamu    String?   @db.VarChar(255)
+  isi_testimoni   String
+  rating          Int?      @db.SmallInt
+  waktu_pengisian DateTime? @default(now()) @db.Timestamptz(6)
+  kegiatan        Kegiatan  @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
+
+  @@map("testimoni_tamu")
+}
+
+model Sertifikat {
+  id               String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  protokoler_id    String                 @db.Uuid
+  kegiatan_id      String                 @db.Uuid
+  kategori         KategoriSertifikatEnum
+  tanggal_terbit   DateTime               @default(dbgenerated("CURRENT_DATE")) @db.Date
+  file_url         String?
+  nomor_sertifikat String?                @unique @db.VarChar(50)
+  kegiatan         Kegiatan               @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
+  protokoler       Protokoler             @relation(fields: [protokoler_id], references: [id], onDelete: Cascade)
+
+  @@unique([protokoler_id, kegiatan_id])
+  @@map("sertifikat")
+}
+
+model DokumentasiKegiatan {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kegiatan_id   String    @db.Uuid
+  file_url      String
+  tipe          String?   @db.VarChar(20)
+  keterangan    String?
+  diunggah_oleh String?   @db.Uuid
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  user_unggah   User?     @relation("DiunggahOleh", fields: [diunggah_oleh], references: [id])
+  kegiatan      Kegiatan  @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
+
+  @@map("dokumentasi_kegiatan")
+}
+
+model Regulasi {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  judul         String    @db.VarChar(255)
+  deskripsi     String?
+  kategori      String?   @db.VarChar(100)
+  file_url      String
+  tahun_terbit  Int?      @db.SmallInt
+  diunggah_oleh String?   @db.Uuid
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  user_unggah   User?     @relation("RegulasiDiunggahOleh", fields: [diunggah_oleh], references: [id])
+
+  @@map("regulasi")
+}
+
 enum RoleEnum {
   admin
   protokoler
   tamu
+  dokumentasi
 
   @@map("role_enum")
 }
@@ -36,9 +237,11 @@ enum KategoriSertifikatEnum {
 enum StatusKegiatanEnum {
   draf
   publik
+  terjadwal
   berlangsung
   selesai
   batal
+  terkonfirmasi
 
   @@map("status_kegiatan_enum")
 }
@@ -84,212 +287,4 @@ enum StatusHadirEnum {
   izin
 
   @@map("status_hadir_enum")
-}
-
-model User {
-  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email      String   @unique @db.VarChar(255)
-  role       RoleEnum @default(protokoler)
-  created_at DateTime @default(now()) @db.Timestamptz()
-  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
-
-  protokoler           Protokoler?
-  kegiatan_dibuat      Kegiatan[]            @relation("DibuatOleh")
-  pendaftaran_direview PendaftaranKegiatan[] @relation("ReviewedBy")
-  dokumentasi_diupload DokumentasiKegiatan[] @relation("DiunggahOleh")
-  regulasi_diupload    Regulasi[]            @relation("RegulasiDiunggahOleh")
-
-  @@map("users")
-}
-
-model Protokoler {
-  id                      String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id                 String                  @unique @db.Uuid
-  nim                     String                  @unique @db.VarChar(20)
-  nama_lengkap            String                  @db.VarChar(255)
-  prodi                   String                  @db.VarChar(100)
-  departemen              String                  @db.VarChar(100)
-  fakultas                String                  @db.VarChar(100)
-  no_hp                   String                  @db.VarChar(20)
-  foto_setengah_badan_url String?
-  foto_full_body_url      String?
-  status_akun             StatusAkunEnum          @default(pending)
-  catatan_penolakan       String?
-  total_kegiatan          Int                     @default(0)
-  kategori_sertifikat     KategoriSertifikatEnum?
-  created_at              DateTime                @default(now()) @db.Timestamptz()
-  updated_at              DateTime                @default(now()) @updatedAt @db.Timestamptz()
-
-  user         User                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  pendaftaran  PendaftaranKegiatan[]
-  absensi      Absensi[]
-  evaluasi     EvaluasiKegiatan[]
-  sertifikat   Sertifikat[]
-
-  @@map("protokoler")
-}
-
-model Kegiatan {
-  id                           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  nama_kegiatan                String             @db.VarChar(255)
-  bentuk_kegiatan              BentukKegiatanEnum
-  tanggal                      DateTime           @db.Date
-  jam_mulai                    DateTime           @db.Time()
-  jam_selesai                  DateTime           @db.Time()
-  lokasi                       String             @db.VarChar(255)
-  audience                     String?
-  keynote                      String?            @db.VarChar(255)
-  rundown_url                  String?
-  status                       StatusKegiatanEnum @default(draf)
-  jumlah_protokoler_dibutuhkan Int                @default(0)
-  jumlah_lo_dibutuhkan         Int                @default(0)
-  checklist_tata_tempat        Boolean?           @default(false)
-  checklist_tata_upacara       Boolean?           @default(false)
-  checklist_tata_penghormatan  Boolean?           @default(false)
-  dibuat_oleh                  String?            @db.Uuid
-  created_at                   DateTime           @default(now()) @db.Timestamptz()
-  updated_at                   DateTime           @default(now()) @updatedAt @db.Timestamptz()
-
-  user_pembuat        User?                 @relation("DibuatOleh", fields: [dibuat_oleh], references: [id])
-  tamu_vvip           TamuVVIP[]
-  pendaftaran         PendaftaranKegiatan[] @relation("PendaftaranKegiatan")
-  pendaftaran_dialihkan PendaftaranKegiatan[] @relation("KegiatanDialihkan")
-  absensi             Absensi[]
-  evaluasi            EvaluasiKegiatan[]
-  testimoni           TestimoniTamu[]
-  sertifikat          Sertifikat[]
-  dokumentasi         DokumentasiKegiatan[]
-
-  @@map("kegiatan")
-}
-
-model TamuVVIP {
-  id               String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  kegiatan_id      String       @db.Uuid
-  nama_tamu        String       @db.VarChar(255)
-  jabatan          String       @db.VarChar(255)
-  instansi         String       @db.VarChar(255)
-  tipe             TipeTamuEnum
-  jumlah_rombongan Int?         @default(1)
-  created_at       DateTime?    @default(now()) @db.Timestamptz()
-
-  kegiatan Kegiatan @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
-
-  @@map("tamu_vvip")
-}
-
-model PendaftaranKegiatan {
-  id                    String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  kegiatan_id           String                @db.Uuid
-  protokoler_id         String                @db.Uuid
-  peran                 PeranKegiatanEnum
-  status                StatusPendaftaranEnum @default(pending)
-  kegiatan_dialihkan_id String?               @db.Uuid
-  surat_tugas_url       String?
-  catatan_admin         String?
-  reviewed_at           DateTime?             @db.Timestamptz()
-  reviewed_by           String?               @db.Uuid
-  created_at            DateTime?             @default(now()) @db.Timestamptz()
-
-  kegiatan           Kegiatan    @relation("PendaftaranKegiatan", fields: [kegiatan_id], references: [id], onDelete: Cascade)
-  kegiatan_dialihkan Kegiatan?   @relation("KegiatanDialihkan", fields: [kegiatan_dialihkan_id], references: [id])
-  protokoler         Protokoler  @relation(fields: [protokoler_id], references: [id], onDelete: Cascade)
-  reviewer           User?       @relation("ReviewedBy", fields: [reviewed_by], references: [id])
-
-  @@unique([kegiatan_id, protokoler_id])
-  @@map("pendaftaran_kegiatan")
-}
-
-model Absensi {
-  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  kegiatan_id     String          @db.Uuid
-  protokoler_id   String          @db.Uuid
-  foto_selfie_url String
-  waktu_absen     DateTime        @default(now()) @db.Timestamptz()
-  status          StatusHadirEnum @default(hadir)
-  latitude        Decimal?        @db.Decimal(10, 8)
-  longitude       Decimal?        @db.Decimal(11, 8)
-
-  kegiatan   Kegiatan   @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
-  protokoler Protokoler @relation(fields: [protokoler_id], references: [id], onDelete: Cascade)
-
-  @@unique([kegiatan_id, protokoler_id])
-  @@map("absensi")
-}
-
-model EvaluasiKegiatan {
-  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  kegiatan_id       String   @db.Uuid
-  protokoler_id     String   @db.Uuid
-  evaluasi_kegiatan String
-  refleksi_diri     String
-  rating_kegiatan   Int?     @db.SmallInt
-  waktu_pengisian   DateTime @default(now()) @db.Timestamptz()
-  dalam_batas_waktu Boolean
-
-  kegiatan   Kegiatan   @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
-  protokoler Protokoler @relation(fields: [protokoler_id], references: [id], onDelete: Cascade)
-
-  @@unique([kegiatan_id, protokoler_id])
-  @@map("evaluasi_kegiatan")
-}
-
-model TestimoniTamu {
-  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  kegiatan_id     String    @db.Uuid
-  nama_tamu       String    @db.VarChar(255)
-  jabatan_tamu    String?   @db.VarChar(255)
-  isi_testimoni   String
-  rating          Int?      @db.SmallInt
-  waktu_pengisian DateTime? @default(now()) @db.Timestamptz()
-
-  kegiatan Kegiatan @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
-
-  @@map("testimoni_tamu")
-}
-
-model Sertifikat {
-  id               String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  protokoler_id    String                 @db.Uuid
-  kegiatan_id      String                 @db.Uuid
-  kategori         KategoriSertifikatEnum
-  tanggal_terbit   DateTime               @default(dbgenerated("CURRENT_DATE")) @db.Date
-  file_url         String?
-  nomor_sertifikat String?                @unique @db.VarChar(50)
-
-  protokoler Protokoler @relation(fields: [protokoler_id], references: [id], onDelete: Cascade)
-  kegiatan   Kegiatan   @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
-
-  @@unique([protokoler_id, kegiatan_id])
-  @@map("sertifikat")
-}
-
-model DokumentasiKegiatan {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  kegiatan_id   String    @db.Uuid
-  file_url      String
-  tipe          String?   @db.VarChar(20)
-  keterangan    String?
-  diunggah_oleh String?   @db.Uuid
-  created_at    DateTime? @default(now()) @db.Timestamptz()
-
-  kegiatan    Kegiatan @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
-  user_unggah User?    @relation("DiunggahOleh", fields: [diunggah_oleh], references: [id])
-
-  @@map("dokumentasi_kegiatan")
-}
-
-model Regulasi {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  judul         String    @db.VarChar(255)
-  deskripsi     String?
-  kategori      String?   @db.VarChar(100)
-  file_url      String
-  tahun_terbit  Int?      @db.SmallInt
-  diunggah_oleh String?   @db.Uuid
-  created_at    DateTime? @default(now()) @db.Timestamptz()
-
-  user_unggah User? @relation("RegulasiDiunggahOleh", fields: [diunggah_oleh], references: [id])
-
-  @@map("regulasi")
 }

@@ -14,6 +14,7 @@ import {
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { BuatKegiatanModal } from "@/components/kegiatan/buat-kegiatan-modal";
 
 const MONTHS = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 const DAYS_SHORT = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
@@ -23,7 +24,7 @@ const fadeUp = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, tra
 
 function BentukIcon({ bentuk, className }: { bentuk: string; className?: string }) {
   const map: Record<string, any> = {
-    wisuda: GraduationCap, kunjungan: Handshake, seminar: Megaphone,
+    wisuda: GraduationCap, kunjungan: Handshake, kunjungan_tamu: Handshake, seminar: Megaphone,
     rapat_resmi: Landmark, pelantikan: Landmark, lainnya: ClipboardList,
   };
   const Icon = map[bentuk] || ClipboardList;
@@ -31,7 +32,9 @@ function BentukIcon({ bentuk, className }: { bentuk: string; className?: string 
 }
 
 const statusConfig: Record<string, { label: string; color: string; dot: string; Icon: any }> = {
+  draf:         { label: "Draft",         color: "bg-slate-100 text-slate-600 border-slate-200",    dot: "bg-slate-400",   Icon: Circle },
   draft:        { label: "Draft",         color: "bg-slate-100 text-slate-600 border-slate-200",    dot: "bg-slate-400",   Icon: Circle },
+  publik:       { label: "Publik",        color: "bg-sky-50 text-sky-700 border-sky-200",           dot: "bg-sky-500",     Icon: CheckCircle2 },
   terkonfirmasi:{ label: "Terkonfirmasi", color: "bg-blue-50 text-blue-700 border-blue-200",        dot: "bg-blue-500",    Icon: CheckCircle2 },
   terjadwal:    { label: "Terjadwal",     color: "bg-indigo-50 text-indigo-700 border-indigo-200",  dot: "bg-indigo-500",  Icon: CalendarDays },
   berlangsung:  { label: "Berlangsung",   color: "bg-amber-50 text-amber-700 border-amber-200",     dot: "bg-amber-500",   Icon: Radio },
@@ -53,6 +56,7 @@ export default function KegiatanPage() {
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [search, setSearch] = useState("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: kegiatan, isLoading } = useQuery({
     queryKey: ["kegiatan"],
@@ -108,11 +112,9 @@ export default function KegiatanPage() {
           </div>
         </div>
         {isAdmin && (
-          <Link href="/kegiatan/buat">
-            <Button className="h-11 rounded-xl px-6 shadow-sm bg-[#1a1a1a] hover:bg-black text-white font-bold transition-colors">
-              <Plus className="mr-2 h-4 w-4" /> Buat Kegiatan
-            </Button>
-          </Link>
+          <Button onClick={() => setIsModalOpen(true)} className="h-11 rounded-xl px-6 shadow-sm bg-[#1a1a1a] hover:bg-black text-white font-bold transition-colors">
+            <Plus className="mr-2 h-4 w-4" /> Buat Kegiatan
+          </Button>
         )}
       </motion.div>
 
@@ -126,7 +128,7 @@ export default function KegiatanPage() {
             { label: "Total Kegiatan", value: (kegiatan || []).length, icon: ListTodo, hint: "Semua agenda terdaftar", color: "text-red-800", bg: "bg-red-50" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-red-50/80 transition-all group relative overflow-hidden h-full">
+              <div className="bg-white border border-slate-100 shadow-sm rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-red-50/80 transition-all group relative overflow-hidden h-full">
                 <div className="flex items-center justify-between relative z-10">
                   <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
                   <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
@@ -228,14 +230,14 @@ export default function KegiatanPage() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="xl:col-span-3 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl flex flex-col min-h-0 overflow-hidden">
               
               {/* Top Header & Search */}
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 border-b border-slate-100 bg-white">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
-                    <CalendarDays className="h-5 w-5" />
+              <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                    <CalendarDays className="h-6 w-6" />
                   </div>
                   <div>
-                    <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Daftar Agenda</h2>
-                    <p className="text-[11px] text-slate-500 mt-0.5">Filter dan cari kegiatan mendatang.</p>
+                    <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Agenda</h2>
+                    <p className="text-sm text-slate-500 mt-1">Filter dan cari kegiatan mendatang.</p>
                   </div>
                 </div>
                 
@@ -355,6 +357,9 @@ export default function KegiatanPage() {
           </div>
         </section>
       </main>
+      
+      {/* ── Modal Buat Kegiatan ── */}
+      <BuatKegiatanModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

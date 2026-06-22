@@ -2,8 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import express from 'express';
+import * as path from 'path';
 
 const expressApp = express();
+
+// Increase JSON and URL-encoded parser limits for base64 file payloads
+expressApp.use(express.json({ limit: '50mb' }));
+expressApp.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Serve local uploads statically
+expressApp.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
+
 
 let app: any;
 

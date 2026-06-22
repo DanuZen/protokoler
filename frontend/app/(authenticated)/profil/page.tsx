@@ -4,19 +4,31 @@ import { motion } from "framer-motion";
 import { User, Mail, Phone, GraduationCap, Hash, Shield, Camera, Edit3, CheckCircle2, Building2, Library } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from "@/lib/canvasUtils";
 import { cn } from "@/lib/utils";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { protokolerApi } from "@/lib/api";
+import { ViewportFitGrid } from "@/components/ViewportFitGrid";
 
 const fadeUp = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 const stagger = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 
 export default function ProfilPage() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: protokoler } = useQuery({
+    queryKey: ["protokoler-me"],
+    queryFn: () => protokolerApi.me(),
+    enabled: !!user,
+    retry: false,
+  });
+
   const [editing, setEditing] = useState(false);
-  const [photoHalf, setPhotoHalf] = useState<string | null>(typeof window !== 'undefined' ? window.localStorage.getItem('demo_avatar') : null);
+  const [photoHalf, setPhotoHalf] = useState<string | null>(null);
   const [photoFull, setPhotoFull] = useState<string | null>(null);
   const halfInputRef = useRef<HTMLInputElement>(null);
   const fullInputRef = useRef<HTMLInputElement>(null);
@@ -51,43 +63,93 @@ export default function ProfilPage() {
 
   const handleCropSave = async () => {
     try {
-      if (!currentImageSrc || !croppedAreaPixels) return;
+      if (!currentImageSrc || !croppedAreaPixels || !protokoler) return;
       const croppedImage = await getCroppedImg(currentImageSrc, croppedAreaPixels);
       
+      toast.loading("Sedang memperbarui foto profil...");
+      const formData = new FormData();
+      const response = await fetch(croppedImage);
+      const blob = await response.blob();
+      
       if (currentCropType === 'half') {
+        formData.append('foto_setengah_badan', blob, 'foto_setengah_badan.jpg');
         setPhotoHalf(croppedImage);
         window.localStorage.setItem('demo_avatar', croppedImage);
         window.dispatchEvent(new Event('demo_avatar_updated'));
       } else if (currentCropType === 'full') {
+        formData.append('foto_full_body', blob, 'foto_full_body.jpg');
         setPhotoFull(croppedImage);
       }
       
-      toast.success(`Foto ${currentCropType === 'half' ? '1/2 Badan' : 'Full Body'} berhasil diunggah`);
+      await protokolerApi.update(protokoler.id, formData);
+      await queryClient.invalidateQueries({ queryKey: ["protokoler-me"] });
+      
+      toast.dismiss();
+      toast.success(`Foto ${currentCropType === 'half' ? '1/2 Badan' : 'Full Body'} berhasil diperbarui`);
       setCropModalOpen(false);
       setCurrentImageSrc(null);
-    } catch (e) {
+    } catch (e: any) {
+      toast.dismiss();
       console.error(e);
-      toast.error('Gagal memotong gambar');
+      toast.error('Gagal memperbarui foto: ' + (e.message || 'Error'));
     }
   };
+
   const [form, setForm] = useState({
-    nama:   typeof window !== 'undefined' && window.localStorage.getItem('demo_name') ? window.localStorage.getItem('demo_name')! : user?.user_metadata?.nama_lengkap || "Budi Santoso",
-    nim:    "20010101",
-    prodi:  "Pendidikan Teknik Informatika",
-    departemen: "Teknik Elektronika",
-    fakultas: "Fakultas Teknik",
-    angkatan: "2020",
-    no_hp:  "081234567890",
-    email:  user?.email ?? "budi@example.com",
-    tingkat: "Gold",
-    status: "Aktif",
+    nama: "",
+    nim: "",
+    prodi: "",
+    departemen: "",
+    fakultas: "",
+    angkatan: "",
+    no_hp: "",
+    email: "",
+    tingkat: "Bronze",
+    status: "pending",
   });
 
-  const handleSave = () => {
-    window.localStorage.setItem('demo_name', form.nama);
-    window.dispatchEvent(new Event('demo_name_updated'));
-    toast.success("Profil berhasil diperbarui");
-    setEditing(false);
+  useEffect(() => {
+    if (protokoler) {
+      setForm({
+        nama: protokoler.nama_lengkap || "",
+        nim: protokoler.nim || "",
+        prodi: protokoler.prodi || "",
+        departemen: protokoler.departemen || "",
+        fakultas: protokoler.fakultas || "",
+        angkatan: protokoler.nim ? "20" + protokoler.nim.slice(0, 2) : "2020",
+        no_hp: protokoler.no_hp || "",
+        email: protokoler.user?.email || user?.email || "",
+        tingkat: protokoler.kategori_sertifikat || "Bronze",
+        status: protokoler.status_akun || "pending",
+      });
+      setPhotoHalf(protokoler.foto_setengah_badan_url || null);
+      setPhotoFull(protokoler.foto_full_body_url || null);
+    }
+  }, [protokoler, user]);
+
+  const handleSave = async () => {
+    if (!protokoler) return;
+    toast.loading("Sedang menyimpan data profil...");
+    try {
+      await protokolerApi.update(protokoler.id, {
+        nama_lengkap: form.nama,
+        no_hp: form.no_hp,
+        prodi: form.prodi,
+        departemen: form.departemen,
+        fakultas: form.fakultas,
+      });
+      
+      window.localStorage.setItem('demo_name', form.nama);
+      window.dispatchEvent(new Event('demo_name_updated'));
+      await queryClient.invalidateQueries({ queryKey: ["protokoler-me"] });
+      
+      toast.dismiss();
+      toast.success("Profil berhasil diperbarui");
+      setEditing(false);
+    } catch (err: any) {
+      toast.dismiss();
+      toast.error(err.message || "Gagal memperbarui profil");
+    }
   };
 
   return (
@@ -119,20 +181,20 @@ export default function ProfilPage() {
       </motion.div>
 
       {/* ─── Main Content ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <div className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
-
-          <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6">
+      <main className="flex-1 min-h-0 flex flex-col mt-4 overflow-visible md:overflow-hidden relative">
+        <ViewportFitGrid gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full max-h-full">
+          
+          <div className="flex flex-col xl:flex-row gap-6 w-full h-full items-stretch">
 
             {/* ── Avatar Card ── */}
-            <motion.div variants={fadeUp} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden h-full flex flex-col mx-auto xl:mx-0 shadow-sm">
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden flex flex-col mx-auto xl:mx-0 shadow-sm shrink-0 aspect-[9/16] h-auto w-full xl:w-auto relative">
               
               <input type="file" accept="image/*" className="hidden" ref={fullInputRef} onChange={(e) => handlePhotoUpload(e, 'full')} />
               <input type="file" accept="image/*" className="hidden" ref={halfInputRef} onChange={(e) => handlePhotoUpload(e, 'half')} />
 
               {/* Header section with Full Body Background */}
               <div 
-                className="relative h-full w-auto aspect-[9/16] bg-[#6b0000] flex flex-col items-start justify-end p-6 group cursor-pointer overflow-hidden"
+                className="relative w-full h-full bg-[#6b0000] flex flex-col items-start justify-end p-6 group cursor-pointer overflow-hidden"
                 onClick={() => fullInputRef.current?.click()}
               >
                 {/* Background Image Placeholder for Full Body */}
@@ -187,11 +249,21 @@ export default function ProfilPage() {
 
             </motion.div>
 
-            {/* ── Detail Edit Card ── */}
-            <motion.div variants={fadeUp} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden h-full flex flex-col shadow-sm">
+            {/* ── Right Column ── */}
+            <div className="flex-1 flex flex-col gap-6">
+              {/* ── Detail Edit Card ── */}
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden flex-1 flex flex-col shadow-sm">
               {/* Card header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
-                <h2 className="font-bold text-slate-900 uppercase tracking-wider text-sm">Informasi Kontak & Akun</h2>
+              <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-slate-50/50">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-white border border-slate-200 shadow-sm shrink-0">
+                    <User className="h-5 w-5 text-red-800" />
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-slate-900 text-lg">Informasi Kontak & Akun</h2>
+                    <p className="text-[13px] text-slate-500 font-medium mt-0.5">Kelola data diri dan informasi keanggotaan Anda.</p>
+                  </div>
+                </div>
                 {!editing ? (
                   <Button variant="outline" size="sm" onClick={() => setEditing(true)} className="rounded-xl border-slate-200 gap-1.5 text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors bg-white">
                     <Edit3 className="h-4 w-4" /> Edit
@@ -243,17 +315,30 @@ export default function ProfilPage() {
                 ))}
               </div>
 
-              {/* Change password section */}
-              <div className="border-t border-slate-100 px-6 py-5 bg-slate-50 mt-auto">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Keamanan Akun</h3>
-                <Button variant="outline" className="rounded-xl border-slate-200 text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors text-sm">
-                  Ubah Password
-                </Button>
-              </div>
-            </motion.div>
+              </motion.div>
 
-          </motion.div>
-        </div>
+              {/* ── Keamanan Akun Card ── */}
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden flex flex-col shadow-sm shrink-0">
+                <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-slate-50/50">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-white border border-slate-200 shadow-sm shrink-0">
+                      <Shield className="h-5 w-5 text-red-800" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-lg">Keamanan Akun</h3>
+                      <p className="text-[13px] text-slate-500 font-medium mt-0.5">Perbarui kata sandi untuk menjaga privasi dan keamanan Anda.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <Button variant="outline" className="rounded-xl border-slate-200 text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors text-sm">
+                    Ubah Password
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </ViewportFitGrid>
       </main>
       {/* ── Crop Modal ── */}
       {cropModalOpen && currentImageSrc && (

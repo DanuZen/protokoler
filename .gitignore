@@ -6,31 +6,70 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.pnpm-debug.log*
 
-node_modules
-dist
-dist-ssr
-.output
-.vinxi
-.tanstack/**
-.nitro
-*.local
+# Dependency directories
+node_modules/
+jspm_packages/
+web_stage/
 
-# Next.js
-.next/
+# Build and distribution directories
+dist/
+dist-ssr/
+build/
 out/
+.next/
+.output/
+.vinxi/
+.tanstack/
+.nitro/
+.nuxt/
+.vercel/
 
 # Wrangler / Cloudflare
 .wrangler/
+
+# TypeScript/build caches
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+.turbo/
+
+# Environment and Secret files
+.env
+.env.local
+.env.production.local
+.env.development.local
+.env.test.local
+.env.production
+.env.development
+.env.test
+.env.local
+.env.*.local
+*.env
+*.pem
 .dev.vars
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.swo
+*.swp
+
+# Wrangler / Cloudflare
+.wrangler/
+
+# Local/temporary scratch/test scripts
+backend/create_bucket_test.js
+backend/test_patch.js
+create_bucket_test.js
+test_patch.js

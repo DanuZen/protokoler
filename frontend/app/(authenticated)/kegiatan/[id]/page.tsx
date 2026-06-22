@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { ViewportFitGrid } from "@/components/ViewportFitGrid";
 
 type Tab = "info" | "rekrutmen" | "absensi" | "evaluasi" | "dokumentasi";
 
@@ -138,13 +139,34 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   });
 
   const daftar = useMutation({
-    mutationFn: async () => { await kegiatanApi.daftar(id, user?.id || "", user?.user_metadata?.nama_lengkap || "Mahasiswa", selectedRole); },
+    mutationFn: async () => { 
+      const mappedRole = selectedRole === 'Protokoler' ? 'protokoler' : 'lo';
+      await kegiatanApi.daftar(id, mappedRole); 
+    },
     onSuccess: () => { toast.success("Berhasil mendaftar ke kegiatan ini!"); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
   });
 
   const verifikasi = useMutation({
     mutationFn: async ({ pId, status }: { pId: string, status: 'diterima' | 'ditolak' }) => { await kegiatanApi.verifikasiPendaftar(id, pId, status); },
     onSuccess: (_, variables) => { toast.success(`Pendaftar ${variables.status}`); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
+  });
+
+  const kirimEvaluasi = useMutation({
+    mutationFn: async () => {
+      await evaluasiApi.create(id, {
+        evaluasi_kegiatan: saran,
+        refleksi_diri: evaluasiDiri,
+        rating_kegiatan: ratingAcara
+      });
+    },
+    onSuccess: () => {
+      setIsSuccessSubmit(true);
+      toast.success('Evaluasi berhasil dikirim!');
+      qc.invalidateQueries({ queryKey: ["evaluasi-kegiatan", id] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || 'Gagal mengirim evaluasi');
+    }
   });
 
   if (isLoading) {
@@ -156,16 +178,30 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   }
 
   const isDaftarOpen = true; // (keg as any).is_open_recruitment; // Diubah untuk demo agar selalu terbuka
-  const statusPendaftaran = (keg as any).pendaftar?.find((p: any) => p.protokoler_id === user?.id)?.status;
-  const isDiterima = isPendingAccount ? false : true; // Diubah untuk demo, aslinya statusPendaftaran === 'diterima'
+  const myPendaftar = (keg as any).pendaftar?.find((p: any) => 
+    p.user_id === user?.id || p.protokoler_id === user?.id || p.protokoler_id === protokoler?.id
+  );
+  const statusPendaftaran = myPendaftar?.status;
+  const isDiterima = statusPendaftaran === 'diterima';
 
-  const tabs: { key: Tab; label: string }[] = [
+  const baseTabs: { key: Tab; label: string }[] = [
     { key: "info", label: "Info" },
     { key: "rekrutmen", label: "Rekrutmen & Penugasan" },
-    { key: "absensi", label: "Absensi" },
-    { key: "evaluasi", label: "Evaluasi" },
-    { key: "dokumentasi", label: "Dokumentasi" },
   ];
+
+  const statusKeg = keg.status?.toLowerCase();
+
+  if (isAdmin || (isDiterima && (statusKeg === 'berlangsung' || statusKeg === 'selesai'))) {
+    baseTabs.push({ key: "absensi", label: "Absensi" });
+  }
+
+  if (isAdmin || (isDiterima && statusKeg === 'selesai')) {
+    baseTabs.push({ key: "evaluasi", label: "Evaluasi" });
+  }
+
+  baseTabs.push({ key: "dokumentasi", label: "Dokumentasi" });
+
+  const tabs = baseTabs;
 
   return (
     <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4 relative z-10">
@@ -245,14 +281,14 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
             
             {/* ── Tab INFO ── */}
         {tab === "info" && (
-          <div className="grid lg:grid-cols-3 gap-6 items-stretch min-h-[500px]">
+          <ViewportFitGrid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap={24} className="items-stretch h-full w-full">
             {/* Left Card: Informasi Kegiatan */}
             <div className="lg:col-span-2 flex flex-col h-full">
               <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
                 <div className="p-6 md:p-8 flex flex-col flex-1">
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="flex items-center justify-center h-12 w-12 bg-slate-50 rounded-xl shadow-sm text-slate-600 shrink-0 border border-slate-200">
-                      <Info className="h-6 w-6" />
+                    <div className="flex items-center justify-center h-12 w-12 bg-red-50 text-red-800 rounded-xl shadow-sm border border-red-100 shrink-0">
+                      <Info className="h-6 w-6 stroke-[2]" />
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-slate-900 mb-1">Informasi Kegiatan</h2>
@@ -264,104 +300,106 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
               
               {/* Info Dasar */}
               <div className="flex flex-col">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="flex items-center justify-center h-10 w-10 bg-slate-50 rounded-xl text-slate-600">
-                    <Info className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-[15px] font-bold text-slate-800">Info Dasar</h2>
-                    <p className="text-[12px] font-medium text-slate-500 mt-0.5">Waktu dan lokasi pelaksanaan kegiatan</p>
-                  </div>
+                <div className="mb-5">
+                  <h2 className="text-[15px] font-bold text-slate-800">Info Dasar</h2>
+                  <p className="text-[12px] font-medium text-slate-500 mt-0.5">Waktu dan lokasi pelaksanaan kegiatan</p>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
-                    <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Tanggal</p>
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-blue-50 text-blue-600">
-                        <Calendar className="h-4 w-4" />
-                      </div>
-                      <p className="font-bold text-slate-800 text-[14px]">
-                        {new Date(keg.tanggal).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                      </p>
+                  <div className="space-y-2 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                    <div className="flex items-center gap-2 text-slate-500">
+                      <Calendar className="h-4 w-4 text-red-700" />
+                      <p className="text-[11px] font-bold uppercase tracking-wider">Tanggal</p>
                     </div>
+                    <p className="font-bold text-slate-800 text-[14px]">
+                      {new Date(keg.tanggal).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                    </p>
                   </div>
-                  <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
-                    <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Waktu Pelaksanaan</p>
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-red-50 text-red-800">
-                        <Clock className="h-4 w-4" />
-                      </div>
-                      <p className="font-bold text-slate-800 text-[14px]">
-                        {keg.jam_mulai?.slice(0, 5)} – {keg.jam_selesai?.slice(0, 5)} WIB
-                      </p>
+                  <div className="space-y-2 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                    <div className="flex items-center gap-2 text-slate-500">
+                      <Clock className="h-4 w-4 text-red-700" />
+                      <p className="text-[11px] font-bold uppercase tracking-wider">Waktu Pelaksanaan</p>
                     </div>
+                    <p className="font-bold text-slate-800 text-[14px]">
+                      {keg.jam_mulai?.slice(0, 5)} – {keg.jam_selesai?.slice(0, 5)} WIB
+                    </p>
                   </div>
-                  <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
-                    <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Lokasi / Tempat</p>
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-50 text-emerald-600">
-                        <MapPin className="h-4 w-4" />
-                      </div>
-                      <p className="font-bold text-slate-800 text-[14px]">{keg.lokasi}</p>
+                  <div className="space-y-2 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                    <div className="flex items-center gap-2 text-slate-500">
+                      <MapPin className="h-4 w-4 text-red-700" />
+                      <p className="text-[11px] font-bold uppercase tracking-wider">Lokasi / Tempat</p>
                     </div>
+                    <p className="font-bold text-slate-800 text-[14px]">{keg.lokasi}</p>
                   </div>
-                  <div className="space-y-1.5 bg-slate-50/50 p-4 rounded-xl">
-                    <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Bentuk / Jenis Kegiatan</p>
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-indigo-50 text-indigo-600">
-                        <FileText className="h-4 w-4" />
-                      </div>
-                      <p className="font-bold text-slate-800 text-[14px] capitalize">{(keg.bentuk || keg.bentuk_kegiatan || "Kegiatan").replace(/_/g, " ")}</p>
+                  <div className="space-y-2 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                    <div className="flex items-center gap-2 text-slate-500">
+                      <FileText className="h-4 w-4 text-red-700" />
+                      <p className="text-[11px] font-bold uppercase tracking-wider">Bentuk / Jenis Kegiatan</p>
                     </div>
+                    <p className="font-bold text-slate-800 text-[14px] capitalize">{(keg.bentuk || keg.bentuk_kegiatan || "Kegiatan").replace(/_/g, " ")}</p>
                   </div>
                 </div>
               </div>
 
               {/* Detail Acara */}
               <div className="flex flex-col flex-1 pt-6 border-t border-slate-100">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="flex items-center justify-center h-10 w-10 bg-amber-50 rounded-xl text-amber-600">
-                    <Star className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-[15px] font-bold text-slate-800">Detail Acara</h2>
-                    <p className="text-[12px] font-medium text-slate-500 mt-0.5">Target audiens, narasumber, dan rundown</p>
-                  </div>
+                <div className="mb-5">
+                  <h2 className="text-[15px] font-bold text-slate-800">Detail Acara</h2>
+                  <p className="text-[12px] font-medium text-slate-500 mt-0.5">Target audiens, narasumber, dan rundown</p>
                 </div>
                 
                 <div className="flex-1 flex flex-col">
-                  {!((keg as any).audience || (keg as any).keynote || (keg as any).rundown_url || (keg as any).peserta) ? (
+                  {!((keg as any).audience || (keg as any).keynote || (keg as any).rundown_url || (keg as any).peserta || (keg as any).deskripsi || (keg as any).catatan) ? (
                     <div className="flex flex-col flex-1 items-center justify-center py-8 px-6 text-center bg-slate-50 rounded-xl border border-slate-100 border-dashed">
                       <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-100 mb-4 text-slate-400">
                         <FileText className="h-6 w-6" />
                       </div>
                       <p className="text-[14px] font-bold text-slate-700">Belum Ada Detail Acara</p>
-                      <p className="text-[12px] text-slate-500 mt-1 max-w-[250px]">Target audiens, keynote, atau rundown acara belum ditambahkan.</p>
+                      <p className="text-[12px] text-slate-500 mt-1 max-w-[250px]">Target audiens, keynote, rundown, atau catatan belum ditambahkan.</p>
                     </div>
                   ) : (
-                    <div className="space-y-5">
+                    <div className="flex flex-col flex-1 gap-5">
                       <div className="grid sm:grid-cols-2 gap-5">
                         {((keg as any).audience || (keg as any).peserta) && (
                           <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-1">Target Peserta / Audiens</p>
+                            <div className="flex items-center gap-2 text-slate-500 mb-1">
+                              <Users className="h-4 w-4 text-red-700" />
+                              <p className="text-[11px] font-bold uppercase tracking-wider">Target Peserta / Audiens</p>
+                            </div>
                             <p className="font-bold text-slate-800 text-[14px]">{(keg as any).audience || (keg as any).peserta}</p>
                           </div>
                         )}
                         {(keg as any).keynote && (
                           <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
-                            <p className="text-amber-600/70 text-[11px] font-bold uppercase tracking-wider mb-1">Keynote / Narasumber Utama</p>
+                            <div className="flex items-center gap-2 text-amber-700 mb-1">
+                              <Star className="h-4 w-4 text-amber-600" />
+                              <p className="text-[11px] font-bold uppercase tracking-wider">Keynote / Narasumber Utama</p>
+                            </div>
                             <p className="font-bold text-amber-900 text-[14px]">{(keg as any).keynote}</p>
                           </div>
                         )}
                       </div>
                       
                       {(keg as any).rundown_url && (
-                        <div className="pt-2">
+                        <div>
                           <a href={(keg as any).rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full sm:w-auto h-10 px-6 bg-red-800 text-white font-bold text-[13px] rounded-xl shadow-sm hover:bg-red-900 transition-all">
                             <FileText className="mr-2 h-4 w-4" /> Buka Link Rundown Acara
                           </a>
                         </div>
                       )}
+                      
+                      <div className="flex-1 flex flex-col bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                        <div className="flex items-center gap-2 text-slate-500 mb-2">
+                          <FileText className="h-4 w-4 text-red-700" />
+                          <p className="text-[11px] font-bold uppercase tracking-wider">Catatan Tambahan / Deskripsi</p>
+                        </div>
+                        {((keg as any).deskripsi || (keg as any).catatan) ? (
+                          <p className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-wrap">{(keg as any).deskripsi || (keg as any).catatan}</p>
+                        ) : (
+                          <div className="flex-1 flex flex-col items-center justify-center text-center opacity-70 py-4">
+                            <p className="text-[12px] font-medium text-slate-500">Tidak ada catatan khusus untuk acara ini.</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -420,13 +458,13 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 </div>
               </Card>
             </div>
-          </div>
+          </ViewportFitGrid>
         )}
 
 
         {/* ── Tab REKRUTMEN & PENUGASAN ── */}
         {tab === "rekrutmen" && (
-          <div className="grid lg:grid-cols-4 gap-6 items-stretch min-h-[550px]">
+          <ViewportFitGrid gridTemplateColumns="repeat(4, minmax(0, 1fr))" gap={24} className="items-stretch h-full w-full">
             <div className="lg:col-span-3 flex flex-col gap-6 h-full">
               {/* Admin: Pengaturan Open Recruitment */}
               {isAdmin && (
@@ -458,7 +496,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
                   <div className="p-6 md:p-8 flex flex-col flex-1">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className={`flex items-center justify-center h-12 w-12 rounded-xl border shadow-sm ${isDaftarOpen ? 'bg-rose-50 border-rose-100 text-rose-900' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
+                      <div className={`flex items-center justify-center h-12 w-12 rounded-xl border shadow-sm ${isDaftarOpen ? 'bg-red-50 border-red-100 text-red-800' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
                         <Briefcase className="h-6 w-6 stroke-[2]" />
                       </div>
                       <div>
@@ -503,14 +541,14 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <div className="grid grid-cols-2 gap-4">
                               <button 
                                 onClick={() => setSelectedRole('Protokoler')}
-                                className={`flex flex-col items-center justify-center gap-3 py-5 rounded-2xl border-2 transition-all duration-300 ${selectedRole === 'Protokoler' ? 'bg-rose-50 border-rose-900 text-rose-900 shadow-md scale-[1.02]' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:scale-[1.02]'}`}>
-                                <Users className={`h-7 w-7 transition-colors ${selectedRole === 'Protokoler' ? 'text-rose-900' : 'text-slate-400'}`} /> 
+                                className={`flex flex-col items-center justify-center gap-3 py-5 rounded-2xl border-2 transition-all duration-300 ${selectedRole === 'Protokoler' ? 'bg-red-50 border-red-800 text-red-800 shadow-md scale-[1.02]' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:scale-[1.02]'}`}>
+                                <Users className={`h-7 w-7 transition-colors ${selectedRole === 'Protokoler' ? 'text-red-800' : 'text-slate-400'}`} /> 
                                 <span className="text-[14px] font-bold">Protokoler</span>
                               </button>
                               <button 
                                 onClick={() => setSelectedRole('Liaison Officer')}
-                                className={`flex flex-col items-center justify-center gap-3 py-5 rounded-2xl border-2 transition-all duration-300 ${selectedRole === 'Liaison Officer' ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-md scale-[1.02]' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:scale-[1.02]'}`}>
-                                <UserCheck className={`h-7 w-7 transition-colors ${selectedRole === 'Liaison Officer' ? 'text-blue-600' : 'text-slate-400'}`} /> 
+                                className={`flex flex-col items-center justify-center gap-3 py-5 rounded-2xl border-2 transition-all duration-300 ${selectedRole === 'Liaison Officer' ? 'bg-amber-50 border-amber-500 text-amber-700 shadow-md scale-[1.02]' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:scale-[1.02]'}`}>
+                                <UserCheck className={`h-7 w-7 transition-colors ${selectedRole === 'Liaison Officer' ? 'text-amber-600' : 'text-slate-400'}`} /> 
                                 <span className="text-[14px] font-bold">Liaison Officer</span>
                               </button>
                             </div>
@@ -633,6 +671,41 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   </CardContent>
                 </Card>
               )}
+
+              {/* Daftar Tim Pelaksana (Untuk Semua User) */}
+              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
+                <div className="p-6 border-b border-slate-100 shrink-0 flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 bg-red-50 border border-red-100 text-red-800 rounded-xl shadow-sm">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-[15px] font-bold text-slate-800 uppercase tracking-wider">Tim Pelaksana</h2>
+                    <p className="text-[12px] text-slate-500 mt-0.5 font-medium">Daftar anggota yang telah ditugaskan</p>
+                  </div>
+                </div>
+                <div className="p-6 bg-slate-50/30 flex-1 overflow-y-auto">
+                  {keg.pendaftar && keg.pendaftar.filter((p: any) => p.status === 'diterima').length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {keg.pendaftar.filter((p: any) => p.status === 'diterima').map((p: any) => (
+                        <div key={p.id} className="flex items-center gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                          <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 border ${p.role === 'Liaison Officer' || p.role === 'lo' ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                            {p.role === 'Liaison Officer' || p.role === 'lo' ? <UserCheck className="h-5 w-5" /> : <Users className="h-5 w-5" />}
+                          </div>
+                          <div>
+                            <p className="font-bold text-sm text-slate-800">{p.nama_lengkap}</p>
+                            <p className="text-[11px] font-semibold text-slate-500 capitalize">{p.role || 'Protokoler'}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-8 text-center bg-white rounded-xl border border-dashed border-slate-200">
+                      <Users className="h-8 w-8 text-slate-300 mb-3" />
+                      <p className="text-[13px] font-bold text-slate-600">Belum ada tim yang ditugaskan</p>
+                    </div>
+                  )}
+                </div>
+              </Card>
             </div>
 
             {/* Sidebar Rekrutmen */}
@@ -655,34 +728,34 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 </div>
                 <div className="p-6 md:p-8 flex flex-col gap-5 flex-1 bg-white">
                   <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-2xl shadow-sm hover:border-slate-200 transition-all flex-1 p-5 group">
-                    <div className="h-14 w-14 rounded-2xl bg-rose-50 text-rose-900 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <div className="h-14 w-14 rounded-2xl bg-red-50 text-red-800 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <Users className="h-7 w-7" />
                     </div>
                     <span className="text-[15px] font-bold text-slate-800 mb-2">Protokoler</span>
-                    <span className="font-bold text-rose-900 bg-white border border-rose-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_protokoler_dibutuhkan || 0} Orang</span>
+                    <span className="font-bold text-red-800 bg-white border border-red-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_protokoler_dibutuhkan || 0} Orang</span>
                   </div>
                   
                   <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-2xl shadow-sm hover:border-slate-200 transition-all flex-1 p-5 group">
-                    <div className="h-14 w-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <div className="h-14 w-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <UserCheck className="h-7 w-7" />
                     </div>
                     <span className="text-[15px] font-bold text-slate-800 mb-2">Liaison Officer</span>
-                    <span className="font-bold text-blue-700 bg-white border border-blue-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_lo_dibutuhkan || 0} Orang</span>
+                    <span className="font-bold text-amber-700 bg-white border border-amber-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_lo_dibutuhkan || 0} Orang</span>
                   </div>
                 </div>
               </Card>
             </div>
-          </div>
+          </ViewportFitGrid>
         )}
 
         {/* ── Tab ABSENSI ── */}
         {tab === "absensi" && (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-slate-50 min-h-[500px] flex flex-col">
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
             <div className="p-6 md:p-8 flex flex-col flex-1">
               <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
-                  <div className="flex items-center justify-center h-12 w-12 bg-white rounded-xl shadow-sm text-slate-600 shrink-0 border border-slate-200">
-                    <CheckSquare className="h-6 w-6" />
+                  <div className="flex items-center justify-center h-12 w-12 bg-red-50 text-red-800 rounded-xl shadow-sm shrink-0 border border-red-100">
+                    <CheckSquare className="h-6 w-6 stroke-[2]" />
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-slate-900 mb-1">{isAdmin ? "Rekap Absensi" : "Pengisian Kehadiran"}</h2>
@@ -713,14 +786,14 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                         <div className="w-full max-w-md">
                           {!attendanceType ? (
                             <div className="flex gap-4">
-                              <div className="flex-1 border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-green-50 hover:border-green-200 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('hadir')}>
+                              <div className="flex-1 border-2 border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-green-50 hover:border-green-400 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('hadir')}>
                                 <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-green-100 group-hover:text-green-600 flex items-center justify-center mb-4 transition-colors">
                                   <Camera className="h-6 w-6" />
                                 </div>
                                 <h4 className="font-bold text-slate-700 group-hover:text-green-700">Saya Hadir</h4>
                                 <p className="text-xs text-slate-500 text-center mt-1">Ambil selfie di lokasi</p>
                               </div>
-                              <div className="flex-1 border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-red-50 hover:border-red-200 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('izin')}>
+                              <div className="flex-1 border-2 border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-red-50 hover:border-red-400 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('izin')}>
                                 <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-red-100 group-hover:text-red-800 flex items-center justify-center mb-4 transition-colors">
                                   <XCircle className="h-6 w-6" />
                                 </div>
@@ -891,12 +964,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           const hasSubmittedEvaluasi = isSuccessSubmit || evaluasi?.some((e: any) => e.protokoler_id === user?.id);
 
           return (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-slate-50 min-h-[500px] flex flex-col">
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
             <div className="p-6 md:p-8 flex flex-col flex-1">
               <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
-                  <div className="flex items-center justify-center h-12 w-12 bg-white rounded-xl shadow-sm text-slate-600 shrink-0 border border-slate-200">
-                    <FileSignature className="h-6 w-6" />
+                  <div className="flex items-center justify-center h-12 w-12 bg-red-50 text-red-800 rounded-xl shadow-sm shrink-0 border border-red-100">
+                    <FileSignature className="h-6 w-6 stroke-[2]" />
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-slate-900 mb-1">Evaluasi Kegiatan</h2>
@@ -904,12 +977,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   </div>
                 </div>
               </div>
-              <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm w-full flex-1 flex flex-col space-y-8">
+              <div className="w-full flex-1 flex flex-col space-y-8 mt-2">
             
             {/* Form Pengisian Evaluasi untuk Protokoler */}
             {!isAdmin && !hasSubmittedEvaluasi && (
               <div className="w-full">
-                    <div className="space-y-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="space-y-6 bg-slate-50/50 p-6 md:p-8 rounded-2xl border border-slate-100">
                        <div>
                           <label className="text-[13px] font-bold text-slate-700 block mb-2">Rating Acara</label>
                           <div className="flex gap-2" onMouseLeave={() => setHoverRating(0)}>
@@ -941,12 +1014,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                           <Button 
                             onClick={() => {
                               if (!ratingAcara) return toast.error('Silakan berikan rating acara terlebih dahulu');
-                              setIsSuccessSubmit(true);
-                              toast.success('Evaluasi berhasil dikirim!');
+                              kirimEvaluasi.mutate();
                             }} 
                             className="rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold h-11 px-8 shadow-md"
+                            disabled={kirimEvaluasi.isPending}
                           >
-                            Kirim Evaluasi
+                            {kirimEvaluasi.isPending ? 'Mengirim...' : 'Kirim Evaluasi'}
                           </Button>
                        </div>
                     </div>
@@ -1143,12 +1216,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
         })()}
         {/* ── Tab DOKUMENTASI ── */}
         {tab === "dokumentasi" && (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-slate-50 min-h-[500px] flex flex-col">
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
             <div className="p-6 md:p-8 flex flex-col flex-1">
               <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
-                  <div className="flex items-center justify-center h-12 w-12 bg-white rounded-xl shadow-sm text-slate-600 shrink-0 border border-slate-200">
-                    <Camera className="h-6 w-6" />
+                  <div className="flex items-center justify-center h-12 w-12 bg-red-50 text-red-800 rounded-xl shadow-sm shrink-0 border border-red-100">
+                    <Camera className="h-6 w-6 stroke-[2]" />
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-slate-900 mb-1">Galeri Dokumentasi</h2>

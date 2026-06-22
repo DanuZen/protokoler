@@ -1,139 +1,284 @@
-/**
- * API client MOCK untuk keperluan Frontend Demo Protokoler.
- * Semua request mengembalikan data dummy langsung tanpa memanggil backend.
- * Delay = 0 agar semua halaman render instan (tidak ada buffering).
- */
+import { supabase } from './supabase';
 
-let mockKegiatan: any[] = [];
+/**
+ * Helper to dynamically get the active session token and construct headers.
+ */
+async function getAuthHeaders() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    return {
+      'Authorization': `Bearer ${session.access_token}`,
+    };
+  }
+  return {};
+}
+
+/**
+ * Base fetch client that appends Authorization headers and handles responses.
+ */
+async function apiFetch(url: string, options: RequestInit = {}) {
+  const authHeaders = await getAuthHeaders() as Record<string, string>;
+  const headers: Record<string, string> = {
+    ...(options.headers as Record<string, string>),
+    ...authHeaders,
+  };
+
+  const isMultipart = options.body instanceof FormData;
+  if (!isMultipart && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `API error: ${response.statusText}`);
+  }
+
+  return response.json();
+}
 
 // ──────────────── PROTOKOLER ────────────────
-let mockProtokoler: any[] = [];
-
 export const protokolerApi = {
-  list: async (search?: string) => mockProtokoler,
-  get: async (id: string) => mockProtokoler.find(p => p.id === id) || { id, nama_lengkap: 'Dummy User' },
-  create: async (data: any) => ({ success: true, id: `prot-${Date.now()}` }),
-  update: async (id: string, data: any) => ({ success: true }),
-  remove: async (id: string) => ({ success: true }),
+  list: async (search?: string, status_akun?: string, prodi?: string) => {
+    const query = new URLSearchParams();
+    if (search) query.append('search', search);
+    if (status_akun) query.append('status_akun', status_akun);
+    if (prodi) query.append('prodi', prodi);
+    
+    const res = await apiFetch(`/api/protokoler?${query.toString()}`);
+    return res.data;
+  },
+  
+  get: async (id: string) => {
+    return apiFetch(`/api/protokoler/${id}`);
+  },
+  
+  create: async (data: any) => {
+    // Registrasi menggunakan endpoint auth/register
+    return apiFetch('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  
+  update: async (id: string, data: any) => {
+    // profile update can be multipart or json
+    let body: any;
+    if (data instanceof FormData) {
+      body = data;
+    } else {
+      body = JSON.stringify(data);
+    }
+    return apiFetch(`/api/protokoler/${id}`, {
+      method: 'PATCH',
+      body,
+    });
+  },
+
+  verifikasi: async (id: string, aksi: 'setujui' | 'tolak', catatan_penolakan?: string) => {
+    return apiFetch(`/api/protokoler/${id}/verifikasi`, {
+      method: 'PATCH',
+      body: JSON.stringify({ aksi, catatan_penolakan }),
+    });
+  },
+  
+  remove: async (id: string) => {
+    return apiFetch(`/api/protokoler/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  me: async () => {
+    return apiFetch('/api/protokoler/me');
+  },
 };
 
 // ──────────────── KEGIATAN ────────────────
 export const kegiatanApi = {
-  list: async (params?: { status?: string; bentuk?: string }) => {
-    let result = [...mockKegiatan];
-    if (params?.status === 'publik') {
-      result = result.filter((k) => k.status === 'terjadwal' || k.status === 'berlangsung');
-    }
-    return result;
+  list: async (params?: { status?: string; bentuk?: string; dari_tanggal?: string; sampai_tanggal?: string }) => {
+    const query = new URLSearchParams();
+    if (params?.status) query.append('status', params.status);
+    if (params?.bentuk) query.append('bentuk', params.bentuk);
+    if (params?.dari_tanggal) query.append('dari_tanggal', params.dari_tanggal);
+    if (params?.sampai_tanggal) query.append('sampai_tanggal', params.sampai_tanggal);
+
+    const res = await apiFetch(`/api/kegiatan?${query.toString()}`);
+    return res.data;
   },
-  get: async (id: string) => mockKegiatan.find((k) => k.id === id) || mockKegiatan[0],
+  
+  get: async (id: string) => {
+    return apiFetch(`/api/kegiatan/${id}`);
+  },
+  
   create: async (data: any) => {
-    const newId = `keg-${Date.now()}`;
-    mockKegiatan.unshift({
-      id: newId,
-      ...data,
-      status: data.status || 'terjadwal',
-      pendaftar: [],
-      tamu_vvip: [],
+    const payload = { ...data };
+    if (payload.bentuk_kegiatan === 'kunjungan') {
+      payload.bentuk_kegiatan = 'kunjungan_tamu';
+    } else if (payload.bentuk_kegiatan === 'dokumentasi') {
+      payload.bentuk_kegiatan = 'lainnya';
+    }
+    return apiFetch('/api/kegiatan', {
+      method: 'POST',
+      body: JSON.stringify(payload),
     });
-    return { success: true, id: newId };
   },
+  
   update: async (id: string, data: any) => {
-    const index = mockKegiatan.findIndex((k) => k.id === id);
-    if (index !== -1) {
-      mockKegiatan[index] = { ...mockKegiatan[index], ...data };
+    const payload = { ...data };
+    if (payload.bentuk_kegiatan === 'kunjungan') {
+      payload.bentuk_kegiatan = 'kunjungan_tamu';
+    } else if (payload.bentuk_kegiatan === 'dokumentasi') {
+      payload.bentuk_kegiatan = 'lainnya';
     }
-    return { success: true };
+    return apiFetch(`/api/kegiatan/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
   },
+
+  updateChecklist: async (id: string, data: { checklist_tata_tempat?: boolean; checklist_tata_upacara?: boolean; checklist_tata_penghormatan?: boolean }) => {
+    return apiFetch(`/api/kegiatan/${id}/checklist`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+  
   remove: async (id: string) => {
-    mockKegiatan = mockKegiatan.filter((k) => k.id !== id);
-    return { success: true };
+    return apiFetch(`/api/kegiatan/${id}`, {
+      method: 'DELETE',
+    });
   },
-  daftar: async (kegiatanId: string, protokolerId: string, namaLengkap: string, role: string = 'Protokoler') => {
-    const kegiatan = mockKegiatan.find((k) => k.id === kegiatanId);
-    if (kegiatan) {
-      if (!kegiatan.pendaftar) kegiatan.pendaftar = [];
-      kegiatan.pendaftar.push({
-        id: `pend-${Date.now()}`,
-        kegiatan_id: kegiatanId,
-        protokoler_id: protokolerId,
-        nama_lengkap: namaLengkap,
-        role: role,
-        status: 'pending',
-        tanggal_daftar: new Date().toISOString(),
-      });
-    }
-    return { success: true };
+  
+  daftar: async (kegiatanId: string, peran: 'protokoler' | 'lo') => {
+    return apiFetch(`/api/kegiatan/${kegiatanId}/daftar`, {
+      method: 'POST',
+      body: JSON.stringify({ peran }),
+    });
   },
-  verifikasiPendaftar: async (kegiatanId: string, pendaftarId: string, status: 'diterima' | 'ditolak') => {
-    const kegiatan = mockKegiatan.find((k) => k.id === kegiatanId);
-    if (kegiatan && kegiatan.pendaftar) {
-      const p = kegiatan.pendaftar.find((p: any) => p.id === pendaftarId);
-      if (p) p.status = status;
-    }
-    return { success: true };
+  
+  verifikasiPendaftar: async (kegiatanId: string, pendaftarId: string, keputusan: 'diterima' | 'ditolak' | 'dialihkan', kegiatan_dialihkan_id?: string, catatan_admin?: string) => {
+    return apiFetch(`/api/pendaftaran/${pendaftarId}/seleksi`, {
+      method: 'PATCH',
+      body: JSON.stringify({ keputusan, kegiatan_dialihkan_id, catatan_admin }),
+    });
   }
 };
 
 // ──────────────── PENDAFTARAN ────────────────
 export const pendaftaranApi = {
-  byKegiatan: async (kegiatan_id: string) => mockKegiatan.find(k => k.id === kegiatan_id)?.pendaftar || [],
-  byProtokoler: async (protokoler_id: string) => mockKegiatan.filter(k => k.pendaftar?.some((p:any) => p.protokoler_id === protokoler_id)).map(k => ({...k, pendaftaran_status: k.pendaftar.find((p:any)=>p.protokoler_id===protokoler_id)?.status})),
-  create: async (data: any) => ({ success: true }),
-  update: async (id: string, data: any) => ({ success: true }),
-  remove: async (id: string) => ({ success: true }),
+  byKegiatan: async (kegiatan_id: string) => {
+    const res = await apiFetch(`/api/kegiatan/${kegiatan_id}/pendaftar`);
+    return res.data;
+  },
+  
+  byProtokoler: async (protokoler_id: string) => {
+    const res = await apiFetch(`/api/laporan/protokoler/${protokoler_id}/rekap`);
+    return res.riwayat || [];
+  },
 };
 
-// ──────────────── ABSENSI & EVALUASI & TESTIMONI ────────────────
+// ──────────────── ABSENSI ────────────────
 export const absensiApi = {
-  create: async (data: any) => ({ success: true }),
-  byKegiatan: async (kegiatan_id: string) => [
-    { id: 'abs-1', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', waktu_absen: '2026-05-10T08:30:00Z', status: 'hadir', foto_url: 'https://placehold.co/100x100?text=Siti' }
-  ],
+  create: async (kegiatanId: string, data: FormData) => {
+    return apiFetch(`/api/kegiatan/${kegiatanId}/absensi`, {
+      method: 'POST',
+      body: data,
+    });
+  },
+  
+  byKegiatan: async (kegiatan_id: string) => {
+    const res = await apiFetch(`/api/kegiatan/${kegiatan_id}/absensi`);
+    return res.data;
+  },
 };
 
+// ──────────────── EVALUASI ────────────────
 export const evaluasiApi = {
-  create: async (data: any) => ({ success: true }),
-  byKegiatan: async (kegiatan_id: string) => [
-    { id: 'eval-1', protokoler_id: 'prot-1', nama_lengkap: 'Siti Nurhaliza', tata_tempat: 5, tata_upacara: 4, tata_penghormatan: 5, catatan: 'Sangat sigap dan responsif.' },
-    { id: 'eval-2', protokoler_id: 'prot-2', nama_lengkap: 'Budi Santoso', tata_tempat: 4, tata_upacara: 3, tata_penghormatan: 4, catatan: 'Perlu lebih fokus.' }
-  ],
+  create: async (kegiatanId: string, data: { evaluasi_kegiatan: string; refleksi_diri: string; rating_kegiatan: number }) => {
+    return apiFetch(`/api/kegiatan/${kegiatanId}/evaluasi`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  
+  byKegiatan: async (kegiatan_id: string) => {
+    const res = await apiFetch(`/api/evaluasi/kegiatan/${kegiatan_id}/hasil`);
+    return res;
+  },
+
+  updateFeedback: async (kegiatanId: string, catatan: string) => {
+    return apiFetch(`/api/evaluasi/kegiatan/${kegiatanId}/feedback`, {
+      method: 'PATCH',
+      body: JSON.stringify({ catatan }),
+    });
+  }
 };
 
+// ──────────────── TESTIMONI ────────────────
 export const testimoniApi = {
-  create: async (data: any) => ({ success: true }),
-  byKegiatan: async (kegiatan_id: string) => [
-    { id: 'testi-1', nama_tamu: 'Menteri Nadiem Makarim', instansi: 'Kemdikbudristek', rating: 5, feedback: 'Pelayanan protokoler UNP sangat luar biasa dan profesional.' }
-  ],
+  create: async (kegiatanId: string, data: { nama_tamu: string; jabatan_tamu?: string; isi_testimoni: string; rating: number }) => {
+    return apiFetch(`/api/kegiatan/${kegiatanId}/testimoni`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  
+  byKegiatan: async (kegiatan_id: string) => {
+    const res = await apiFetch(`/api/kegiatan/${kegiatan_id}/testimoni`);
+    return res.data;
+  },
 };
 
+// ──────────────── SERTIFIKAT ────────────────
 export const sertifikatApi = {
-  byProtokoler: async (protokoler_id: string) => [
-    { id: 'cert-1', kegiatan_id: 'keg-3', nama_kegiatan: 'Seminar Nasional Teknologi Pendidikan', url: '#', terbit_pada: '2026-05-11T10:00:00Z' }
-  ],
+  byProtokoler: async () => {
+    const res = await apiFetch('/api/sertifikat');
+    return res.data;
+  },
+  listAll: async () => {
+    const res = await apiFetch('/api/sertifikat');
+    return res.data;
+  }
 };
 
-// ──────────────── DASHBOARD / LAPORAN ────────────────
+// ──────────────── DASHBOARD & LAPORAN ────────────────
 export const dashboardApi = {
-  stats: async () => ({
-    total_mahasiswa: 142,
-    total_kegiatan: 86,
-    kegiatan_mendatang: 3,
-    total_penugasan: 512,
-  }),
-  upcoming: async (limit: number = 8) =>
-    mockKegiatan.filter((k) => k.status === 'terjadwal' || k.status === 'berlangsung').slice(0, limit),
+  stats: async () => {
+    return apiFetch('/api/laporan/dashboard');
+  },
+  evaluasiDashboard: async (status?: string, search?: string) => {
+    const query = new URLSearchParams();
+    if (status) query.append('filter_status', status);
+    if (search) query.append('search', search);
+    return apiFetch(`/api/evaluasi/dashboard?${query.toString()}`);
+  },
+  upcoming: async (limit: number = 8) => {
+    const list = await kegiatanApi.list();
+    return (list ?? []).slice(0, limit);
+  }
 };
 
 export const laporanApi = {
-  stats: async () => dashboardApi.stats(),
-  kegiatan: async (start: string, end: string, status?: string) => mockKegiatan,
-  rekap: async (start: string, end: string) => ({
-    rekap_mahasiswa: [
-      { nim: '20010101', nama_lengkap: 'Budi Santoso', prodi: 'Ilmu Komputer', total_tugas: 10, dikonfirmasi: 8, ditolak: 2 },
-      { nim: '20010102', nama_lengkap: 'Siti Nurhaliza', prodi: 'Manajemen', total_tugas: 5, dikonfirmasi: 5, ditolak: 0 },
-    ]
-  }),
+  stats: async () => {
+    return dashboardApi.stats();
+  },
+  kegiatan: async (start: string, end: string, status?: string) => {
+    const query = new URLSearchParams();
+    if (start) query.append('dari_tanggal', start);
+    if (end) query.append('sampai_tanggal', end);
+    if (status) query.append('bentuk_kegiatan', status);
+    const res = await apiFetch(`/api/laporan/kegiatan?${query.toString()}`);
+    return res.data;
+  },
+  rekap: async (protokolerIdOrStart: string, end?: string) => {
+    const query = new URLSearchParams();
+    if (end) query.append('sampai_tanggal', end);
+    return apiFetch(`/api/laporan/protokoler/${protokolerIdOrStart}/rekap?${query.toString()}`);
+  },
 };
 
 // ──────────────── REGULASI ────────────────
@@ -165,8 +310,33 @@ export const regulasiMockData = [
 ];
 
 export const regulasiApi = {
-  list: async () => regulasiMockData,
-  create: async (data: any) => ({ success: true }),
+  list: async () => {
+    const res = await apiFetch('/api/regulasi');
+    return res.data;
+  },
+  create: async (data: any) => {
+    if (data instanceof FormData) {
+      return apiFetch('/api/regulasi', {
+        method: 'POST',
+        body: data,
+      });
+    }
+
+    const formData = new FormData();
+    formData.append('judul', data.judul);
+    formData.append('kategori', data.kategori || '');
+    formData.append('deskripsi', data.konten || '');
+    formData.append('tahun_terbit', String(new Date().getFullYear()));
+
+    const mockPdfContent = `%PDF-1.4\n%...\n${data.konten || ''}`;
+    const blob = new Blob([mockPdfContent], { type: 'application/pdf' });
+    formData.append('file', blob, `${data.judul.replace(/\s+/g, '_')}.pdf`);
+
+    return apiFetch('/api/regulasi', {
+      method: 'POST',
+      body: formData,
+    });
+  },
 };
 
 // ──────────────── POSTINGAN / DOKUMENTASI ────────────────
@@ -207,32 +377,48 @@ const defaultPostingan: any[] = [
 
 export const postinganApi = {
   list: async () => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('demo_postingan');
-      if (stored) return JSON.parse(stored);
-      localStorage.setItem('demo_postingan', JSON.stringify(defaultPostingan));
+    try {
+      const res = await apiFetch('/api/dokumentasi');
+      // Map data backend ke format yang dipakai frontend
+      return (res.data || []).map((item: any) => ({
+        id: item.kegiatan_id,
+        judul: item.nama_kegiatan,
+        kategori: item.status || 'Kegiatan',
+        gambar: '/gallery_1.png',
+        tanggal: item.tanggal,
+        ringkasan: `${item.dokumentasi_count} file dokumentasi telah diupload`,
+      }));
+    } catch {
+      return [];
     }
-    return defaultPostingan;
   },
   create: async (data: any) => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('demo_postingan');
-      const posts = stored ? JSON.parse(stored) : defaultPostingan;
-      const newPost = { ...data, id: `post-${Date.now()}` };
-      const updated = [newPost, ...posts];
-      localStorage.setItem('demo_postingan', JSON.stringify(updated));
-      return newPost;
+    // Upload dokumentasi ke backend
+    const formData = new FormData();
+    formData.append('kegiatan_id', data.kegiatan_id || '');
+    formData.append('media_type', data.media_type || 'foto');
+    formData.append('keterangan', data.ringkasan || '');
+    if (data.file instanceof File) {
+      formData.append('file', data.file);
     }
-    return null;
+    return apiFetch('/api/dokumentasi/upload', {
+      method: 'POST',
+      body: formData,
+    });
   },
   delete: async (id: string) => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('demo_postingan');
-      const posts = stored ? JSON.parse(stored) : defaultPostingan;
-      const updated = posts.filter((p: any) => p.id !== id);
-      localStorage.setItem('demo_postingan', JSON.stringify(updated));
-      return true;
-    }
-    return false;
+    // Tidak ada endpoint delete dokumentasi di backend saat ini
+    // Mengembalikan sukses untuk kompatibilitas
+    return true;
+  },
+  byKegiatan: async (kegiatanId: string) => {
+    return apiFetch(`/api/dokumentasi/kegiatan/${kegiatanId}`);
+  },
+  uploadReal: async (data: FormData) => {
+    return apiFetch('/api/dokumentasi/upload', {
+      method: 'POST',
+      body: data,
+    });
   }
 };
+
