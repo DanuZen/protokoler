@@ -21,11 +21,19 @@ export default function ManajemenBeritaPage() {
   // Dialog State
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState('foto');
+  const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     kategori: '',
     gambar: '/gallery_1.png',
     ringkasan: '',
   });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
+  };
 
   // Queries
   const { data: kegiatan } = useQuery({
@@ -52,6 +60,7 @@ export default function ManajemenBeritaPage() {
       queryClient.invalidateQueries({ queryKey: ['postingan-list'] });
       toast.success(`Dokumentasi berhasil dipublikasikan!`);
       setFormData({ kategori: '', gambar: '/gallery_1.png', ringkasan: '' });
+      setFile(null);
       setMediaType('foto');
       setSelectedId(null); // Tutup dialog
     }
@@ -59,16 +68,23 @@ export default function ManajemenBeritaPage() {
 
   const handleUpload = () => {
     if (!selected) return;
-    if (!formData.kategori || !formData.ringkasan) {
+    if (mediaType !== 'video' && (!formData.kategori || !formData.ringkasan)) {
       toast.error('Mohon lengkapi Kategori dan Keterangan berita');
+      return;
+    }
+    if (mediaType !== 'video' && !file) {
+      toast.error('Mohon pilih file dokumentasi untuk diunggah');
       return;
     }
     
     const payload = {
+      kegiatan_id: selected.id,
+      media_type: mediaType,
+      ringkasan: formData.ringkasan,
+      file: file,
       judul: selected.nama_kegiatan,
       kategori: formData.kategori,
       gambar: formData.gambar,
-      ringkasan: formData.ringkasan,
       tanggal: new Date().toISOString()
     };
     
@@ -253,7 +269,7 @@ export default function ManajemenBeritaPage() {
               </div>
               
               <div className="p-8 space-y-6 flex-1 overflow-auto">
-                <div className="grid grid-cols-2 gap-6">
+                <div className={cn("grid gap-6", mediaType === 'video' ? "grid-cols-1" : "grid-cols-2")}>
                   <div className="space-y-2.5">
                     <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Tipe File Asli</label>
                     <select 
@@ -266,46 +282,93 @@ export default function ManajemenBeritaPage() {
                       <option value="dokumen">Dokumen</option>
                     </select>
                   </div>
-                  <div className="space-y-2.5">
-                    <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Kategori Berita</label>
-                    <select 
-                      value={formData.kategori} 
-                      onChange={e => setFormData({...formData, kategori: e.target.value})}
-                      className="w-full flex h-12 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent font-medium"
-                    >
-                      <option value="" disabled>Pilih Kategori</option>
-                      <option value="Seremonial">Seremonial</option>
-                      <option value="Protokol VIP">Protokol VIP</option>
-                      <option value="Wisuda">Wisuda</option>
-                      <option value="Internal">Internal</option>
-                      <option value="Pelatihan">Pelatihan</option>
-                    </select>
-                  </div>
+                  {mediaType !== 'video' && (
+                    <div className="space-y-2.5">
+                      <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Kategori Berita</label>
+                      <select 
+                        value={formData.kategori} 
+                        onChange={e => setFormData({...formData, kategori: e.target.value})}
+                        className="w-full flex h-12 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent font-medium"
+                      >
+                        <option value="" disabled>Pilih Kategori</option>
+                        <option value="Seremonial">Seremonial</option>
+                        <option value="Protokol VIP">Protokol VIP</option>
+                        <option value="Wisuda">Wisuda</option>
+                        <option value="Internal">Internal</option>
+                        <option value="Pelatihan">Pelatihan</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-2.5 flex flex-col">
-                    <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-2 block">Upload File Dokumentasi</label>
-                    <label htmlFor="file-upload" className="flex-1 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 hover:bg-red-50 hover:border-red-600 transition-all flex flex-col items-center justify-center py-10 px-6 cursor-pointer group relative overflow-hidden min-h-[220px]">
-                      <div className="absolute inset-0 bg-red-700/0 group-hover:bg-red-700/5 transition-colors" />
-                      <div className="h-16 w-16 rounded-full bg-white flex items-center justify-center shadow-sm border border-slate-100 mb-4 group-hover:scale-110 group-hover:shadow-md transition-all">
-                        <UploadCloud className="h-7 w-7 text-red-800 group-hover:text-red-900" />
-                      </div>
-                      <h3 className="text-sm font-bold text-slate-700 mb-1.5 text-center">Klik untuk memilih atau seret & lepas file ke sini</h3>
-                      <p className="text-xs text-slate-400 text-center font-medium">Format didukung: JPG, PNG, MP4, PDF. Maksimal 100MB.</p>
-                      <input type="file" className="hidden" id="file-upload" />
+                 {mediaType === 'video' ? (
+                  <div className="space-y-4 flex flex-col w-full">
+                    <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-1 block">
+                      Form Pengisian Video (Google Form)
                     </label>
+                    <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 space-y-4 shadow-sm">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-bold text-slate-900">Format Penamaan File Video:</h4>
+                        <div className="text-sm text-slate-600 bg-white border border-slate-200/60 rounded-xl p-4 font-mono space-y-1.5 shadow-inner">
+                          <p>Nama File: <span className="font-bold text-red-900">Tanggal_Nama Kegiatan</span></p>
+                          <p>Format tanggal: <span className="font-bold text-red-900">YYMMDD</span> (thn/bln/hari)</p>
+                          <p className="text-xs text-slate-400 mt-3 pt-2 border-t border-slate-100">
+                            Contoh: <span className="text-slate-700 font-bold font-mono">260622_Wisuda periode 131</span>
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="pt-2">
+                        <a 
+                          href="https://forms.gle/XitH1gmCuGpdt8Pi8" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full md:w-auto px-6 h-12 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-red-900 hover:bg-red-50 hover:border-red-200 font-bold transition-all shadow-sm gap-2"
+                        >
+                          <span>Buka Google Form di Tab Baru</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
                   </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+                    <div className="space-y-2.5 flex flex-col">
+                      <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-2 block">
+                        Upload File Dokumentasi
+                      </label>
+                      <label htmlFor="file-upload" className="flex-1 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 hover:bg-red-50 hover:border-red-600 transition-all flex flex-col items-center justify-center py-10 px-6 cursor-pointer group relative overflow-hidden min-h-[220px]">
+                        <div className="absolute inset-0 bg-red-700/0 group-hover:bg-red-700/5 transition-colors" />
+                        <div className="h-16 w-16 rounded-full bg-white flex items-center justify-center shadow-sm border border-slate-100 mb-4 group-hover:scale-110 group-hover:shadow-md transition-all">
+                          <UploadCloud className="h-7 w-7 text-red-800 group-hover:text-red-900" />
+                        </div>
+                        {file ? (
+                          <div className="text-center relative z-10 px-4">
+                            <h3 className="text-sm font-bold text-slate-800 mb-1 truncate max-w-[200px]">{file.name}</h3>
+                            <p className="text-xs text-slate-400 font-medium">({(file.size / (1024 * 1024)).toFixed(2)} MB)</p>
+                          </div>
+                        ) : (
+                          <>
+                            <h3 className="text-sm font-bold text-slate-700 mb-1.5 text-center">Klik untuk memilih atau seret & lepas file ke sini</h3>
+                            <p className="text-xs text-slate-400 text-center font-medium">Format didukung: JPG, PNG, PDF. Maksimal 100MB.</p>
+                          </>
+                        )}
+                        <input type="file" className="hidden" id="file-upload" onChange={handleFileChange} />
+                      </label>
+                    </div>
 
-                  <div className="space-y-2.5 flex flex-col">
-                    <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-2 block">Keterangan / Isi Berita</label>
-                    <Textarea value={formData.ringkasan} onChange={(e) => setFormData({...formData, ringkasan: e.target.value})} placeholder="Tuliskan isi berita atau keterangan dokumentasi..." className="flex-1 min-h-[220px] rounded-2xl border-slate-200 bg-slate-50 resize-none text-sm p-5 leading-relaxed" />
+                    <div className="space-y-2.5 flex flex-col">
+                      <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-2 block">Keterangan / Isi Berita</label>
+                      <Textarea value={formData.ringkasan} onChange={(e) => setFormData({...formData, ringkasan: e.target.value})} placeholder="Tuliskan isi berita atau keterangan dokumentasi..." className="flex-1 min-h-[220px] rounded-2xl border-slate-200 bg-slate-50 resize-none text-sm p-5 leading-relaxed" />
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="pt-2">
                   <Button onClick={handleUpload} disabled={createMutation.isPending} className="w-full rounded-xl bg-red-900 text-white hover:bg-red-800 shadow-lg shadow-red-900/20 h-14 text-sm font-bold">
-                    <UploadCloud className="mr-2 h-5 w-5" /> {createMutation.isPending ? 'Menyimpan...' : 'Upload & Publish Berita'}
+                    <UploadCloud className="mr-2 h-5 w-5" /> {createMutation.isPending ? 'Menyimpan...' : mediaType === 'video' ? 'Konfirmasi Pengisian Video' : 'Upload & Publish Berita'}
                   </Button>
                 </div>
               </div>

@@ -1,13 +1,17 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SupabaseService } from '../supabase/supabase.service';
+import { ConfigService } from '@nestjs/config';
 import { StatusKegiatanEnum } from '@prisma/client';
 
 @Injectable()
 export class DokumentasiService {
+  private readonly logger = new Logger(DokumentasiService.name);
+
   constructor(
     private prisma: PrismaService,
     private supabase: SupabaseService,
+    private configService: ConfigService,
   ) {}
 
   async getKegiatanList(params: { status?: string; search?: string; page?: number; limit?: number }) {
@@ -58,7 +62,7 @@ export class DokumentasiService {
   async upload(
     userId: string,
     file: any,
-    body: { kegiatan_id: string; media_type: 'foto' | 'video'; keterangan?: string },
+    body: { kegiatan_id: string; media_type: 'foto' | 'video' | 'dokumen'; keterangan?: string },
   ) {
     const kegiatan = await this.prisma.kegiatan.findUnique({
       where: { id: body.kegiatan_id }
@@ -67,23 +71,34 @@ export class DokumentasiService {
       throw new NotFoundException('Kegiatan tidak ditemukan');
     }
 
-    if (file.size > 100 * 1024 * 1024) {
-      throw new BadRequestException('Ukuran file maksimal 100MB');
-    }
-
-    const fileExt = file.originalname?.split('.').pop() || 'jpg';
-    const filePath = `dokumentasi_${body.kegiatan_id}_${Date.now()}.${fileExt}`;
-
     let publicUrl = '';
-    try {
-      publicUrl = await this.supabase.uploadFile(
-        'dokumentasi',
-        filePath,
-        file.buffer,
-        file.mimetype || (body.media_type === 'foto' ? 'image/jpeg' : 'video/mp4')
-      );
-    } catch (err) {
-      publicUrl = `https://storage.siproto.ac.id/dokumentasi/${filePath}`;
+
+    if (body.media_type === 'video') {
+      const gFormUrl = this.configService.get<string>('GFORM_URL') || 'https://docs.google.com/forms/d/e/1FAIpQLSediGMxRzlywWlDXD1tN6om8LTXzvYNOEcIWt0YBMde2Eaanw/viewform?embedded=true';
+      publicUrl = gFormUrl;
+    } else {
+      if (!file) {
+        throw new BadRequestException('File dokumentasi wajib diunggah');
+      }
+      if (file.size > 100 * 1024 * 1024) {
+        throw new BadRequestException('Ukuran file maksimal 100MB');
+      }
+
+      const fileExt = file.originalname?.split('.').pop() || 'jpg';
+      const filePath = `dokumentasi_${body.kegiatan_id}_${Date.now()}.${fileExt}`;
+
+      const defaultMimetype = body.media_type === 'foto' ? 'image/jpeg' : 'application/pdf';
+
+      try {
+        publicUrl = await this.supabase.uploadFile(
+          'dokumentasi',
+          filePath,
+          file.buffer,
+          file.mimetype || defaultMimetype
+        );
+      } catch (err) {
+        publicUrl = `https://storage.siproto.ac.id/dokumentasi/${filePath}`;
+      }
     }
 
     const doc = await this.prisma.dokumentasiKegiatan.create({
@@ -103,7 +118,7 @@ export class DokumentasiService {
         kegiatan_id: doc.kegiatan_id,
         file_url: doc.file_url,
         media_type: doc.tipe,
-        ukuran_file: file.size || 2048576,
+        ukuran_file: file?.size || 0,
         uploaded_at: doc.created_at
       }
     };
