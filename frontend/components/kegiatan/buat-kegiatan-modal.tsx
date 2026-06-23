@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { kegiatanApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,7 +65,7 @@ const initialForm = {
   is_open_recruitment: true,
 };
 
-export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean; onClose: () => void; editId?: string }) {
   const qc = useQueryClient();
   const [step, setStep] = useState(1);
 
@@ -73,14 +73,42 @@ export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClos
   const [tamuVvip, setTamuVvip] = useState<any[]>([]);
   const [timeView, setTimeView] = useState<"date" | "start" | "end">("date");
 
+  // Load data for editing if editId is provided
+  const { data: editData } = useQuery({
+    queryKey: ["kegiatan-edit-data", editId],
+    queryFn: () => kegiatanApi.get(editId!),
+    enabled: !!editId && isOpen,
+  });
+
   useEffect(() => {
     if (isOpen) {
-      setStep(1);
-      setForm(initialForm);
-      setTamuVvip([]);
-      setTimeView("date");
+      if (editId && editData) {
+        setStep(1);
+        setForm({
+          nama_kegiatan: editData.nama_kegiatan || "",
+          bentuk_kegiatan: editData.bentuk_kegiatan || "lainnya",
+          tanggal: editData.tanggal ? new Date(editData.tanggal).toISOString().split("T")[0] : "",
+          jam_mulai: editData.jam_mulai || "",
+          jam_selesai: editData.jam_selesai || "",
+          lokasi: editData.lokasi || "",
+          audience: editData.audience || "",
+          keynote: editData.keynote || "",
+          rundown_url: editData.rundown_url || "",
+          jumlah_protokoler_dibutuhkan: editData.jumlah_protokoler_dibutuhkan || 1,
+          jumlah_lo_dibutuhkan: editData.jumlah_lo_dibutuhkan || 1,
+          jumlah_dokumentasi_dibutuhkan: 1,
+          is_open_recruitment: true,
+        });
+        setTamuVvip(editData.tamu_vvip || []);
+        setTimeView("date");
+      } else if (!editId) {
+        setStep(1);
+        setForm(initialForm);
+        setTamuVvip([]);
+        setTimeView("date");
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, editId, editData]);
 
   const addTamu = () =>
     setTamuVvip([...tamuVvip, { nama_tamu: "", jabatan: "", instansi: "", tipe: "eksternal", jumlah_rombongan: 1 }]);
@@ -98,15 +126,21 @@ export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClos
     mutationFn: async () => {
       const payload = {
         ...form,
-        status: "terjadwal",
+        status: editId && editData ? editData.status : "terjadwal",
         tamu_vvip: tamuVvip,
         tanggal: form.tanggal ? new Date(form.tanggal).toISOString() : "",
       };
+      if (editId) {
+        return kegiatanApi.update(editId, payload);
+      }
       return kegiatanApi.create(payload);
     },
     onSuccess: () => {
-      toast.success("Kegiatan berhasil dijadwalkan!");
+      toast.success(editId ? "Kegiatan berhasil diperbarui!" : "Kegiatan berhasil dijadwalkan!");
       qc.invalidateQueries({ queryKey: ["kegiatan"] });
+      if (editId) {
+        qc.invalidateQueries({ queryKey: ["kegiatan", editId] });
+      }
       onClose();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -131,8 +165,10 @@ export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClos
       <DialogContent className="[&>button]:hidden max-w-7xl p-0 overflow-hidden bg-transparent border-none shadow-none h-[90vh] md:h-[85vh] flex flex-col sm:rounded-[2rem]">
         {/* Screen Reader Only Title/Desc */}
         <div className="sr-only">
-          <DialogTitle>Buat Kegiatan Baru</DialogTitle>
-          <DialogDescription>Formulir untuk membuat kegiatan baru di sistem protokoler.</DialogDescription>
+          <DialogTitle>{editId ? "Edit Kegiatan" : "Buat Kegiatan Baru"}</DialogTitle>
+          <DialogDescription>
+            {editId ? "Formulir untuk mengubah kegiatan di sistem protokoler." : "Formulir untuk membuat kegiatan baru di sistem protokoler."}
+          </DialogDescription>
         </div>
 
         {/* Modal Container */}
@@ -492,7 +528,7 @@ export function BuatKegiatanModal({ isOpen, onClose }: { isOpen: boolean; onClos
               </Button>
             ) : (
               <Button type="button" className="rounded-xl bg-[#6B0000] hover:bg-red-950 text-white h-11 px-8 font-bold shadow-md shadow-red-900/20 transition-all" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
-                {saveMutation.isPending ? "Menyimpan..." : <><Check className="h-4 w-4 mr-2" /> Buat Acara</>}
+                {saveMutation.isPending ? "Menyimpan..." : <><Check className="h-4 w-4 mr-2" /> {editId ? "Simpan Perubahan" : "Buat Acara"}</>}
               </Button>
             )}
           </div>

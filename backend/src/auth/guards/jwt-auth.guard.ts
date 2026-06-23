@@ -1,33 +1,51 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { SupabaseService } from '../../supabase/supabase.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RoleEnum } from '@prisma/client';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private supabaseService: SupabaseService,
     private prisma: PrismaService,
+    private reflector: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers['authorization'];
 
     if (!authHeader) {
+      if (isPublic) {
+        return true;
+      }
       throw new UnauthorizedException('Token tidak valid atau sudah kedaluwarsa');
     }
 
     const [type, token] = authHeader.split(' ');
 
     if (type !== 'Bearer' || !token) {
+      if (isPublic) {
+        return true;
+      }
       throw new UnauthorizedException('Token tidak valid atau sudah kedaluwarsa');
     }
+
 
     const supabase = this.supabaseService.getClient();
     const { data: { user }, error } = await supabase.auth.getUser(token);
 
     if (error || !user) {
+      if (isPublic) {
+        return true;
+      }
       throw new UnauthorizedException('Token tidak valid atau sudah kedaluwarsa');
     }
 

@@ -72,5 +72,33 @@ export class SupabaseService {
     const { data: publicUrlData } = client.storage.from(bucket).getPublicUrl(filePath);
     return publicUrlData.publicUrl;
   }
+
+  async deleteFile(bucket: string, filePath: string): Promise<void> {
+    const storageType = this.configService.get<string>('STORAGE_TYPE') || 'supabase';
+
+    if (storageType === 'local') {
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads', bucket);
+      const fullPath = path.join(uploadsDir, filePath);
+      try {
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+        }
+      } catch (err) {
+        this.logger.error(`Gagal menghapus file lokal: ${err.message}`);
+      }
+      return;
+    }
+
+    if (storageType === 'base64') {
+      return; // No physical file
+    }
+
+    const client = this.getClient();
+    const { error } = await client.storage.from(bucket).remove([filePath]);
+    if (error) {
+      this.logger.error(`Gagal menghapus file dari Supabase bucket ${bucket}: ${error.message}`);
+    }
+  }
 }
+
 

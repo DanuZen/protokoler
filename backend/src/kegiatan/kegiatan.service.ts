@@ -230,18 +230,19 @@ export class KegiatanService {
       throw new NotFoundException('Kegiatan tidak ditemukan');
     }
 
-    const updateData: any = { ...dto };
-    delete updateData.tamu_vvip;
-
-    if (dto.tanggal) {
-      updateData.tanggal = new Date(dto.tanggal);
-    }
-    if (dto.jam_mulai) {
-      updateData.jam_mulai = this.parseTimeToDate(dto.jam_mulai);
-    }
-    if (dto.jam_selesai) {
-      updateData.jam_selesai = this.parseTimeToDate(dto.jam_selesai);
-    }
+    const updateData: any = {};
+    if (dto.nama_kegiatan !== undefined) updateData.nama_kegiatan = dto.nama_kegiatan;
+    if (dto.bentuk_kegiatan !== undefined) updateData.bentuk_kegiatan = dto.bentuk_kegiatan;
+    if (dto.tanggal !== undefined) updateData.tanggal = new Date(dto.tanggal);
+    if (dto.jam_mulai !== undefined) updateData.jam_mulai = this.parseTimeToDate(dto.jam_mulai);
+    if (dto.jam_selesai !== undefined) updateData.jam_selesai = this.parseTimeToDate(dto.jam_selesai);
+    if (dto.lokasi !== undefined) updateData.lokasi = dto.lokasi;
+    if (dto.audience !== undefined) updateData.audience = dto.audience;
+    if (dto.keynote !== undefined) updateData.keynote = dto.keynote;
+    if ((dto as any).rundown_url !== undefined) updateData.rundown_url = (dto as any).rundown_url;
+    if (dto.status !== undefined) updateData.status = dto.status;
+    if (dto.jumlah_protokoler_dibutuhkan !== undefined) updateData.jumlah_protokoler_dibutuhkan = dto.jumlah_protokoler_dibutuhkan;
+    if (dto.jumlah_lo_dibutuhkan !== undefined) updateData.jumlah_lo_dibutuhkan = dto.jumlah_lo_dibutuhkan;
 
     const updated = await this.prisma.$transaction(async (tx) => {
       if (dto.tamu_vvip) {

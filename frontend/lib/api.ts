@@ -380,24 +380,57 @@ export const postinganApi = {
     try {
       const res = await apiFetch('/api/dokumentasi');
       // Map data backend ke format yang dipakai frontend
-      return (res.data || []).map((item: any) => ({
-        id: item.kegiatan_id,
-        judul: item.nama_kegiatan,
-        kategori: item.status || 'Kegiatan',
-        gambar: '/gallery_1.png',
-        tanggal: item.tanggal,
-        ringkasan: `${item.dokumentasi_count} file dokumentasi telah diupload`,
-      }));
+      return (res.data || []).map((item: any) => {
+        const photos = (item.dokumentasi || []).filter((d: any) => d.media_type === 'foto');
+        const defaultImage = '/gallery_1.png';
+        
+        // Cari keterangan berita riil dari salah satu foto, default ke hitungan berkas jika tidak ada
+        const firstPhotoWithKeterangan = (item.dokumentasi || []).find((d: any) => d.keterangan && d.keterangan.trim() !== '');
+        const ringkasan = firstPhotoWithKeterangan ? firstPhotoWithKeterangan.keterangan : `${item.dokumentasi_count} file dokumentasi telah diupload`;
+        
+        // Cari kategori riil dari salah satu foto, default ke status kegiatan jika tidak ada
+        const firstPhotoWithKategori = (item.dokumentasi || []).find((d: any) => d.kategori && d.kategori.trim() !== '');
+        const kategori = firstPhotoWithKategori ? firstPhotoWithKategori.kategori : (item.status || 'Kegiatan');
+
+        return {
+          id: item.kegiatan_id,
+          judul: item.nama_kegiatan,
+          kategori: kategori,
+          gambar: photos.length > 0 ? photos[0].file_url : defaultImage,
+          images: photos.length > 0 ? photos.map((p: any) => p.file_url) : [defaultImage],
+          tanggal: item.tanggal,
+          ringkasan: ringkasan,
+          dokumentasi: item.dokumentasi || []
+        };
+      });
     } catch {
       return [];
     }
   },
   create: async (data: any) => {
-    // Upload dokumentasi ke backend
+    const files = data.files || [];
+    if (files.length > 0) {
+      const uploadPromises = files.map((file: File) => {
+        const formData = new FormData();
+        formData.append('kegiatan_id', data.kegiatan_id || '');
+        formData.append('media_type', data.media_type || 'foto');
+        formData.append('keterangan', data.ringkasan || '');
+        formData.append('kategori', data.kategori || '');
+        formData.append('file', file);
+        return apiFetch('/api/dokumentasi/upload', {
+          method: 'POST',
+          body: formData,
+        });
+      });
+      return Promise.all(uploadPromises);
+    }
+
+    // Fallback single file upload
     const formData = new FormData();
     formData.append('kegiatan_id', data.kegiatan_id || '');
     formData.append('media_type', data.media_type || 'foto');
     formData.append('keterangan', data.ringkasan || '');
+    formData.append('kategori', data.kategori || '');
     if (data.file instanceof File) {
       formData.append('file', data.file);
     }
@@ -406,10 +439,19 @@ export const postinganApi = {
       body: formData,
     });
   },
+  update: async (kegiatanId: string, data: { ringkasan?: string; kategori?: string }) => {
+    return apiFetch(`/api/dokumentasi/kegiatan/${kegiatanId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        keterangan: data.ringkasan,
+        kategori: data.kategori,
+      }),
+    });
+  },
   delete: async (id: string) => {
-    // Tidak ada endpoint delete dokumentasi di backend saat ini
-    // Mengembalikan sukses untuk kompatibilitas
-    return true;
+    return apiFetch(`/api/dokumentasi/${id}`, {
+      method: 'DELETE',
+    });
   },
   byKegiatan: async (kegiatanId: string) => {
     return apiFetch(`/api/dokumentasi/kegiatan/${kegiatanId}`);
