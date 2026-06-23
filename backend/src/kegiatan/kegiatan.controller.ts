@@ -4,6 +4,7 @@ import { CreateKegiatanDto } from './dto/create-kegiatan.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 import { RoleEnum } from '@prisma/client';
 
 @Controller('kegiatan')
@@ -18,7 +19,7 @@ export class KegiatanController {
   }
 
   @Get()
-  @Roles(RoleEnum.admin, RoleEnum.protokoler, RoleEnum.dokumentasi)
+  @Public()
   async findAll(
     @Req() req: any,
     @Query('status') status?: string,
@@ -28,17 +29,21 @@ export class KegiatanController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
+    const role = req.user?.role || 'tamu';
     return this.kegiatanService.findAll(
       { status, bentuk, dari_tanggal, sampai_tanggal, page, limit },
-      req.user.role,
+      role,
     );
   }
 
   @Get(':id')
-  @Roles(RoleEnum.admin, RoleEnum.protokoler, RoleEnum.dokumentasi)
+  @Public()
   async findOne(@Param('id') id: string, @Req() req: any) {
-    return this.kegiatanService.findOne(id, req.user.role, req.user.id);
+    const role = req.user?.role || 'tamu';
+    const userId = req.user?.id || null;
+    return this.kegiatanService.findOne(id, role, userId);
   }
+
 
   @Patch(':id')
   @Roles(RoleEnum.admin)

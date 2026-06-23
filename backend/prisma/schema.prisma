@@ -186,6 +186,7 @@ model DokumentasiKegiatan {
   file_url      String
   tipe          String?   @db.VarChar(20)
   keterangan    String?
+  kategori      String?   @db.VarChar(100)
   diunggah_oleh String?   @db.Uuid
   created_at    DateTime? @default(now()) @db.Timestamptz(6)
   user_unggah   User?     @relation("DiunggahOleh", fields: [diunggah_oleh], references: [id])

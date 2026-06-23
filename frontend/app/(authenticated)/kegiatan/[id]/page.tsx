@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { kegiatanApi, pendaftaranApi, absensiApi, evaluasiApi, testimoniApi, protokolerApi } from "@/lib/api";
+import { kegiatanApi, pendaftaranApi, absensiApi, evaluasiApi, testimoniApi, protokolerApi, postinganApi } from "@/lib/api";
 import { useAuth, useRole } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,15 +13,25 @@ import { BadgeStatus } from "@/components/BadgeStatus";
 import { BadgeKategori } from "@/components/BadgeKategori";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ViewportFitGrid } from "@/components/ViewportFitGrid";
+import { BuatKegiatanModal } from "@/components/kegiatan/buat-kegiatan-modal";
 
 type Tab = "info" | "rekrutmen" | "absensi" | "evaluasi" | "dokumentasi";
 
 export default function KegiatanDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
+  const router = useRouter();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (id === 'buat') {
+      router.replace('/kegiatan');
+    }
+  }, [id, router]);
+
   const { user } = useAuth();
   const { data: role } = useRole(user);
   const isAdmin = role === "admin";
@@ -133,6 +144,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     enabled: tab === "evaluasi",
   });
 
+  const { data: detailDokumentasi } = useQuery({
+    queryKey: ["dokumentasi-kegiatan-detail", id],
+    queryFn: () => postinganApi.byKegiatan(id),
+    enabled: tab === "dokumentasi",
+  });
+
   const updateChecklist = useMutation({
     mutationFn: async (data: Partial<typeof keg>) => { await kegiatanApi.update(id, data); },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
@@ -149,6 +166,17 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const verifikasi = useMutation({
     mutationFn: async ({ pId, status }: { pId: string, status: 'diterima' | 'ditolak' }) => { await kegiatanApi.verifikasiPendaftar(id, pId, status); },
     onSuccess: (_, variables) => { toast.success(`Pendaftar ${variables.status}`); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
+  });
+
+  const deleteDokumentasi = useMutation({
+    mutationFn: (docId: string) => postinganApi.delete(docId),
+    onSuccess: () => {
+      toast.success("File dokumentasi berhasil dihapus!");
+      qc.invalidateQueries({ queryKey: ["dokumentasi-kegiatan-detail", id] });
+    },
+    onError: (err: any) => {
+      toast.error(`Gagal menghapus file: ${err.message}`);
+    }
   });
 
   const kirimEvaluasi = useMutation({
@@ -248,11 +276,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
             </Button>
           </Link>
           {isAdmin && (
-            <Link href={`/kegiatan/buat?edit=${id}`}>
-              <Button className="rounded-xl bg-red-800 hover:bg-red-900 text-white shadow-md shadow-red-800/10 h-11 px-5 font-bold transition-all">
-                Edit Kegiatan
-              </Button>
-            </Link>
+            <Button onClick={() => setIsEditModalOpen(true)} className="rounded-xl bg-red-800 hover:bg-red-900 text-white shadow-md shadow-red-800/10 h-11 px-5 font-bold transition-all">
+              Edit Kegiatan
+            </Button>
           )}
         </div>
       </motion.div>
@@ -1228,18 +1254,68 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     <p className="text-sm text-slate-600">Kumpulan foto dan dokumen kegiatan.</p>
                   </div>
                 </div>
-              </div>
-              <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm w-full flex-1 flex flex-col items-center justify-center">
-                <div className="text-center text-slate-500">
-                  <Image className="h-12 w-12 mx-auto mb-3 text-slate-300" />
-                  <p className="font-medium">Galeri dokumentasi kegiatan akan tampil di sini.</p>
-                  {isAdmin && (
-                    <Button variant="outline" className="rounded-xl border-slate-300 mt-4">
-                      + Upload Foto / Dokumen
+                {detailDokumentasi?.dokumentasi && detailDokumentasi.dokumentasi.length > 0 && (isAdmin || role === 'dokumentasi') && (
+                  <Link href={`/dokumentasi/berita?kegiatan_id=${id}&edit=true`}>
+                    <Button className="bg-red-900 hover:bg-red-800 text-white rounded-xl h-10 px-5 text-xs font-bold shadow-sm transition-all">
+                      Kelola Dokumentasi
                     </Button>
-                  )}
-                </div>
+                  </Link>
+                )}
               </div>
+
+              {detailDokumentasi?.dokumentasi && detailDokumentasi.dokumentasi.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-2 w-full flex-1">
+                  {detailDokumentasi.dokumentasi.map((d: any) => (
+                    <div key={d.id} className="relative aspect-square group">
+                      <a href={d.file_url} target="_blank" rel="noopener noreferrer" className="block w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-200/60 shadow-sm hover:shadow-md hover:border-red-300 transition-all">
+                        {d.media_type === 'foto' ? (
+                          <img src={d.file_url} alt={d.keterangan || "Dokumentasi"} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4">
+                            <FileText className="h-12 w-12 mb-2 group-hover:text-red-900 transition-colors" />
+                            <span className="text-xs font-semibold text-slate-700 text-center line-clamp-2">{d.keterangan || 'File Dokumentasi'}</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4 text-white text-xs">
+                          <p className="font-semibold text-slate-200 truncate">Oleh: {d.uploaded_by}</p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">{d.uploaded_at ? new Date(d.uploaded_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}</p>
+                          <p className="font-bold line-clamp-2 mt-2 leading-relaxed text-slate-100">{d.keterangan || 'Tidak ada keterangan'}</p>
+                        </div>
+                      </a>
+
+                      {(isAdmin || role === 'dokumentasi') && (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (confirm('Apakah Anda yakin ingin menghapus file dokumentasi ini?')) {
+                              deleteDokumentasi.mutate(d.id);
+                            }
+                          }}
+                          className="absolute top-3 right-3 p-2 rounded-xl bg-red-600 hover:bg-red-700 text-white shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-105 z-20 flex items-center justify-center"
+                          title="Hapus dokumentasi"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm w-full flex-1 flex flex-col items-center justify-center min-h-[300px]">
+                  <div className="text-center text-slate-500">
+                    <Image className="h-12 w-12 mx-auto mb-3 text-slate-300" />
+                    <p className="font-medium text-slate-700">Galeri dokumentasi kegiatan akan tampil di sini.</p>
+                    {(isAdmin || role === 'dokumentasi') && (
+                      <Link href={`/dokumentasi/berita?kegiatan_id=${id}&edit=true`}>
+                        <Button variant="outline" className="rounded-xl border-slate-300 mt-4 hover:bg-red-50 hover:text-red-900 hover:border-red-200 font-bold transition-all">
+                          + Upload Foto / Dokumen
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
         )}
@@ -1247,6 +1323,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           </motion.div>
         </div>
       </main>
+
+      {/* Modal Edit Kegiatan */}
+      <BuatKegiatanModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} editId={id} />
     </div>
   );
 }

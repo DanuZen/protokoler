@@ -43,6 +43,7 @@ tsconfig.tsbuildinfo
 .env.local
 .env.*.local
 *.env
+!backend/.env
 *.pem
 .dev.vars
 

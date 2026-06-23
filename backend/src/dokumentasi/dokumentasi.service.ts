@@ -32,6 +32,15 @@ export class DokumentasiService {
         include: {
           _count: {
             select: { dokumentasi: true }
+          },
+          dokumentasi: {
+            select: {
+              id: true,
+              file_url: true,
+              tipe: true,
+              keterangan: true,
+              kategori: true
+            }
           }
         },
         skip,
@@ -48,7 +57,14 @@ export class DokumentasiService {
       tempat: k.lokasi,
       status: k.status,
       dokumentasi_count: k._count.dokumentasi,
-      dokumentasi_uploaded: k._count.dokumentasi > 0
+      dokumentasi_uploaded: k._count.dokumentasi > 0,
+      dokumentasi: k.dokumentasi.map(d => ({
+        id: d.id,
+        file_url: d.file_url,
+        media_type: d.tipe,
+        keterangan: d.keterangan,
+        kategori: d.kategori
+      }))
     }));
 
     return {
@@ -62,7 +78,7 @@ export class DokumentasiService {
   async upload(
     userId: string,
     file: any,
-    body: { kegiatan_id: string; media_type: 'foto' | 'video' | 'dokumen'; keterangan?: string },
+    body: { kegiatan_id: string; media_type: 'foto' | 'video' | 'dokumen'; keterangan?: string; kategori?: string },
   ) {
     const kegiatan = await this.prisma.kegiatan.findUnique({
       where: { id: body.kegiatan_id }
@@ -107,6 +123,7 @@ export class DokumentasiService {
         file_url: publicUrl,
         tipe: body.media_type,
         keterangan: body.keterangan || null,
+        kategori: body.kategori || null,
         diunggah_oleh: userId
       }
     });
@@ -161,6 +178,7 @@ export class DokumentasiService {
         media_type: doc.tipe,
         ukuran_file: 2048576, // Standard default size as requested in spec mock responses
         keterangan: doc.keterangan,
+        kategori: doc.kategori,
         uploaded_by: uploaderName,
         uploaded_at: doc.created_at
       };
@@ -173,4 +191,51 @@ export class DokumentasiService {
       dokumentasi: mappedDocs
     };
   }
+
+  async delete(id: string) {
+    const doc = await this.prisma.dokumentasiKegiatan.findUnique({
+      where: { id }
+    });
+    if (!doc) {
+      throw new NotFoundException('Dokumentasi tidak ditemukan');
+    }
+
+    try {
+      if (doc.file_url) {
+        const parts = doc.file_url.split('/');
+        const fileName = parts[parts.length - 1];
+        await this.supabase.deleteFile('dokumentasi', fileName);
+      }
+    } catch (e) {
+      this.logger.error(`Gagal menghapus file dari storage: ${e.message}`);
+    }
+
+    await this.prisma.dokumentasiKegiatan.delete({
+      where: { id }
+    });
+
+    return {
+      message: 'Dokumentasi berhasil dihapus'
+    };
+  }
+
+  async updatePost(kegiatanId: string, body: { keterangan?: string; kategori?: string }) {
+    const dataToUpdate: any = {};
+    if (body.keterangan !== undefined) dataToUpdate.keterangan = body.keterangan;
+    if (body.kategori !== undefined) dataToUpdate.kategori = body.kategori;
+
+    if (Object.keys(dataToUpdate).length === 0) {
+      return { message: 'Tidak ada data yang diperbarui' };
+    }
+
+    await this.prisma.dokumentasiKegiatan.updateMany({
+      where: { kegiatan_id: kegiatanId },
+      data: dataToUpdate,
+    });
+
+    return {
+      message: 'Postingan dokumentasi berhasil diperbarui'
+    };
+  }
 }
+

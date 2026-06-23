@@ -1,9 +1,10 @@
-import { Controller, Post, Get, Body, Param, Req, Query, UseGuards, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Patch, Get, Delete, Body, Param, Req, Query, UseGuards, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DokumentasiService } from './dokumentasi.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 import { RoleEnum } from '@prisma/client';
 
 @Controller('dokumentasi')
@@ -12,7 +13,7 @@ export class DokumentasiController {
   constructor(private readonly dokumentasiService: DokumentasiService) {}
 
   @Get()
-  @Roles(RoleEnum.admin, RoleEnum.protokoler, RoleEnum.dokumentasi)
+  @Public()
   async getAllDokumentasi(
     @Query('status') status?: string,
     @Query('search') search?: string,
@@ -39,7 +40,7 @@ export class DokumentasiController {
   async uploadDocumentation(
     @Req() req: any,
     @UploadedFile() file: any,
-    @Body() body: { kegiatan_id: string; media_type: 'foto' | 'video' | 'dokumen'; keterangan?: string },
+    @Body() body: { kegiatan_id: string; media_type: 'foto' | 'video' | 'dokumen'; keterangan?: string; kategori?: string },
   ) {
     if (!file && body.media_type !== 'video') {
       throw new BadRequestException('File dokumentasi wajib diunggah');
@@ -55,8 +56,24 @@ export class DokumentasiController {
   }
 
   @Get('kegiatan/:id')
-  @Roles(RoleEnum.admin, RoleEnum.protokoler, RoleEnum.dokumentasi)
+  @Public()
   async getDocumentationByKegiatan(@Param('id') kegiatanId: string) {
     return this.dokumentasiService.getByKegiatan(kegiatanId);
   }
+
+  @Delete(':id')
+  @Roles(RoleEnum.admin, RoleEnum.dokumentasi)
+  async deleteDocumentation(@Param('id') id: string) {
+    return this.dokumentasiService.delete(id);
+  }
+
+  @Patch('kegiatan/:kegiatan_id')
+  @Roles(RoleEnum.admin, RoleEnum.dokumentasi)
+  async updateDocumentationPost(
+    @Param('kegiatan_id') kegiatanId: string,
+    @Body() body: { keterangan?: string; kategori?: string },
+  ) {
+    return this.dokumentasiService.updatePost(kegiatanId, body);
+  }
 }
+

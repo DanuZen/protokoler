@@ -44,12 +44,122 @@ const staggerContainer = {
   },
 };
 
+function PostCard({ post, isFeatured, onClick }: { post: any, isFeatured: boolean, onClick: () => void }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const images = post.images || [post.gambar || '/gallery_1.png'];
 
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveIdx((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveIdx((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  let gridClass = "h-[360px] md:h-[400px]";
+  if (isFeatured) {
+    gridClass += " md:col-span-2 lg:col-span-2";
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.6 }}
+      whileHover={{ scale: 1.02 }}
+      onClick={onClick}
+      className={cn(
+        "group relative overflow-hidden cursor-pointer rounded-3xl w-full",
+        gridClass
+      )}
+      style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05)' }}
+    >
+      {/* Slider Images */}
+      {images.map((img: string, idx: number) => (
+        <motion.div
+          key={img + idx}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: idx === activeIdx ? 1 : 0 }}
+          transition={{ duration: 0.4 }}
+          className="absolute inset-0 z-0"
+        >
+          <Image 
+            src={img} 
+            alt={post.judul} 
+            fill 
+            sizes={isFeatured ? "(max-width: 1024px) 100vw, 60vw" : "(max-width: 1024px) 100vw, 40vw"} 
+            className="object-cover transition-transform duration-1000 group-hover:scale-108" 
+          />
+        </motion.div>
+      ))}
+
+      {/* Slide Navigation Buttons */}
+      {images.length > 1 && (
+        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+          <button 
+            onClick={handlePrev} 
+            className="w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm transition-all"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={handleNext} 
+            className="w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm transition-all"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+
+
+      {/* Overlays */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500 z-10" />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" style={{ background: 'linear-gradient(135deg, rgba(139,10,26,0.4) 0%, transparent 60%)' }} />
+      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" style={{ boxShadow: 'inset 0 0 0 2px rgba(139,10,26,0.6)' }} />
+      
+      {/* Tag */}
+      <div className="absolute top-6 left-6 flex gap-2 z-20">
+        <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#6B0000]/90 backdrop-blur-md text-white shadow-lg">
+          {post.kategori}
+        </span>
+      </div>
+
+      {/* Content */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 z-20 flex flex-col justify-end">
+        <p className="text-[#D2AD5C] text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2">
+          {new Date(post.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+        </p>
+        <h3 className={cn("text-white font-bold drop-shadow-lg leading-tight mb-3", isFeatured ? "text-2xl md:text-3xl" : "text-xl md:text-2xl")}>
+          {post.judul}
+        </h3>
+        
+        <p className={cn("text-white/80 transition-all duration-500 line-clamp-2", isFeatured ? "text-sm md:text-base mb-5 opacity-100" : "text-sm mb-0 h-0 opacity-0 group-hover:h-auto group-hover:mb-4 group-hover:opacity-100")}>
+          {post.ringkasan}
+        </p>
+
+        <div className={cn("flex items-center gap-3 transition-opacity duration-500", isFeatured ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
+          <div className="w-8 h-[2px] rounded-full bg-[#D2AD5C]" />
+          <span className="text-white text-[10px] md:text-xs font-bold uppercase tracking-widest group-hover:text-[#D2AD5C] transition-colors">Baca Selengkapnya</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Landing() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedPost, setSelectedPost] = useState<any | null>(null);
+  const [modalPhotoIdx, setModalPhotoIdx] = useState(0);
+
+  const handleSelectPost = (post: any) => {
+    setSelectedPost(post);
+    setModalPhotoIdx(0);
+  };
+
 
   const { user } = useAuth();
   const { data: role } = useRole(user);
@@ -563,60 +673,13 @@ export default function Landing() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {postinganDokumentasi.map((post: any, i: number) => {
                   const isFeatured = i === 0;
-                  
-                  // Distribusi grid lebih praktis dan seimbang
-                  let gridClass = "h-[360px] md:h-[400px]";
-                  if (isFeatured) {
-                    gridClass += " md:col-span-2 lg:col-span-2";
-                  }
-
                   return (
-                    <motion.div
-                      initial={{ opacity: 0, y: 50 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: '-100px' }}
-                      transition={{ duration: 0.6, delay: i * 0.15 }}
+                    <PostCard
                       key={post.id}
-                      whileHover={{ scale: 1.02 }}
-                      onClick={() => setSelectedPost(post)}
-                      className={cn(
-                        "group relative overflow-hidden cursor-pointer rounded-3xl w-full",
-                        gridClass
-                      )}
-                      style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05)' }}
-                    >
-                      <Image src={post.gambar} alt={post.judul} fill sizes={isFeatured ? "(max-width: 1024px) 100vw, 60vw" : "(max-width: 1024px) 100vw, 40vw"} className="object-cover transition-transform duration-1000 group-hover:scale-108" />
-                      {/* Overlays */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(135deg, rgba(139,10,26,0.4) 0%, transparent 60%)' }} />
-                      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ boxShadow: 'inset 0 0 0 2px rgba(139,10,26,0.6)' }} />
-                      
-                      {/* Tag */}
-                      <div className="absolute top-6 left-6 flex gap-2 z-20">
-                        <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#6B0000]/90 backdrop-blur-md text-white shadow-lg">
-                          {post.kategori}
-                        </span>
-                      </div>
-
-                      {/* Content */}
-                      <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 z-20 flex flex-col justify-end">
-                        <p className="text-[#D2AD5C] text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2">
-                          {new Date(post.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                        </p>
-                        <h3 className={cn("text-white font-bold drop-shadow-lg leading-tight mb-3", isFeatured ? "text-2xl md:text-3xl" : "text-xl md:text-2xl")}>
-                          {post.judul}
-                        </h3>
-                        
-                        <p className={cn("text-white/80 transition-all duration-500 line-clamp-2", isFeatured ? "text-sm md:text-base mb-5 opacity-100" : "text-sm mb-0 h-0 opacity-0 group-hover:h-auto group-hover:mb-4 group-hover:opacity-100")}>
-                          {post.ringkasan}
-                        </p>
-
-                        <div className={cn("flex items-center gap-3 transition-opacity duration-500", isFeatured ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
-                          <div className="w-8 h-[2px] rounded-full bg-[#D2AD5C]" />
-                          <span className="text-white text-[10px] md:text-xs font-bold uppercase tracking-widest group-hover:text-[#D2AD5C] transition-colors">Baca Selengkapnya</span>
-                        </div>
-                      </div>
-                    </motion.div>
+                      post={post}
+                      isFeatured={isFeatured}
+                      onClick={() => handleSelectPost(post)}
+                    />
                   );
                 })}
               </div>
@@ -651,32 +714,44 @@ export default function Landing() {
                 className="bg-white w-[95vw] max-w-[1400px] max-h-[90vh] md:h-[85vh] rounded-2xl md:rounded-[2rem] overflow-hidden flex flex-col md:flex-row shadow-2xl relative"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Left Side: Image (Instagram style) */}
+                {/* Left Side: Image (Instagram style slideable) */}
                 <div className="w-full md:w-[60%] h-[40%] md:h-full bg-slate-950 relative flex items-center justify-center overflow-hidden group/image">
                    {/* Blur Background */}
-                   <Image src={selectedPost.gambar} alt={selectedPost.judul} fill className="object-cover opacity-30 blur-2xl pointer-events-none scale-110" />
+                   <Image 
+                     src={selectedPost.images?.[modalPhotoIdx] || selectedPost.gambar} 
+                     alt={selectedPost.judul} 
+                     fill 
+                     className="object-cover opacity-30 blur-2xl pointer-events-none scale-110" 
+                   />
                    {/* Main Image */}
-                   <Image src={selectedPost.gambar} alt={selectedPost.judul} fill className="object-contain drop-shadow-2xl z-10" />
+                   <Image 
+                     src={selectedPost.images?.[modalPhotoIdx] || selectedPost.gambar} 
+                     alt={selectedPost.judul} 
+                     fill 
+                     className="object-contain drop-shadow-2xl z-10" 
+                   />
 
-                   {/* Navigation Arrows */}
-                   {postinganDokumentasi && (
+                   {/* Navigation Arrows for Slider */}
+                   {selectedPost.images && selectedPost.images.length > 1 && (
                      <>
-                        {postinganDokumentasi.findIndex((p:any) => p.id === selectedPost.id) > 0 && (
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); setSelectedPost(postinganDokumentasi[postinganDokumentasi.findIndex((p:any) => p.id === selectedPost.id) - 1]); }}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-md transition-all md:opacity-0 group-hover/image:opacity-100"
-                          >
-                             <ChevronLeft className="w-6 h-6" />
-                          </button>
-                        )}
-                        {postinganDokumentasi.findIndex((p:any) => p.id === selectedPost.id) < postinganDokumentasi.length - 1 && (
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); setSelectedPost(postinganDokumentasi[postinganDokumentasi.findIndex((p:any) => p.id === selectedPost.id) + 1]); }}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-md transition-all md:opacity-0 group-hover/image:opacity-100"
-                          >
-                             <ChevronRight className="w-6 h-6" />
-                          </button>
-                        )}
+                        <button 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setModalPhotoIdx((prev) => (prev === 0 ? selectedPost.images.length - 1 : prev - 1)); 
+                          }}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md animate-in fade-in"
+                        >
+                           <ChevronLeft className="w-6 h-6" />
+                        </button>
+                        <button 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setModalPhotoIdx((prev) => (prev === selectedPost.images.length - 1 ? 0 : prev + 1)); 
+                          }}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md animate-in fade-in"
+                        >
+                           <ChevronRight className="w-6 h-6" />
+                        </button>
                      </>
                    )}
                 </div>
@@ -705,7 +780,12 @@ export default function Landing() {
                        {new Date(selectedPost.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                      </p>
                      <h2 className="text-2xl font-bold text-slate-900 mb-4 leading-tight">{selectedPost.judul}</h2>
-                     <p className="text-slate-600 leading-relaxed mb-6">{selectedPost.ringkasan}</p>
+                     {(() => {
+                       const activePhotoUrl = selectedPost.images?.[modalPhotoIdx];
+                       const activeDoc = (selectedPost.dokumentasi || []).find((d: any) => d.file_url === activePhotoUrl);
+                       const description = activeDoc?.keterangan || selectedPost.ringkasan;
+                       return <p className="text-slate-600 leading-relaxed mb-6 whitespace-pre-wrap">{description}</p>;
+                     })()}
                      <div className="flex items-center gap-3 py-4 border-y border-slate-100 my-6">
                         <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
                            <Megaphone className="w-4 h-4 text-slate-500" />
