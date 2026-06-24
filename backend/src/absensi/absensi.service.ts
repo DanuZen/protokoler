@@ -84,21 +84,27 @@ export class AbsensiService {
       throw new ConflictException('Anda sudah melakukan absensi sebelumnya');
     }
 
-    // 5. Upload photo to Supabase Storage
-    const fileExt = file.originalname?.split('.').pop() || 'jpg';
-    const filePath = `absensi_${kegiatanId}_${protokolerId}.${fileExt}`;
-    
+    // 5. Upload photo to Supabase Storage (if provided)
     let photoUrl = '';
-    try {
-      photoUrl = await this.supabase.uploadFile(
-        'protokoler-absensi',
-        filePath,
-        file.buffer,
-        file.mimetype || 'image/jpeg'
-      );
-    } catch (err) {
-      // Fallback placeholder URL
-      photoUrl = `https://storage.siproto.ac.id/protokoler-absensi/${filePath}`;
+    
+    if (file) {
+      const fileExt = file.originalname?.split('.').pop() || 'jpg';
+      const filePath = `absensi_${kegiatanId}_${protokolerId}.${fileExt}`;
+      
+      try {
+        photoUrl = await this.supabase.uploadFile(
+          'protokoler-absensi',
+          filePath,
+          file.buffer,
+          file.mimetype || 'image/jpeg'
+        );
+      } catch (err) {
+        // Fallback placeholder URL
+        photoUrl = `https://storage.siproto.ac.id/protokoler-absensi/${filePath}`;
+      }
+    } else {
+      // Photo is skipped because AI face detection verified the presence
+      photoUrl = 'TERDETEKSI_OTOMATIS';
     }
 
     // 6. Record absensi in database

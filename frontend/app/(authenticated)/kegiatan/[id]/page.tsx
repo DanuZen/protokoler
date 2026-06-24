@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import * as tf from "@tensorflow/tfjs";
+import * as blazeface from "@tensorflow-models/blazeface";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,7 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle, Trash2, Plus } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle, Trash2, Plus, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ViewportFitGrid } from "@/components/ViewportFitGrid";
@@ -55,6 +57,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const [isiTestimoni, setIsiTestimoni] = useState('');
   const [ratingTamu, setRatingTamu] = useState(5);
   const [selectedRole, setSelectedRole] = useState<'Protokoler' | 'Liaison Officer'>('Protokoler');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
   // State untuk Kamera (Absensi)
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -84,19 +87,57 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     setIsCameraOpen(false);
   };
 
-  const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-        setPhoto(dataUrl);
-        stopCamera();
+  const [isDetecting, setIsDetecting] = useState(false);
+
+  const capturePhoto = async () => {
+    if (!videoRef.current) return;
+    const video = videoRef.current;
+    
+    setIsDetecting(true);
+    const loadingToast = toast.loading("Mendeteksi wajah...");
+    
+    try {
+      // Load the model
+      await tf.ready();
+      const model = await blazeface.load();
+      
+      // Ensure video is playing and has data
+      if (video.readyState < 2) {
+        throw new Error("Kamera belum siap");
       }
+      
+      const predictions = await model.estimateFaces(video, false);
+      
+      if (predictions.length > 0) {
+        toast.dismiss(loadingToast);
+        toast.success("Wajah terdeteksi!");
+        stopCamera();
+        
+        // Trigger check-in
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const lat = position.coords.latitude.toString();
+              const lng = position.coords.longitude.toString();
+              // Pass empty photoDataUrl, backend now handles optional photos
+              kirimAbsensi.mutate({ photoDataUrl: "", lat, lng });
+            },
+            () => {
+              kirimAbsensi.mutate({ photoDataUrl: "" });
+            }
+          );
+        } else {
+          kirimAbsensi.mutate({ photoDataUrl: "" });
+        }
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error("Wajah tidak terdeteksi. Posisikan wajah Anda pada kamera.");
+      }
+    } catch (err: any) {
+      toast.dismiss(loadingToast);
+      toast.error("Gagal mendeteksi wajah: " + err.message);
+    } finally {
+      setIsDetecting(false);
     }
   };
 
@@ -224,10 +265,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
   const kirimAbsensi = useMutation({
     mutationFn: async ({ photoDataUrl, lat, lng }: { photoDataUrl: string; lat?: string; lng?: string }) => {
-      const response = await fetch(photoDataUrl);
-      const blob = await response.blob();
       const formData = new FormData();
-      formData.append('foto_selfie', blob, 'selfie.jpg');
+      if (photoDataUrl) {
+        const response = await fetch(photoDataUrl);
+        const blob = await response.blob();
+        formData.append('foto_selfie', blob, 'selfie.jpg');
+      }
       if (lat) formData.append('latitude', lat);
       if (lng) formData.append('longitude', lng);
       
@@ -387,7 +430,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
       {/* Tab Panels */}
       <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto pr-2 pb-12">
+        <div className="flex-1 overflow-y-auto pb-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="h-full flex flex-col">
             
             {/* ── Tab INFO ── */}
@@ -407,7 +450,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     </div>
                   </div>
                   
-                  <div className="flex flex-col gap-8 flex-1">
+                  <div className="flex flex-col gap-8 flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               
               {/* Info Dasar */}
               <div className="flex flex-col">
@@ -528,7 +571,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                    <h2 className="text-[15px] font-bold text-slate-800">Tamu VVIP</h2>
                    <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Daftar kehadiran</p>
                 </div>
-                <div className="p-6 md:p-8 flex flex-col flex-1">
+                <div className="p-6 md:p-8 flex flex-col flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   <div className="flex-1">
                     {!keg.tamu_vvip?.length ? (
                       <div className="flex flex-col items-center justify-center py-10 text-center bg-slate-50 rounded-xl border border-slate-100 h-full">
@@ -862,7 +905,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
         {/* ── Tab ABSENSI ── */}
         {tab === "absensi" && (
           <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
-            <div className="p-6 md:p-8 flex flex-col flex-1">
+            <div className="p-6 md:p-8 flex flex-col flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
                   <div className="flex items-center justify-center h-12 w-12 bg-red-50 text-red-800 rounded-xl shadow-sm shrink-0 border border-red-100">
@@ -883,18 +926,64 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
               <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm w-full flex-1 flex flex-col justify-center">
                 
                 {/* Modul Kamera Absensi untuk Protokoler (Non-Admin & Diterima) */}
-                {!isAdmin && isDiterima && (
-                  <div className="w-full flex flex-col items-center justify-center flex-1">
-                      {isAbsenSuccess ? (
-                        <div className="text-center py-8">
-                          <div className={`mx-auto h-16 w-16 ${attendanceType === 'hadir' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'} rounded-full flex items-center justify-center mb-4`}>
-                            {attendanceType === 'hadir' ? <CheckCircle2 className="h-8 w-8" /> : <ClipboardCheck className="h-8 w-8" />}
+                {!isAdmin && isDiterima && (() => {
+                  const hasAbsen = isAbsenSuccess || (absensi?.some((a: any) => a.protokoler_id === protokoler?.id) ?? false);
+                  const currentUserAbsen = absensi?.find((a: any) => a.protokoler_id === protokoler?.id);
+                  const isHadir = attendanceType === 'hadir' || currentUserAbsen?.status === 'hadir';
+
+                  return (
+                    <div className="w-full flex flex-col items-center justify-center flex-1">
+                      {hasAbsen ? (
+                        <div className="w-full max-w-3xl">
+                          <div className="text-center py-6 bg-green-50 border border-green-200 rounded-2xl mb-8">
+                            <div className={`mx-auto h-16 w-16 ${isHadir ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'} rounded-full flex items-center justify-center mb-4 shadow-sm border border-green-200`}>
+                              {isHadir ? <CheckCircle2 className="h-8 w-8" /> : <ClipboardCheck className="h-8 w-8" />}
+                            </div>
+                            <h4 className="font-bold text-green-800 text-lg">{isHadir ? 'Kehadiran Anda Tercatat!' : 'Izin Anda Tercatat!'}</h4>
+                            <p className="text-sm text-green-700 mt-1 max-w-md mx-auto">Terima kasih. Berikut adalah daftar rekan protokoler yang juga sudah melakukan absensi.</p>
                           </div>
-                          <h4 className="font-bold text-slate-800 text-lg">{attendanceType === 'hadir' ? 'Kehadiran Tercatat!' : 'Izin Tercatat!'}</h4>
-                          <p className="text-sm text-slate-500 mt-1">{attendanceType === 'hadir' ? 'Terima kasih, selamat bertugas.' : 'Terima kasih atas konfirmasinya.'}</p>
+                          
+                          <div className="flex items-center gap-2 mb-4 px-1">
+                            <Users className="w-5 h-5 text-slate-500" />
+                            <h3 className="font-bold text-slate-800">Daftar Kehadiran Rekan</h3>
+                          </div>
+                          
+                          <div className="rounded-xl overflow-hidden border border-slate-200 w-full bg-white">
+                            <Table className="w-full">
+                              <TableHeader className="bg-slate-50/50">
+                                <TableRow>
+                                  <TableHead className="font-bold pl-6 py-4">Protokoler</TableHead>
+                                  <TableHead className="font-bold py-4">Waktu Absen</TableHead>
+                                  <TableHead className="font-bold py-4 pr-6">Status</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {!absensi?.length ? (
+                                  <TableRow><TableCell colSpan={3} className="h-32 text-center text-slate-400">Belum ada data absensi lainnya.</TableCell></TableRow>
+                                ) : (
+                                  absensi.map((a: any) => (
+                                    <TableRow key={a.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
+                                      <TableCell className="py-3 pl-6">
+                                        <div className="flex items-center gap-2">
+                                          <p className="font-bold text-slate-800">{a.protokoler?.nama_lengkap}</p>
+                                          {a.protokoler_id === protokoler?.id && <Badge className="bg-red-100 text-red-800 hover:bg-red-100 border-none px-1.5 py-0 rounded text-[10px] uppercase font-bold tracking-wider">Anda</Badge>}
+                                        </div>
+                                      </TableCell>
+                                      <TableCell className="text-sm font-medium text-slate-600 py-3">
+                                        {new Date(a.waktu_absen).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                                      </TableCell>
+                                      <TableCell className="py-3 pr-6">
+                                        <BadgeStatus status={a.status} />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))
+                                )}
+                              </TableBody>
+                            </Table>
+                          </div>
                         </div>
                       ) : (
-                        <div className="w-full max-w-md">
+                        <div className={`w-full ${attendanceType === 'hadir' ? 'max-w-md md:max-w-3xl' : 'max-w-md'}`}>
                           {!attendanceType ? (
                             <div className="flex gap-4">
                               <div className="flex-1 border-2 border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-green-50 hover:border-green-400 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('hadir')}>
@@ -945,25 +1034,26 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   <p className="text-xs text-slate-500 text-center">Klik untuk mengambil foto selfie</p>
                                 </div>
                               ) : isCameraOpen ? (
-                                <div className="flex flex-col items-center">
-                                  <div className="relative rounded-2xl overflow-hidden bg-black aspect-[3/4] w-full shadow-inner mb-4">
+                                <div className="flex flex-col md:flex-row items-center md:items-stretch gap-4 w-full">
+                                  <div className="relative rounded-2xl overflow-hidden bg-black aspect-[3/4] md:aspect-video w-full flex-1 shadow-inner mb-4 md:mb-0 transition-all duration-300">
                                     <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
                                     {/* Overlay guides */}
                                     <div className="absolute inset-0 border-[3px] border-white/20 m-4 rounded-xl pointer-events-none"></div>
                                   </div>
-                                  <div className="flex gap-3 w-full">
-                                    <Button variant="outline" onClick={stopCamera} className="flex-1 rounded-xl border-slate-200 h-12 font-bold text-slate-600">Batal</Button>
-                                    <Button onClick={capturePhoto} className="flex-1 rounded-xl bg-red-800 hover:bg-red-900 text-white h-12 font-bold shadow-md shadow-red-800/20">Ambil Foto</Button>
+                                  <div className="flex flex-row-reverse md:flex-col justify-center gap-3 w-full md:w-48 shrink-0">
+                                    <Button onClick={capturePhoto} disabled={isDetecting} className="flex-1 md:flex-none rounded-xl bg-red-800 hover:bg-red-900 text-white h-12 font-bold shadow-md shadow-red-800/20">
+                                      {isDetecting ? 'Mendeteksi...' : 'Deteksi Wajah & Hadir'}
+                                    </Button>
+                                    <Button variant="outline" onClick={stopCamera} className="flex-1 md:flex-none rounded-xl border-slate-200 h-12 font-bold text-slate-600">Batal</Button>
                                   </div>
                                   <canvas ref={canvasRef} className="hidden" />
                                 </div>
                               ) : (
-                                <div className="flex flex-col items-center">
-                                  <div className="relative rounded-2xl overflow-hidden bg-slate-100 aspect-[3/4] w-full shadow-sm border border-slate-200 mb-4">
+                                <div className="flex flex-col md:flex-row items-center md:items-stretch gap-4 w-full mb-4">
+                                  <div className="relative rounded-2xl overflow-hidden bg-slate-100 aspect-[3/4] md:aspect-video w-full flex-1 shadow-sm border border-slate-200 mb-4 md:mb-0 transition-all duration-300">
                                     <img src={photo || ""} alt="Selfie Absensi" className="w-full h-full object-cover" />
                                   </div>
-                                  <div className="flex gap-3 w-full mb-4">
-                                    <Button variant="outline" onClick={() => { setPhoto(null); startCamera(); }} className="flex-1 rounded-xl border-slate-200 h-12 font-bold text-slate-600">Foto Ulang</Button>
+                                  <div className="flex flex-row-reverse md:flex-col justify-center gap-3 w-full md:w-48 shrink-0">
                                     <Button 
                                       disabled={kirimAbsensi.isPending}
                                       onClick={() => {
@@ -983,10 +1073,11 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                           kirimAbsensi.mutate({ photoDataUrl: photo });
                                         }
                                       }} 
-                                      className="flex-1 rounded-xl bg-green-600 hover:bg-green-700 text-white h-12 font-bold shadow-md shadow-green-600/20"
+                                      className="flex-1 md:flex-none rounded-xl bg-green-600 hover:bg-green-700 text-white h-12 font-bold shadow-md shadow-green-600/20"
                                     >
                                       {kirimAbsensi.isPending ? 'Mengirim...' : 'Kirim Absensi'}
                                     </Button>
+                                    <Button variant="outline" onClick={() => { setPhoto(null); startCamera(); }} className="flex-1 md:flex-none rounded-xl border-slate-200 h-12 font-bold text-slate-600">Foto Ulang</Button>
                                   </div>
                                 </div>
                               )}
@@ -995,7 +1086,8 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                         </div>
                       )}
                     </div>
-                )}
+                  );
+                })()}
                 
                 {!isAdmin && !isDiterima && (
                   <div className="flex flex-col items-center justify-center py-16 text-center bg-slate-50 rounded-2xl border border-slate-200 border-dashed w-full max-w-2xl mx-auto">
@@ -1050,7 +1142,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   {new Date(a.waktu_absen).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
                                 </TableCell>
                                 <TableCell className="py-3">
-                                  {a.foto_selfie_url ? (
+                                  {a.foto_selfie_url === "TERDETEKSI_OTOMATIS" ? (
+                                    <div className="flex items-center gap-2 border border-slate-200 bg-slate-50 px-2.5 py-1.5 rounded-lg w-fit">
+                                      <UserCheck className="h-4 w-4 text-green-600" />
+                                      <span className="text-[11px] font-bold text-slate-700 uppercase">AI Verified</span>
+                                    </div>
+                                  ) : a.foto_selfie_url ? (
                                     <a href={a.foto_selfie_url} target="_blank" className="block group w-fit">
                                       <div className="h-14 w-14 rounded-xl border border-slate-200 overflow-hidden bg-white flex items-center justify-center group-hover:border-red-300 shadow-sm transition-all relative">
                                         <img src={a.foto_selfie_url} alt="Selfie" className="w-full h-full object-cover" />
@@ -1098,8 +1195,8 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
           return (
           <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
-            <div className="p-6 md:p-8 flex flex-col flex-1">
-              <div className="flex items-start md:items-center justify-between gap-4 mb-6">
+            <div className="p-6 md:p-8 flex flex-col flex-1 min-h-0">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
                   <div className="flex items-center justify-center h-12 w-12 bg-red-50 text-red-800 rounded-xl shadow-sm shrink-0 border border-red-100">
                     <FileSignature className="h-6 w-6 stroke-[2]" />
@@ -1109,8 +1206,34 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     <p className="text-sm text-slate-600">Feedback, saran, dan rekapitulasi penilaian kinerja kegiatan.</p>
                   </div>
                 </div>
+                
+                <div className="flex flex-col md:flex-row items-end md:items-center gap-3">
+
+                  {/* Export & Action Buttons */}
+                  {(isAdmin || hasSubmittedEvaluasi) && (
+                    <div className="flex flex-wrap items-center justify-end gap-2">
+                      {evaluasiTab === 'evaluasi' && (
+                        <Button onClick={() => toast.success('File ekspor berhasil disiapkan')} className="rounded-xl bg-[#6B0000] text-white hover:bg-red-950 font-bold h-10 px-4 md:px-5 text-xs md:text-sm shadow-sm shrink-0">
+                          <Download className="mr-1.5 md:mr-2 h-3.5 w-3.5 md:h-4 md:w-4" /> Export Data
+                        </Button>
+                      )}
+                      {evaluasiTab === 'testimoni' && (
+                        <>
+                          <Button onClick={() => toast.success('File ekspor berhasil disiapkan')} className="rounded-xl bg-[#6B0000] text-white hover:bg-red-950 font-bold h-10 px-4 md:px-5 text-xs md:text-sm shadow-sm shrink-0">
+                            <Download className="mr-1.5 md:mr-2 h-3.5 w-3.5 md:h-4 md:w-4" /> Export Testimoni
+                          </Button>
+                          {(isAdmin || isDiterima) && (
+                            <Button onClick={() => setIsTestimoniModalOpen(true)} className="rounded-xl bg-[#6B0000] text-white hover:bg-red-950 font-bold h-10 px-4 md:px-5 text-xs md:text-sm shadow-sm shrink-0">
+                              <Plus className="mr-1.5 md:mr-2 h-3.5 w-3.5 md:h-4 md:w-4" /> Tambah Testimoni
+                            </Button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="w-full flex-1 flex flex-col space-y-8 mt-2">
+              <div className="w-full flex-1 flex flex-col space-y-8 mt-2 min-h-0">
             
             {/* Form Pengisian Evaluasi untuk Protokoler */}
             {!isAdmin && !hasSubmittedEvaluasi && (
@@ -1149,7 +1272,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                               if (!ratingAcara) return toast.error('Silakan berikan rating acara terlebih dahulu');
                               kirimEvaluasi.mutate();
                             }} 
-                            className="rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold h-11 px-8 shadow-md"
+                            className="rounded-xl bg-[#6B0000] hover:bg-red-950 text-white font-bold h-11 px-8 shadow-md"
                             disabled={kirimEvaluasi.isPending}
                           >
                             {kirimEvaluasi.isPending ? 'Mengirim...' : 'Kirim Evaluasi'}
@@ -1159,18 +1282,6 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
               </div>
             )}
 
-            {/* Indikator Evaluasi Berhasil Disubmit */}
-            {!isAdmin && hasSubmittedEvaluasi && (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3 shadow-sm">
-                <div className="flex items-center justify-center h-10 w-10 bg-emerald-100 text-emerald-600 rounded-full shrink-0">
-                  <CheckCircle2 className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-emerald-800">Evaluasi Berhasil Disubmit</h3>
-                  <p className="text-[11px] md:text-xs text-emerald-600 mt-0.5">Terima kasih atas partisipasi dan masukan Anda. Anda kini dapat melihat hasil evaluasi keseluruhan di bawah ini.</p>
-                </div>
-              </div>
-            )}
 
             {/* Floating Stats Grid */}
             {isAdmin && (
@@ -1201,22 +1312,19 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
             )}
             {/* Detail Panel */}
             {(isAdmin || hasSubmittedEvaluasi) && (
-              <div className="rounded-[24px] border border-slate-200 shadow-sm overflow-hidden bg-white">
-                <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50">
+              <div className="rounded-[24px] border border-slate-200 shadow-sm overflow-hidden bg-white flex-1 flex flex-col min-h-0">
+                <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50 gap-4 shrink-0">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
                       <BarChart3 className="h-5 w-5" />
                     </div>
                     <div>
                       <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Detail Hasil Evaluasi</h2>
-                      <p className="text-[11px] text-slate-500 mt-0.5">Ringkasan evaluasi, testimoni, dan feedback admin.</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">Ringkasan evaluasi, testimoni, dan feedback.</p>
                     </div>
                   </div>
-                  <Badge className="rounded-md border border-emerald-200 text-emerald-700 bg-emerald-50 shadow-sm">Selesai</Badge>
-                </div>
-                
-                <div className="p-6 flex flex-col space-y-6">
-                  <div className="grid grid-cols-3 gap-3">
+                  
+                  <div className="flex items-center bg-white p-1 rounded-xl border border-slate-200 shadow-sm self-start md:self-auto">
                     {[
                       { key: 'evaluasi', label: 'Evaluasi' },
                       { key: 'testimoni', label: 'Testimoni' },
@@ -1227,37 +1335,47 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                         <button
                           key={item.key}
                           onClick={() => setEvaluasiTab(item.key as any)}
-                          className={`border px-3 py-2.5 text-sm transition-all rounded-xl font-bold ${active ? 'bg-slate-900 border-slate-900 text-white shadow-md' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50'}`}
+                          className={`px-3 md:px-4 py-1.5 md:py-2 text-[12px] md:text-[13px] transition-all rounded-lg font-bold ${active ? 'bg-[#6B0000] text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}
                         >
                           {item.label}
                         </button>
                       );
                     })}
                   </div>
+                </div>
+                
+                <div className="p-6 flex flex-col flex-1 min-h-0">
 
-                  <div className="min-h-[400px] flex flex-col">
+                  <div className="flex-1 flex flex-col min-h-0">
                   {evaluasiTab === 'evaluasi' && (
-                    <div className="flex-1 flex flex-col justify-between space-y-4">
-                      <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm">
+                    <div className="flex-1 flex flex-col justify-between space-y-4 min-h-0">
+                      <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white shadow-sm flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {!evaluasi?.length ? (
                           <div className="p-8 text-center text-slate-400">Belum ada evaluasi dari protokoler.</div>
                         ) : (
                           evaluasi.map((item: any) => (
-                            <div key={item.id} className="p-5">
-                              <div className="flex items-center justify-between gap-3 mb-2">
+                            <details key={item.id} className="group p-5 border-b border-slate-100 last:border-0 [&_summary::-webkit-details-marker]:hidden">
+                              <summary className="flex items-center justify-between gap-3 cursor-pointer outline-none select-none">
                                 <div>
                                   <div className="font-semibold text-slate-800 text-sm md:text-base">{item.protokoler?.nama_lengkap}</div>
                                   <div className="text-xs text-slate-500 mt-0.5">
                                     {new Date(item.waktu_pengisian).toLocaleString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\./g, ':')} · {item.dalam_batas_waktu ? "Tepat waktu" : "Melewati batas"}
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-1 text-amber-500">
-                                  {[...Array(5)].map((_, index) => (
-                                    <Star key={index} className={`h-4 w-4 ${index < item.rating_kegiatan ? "fill-current" : "text-slate-200"}`} />
-                                  ))}
+                                <div className="flex items-center gap-3 md:gap-4">
+                                  <div className="flex items-center gap-1 text-amber-500 hidden sm:flex">
+                                    {[...Array(5)].map((_, index) => (
+                                      <Star key={index} className={`h-4 w-4 ${index < item.rating_kegiatan ? "fill-current" : "text-slate-200"}`} />
+                                    ))}
+                                  </div>
+                                  <div className="flex items-center gap-1 text-amber-500 sm:hidden">
+                                    <Star className="h-4 w-4 fill-current" />
+                                    <span className="text-xs font-bold">{item.rating_kegiatan}/5</span>
+                                  </div>
+                                  <ChevronDown className="h-5 w-5 text-slate-400 group-open:rotate-180 transition-transform" />
                                 </div>
-                              </div>
-                              <div className="mt-3 space-y-3">
+                              </summary>
+                              <div className="mt-4 space-y-3 pt-4 border-t border-slate-100">
                                 <div>
                                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Evaluasi Diri</span>
                                   <p className="mt-1 text-[13px] text-slate-600 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100 leading-relaxed font-medium">
@@ -1279,21 +1397,17 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   </p>
                                 </div>
                               </div>
-                            </div>
+                            </details>
                           ))
                         )}
                       </div>
-                      <div className="flex justify-end pt-4 mt-auto">
-                        <Button onClick={() => toast.success('File ekspor berhasil disiapkan')} className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-5 shadow-md">
-                          <Download className="mr-2 h-4 w-4" /> Export Data
-                        </Button>
-                      </div>
+
                     </div>
                   )}
 
                   {evaluasiTab === 'testimoni' && (
-                    <div className="flex-1 flex flex-col justify-between space-y-4">
-                      <div className="space-y-4">
+                    <div className="flex-1 flex flex-col justify-between space-y-4 min-h-0">
+                      <div className="space-y-4 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {!testimoni?.length ? (
                           <div className="p-8 text-center border border-slate-200 rounded-xl text-slate-400">Belum ada testimoni dari tamu.</div>
                         ) : (
@@ -1330,22 +1444,13 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                           ))
                         )}
                       </div>
-                      <div className="flex justify-end gap-3 pt-4 mt-auto">
-                        {(isAdmin || isDiterima) && (
-                          <Button onClick={() => setIsTestimoniModalOpen(true)} className="rounded-xl bg-[#6B0000] text-white hover:bg-red-950 font-bold h-11 px-5 shadow-md">
-                            <Plus className="mr-1.5 h-4 w-4" /> Tambah Testimoni
-                          </Button>
-                        )}
-                        <Button onClick={() => toast.success('File ekspor berhasil disiapkan')} className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-5 shadow-md">
-                          <Download className="mr-2 h-4 w-4" /> Export Testimoni
-                        </Button>
-                      </div>
+
                     </div>
                   )}
 
                   {evaluasiTab === 'feedback' && (
-                    <div className="flex-1 flex flex-col justify-between space-y-4">
-                      <div className="space-y-4 flex-1 flex flex-col">
+                    <div className="flex-1 flex flex-col justify-between space-y-4 min-h-0">
+                      <div className="space-y-4 flex-1 flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Catatan Admin</div>
                         {isAdmin ? (
                           <>
@@ -1355,7 +1460,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                               <Button 
                                 onClick={() => simpanFeedback.mutate(feedbackText)} 
                                 disabled={simpanFeedback.isPending}
-                                className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-6 shadow-md shrink-0"
+                                className="rounded-xl bg-[#6B0000] text-white hover:bg-red-950 font-bold h-11 px-6 shadow-md shrink-0"
                               >
                                 <MessageSquare className="mr-2 h-4 w-4" /> {simpanFeedback.isPending ? "Menyimpan..." : "Simpan"}
                               </Button>
@@ -1388,7 +1493,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
         {/* ── Tab DOKUMENTASI ── */}
         {tab === "dokumentasi" && (
           <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
-            <div className="p-6 md:p-8 flex flex-col flex-1">
+            <div className="p-6 md:p-8 flex flex-col flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
                   <div className="flex items-center justify-center h-12 w-12 bg-red-50 text-red-800 rounded-xl shadow-sm shrink-0 border border-red-100">
@@ -1412,21 +1517,34 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-2 w-full flex-1">
                   {detailDokumentasi.dokumentasi.map((d: any) => (
                     <div key={d.id} className="relative aspect-square group">
-                      <a href={d.file_url} target="_blank" rel="noopener noreferrer" className="block w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-200/60 shadow-sm hover:shadow-md hover:border-red-300 transition-all">
-                        {d.media_type === 'foto' ? (
+                      {d.media_type === 'foto' ? (
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setSelectedImage(d.file_url);
+                          }} 
+                          className="block w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-200/60 shadow-sm hover:shadow-md hover:border-red-300 transition-all text-left relative focus:outline-none focus:ring-2 focus:ring-red-500"
+                        >
                           <img src={d.file_url} alt={d.keterangan || "Dokumentasi"} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        ) : (
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4 text-white text-xs">
+                            <p className="font-semibold text-slate-200 truncate">Oleh: {d.uploaded_by}</p>
+                            <p className="text-[10px] text-slate-400 mt-0.5">{d.uploaded_at ? new Date(d.uploaded_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}</p>
+                            <p className="font-bold line-clamp-2 mt-2 leading-relaxed text-slate-100">{d.keterangan || 'Tidak ada keterangan'}</p>
+                          </div>
+                        </button>
+                      ) : (
+                        <a href={d.file_url} target="_blank" rel="noopener noreferrer" className="block w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-200/60 shadow-sm hover:shadow-md hover:border-red-300 transition-all relative">
                           <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4">
                             <FileText className="h-12 w-12 mb-2 group-hover:text-red-900 transition-colors" />
                             <span className="text-xs font-semibold text-slate-700 text-center line-clamp-2">{d.keterangan || 'File Dokumentasi'}</span>
                           </div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4 text-white text-xs">
-                          <p className="font-semibold text-slate-200 truncate">Oleh: {d.uploaded_by}</p>
-                          <p className="text-[10px] text-slate-400 mt-0.5">{d.uploaded_at ? new Date(d.uploaded_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}</p>
-                          <p className="font-bold line-clamp-2 mt-2 leading-relaxed text-slate-100">{d.keterangan || 'Tidak ada keterangan'}</p>
-                        </div>
-                      </a>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4 text-white text-xs pointer-events-none">
+                            <p className="font-semibold text-slate-200 truncate">Oleh: {d.uploaded_by}</p>
+                            <p className="text-[10px] text-slate-400 mt-0.5">{d.uploaded_at ? new Date(d.uploaded_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}</p>
+                            <p className="font-bold line-clamp-2 mt-2 leading-relaxed text-slate-100">{d.keterangan || 'Tidak ada keterangan'}</p>
+                          </div>
+                        </a>
+                      )}
 
                       {(isAdmin || role === 'dokumentasi') && (
                         <button
@@ -1567,6 +1685,23 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
               {tambahTestimoniMutation.isPending ? "Menyimpan..." : "Simpan Testimoni"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Image Preview Modal */}
+      <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
+        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-transparent border-none shadow-none flex flex-col items-center justify-center">
+          {selectedImage && (
+            <div className="relative w-full flex items-center justify-center">
+              <img src={selectedImage} alt="Preview Dokumentasi" className="max-w-full max-h-[85vh] object-contain rounded-xl" />
+              <button 
+                onClick={() => setSelectedImage(null)} 
+                className="absolute top-2 right-2 md:-right-12 md:top-0 p-2 bg-black/50 hover:bg-black/80 text-white rounded-full transition-colors focus:outline-none backdrop-blur-sm"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

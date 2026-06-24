@@ -23,9 +23,7 @@ export class AbsensiController {
     if (!req.user.protokolerId) {
       throw new ForbiddenException('Hanya pengguna dengan profil protokoler yang dapat melakukan absensi');
     }
-    if (!file) {
-      throw new BadRequestException('File foto_selfie wajib diunggah');
-    }
+    // File is no longer strictly required, AI detection handles empty files
 
     const latitudeNum = body.latitude ? Number(body.latitude) : undefined;
     const longitudeNum = body.longitude ? Number(body.longitude) : undefined;

@@ -24,7 +24,7 @@ export default function TentangKami() {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0">
-          <Image src="/rektorat.jpg" alt="UNP Rektorat" fill className="object-cover" priority />
+          <Image src="/rektorat.jpg" alt="UNP Rektorat" fill sizes="100vw" className="object-cover" priority />
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent opacity-30"></div>
         </div>
@@ -85,7 +85,7 @@ export default function TentangKami() {
               <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative h-[400px] lg:h-[500px] flex items-center justify-center">
                  <div className="absolute inset-0 bg-gradient-to-tr from-red-50 to-amber-50 rounded-[3rem] transform rotate-3"></div>
                  <div className="relative w-64 h-64 md:w-80 md:h-80 drop-shadow-2xl">
-                   <Image src="/logo protokoler.png" alt="Logo Protokoler" fill className="object-contain" />
+                   <Image src="/logo protokoler.png" alt="Logo Protokoler" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
                  </div>
               </motion.div>
             </div>
