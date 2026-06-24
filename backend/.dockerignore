@@ -6,4 +6,3 @@ dist
 *.log
 npm-debug.log*
 .prisma
-package-lock.json

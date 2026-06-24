@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:22-alpine
 
 # Set directory
 WORKDIR /app
@@ -23,5 +23,5 @@ EXPOSE 7860
 ENV PORT=7860
 ENV NODE_ENV=production
 
-# Run migrations and start app
-CMD ["sh", "-c", "npx prisma db push && npm run start:prod"]
+# Run migrations, build NestJS, and start app
+CMD ["sh", "-c", "npx prisma db push && npm run build && npm run start:prod"]
