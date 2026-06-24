@@ -179,6 +179,19 @@ export const pendaftaranApi = {
     const res = await apiFetch(`/api/laporan/protokoler/${protokoler_id}/rekap`);
     return res.riwayat || [];
   },
+
+  remove: async (id: string) => {
+    return apiFetch(`/api/pendaftaran/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  adminAddMember: async (kegiatanId: string, protokolerId: string, peran: 'protokoler' | 'lo') => {
+    return apiFetch(`/api/kegiatan/${kegiatanId}/admin-tambah`, {
+      method: 'POST',
+      body: JSON.stringify({ protokoler_id: protokolerId, peran }),
+    });
+  },
 };
 
 // ──────────────── ABSENSI ────────────────
@@ -193,6 +206,13 @@ export const absensiApi = {
   byKegiatan: async (kegiatan_id: string) => {
     const res = await apiFetch(`/api/kegiatan/${kegiatan_id}/absensi`);
     return res.data;
+  },
+
+  verifikasi: async (absensiId: string, status: 'hadir' | 'tidak_hadir') => {
+    return apiFetch(`/api/kegiatan/absensi/${absensiId}/verifikasi`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
   },
 };
 

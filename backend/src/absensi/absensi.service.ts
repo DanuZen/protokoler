@@ -84,28 +84,8 @@ export class AbsensiService {
       throw new ConflictException('Anda sudah melakukan absensi sebelumnya');
     }
 
-    // 5. Upload photo to Supabase Storage (if provided)
-    let photoUrl = '';
-    
-    if (file) {
-      const fileExt = file.originalname?.split('.').pop() || 'jpg';
-      const filePath = `absensi_${kegiatanId}_${protokolerId}.${fileExt}`;
-      
-      try {
-        photoUrl = await this.supabase.uploadFile(
-          'protokoler-absensi',
-          filePath,
-          file.buffer,
-          file.mimetype || 'image/jpeg'
-        );
-      } catch (err) {
-        // Fallback placeholder URL
-        photoUrl = `https://storage.siproto.ac.id/protokoler-absensi/${filePath}`;
-      }
-    } else {
-      // Photo is skipped because AI face detection verified the presence
-      photoUrl = 'TERDETEKSI_OTOMATIS';
-    }
+    // 5. Skip photo upload and set to auto-verified to save storage/hosting space
+    const photoUrl = 'TERDETEKSI_OTOMATIS';
 
     // 6. Record absensi in database
     const absensi = await this.prisma.absensi.create({
@@ -174,6 +154,26 @@ export class AbsensiService {
         longitude: item.longitude ? Number(item.longitude) : null,
         protokoler: item.protokoler
       }))
+    };
+  }
+
+  async updateStatus(absensiId: string, status: StatusHadirEnum) {
+    const absensi = await this.prisma.absensi.findUnique({
+      where: { id: absensiId }
+    });
+
+    if (!absensi) {
+      throw new NotFoundException('Data absensi tidak ditemukan');
+    }
+
+    const updated = await this.prisma.absensi.update({
+      where: { id: absensiId },
+      data: { status }
+    });
+
+    return {
+      message: 'Status absensi berhasil diperbarui',
+      data: updated
     };
   }
 }

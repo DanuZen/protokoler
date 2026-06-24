@@ -60,7 +60,7 @@ export default function AnggotaPage() {
 
   const updateStatus = useMutation({
     mutationFn: (args: { id: string, status_akun: string, catatan_penolakan?: string }) => 
-      protokolerApi.update(args.id, { status_akun: args.status_akun, catatan_penolakan: args.catatan_penolakan }),
+      protokolerApi.verifikasi(args.id, args.status_akun === "aktif" ? "setujui" : "tolak", args.catatan_penolakan),
     onSuccess: (_, variables) => { 
       toast.success(variables.status_akun === "aktif" ? "Akun disetujui" : "Akun ditolak"); 
       qc.invalidateQueries({ queryKey: ["protokoler"] }); 

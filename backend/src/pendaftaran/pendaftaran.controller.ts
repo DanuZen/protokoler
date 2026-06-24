@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Patch, Body, Param, Req, UseGuards, ForbiddenException, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Body, Param, Req, UseGuards, ForbiddenException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PendaftaranService } from './pendaftaran.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -37,5 +37,23 @@ export class PendaftaranController {
     @Body() body: { keputusan: 'diterima' | 'ditolak' | 'dialihkan'; kegiatan_dialihkan_id?: string; catatan_admin?: string },
   ) {
     return this.pendaftaranService.select(pendaftaranId, req.user.id, body);
+  }
+
+  @Delete('pendaftaran/:id')
+  @Roles(RoleEnum.admin)
+  async deletePendaftaran(@Param('id') pendaftaranId: string) {
+    return this.pendaftaranService.remove(pendaftaranId);
+  }
+
+  @Post('kegiatan/:id/admin-tambah')
+  @Roles(RoleEnum.admin)
+  async adminAddMember(
+    @Param('id') kegiatanId: string,
+    @Body() body: { protokoler_id: string; peran: 'protokoler' | 'lo' },
+  ) {
+    if (!body.protokoler_id || !body.peran) {
+      throw new BadRequestException('protokoler_id dan peran wajib diisi');
+    }
+    return this.pendaftaranService.adminAddMember(kegiatanId, body.protokoler_id, body.peran);
   }
 }

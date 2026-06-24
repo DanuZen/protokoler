@@ -39,11 +39,11 @@ export default async function handler(req: any, res: any) {
   expressApp(req, res);
 }
 
-// Local dev: only listen if not in Vercel environment
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+// Standalone server: listen on specified port if not in Vercel serverless environment
+if (!process.env.VERCEL) {
   bootstrap().then(async (nestApp) => {
-    const port = process.env.PORT || 4000;
-    await nestApp.listen(port);
-    console.log(`Backend NestJS berjalan di http://localhost:${port}`);
+    const port = process.env.PORT || 7860;
+    await nestApp.listen(port, '0.0.0.0');
+    console.log(`Backend NestJS berjalan di http://0.0.0.0:${port}`);
   });
 }
