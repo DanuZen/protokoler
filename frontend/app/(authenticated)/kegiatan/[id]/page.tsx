@@ -30,6 +30,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const { id } = React.use(params);
   const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
+  const [selectedProtokolerId, setSelectedProtokolerId] = useState("");
+  const [selectedPeran, setSelectedPeran] = useState<'protokoler' | 'lo'>("protokoler");
 
   useEffect(() => {
     if (id === 'buat') {
@@ -205,6 +208,26 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     enabled: tab === "dokumentasi",
   });
 
+  const { data: activeProtokolers } = useQuery({
+    queryKey: ["protokoler-aktif"],
+    queryFn: () => protokolerApi.list(undefined, "aktif"),
+    enabled: isAdmin,
+  });
+
+  const assignedUserIds = React.useMemo(() => {
+    if (!keg?.pendaftar) return new Set<string>();
+    return new Set<string>(
+      keg.pendaftar
+        .filter((p: any) => p.status === 'diterima' || p.status === 'dialihkan')
+        .map((p: any) => p.protokoler_id)
+    );
+  }, [keg?.pendaftar]);
+
+  const availableProtokolers = React.useMemo(() => {
+    if (!activeProtokolers) return [];
+    return activeProtokolers.filter((p: any) => !assignedUserIds.has(p.user_id));
+  }, [activeProtokolers, assignedUserIds]);
+
   useEffect(() => {
     if (absensi && protokoler) {
       const myAbs = absensi.find((a: any) => a.protokoler_id === protokoler.id);
@@ -231,6 +254,31 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const verifikasi = useMutation({
     mutationFn: async ({ pId, status }: { pId: string, status: 'diterima' | 'ditolak' }) => { await kegiatanApi.verifikasiPendaftar(id, pId, status); },
     onSuccess: (_, variables) => { toast.success(`Pendaftar ${variables.status}`); qc.invalidateQueries({ queryKey: ["kegiatan", id] }); },
+  });
+
+  const deletePendaftaran = useMutation({
+    mutationFn: (pId: string) => pendaftaranApi.remove(pId),
+    onSuccess: (res: any) => {
+      toast.success(res.message || "Anggota berhasil dihapus dari tim pelaksana");
+      qc.invalidateQueries({ queryKey: ["kegiatan", id] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Gagal menghapus anggota");
+    }
+  });
+
+  const addMemberMutation = useMutation({
+    mutationFn: ({ protokolerId, peran }: { protokolerId: string, peran: 'protokoler' | 'lo' }) =>
+      pendaftaranApi.adminAddMember(id, protokolerId, peran),
+    onSuccess: (res: any) => {
+      toast.success(res.message || "Anggota berhasil ditambahkan ke tim pelaksana");
+      setIsAddMemberModalOpen(false);
+      setSelectedProtokolerId("");
+      qc.invalidateQueries({ queryKey: ["kegiatan", id] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Gagal menambahkan anggota");
+    }
   });
 
   const deleteDokumentasi = useMutation({
@@ -285,6 +333,18 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     },
     onError: (err: any) => {
       toast.error(err.message || 'Gagal melakukan absensi');
+    }
+  });
+
+  const verifikasiAbsensi = useMutation({
+    mutationFn: ({ absensiId, status }: { absensiId: string; status: 'hadir' | 'tidak_hadir' }) =>
+      absensiApi.verifikasi(absensiId, status),
+    onSuccess: (_, variables) => {
+      toast.success(variables.status === 'hadir' ? 'Kehadiran tervalidasi' : 'Absensi ditolak');
+      qc.invalidateQueries({ queryKey: ["absensi-kegiatan", id] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || 'Gagal memverifikasi absensi');
     }
   });
 
@@ -828,27 +888,59 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
               {/* Daftar Tim Pelaksana (Untuk Semua User) */}
               <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
-                <div className="p-6 border-b border-slate-100 shrink-0 flex items-center gap-3">
-                  <div className="flex items-center justify-center h-10 w-10 bg-red-50 border border-red-100 text-red-800 rounded-xl shadow-sm">
-                    <Users className="h-5 w-5" />
+                <div className="p-6 border-b border-slate-100 shrink-0 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center h-10 w-10 bg-red-50 border border-red-100 text-red-800 rounded-xl shadow-sm">
+                      <Users className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-[15px] font-bold text-slate-800 uppercase tracking-wider">Tim Pelaksana</h2>
+                      <p className="text-[12px] text-slate-500 mt-0.5 font-medium">Daftar anggota yang telah ditugaskan</p>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="text-[15px] font-bold text-slate-800 uppercase tracking-wider">Tim Pelaksana</h2>
-                    <p className="text-[12px] text-slate-500 mt-0.5 font-medium">Daftar anggota yang telah ditugaskan</p>
-                  </div>
+                  {isAdmin && (
+                    <Button 
+                      onClick={() => setIsAddMemberModalOpen(true)}
+                      className="rounded-xl bg-[#5B1015] hover:bg-[#4E0D11] text-white font-bold h-9 px-3 text-xs flex items-center gap-1.5 shadow-sm transition-all"
+                    >
+                      <Plus className="h-4 w-4" /> Tambah Anggota
+                    </Button>
+                  )}
                 </div>
                 <div className="p-6 bg-slate-50/30 flex-1 overflow-y-auto">
-                  {keg.pendaftar && keg.pendaftar.filter((p: any) => p.status === 'diterima').length > 0 ? (
+                  {keg.pendaftar && keg.pendaftar.filter((p: any) => p.status === 'diterima' || p.status === 'dialihkan').length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {keg.pendaftar.filter((p: any) => p.status === 'diterima').map((p: any) => (
-                        <div key={p.id} className="flex items-center gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                          <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 border ${p.role === 'Liaison Officer' || p.role === 'lo' ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-red-50 border-red-200 text-red-800'}`}>
-                            {p.role === 'Liaison Officer' || p.role === 'lo' ? <UserCheck className="h-5 w-5" /> : <Users className="h-5 w-5" />}
+                      {keg.pendaftar.filter((p: any) => p.status === 'diterima' || p.status === 'dialihkan').map((p: any) => (
+                        <div key={p.id} className="flex items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm group/item">
+                          <div className="flex items-center gap-3">
+                            <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 border ${p.role === 'Liaison Officer' || p.role === 'lo' ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                              {p.role === 'Liaison Officer' || p.role === 'lo' ? <UserCheck className="h-5 w-5" /> : <Users className="h-5 w-5" />}
+                            </div>
+                            <div>
+                              <p className="font-bold text-sm text-slate-800">{p.nama_lengkap}</p>
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <span className="text-[11px] font-semibold text-slate-500 capitalize">{p.role || 'Protokoler'}</span>
+                                {p.status === 'dialihkan' && (
+                                  <span className="text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-200/50 px-1.5 py-0.2 rounded capitalize">Dialihkan</span>
+                                )}
+                              </div>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-bold text-sm text-slate-800">{p.nama_lengkap}</p>
-                            <p className="text-[11px] font-semibold text-slate-500 capitalize">{p.role || 'Protokoler'}</p>
-                          </div>
+                          {isAdmin && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg shrink-0 transition-colors"
+                              onClick={() => {
+                                  if (confirm(`Apakah Anda yakin ingin mengeluarkan ${p.nama_lengkap} dari Tim Pelaksana?`)) {
+                                    deletePendaftaran.mutate(p.id);
+                                  }
+                              }}
+                              disabled={deletePendaftaran.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -1123,14 +1215,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                           <TableRow>
                             <TableHead className="font-bold pl-6 py-4">Protokoler</TableHead>
                             <TableHead className="font-bold py-4">Waktu Absen</TableHead>
-                            <TableHead className="font-bold py-4">Foto Selfie</TableHead>
-                            <TableHead className="font-bold py-4">Status</TableHead>
-                            <TableHead className="font-bold text-right pr-6 py-4">Verifikasi Admin</TableHead>
+                            <TableHead className="font-bold text-right pr-6 py-4">Status</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {!absensi?.length ? (
-                            <TableRow><TableCell colSpan={5} className="h-32 text-center text-slate-400">Belum ada data absensi.</TableCell></TableRow>
+                            <TableRow><TableCell colSpan={3} className="h-32 text-center text-slate-400">Belum ada data absensi.</TableCell></TableRow>
                           ) : (
                             absensi.map((a: any) => (
                               <TableRow key={a.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
@@ -1141,39 +1231,8 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 <TableCell className="text-sm font-medium text-slate-600 py-3">
                                   {new Date(a.waktu_absen).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
                                 </TableCell>
-                                <TableCell className="py-3">
-                                  {a.foto_selfie_url === "TERDETEKSI_OTOMATIS" ? (
-                                    <div className="flex items-center gap-2 border border-slate-200 bg-slate-50 px-2.5 py-1.5 rounded-lg w-fit">
-                                      <UserCheck className="h-4 w-4 text-green-600" />
-                                      <span className="text-[11px] font-bold text-slate-700 uppercase">AI Verified</span>
-                                    </div>
-                                  ) : a.foto_selfie_url ? (
-                                    <a href={a.foto_selfie_url} target="_blank" className="block group w-fit">
-                                      <div className="h-14 w-14 rounded-xl border border-slate-200 overflow-hidden bg-white flex items-center justify-center group-hover:border-red-300 shadow-sm transition-all relative">
-                                        <img src={a.foto_selfie_url} alt="Selfie" className="w-full h-full object-cover" />
-                                        <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                          <Camera className="h-5 w-5 text-white drop-shadow-md" />
-                                        </div>
-                                      </div>
-                                    </a>
-                                  ) : (
-                                    <div className="h-10 w-10 rounded-lg border border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center text-slate-300">
-                                      <X className="h-4 w-4" />
-                                    </div>
-                                  )}
-                                </TableCell>
-                                <TableCell className="py-3">
-                                  <BadgeStatus status={a.status} />
-                                </TableCell>
                                 <TableCell className="py-3 pr-6 text-right">
-                                  <div className="flex justify-end gap-2">
-                                    <Button size="sm" variant="outline" onClick={() => toast.success('Absensi ditolak')} className="rounded-lg border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 h-8 text-[11px] font-bold px-3 shadow-sm transition-all">
-                                      <X className="h-3.5 w-3.5 mr-1.5" /> Tolak
-                                    </Button>
-                                    <Button size="sm" onClick={() => toast.success('Kehadiran tervalidasi')} className="rounded-lg bg-green-500 hover:bg-green-600 text-white h-8 text-[11px] font-bold px-3 shadow-sm transition-all">
-                                      <Check className="h-3.5 w-3.5 mr-1.5" /> Valid
-                                    </Button>
-                                  </div>
+                                  <BadgeStatus status={a.status} />
                                 </TableCell>
                               </TableRow>
                             ))
@@ -1702,6 +1761,74 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
               </button>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal Tambah Anggota (Admin) */}
+      <Dialog open={isAddMemberModalOpen} onOpenChange={(open) => !open && setIsAddMemberModalOpen(false)}>
+        <DialogContent className="sm:max-w-md rounded-2xl border border-slate-200 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-bold text-xl text-slate-900">Tambah Anggota Tim Pelaksana</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-3">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">Pilih Anggota Protokoler (Aktif)</label>
+              <select
+                value={selectedProtokolerId}
+                onChange={(e) => setSelectedProtokolerId(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 focus:border-[#5B1015] focus:outline-none focus:ring-1 focus:ring-[#5B1015]"
+              >
+                <option value="">-- Pilih Anggota --</option>
+                {availableProtokolers.map((p: any) => (
+                  <option key={p.id} value={p.id}>
+                    {p.nama_lengkap} ({p.nim}) - {p.prodi}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">Peran Kegiatan</label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedPeran('protokoler')}
+                  className={cn(
+                    "flex-1 py-2.5 rounded-xl border text-sm font-bold transition-all",
+                    selectedPeran === 'protokoler'
+                      ? "bg-[#5B1015] border-[#5B1015] text-white shadow-md shadow-red-800/10"
+                      : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                  )}
+                >
+                  Protokoler
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPeran('lo')}
+                  className={cn(
+                    "flex-1 py-2.5 rounded-xl border text-sm font-bold transition-all",
+                    selectedPeran === 'lo'
+                      ? "bg-amber-500 border-amber-500 text-white shadow-md shadow-amber-800/10"
+                      : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                  )}
+                >
+                  Liaison Officer
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0 pt-2 border-t border-slate-100">
+            <Button variant="ghost" onClick={() => setIsAddMemberModalOpen(false)} className="rounded-xl text-slate-500">Batal</Button>
+            <Button
+              className="rounded-xl bg-[#5B1015] text-white hover:bg-[#4E0D11] font-bold"
+              disabled={addMemberMutation.isPending || !selectedProtokolerId}
+              onClick={() => addMemberMutation.mutate({ protokolerId: selectedProtokolerId, peran: selectedPeran })}
+            >
+              {addMemberMutation.isPending ? "Menyimpan..." : "Tambah"}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

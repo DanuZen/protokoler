@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.git
+.github
+*.log
+npm-debug.log*
+.prisma
+package-lock.json

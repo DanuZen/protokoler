@@ -81,19 +81,41 @@ startxref
       throw new NotFoundException('Kegiatan tidak ditemukan');
     }
 
-    // Block registration if activity is selesai, berlangsung, or batal
+    // Block registration if activity is selesai or batal
     if (
       kegiatan.status === StatusKegiatanEnum.selesai ||
-      kegiatan.status === StatusKegiatanEnum.berlangsung ||
       kegiatan.status === StatusKegiatanEnum.batal
     ) {
-      throw new BadRequestException('Rekrutmen telah ditutup atau kegiatan sudah berjalan/selesai');
+      throw new BadRequestException('Rekrutmen telah ditutup atau kegiatan sudah selesai/batal');
+    }
+
+    // If the activity is ongoing (berlangsung), we can register ONLY if the quota is not filled yet
+    if (kegiatan.status === StatusKegiatanEnum.berlangsung) {
+      const requiredLimit = peran === 'lo' ? kegiatan.jumlah_lo_dibutuhkan : kegiatan.jumlah_protokoler_dibutuhkan;
+      
+      const acceptedCount = await this.prisma.pendaftaranKegiatan.count({
+        where: {
+          peran: peran === 'lo' ? PeranKegiatanEnum.lo : PeranKegiatanEnum.protokoler,
+          status: {
+            in: [StatusPendaftaranEnum.diterima, StatusPendaftaranEnum.dialihkan]
+          },
+          OR: [
+            { kegiatan_id: kegiatanId },
+            { kegiatan_dialihkan_id: kegiatanId }
+          ]
+        }
+      });
+
+      if (acceptedCount >= requiredLimit) {
+        throw new BadRequestException('Kebutuhan petugas untuk peran ini sudah terpenuhi');
+      }
     }
 
     if (
       kegiatan.status !== StatusKegiatanEnum.publik &&
       kegiatan.status !== StatusKegiatanEnum.terjadwal &&
-      kegiatan.status !== StatusKegiatanEnum.terkonfirmasi
+      kegiatan.status !== StatusKegiatanEnum.terkonfirmasi &&
+      kegiatan.status !== StatusKegiatanEnum.berlangsung
     ) {
       throw new BadRequestException('Kegiatan tidak dapat didaftar (status draf/batal/selesai)');
     }
@@ -278,6 +300,166 @@ startxref
         status: updated.status,
         surat_tugas_url: updated.surat_tugas_url
       }
+    };
+  }
+
+  async remove(pendaftaranId: string) {
+    const pendaftaran = await this.prisma.pendaftaranKegiatan.findUnique({
+      where: { id: pendaftaranId }
+    });
+    if (!pendaftaran) {
+      throw new NotFoundException('Pendaftaran tidak ditemukan');
+    }
+
+    const kegiatanIds = [pendaftaran.kegiatan_id];
+    if (pendaftaran.kegiatan_dialihkan_id) {
+      kegiatanIds.push(pendaftaran.kegiatan_dialihkan_id);
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.absensi.deleteMany({
+        where: {
+          protokoler_id: pendaftaran.protokoler_id,
+          kegiatan_id: { in: kegiatanIds }
+        }
+      });
+
+      await tx.evaluasiKegiatan.deleteMany({
+        where: {
+          protokoler_id: pendaftaran.protokoler_id,
+          kegiatan_id: { in: kegiatanIds }
+        }
+      });
+
+      await tx.pendaftaranKegiatan.delete({
+        where: { id: pendaftaranId }
+      });
+    });
+
+    return { message: 'Anggota berhasil dihapus dari pendaftaran kegiatan' };
+  }
+
+  async adminAddMember(kegiatanId: string, protokolerId: string, peran: 'protokoler' | 'lo') {
+    await autoUpdateStatuses(this.prisma);
+
+    const protokoler = await this.prisma.protokoler.findUnique({
+      where: { id: protokolerId }
+    });
+    if (!protokoler) {
+      throw new NotFoundException('Profil protokoler tidak ditemukan');
+    }
+    if (protokoler.status_akun !== StatusAkunEnum.aktif) {
+      throw new ForbiddenException('Akun protokoler belum aktif');
+    }
+
+    const kegiatan = await this.prisma.kegiatan.findUnique({
+      where: { id: kegiatanId }
+    });
+    if (!kegiatan) {
+      throw new NotFoundException('Kegiatan tidak ditemukan');
+    }
+
+    if (
+      kegiatan.status === StatusKegiatanEnum.selesai ||
+      kegiatan.status === StatusKegiatanEnum.batal
+    ) {
+      throw new BadRequestException('Kegiatan sudah selesai atau dibatalkan');
+    }
+
+    const existing = await this.prisma.pendaftaranKegiatan.findUnique({
+      where: {
+        kegiatan_id_protokoler_id: {
+          kegiatan_id: kegiatanId,
+          protokoler_id: protokolerId
+        }
+      }
+    });
+    if (existing) {
+      throw new BadRequestException('Anggota sudah terdaftar di kegiatan ini');
+    }
+
+    const activeRegistrations = await this.prisma.pendaftaranKegiatan.findMany({
+      where: {
+        protokoler_id: protokolerId,
+        status: {
+          in: [StatusPendaftaranEnum.diterima, StatusPendaftaranEnum.dialihkan]
+        }
+      },
+      include: {
+        kegiatan: true,
+        kegiatan_dialihkan: true
+      }
+    });
+
+    for (const reg of activeRegistrations) {
+      const activeKegiatan = reg.status === StatusPendaftaranEnum.dialihkan ? reg.kegiatan_dialihkan : reg.kegiatan;
+      if (!activeKegiatan) continue;
+
+      const date1 = new Date(activeKegiatan.tanggal).toDateString();
+      const date2 = new Date(kegiatan.tanggal).toDateString();
+
+      if (date1 === date2) {
+        const start1 = activeKegiatan.jam_mulai.getTime();
+        const end1 = activeKegiatan.jam_selesai.getTime();
+        const start2 = kegiatan.jam_mulai.getTime();
+        const end2 = kegiatan.jam_selesai.getTime();
+
+        if (start1 < end2 && end1 > start2) {
+          throw new BadRequestException(`Jadwal bentrok dengan kegiatan ${activeKegiatan.nama_kegiatan}`);
+        }
+      }
+    }
+
+    const pendaftaranId = await this.prisma.$transaction(async (tx) => {
+      const newPendaftaran = await tx.pendaftaranKegiatan.create({
+        data: {
+          kegiatan_id: kegiatanId,
+          protokoler_id: protokolerId,
+          peran: peran === 'lo' ? PeranKegiatanEnum.lo : PeranKegiatanEnum.protokoler,
+          status: StatusPendaftaranEnum.diterima,
+        }
+      });
+      return newPendaftaran.id;
+    });
+
+    const title = 'SURAT TUGAS KEPANITIAAN PROTOKOL';
+    const content = [
+      `Nomor Tugas: ST-${new Date().getFullYear()}-${pendaftaranId.substring(0, 8).toUpperCase()}`,
+      `Yang bertanda tangan di bawah ini menerangkan bahwa:`,
+      `Nama   : ${protokoler.nama_lengkap}`,
+      `NIM    : ${protokoler.nim}`,
+      `Prodi  : ${protokoler.prodi}`,
+      `Ditugaskan pada kegiatan:`,
+      `Nama Kegiatan : ${kegiatan.nama_kegiatan}`,
+      `Tanggal       : ${new Date(kegiatan.tanggal).toLocaleDateString('id-ID')}`,
+      `Lokasi        : ${kegiatan.lokasi}`,
+      `Peran         : ${peran.toUpperCase()}`,
+      `Demikian surat tugas ini dibuat untuk dipergunakan sebagaimana mestinya.`
+    ];
+
+    const pdfBuffer = this.generatePdfBuffer(title, content);
+    let suratTugasUrl = `https://storage.siproto.ac.id/surat-tugas/surat_tugas_${pendaftaranId}.pdf`;
+    try {
+      suratTugasUrl = await this.supabase.uploadFile(
+        'surat-tugas',
+        `surat_tugas_${pendaftaranId}.pdf`,
+        pdfBuffer,
+        'application/pdf'
+      );
+    } catch (err) {
+      // Fallback
+    }
+
+    const updated = await this.prisma.pendaftaranKegiatan.update({
+      where: { id: pendaftaranId },
+      data: {
+        surat_tugas_url: suratTugasUrl
+      }
+    });
+
+    return {
+      message: 'Anggota berhasil ditambahkan ke tim pelaksana. Surat tugas telah diterbitkan.',
+      data: updated
     };
   }
 }

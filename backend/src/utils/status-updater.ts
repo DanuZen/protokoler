@@ -12,6 +12,7 @@ export async function autoUpdateStatuses(prisma: any) {
           StatusKegiatanEnum.terjadwal,
           StatusKegiatanEnum.terkonfirmasi,
           StatusKegiatanEnum.berlangsung,
+          StatusKegiatanEnum.selesai,
         ],
       },
     },
@@ -29,7 +30,12 @@ export async function autoUpdateStatuses(prisma: any) {
     const endMinutes = keg.jam_selesai.getMinutes();
 
     const startDateTime = new Date(year, month, date, startHours, startMinutes, 0);
-    const endDateTime = new Date(year, month, date, endHours, endMinutes, 0);
+    let endDateTime = new Date(year, month, date, endHours, endMinutes, 0);
+
+    // If end time is earlier than or equal to start time, the event crosses midnight (ends on the next day)
+    if (endDateTime <= startDateTime) {
+      endDateTime.setDate(endDateTime.getDate() + 1);
+    }
 
     let newStatus: StatusKegiatanEnum | null = null;
 
@@ -40,6 +46,10 @@ export async function autoUpdateStatuses(prisma: any) {
     } else if (now >= startDateTime) {
       if (keg.status !== StatusKegiatanEnum.berlangsung) {
         newStatus = StatusKegiatanEnum.berlangsung;
+      }
+    } else {
+      if (keg.status !== StatusKegiatanEnum.terjadwal) {
+        newStatus = StatusKegiatanEnum.terjadwal;
       }
     }
 

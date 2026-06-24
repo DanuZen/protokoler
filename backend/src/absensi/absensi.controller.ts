@@ -1,10 +1,10 @@
-import { Controller, Post, Get, Body, Param, Req, UseGuards, UseInterceptors, UploadedFile, ConflictException, ForbiddenException, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Body, Param, Req, UseGuards, UseInterceptors, UploadedFile, ConflictException, ForbiddenException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AbsensiService } from './absensi.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { RoleEnum } from '@prisma/client';
+import { RoleEnum, StatusHadirEnum } from '@prisma/client';
 
 @Controller('kegiatan')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -41,5 +41,14 @@ export class AbsensiController {
   @Roles(RoleEnum.admin, RoleEnum.protokoler, RoleEnum.dokumentasi)
   async getAbsensiRecap(@Param('id') kegiatanId: string, @Req() req: any) {
     return this.absensiService.getRecap(kegiatanId, req.user.role, req.user.protokolerId);
+  }
+
+  @Patch('absensi/:absensiId/verifikasi')
+  @Roles(RoleEnum.admin)
+  async verifyAbsensi(
+    @Param('absensiId') absensiId: string,
+    @Body() body: { status: StatusHadirEnum }
+  ) {
+    return this.absensiService.updateStatus(absensiId, body.status);
   }
 }
