@@ -72,3 +72,6 @@ backend/create_bucket_test.js
 backend/test_patch.js
 create_bucket_test.js
 test_patch.js
+
+# Hugging Face deployment folder
+protokoler-backend/
