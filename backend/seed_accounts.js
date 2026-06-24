@@ -1,7 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
+import crypto from 'crypto';
 dotenv.config();
+
+function hashPassword(password) {
+  if (!password) return '';
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+  return `${salt}:${hash}`;
+}
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -61,11 +69,19 @@ async function seed() {
           id: authUser.id,
           email: u.email,
           role: u.role,
+          password: hashPassword(u.password)
         }
       });
       console.log(`[+] User ${u.email} berhasil dibuat di Prisma.`);
     } else {
       console.log(`[-] User ${u.email} sudah ada di Prisma.`);
+      if (!existingPrismaUser.password) {
+        await prisma.user.update({
+          where: { email: u.email },
+          data: { password: hashPassword(u.password) }
+        });
+        console.log(`[+] Password untuk ${u.email} di-update di Prisma.`);
+      }
     }
 
     // Create Protokoler profile for mahasiswa (role: protokoler)

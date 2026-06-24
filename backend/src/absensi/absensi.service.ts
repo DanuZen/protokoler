@@ -51,7 +51,7 @@ export class AbsensiService {
       now.getMonth() === kegiatanDate.getMonth() &&
       now.getDate() === kegiatanDate.getDate();
 
-    if (!isSameDay) {
+    if (process.env.NODE_ENV === 'production' && !isSameDay) {
       throw new BadRequestException('Kegiatan tidak dilaksanakan hari ini');
     }
 
@@ -63,10 +63,10 @@ export class AbsensiService {
     const startTimeMs = new Date(kegiatan.jam_mulai).getTime();
     const endTimeMs = new Date(kegiatan.jam_selesai).getTime();
 
-    if (nowTimeMs < startTimeMs) {
+    if (process.env.NODE_ENV === 'production' && nowTimeMs < startTimeMs) {
       throw new BadRequestException('Absensi belum dibuka');
     }
-    if (nowTimeMs > endTimeMs) {
+    if (process.env.NODE_ENV === 'production' && nowTimeMs > endTimeMs) {
       throw new BadRequestException('Absensi sudah ditutup');
     }
 

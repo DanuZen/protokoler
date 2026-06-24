@@ -198,7 +198,7 @@ export const absensiApi = {
 
 // ──────────────── EVALUASI ────────────────
 export const evaluasiApi = {
-  create: async (kegiatanId: string, data: { evaluasi_kegiatan: string; refleksi_diri: string; rating_kegiatan: number }) => {
+  create: async (kegiatanId: string, data: { evaluasi_kegiatan: string; refleksi_diri: string; kendala?: string; rating_kegiatan: number }) => {
     return apiFetch(`/api/kegiatan/${kegiatanId}/evaluasi`, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -220,7 +220,7 @@ export const evaluasiApi = {
 
 // ──────────────── TESTIMONI ────────────────
 export const testimoniApi = {
-  create: async (kegiatanId: string, data: { nama_tamu: string; jabatan_tamu?: string; isi_testimoni: string; rating: number }) => {
+  create: async (kegiatanId: string, data: { nama_tamu: string; jabatan_tamu?: string; tipe_tamu?: 'internal' | 'eksternal'; isi_testimoni: string; rating: number }) => {
     return apiFetch(`/api/kegiatan/${kegiatanId}/testimoni`, {
       method: 'POST',
       body: JSON.stringify(data),

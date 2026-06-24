@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { kegiatanApi } from '@/lib/api';
+import { kegiatanApi, evaluasiApi, testimoniApi } from '@/lib/api';
 import { useAuth, useRole } from '@/hooks/use-auth';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -56,6 +56,18 @@ export default function EvaluasiDashboardPage() {
   ];
 
   const activeDetail = selected ?? filtered[0] ?? null;
+
+  const { data: realEvaluasi } = useQuery({
+    queryKey: ['evaluasi-kegiatan', activeDetail?.id],
+    queryFn: () => evaluasiApi.byKegiatan(activeDetail?.id!),
+    enabled: !!activeDetail?.id,
+  });
+
+  const { data: realTestimoni } = useQuery({
+    queryKey: ['testimoni-kegiatan', activeDetail?.id],
+    queryFn: () => testimoniApi.byKegiatan(activeDetail?.id!),
+    enabled: !!activeDetail?.id,
+  });
 
   const handleExport = () => toast.success('File ekspor berhasil disiapkan');
 
@@ -218,63 +230,113 @@ export default function EvaluasiDashboardPage() {
                         <div className="flex-1 overflow-y-auto min-h-0 pr-1 pt-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {tab === 'evaluasi' && (
                           <div className="space-y-3">
-                              {mockDetail.evaluasi.map((item) => (
-                                <div key={item.nama} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
-                                  <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                      <div className="font-semibold text-slate-800">{item.nama}</div>
-                                      <div className="flex items-center gap-2 text-xs mt-1">
-                                        <span className="text-slate-500">{item.waktu}</span>
-                                        <span className="h-1 w-1 rounded-full bg-slate-300"></span>
-                                        <span className={cn("font-medium", item.status === 'Tepat waktu' ? 'text-emerald-600' : 'text-red-800')}>{item.status}</span>
+                              {!realEvaluasi || realEvaluasi.length === 0 ? (
+                                <div className="p-8 text-center border border-slate-200 rounded-xl text-slate-400">
+                                  Belum ada evaluasi dari protokoler.
+                                </div>
+                              ) : (
+                                realEvaluasi.map((item: any) => (
+                                  <div key={item.id} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
+                                    <div className="flex items-start justify-between gap-3">
+                                      <div>
+                                        <div className="font-semibold text-slate-800">{item.protokoler?.nama_lengkap}</div>
+                                        <div className="flex items-center gap-2 text-xs mt-1">
+                                          <span className="text-slate-500">
+                                            {new Date(item.waktu_pengisian).toLocaleString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\./g, ':')}
+                                          </span>
+                                          <span className="h-1 w-1 rounded-full bg-slate-300"></span>
+                                          <span className={cn("font-medium", item.dalam_batas_waktu ? 'text-emerald-600' : 'text-red-800')}>{item.dalam_batas_waktu ? "Tepat waktu" : "Melewati batas"}</span>
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center gap-1 text-amber-500 shrink-0">
+                                        {[...Array(5)].map((_, index) => (
+                                          <Star key={index} className={cn("h-3.5 w-3.5", index < item.rating_kegiatan ? "fill-current" : "text-slate-200")} />
+                                        ))}
                                       </div>
                                     </div>
-                                    <div className="flex items-center gap-1 text-amber-500 shrink-0">
-                                      {[...Array(item.rating)].map((_, index) => (
-                                        <Star key={index} className="h-3.5 w-3.5 fill-current" />
-                                      ))}
+                                    <div className="mt-3 space-y-3">
+                                      <div>
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Evaluasi Diri</span>
+                                        <p className="mt-1 text-[13px] text-slate-600 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100 leading-relaxed font-medium">
+                                          {item.refleksi_diri || "-"}
+                                        </p>
+                                      </div>
+                                      {item.kendala && (
+                                        <div>
+                                          <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider block">Kendala Lapangan</span>
+                                          <p className="mt-1 text-[13px] text-slate-600 bg-red-50/30 p-2.5 rounded-lg border border-red-100/50 leading-relaxed font-medium">
+                                            {item.kendala}
+                                          </p>
+                                        </div>
+                                      )}
+                                      <div>
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Saran & Masukan</span>
+                                        <p className="mt-1 text-[13px] text-slate-600 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100 leading-relaxed font-medium">
+                                          {item.saran || "-"}
+                                        </p>
+                                      </div>
                                     </div>
                                   </div>
-                                  <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.ringkasan}</p>
-                                </div>
-                              ))}
+                                ))
+                              )}
                           </div>
                         )}
 
                         {tab === 'testimoni' && (
                           <div className="space-y-3">
-                            {mockDetail.testimoni.map((item) => (
-                              <div key={item.nama} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div>
-                                    <div className="font-semibold text-slate-800">{item.nama}</div>
-                                    <div className="flex items-center gap-2 text-xs mt-1">
-                                      <span className="text-slate-500">Tamu Undangan</span>
-                                      <span className="h-1 w-1 rounded-full bg-slate-300"></span>
-                                      <span className={cn("font-medium", item.sentimen === 'Positif' ? 'text-emerald-600' : 'text-slate-500')}>{item.sentimen}</span>
+                            {!realTestimoni || realTestimoni.length === 0 ? (
+                              <div className="p-8 text-center border border-slate-200 rounded-xl text-slate-400">
+                                Belum ada testimoni dari tamu.
+                              </div>
+                            ) : (
+                              realTestimoni.map((item: any) => (
+                                <div key={item.id} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <div className="font-semibold text-slate-800 flex items-center gap-2">
+                                        {item.nama_tamu}
+                                        <span className={cn(
+                                          "text-[10px] font-bold uppercase px-2 py-0.5 rounded-md border",
+                                          item.tipe_tamu === 'eksternal' 
+                                            ? "bg-blue-50 text-blue-700 border-blue-200" 
+                                            : "bg-purple-50 text-purple-700 border-purple-200"
+                                        )}>
+                                          {item.tipe_tamu || "internal"}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center gap-2 text-xs mt-1">
+                                        <span className="text-slate-500">{item.jabatan_tamu || "Tamu Undangan"}</span>
+                                        <span className="h-1 w-1 rounded-full bg-slate-300"></span>
+                                        <span className={cn("font-medium", item.rating >= 4 ? 'text-emerald-600' : 'text-slate-500')}>{item.rating >= 4 ? "Positif" : "Netral"}</span>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-1 text-amber-500 shrink-0">
+                                      {[...Array(5)].map((_, index) => (
+                                        <Star key={index} className={cn("h-3.5 w-3.5", index < item.rating ? "fill-current" : "text-slate-200")} />
+                                      ))}
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-1 text-amber-500 shrink-0">
-                                    {[...Array(item.rating)].map((_, index) => (
-                                      <Star key={index} className="h-3.5 w-3.5 fill-current" />
-                                    ))}
-                                  </div>
+                                  <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.isi_testimoni}</p>
                                 </div>
-                                <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.isi}</p>
-                              </div>
-                            ))}
+                              ))
+                            )}
                           </div>
                         )}
 
                         {tab === 'feedback' && (
                           <div className="space-y-3 flex flex-col flex-1">
                             <div className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Catatan Admin</div>
-                            <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} className="flex-1 min-h-[160px] rounded-xl border-slate-200 bg-slate-50" />
-                            <div className="flex items-center justify-between gap-3 mt-auto pt-2">
-                              <p className="text-xs text-slate-400">Feedback ini terlihat oleh admin dan protokoler pada dashboard evaluasi.</p>
-                              <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-red-800 text-white hover:bg-red-900 transition-colors">
-                                <MessageSquare className="mr-2 h-4 w-4" /> Simpan
-                              </Button>
+                            <div className="flex-1 min-h-[160px] rounded-xl border border-slate-200 bg-slate-50 p-5 flex flex-col justify-start">
+                              {activeDetail?.feedback_admin ? (
+                                <p className="text-[13px] leading-relaxed text-slate-700 w-full h-full whitespace-pre-wrap font-medium">
+                                  {activeDetail.feedback_admin}
+                                </p>
+                              ) : (
+                                <div className="text-center my-auto">
+                                  <FileText className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                                  <p className="text-[13px] text-slate-400">Belum ada catatan atau umpan balik dari pimpinan untuk kegiatan ini.</p>
+                                </div>
+                              )}
                             </div>
                           </div>
                         )}

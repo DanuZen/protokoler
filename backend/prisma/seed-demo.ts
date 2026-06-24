@@ -4,6 +4,14 @@
  */
 import { createClient } from '@supabase/supabase-js';
 import { PrismaClient } from '@prisma/client';
+import * as crypto from 'crypto';
+
+function hashPassword(password: string): string {
+  if (!password) return '';
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+  return `${salt}:${hash}`;
+}
 
 const supabase = createClient(
   'https://fayiskomrdikxpmjhyct.supabase.co',
@@ -20,6 +28,13 @@ async function createDemoUser(email: string, password: string, role: 'admin' | '
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     console.log(`  ✅ User ${email} sudah ada di database (id: ${existing.id})`);
+    if (!existing.password) {
+      await prisma.user.update({
+        where: { email },
+        data: { password: hashPassword(password) }
+      });
+      console.log(`  ✅ Password di-update di Prisma.`);
+    }
     return existing;
   }
 
@@ -54,6 +69,7 @@ async function createDemoUser(email: string, password: string, role: 'admin' | '
     data: {
       id: userId,
       email,
+      password: hashPassword(password),
       role,
     },
   });

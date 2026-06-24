@@ -12,6 +12,7 @@ datasource db {
 model User {
   id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email                String                @unique @db.VarChar(255)
+  password             String?               @db.VarChar(255)
   role                 RoleEnum              @default(protokoler)
   created_at           DateTime              @default(now()) @db.Timestamptz(6)
   updated_at           DateTime              @default(now()) @updatedAt @db.Timestamptz(6)
@@ -142,6 +143,7 @@ model EvaluasiKegiatan {
   protokoler_id     String     @db.Uuid
   evaluasi_kegiatan String
   refleksi_diri     String
+  kendala           String?
   rating_kegiatan   Int?       @db.SmallInt
   waktu_pengisian   DateTime   @default(now()) @db.Timestamptz(6)
   dalam_batas_waktu Boolean
@@ -153,14 +155,15 @@ model EvaluasiKegiatan {
 }
 
 model TestimoniTamu {
-  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  kegiatan_id     String    @db.Uuid
-  nama_tamu       String    @db.VarChar(255)
-  jabatan_tamu    String?   @db.VarChar(255)
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kegiatan_id     String        @db.Uuid
+  nama_tamu       String        @db.VarChar(255)
+  jabatan_tamu    String?       @db.VarChar(255)
+  tipe_tamu       TipeTamuEnum? @default(internal)
   isi_testimoni   String
-  rating          Int?      @db.SmallInt
-  waktu_pengisian DateTime? @default(now()) @db.Timestamptz(6)
-  kegiatan        Kegiatan  @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
+  rating          Int?          @db.SmallInt
+  waktu_pengisian DateTime?     @default(now()) @db.Timestamptz(6)
+  kegiatan        Kegiatan      @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
 
   @@map("testimoni_tamu")
 }

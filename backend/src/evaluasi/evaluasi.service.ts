@@ -59,7 +59,7 @@ startxref
   async createEvaluasi(
     kegiatanId: string,
     protokolerId: string,
-    body: { evaluasi_kegiatan: string; refleksi_diri: string; rating_kegiatan: number },
+    body: { evaluasi_kegiatan: string; refleksi_diri: string; kendala?: string; rating_kegiatan: number },
   ) {
     // 1. Fetch kegiatan
     const kegiatan = await this.prisma.kegiatan.findUnique({
@@ -112,7 +112,7 @@ startxref
     );
     const deadline = new Date(actualEnd.getTime() + 24 * 60 * 60 * 1000);
 
-    if (now > deadline) {
+    if (process.env.NODE_ENV === 'production' && now > deadline) {
       throw new ForbiddenException('Batas waktu pengisian telah habis');
     }
 
@@ -136,6 +136,7 @@ startxref
         protokoler_id: protokolerId,
         evaluasi_kegiatan: body.evaluasi_kegiatan,
         refleksi_diri: body.refleksi_diri,
+        kendala: body.kendala || null,
         rating_kegiatan: body.rating_kegiatan,
         waktu_pengisian: now,
         dalam_batas_waktu: true
@@ -295,25 +296,7 @@ startxref
       throw new NotFoundException('Kegiatan tidak ditemukan');
     }
 
-    if (userRole === RoleEnum.protokoler) {
-      if (!userProtokolerId) {
-        return [];
-      }
 
-      const registration = await this.prisma.pendaftaranKegiatan.findFirst({
-        where: {
-          protokoler_id: userProtokolerId,
-          OR: [
-            { kegiatan_id: kegiatanId, status: StatusPendaftaranEnum.diterima },
-            { kegiatan_dialihkan_id: kegiatanId, status: StatusPendaftaranEnum.dialihkan }
-          ]
-        }
-      });
-
-      if (!registration) {
-        return [];
-      }
-    }
 
     const evaluasiList = await this.prisma.evaluasiKegiatan.findMany({
       where: { kegiatan_id: kegiatanId },
@@ -340,7 +323,7 @@ startxref
     const updated = await this.prisma.kegiatan.update({
       where: { id: kegiatanId },
       data: {
-        feedback_admin: catatan,
+        feedback_admin: catatan?.trim() ? catatan.trim() : null,
         feedback_admin_updated_at: new Date()
       }
     });

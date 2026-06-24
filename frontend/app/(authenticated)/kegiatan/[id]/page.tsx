@@ -13,11 +13,14 @@ import { BadgeStatus } from "@/components/BadgeStatus";
 import { BadgeKategori } from "@/components/BadgeKategori";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ViewportFitGrid } from "@/components/ViewportFitGrid";
 import { BuatKegiatanModal } from "@/components/kegiatan/buat-kegiatan-modal";
+import { cn } from "@/lib/utils";
 
 type Tab = "info" | "rekrutmen" | "absensi" | "evaluasi" | "dokumentasi";
 
@@ -45,6 +48,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const [kendala, setKendala] = useState('');
   const [saran, setSaran] = useState('');
   const [isSuccessSubmit, setIsSuccessSubmit] = useState(false);
+  const [isTestimoniModalOpen, setIsTestimoniModalOpen] = useState(false);
+  const [namaTamu, setNamaTamu] = useState('');
+  const [jabatanTamu, setJabatanTamu] = useState('');
+  const [tipeTamu, setTipeTamu] = useState<'internal' | 'eksternal'>('internal');
+  const [isiTestimoni, setIsiTestimoni] = useState('');
+  const [ratingTamu, setRatingTamu] = useState(5);
   const [selectedRole, setSelectedRole] = useState<'Protokoler' | 'Liaison Officer'>('Protokoler');
   
   // State untuk Kamera (Absensi)
@@ -111,6 +120,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     queryFn: () => kegiatanApi.get(id),
   });
 
+  useEffect(() => {
+    if (keg) {
+      setFeedbackText(keg.feedback_admin || "");
+    }
+  }, [keg]);
+
   const { data: protokoler } = useQuery({
     queryKey: ["protokoler-me"],
     queryFn: () => protokolerApi.list().then((list: any[]) =>
@@ -129,7 +144,6 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const { data: absensi } = useQuery({
     queryKey: ["absensi-kegiatan", id],
     queryFn: () => absensiApi.byKegiatan(id),
-    enabled: tab === "absensi",
   });
 
   const { data: evaluasi } = useQuery({
@@ -149,6 +163,16 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     queryFn: () => postinganApi.byKegiatan(id),
     enabled: tab === "dokumentasi",
   });
+
+  useEffect(() => {
+    if (absensi && protokoler) {
+      const myAbs = absensi.find((a: any) => a.protokoler_id === protokoler.id);
+      if (myAbs) {
+        setIsAbsenSuccess(true);
+        setAttendanceType(myAbs.status === 'hadir' ? 'hadir' : 'izin');
+      }
+    }
+  }, [absensi, protokoler]);
 
   const updateChecklist = useMutation({
     mutationFn: async (data: Partial<typeof keg>) => { await kegiatanApi.update(id, data); },
@@ -184,6 +208,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
       await evaluasiApi.create(id, {
         evaluasi_kegiatan: saran,
         refleksi_diri: evaluasiDiri,
+        kendala: kendala,
         rating_kegiatan: ratingAcara
       });
     },
@@ -194,6 +219,66 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     },
     onError: (err: any) => {
       toast.error(err.message || 'Gagal mengirim evaluasi');
+    }
+  });
+
+  const kirimAbsensi = useMutation({
+    mutationFn: async ({ photoDataUrl, lat, lng }: { photoDataUrl: string; lat?: string; lng?: string }) => {
+      const response = await fetch(photoDataUrl);
+      const blob = await response.blob();
+      const formData = new FormData();
+      formData.append('foto_selfie', blob, 'selfie.jpg');
+      if (lat) formData.append('latitude', lat);
+      if (lng) formData.append('longitude', lng);
+      
+      await absensiApi.create(id, formData);
+    },
+    onSuccess: () => {
+      setIsAbsenSuccess(true);
+      setAttendanceType('hadir');
+      toast.success('Absensi berhasil dicatat!');
+      qc.invalidateQueries({ queryKey: ["absensi-kegiatan", id] });
+      qc.invalidateQueries({ queryKey: ["kegiatan", id] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || 'Gagal melakukan absensi');
+    }
+  });
+
+  const simpanFeedback = useMutation({
+    mutationFn: (catatan: string) => evaluasiApi.updateFeedback(id, catatan),
+    onSuccess: () => {
+      toast.success("Catatan feedback admin berhasil disimpan");
+      qc.invalidateQueries({ queryKey: ["kegiatan", id] });
+      qc.invalidateQueries({ queryKey: ["evaluasi-dashboard-kegiatan"] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Gagal menyimpan feedback");
+    }
+  });
+
+  const tambahTestimoniMutation = useMutation({
+    mutationFn: () => testimoniApi.create(id, {
+      nama_tamu: namaTamu,
+      jabatan_tamu: jabatanTamu,
+      tipe_tamu: tipeTamu,
+      isi_testimoni: isiTestimoni,
+      rating: ratingTamu
+    } as any),
+    onSuccess: () => {
+      toast.success("Testimoni berhasil disimpan!");
+      setIsTestimoniModalOpen(false);
+      // Reset form
+      setNamaTamu('');
+      setJabatanTamu('');
+      setTipeTamu('internal');
+      setIsiTestimoni('');
+      setRatingTamu(5);
+      qc.invalidateQueries({ queryKey: ["testimoni-kegiatan", id] });
+      qc.invalidateQueries({ queryKey: ["evaluasi-dashboard-kegiatan"] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Gagal menyimpan testimoni");
     }
   });
 
@@ -879,7 +964,29 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   </div>
                                   <div className="flex gap-3 w-full mb-4">
                                     <Button variant="outline" onClick={() => { setPhoto(null); startCamera(); }} className="flex-1 rounded-xl border-slate-200 h-12 font-bold text-slate-600">Foto Ulang</Button>
-                                    <Button onClick={() => { setIsAbsenSuccess(true); toast.success('Absensi berhasil disimpan!'); }} className="flex-1 rounded-xl bg-green-600 hover:bg-green-700 text-white h-12 font-bold shadow-md shadow-green-600/20">Kirim Absensi</Button>
+                                    <Button 
+                                      disabled={kirimAbsensi.isPending}
+                                      onClick={() => {
+                                        if (!photo) return toast.error('Harap ambil foto selfie terlebih dahulu');
+                                        if (navigator.geolocation) {
+                                          navigator.geolocation.getCurrentPosition(
+                                            (position) => {
+                                              const lat = position.coords.latitude.toString();
+                                              const lng = position.coords.longitude.toString();
+                                              kirimAbsensi.mutate({ photoDataUrl: photo, lat, lng });
+                                            },
+                                            (error) => {
+                                              kirimAbsensi.mutate({ photoDataUrl: photo });
+                                            }
+                                          );
+                                        } else {
+                                          kirimAbsensi.mutate({ photoDataUrl: photo });
+                                        }
+                                      }} 
+                                      className="flex-1 rounded-xl bg-green-600 hover:bg-green-700 text-white h-12 font-bold shadow-md shadow-green-600/20"
+                                    >
+                                      {kirimAbsensi.isPending ? 'Mengirim...' : 'Kirim Absensi'}
+                                    </Button>
                                   </div>
                                 </div>
                               )}
@@ -1150,9 +1257,28 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                   ))}
                                 </div>
                               </div>
-                              <p className="mt-3 text-[13px] text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100 leading-relaxed">
-                                {item.saran ? item.saran : "Evaluasi diselesaikan dengan baik dan lancar. Kendala dapat diatasi dengan sigap."}
-                              </p>
+                              <div className="mt-3 space-y-3">
+                                <div>
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Evaluasi Diri</span>
+                                  <p className="mt-1 text-[13px] text-slate-600 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100 leading-relaxed font-medium">
+                                    {item.refleksi_diri || "-"}
+                                  </p>
+                                </div>
+                                {item.kendala && (
+                                  <div>
+                                    <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider block">Kendala Lapangan</span>
+                                    <p className="mt-1 text-[13px] text-slate-600 bg-red-50/30 p-2.5 rounded-lg border border-red-100/50 leading-relaxed font-medium">
+                                      {item.kendala}
+                                    </p>
+                                  </div>
+                                )}
+                                <div>
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Saran & Masukan</span>
+                                  <p className="mt-1 text-[13px] text-slate-600 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100 leading-relaxed font-medium">
+                                    {item.saran || "-"}
+                                  </p>
+                                </div>
+                              </div>
                             </div>
                           ))
                         )}
@@ -1175,7 +1301,17 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <div key={item.id} className="border border-slate-200 bg-white rounded-xl p-5 shadow-sm">
                               <div className="flex items-start justify-between gap-3">
                                 <div>
-                                  <div className="font-semibold text-slate-800 text-sm md:text-base">{item.nama_tamu}</div>
+                                  <div className="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                                    {item.nama_tamu}
+                                    <span className={cn(
+                                      "text-[10px] font-bold uppercase px-2 py-0.5 rounded-md border",
+                                      item.tipe_tamu === 'eksternal' 
+                                        ? "bg-blue-50 text-blue-700 border-blue-200" 
+                                        : "bg-purple-50 text-purple-700 border-purple-200"
+                                    )}>
+                                      {item.tipe_tamu || "internal"}
+                                    </span>
+                                  </div>
                                   <div className="text-xs text-slate-500 mt-0.5">{item.jabatan_tamu || "Tamu Undangan"}</div>
                                 </div>
                                 <Badge className={`rounded-lg font-bold shadow-sm ${item.rating >= 4 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-50 text-slate-600 border border-slate-200'}`}>
@@ -1194,7 +1330,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                           ))
                         )}
                       </div>
-                      <div className="flex justify-end pt-4 mt-auto">
+                      <div className="flex justify-end gap-3 pt-4 mt-auto">
+                        {(isAdmin || isDiterima) && (
+                          <Button onClick={() => setIsTestimoniModalOpen(true)} className="rounded-xl bg-[#6B0000] text-white hover:bg-red-950 font-bold h-11 px-5 shadow-md">
+                            <Plus className="mr-1.5 h-4 w-4" /> Tambah Testimoni
+                          </Button>
+                        )}
                         <Button onClick={() => toast.success('File ekspor berhasil disiapkan')} className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-5 shadow-md">
                           <Download className="mr-2 h-4 w-4" /> Export Testimoni
                         </Button>
@@ -1211,8 +1352,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <Textarea value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} placeholder="Tuliskan catatan atau umpan balik khusus untuk kegiatan ini..." className="flex-1 min-h-[160px] rounded-xl border-slate-200 bg-slate-50 focus:bg-white text-[13px] leading-relaxed p-4" />
                             <div className="flex items-center justify-between gap-3 pt-4">
                               <p className="text-[11px] text-slate-400 font-medium">Feedback ini akan menjadi ringkasan yang terlihat oleh seluruh admin dan protokoler.</p>
-                              <Button onClick={() => toast.success('Feedback admin berhasil disimpan')} className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-6 shadow-md shrink-0">
-                                <MessageSquare className="mr-2 h-4 w-4" /> Simpan
+                              <Button 
+                                onClick={() => simpanFeedback.mutate(feedbackText)} 
+                                disabled={simpanFeedback.isPending}
+                                className="rounded-xl bg-slate-950 text-white hover:bg-slate-800 font-bold h-11 px-6 shadow-md shrink-0"
+                              >
+                                <MessageSquare className="mr-2 h-4 w-4" /> {simpanFeedback.isPending ? "Menyimpan..." : "Simpan"}
                               </Button>
                             </div>
                           </>
@@ -1326,6 +1471,104 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
       {/* Modal Edit Kegiatan */}
       <BuatKegiatanModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} editId={id} />
+
+      {/* Modal Tambah Testimoni */}
+      <Dialog open={isTestimoniModalOpen} onOpenChange={(open) => !open && setIsTestimoniModalOpen(false)}>
+        <DialogContent className="sm:max-w-md rounded-2xl border border-slate-200 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-bold text-xl text-slate-900">Tambah Testimoni Tamu</DialogTitle>
+          </DialogHeader>
+          
+          <div className="py-4 space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Tamu</label>
+              <Input 
+                value={namaTamu} 
+                onChange={(e) => setNamaTamu(e.target.value)} 
+                placeholder="Nama Lengkap Tamu..." 
+                className="rounded-xl border-slate-200"
+              />
+            </div>
+            
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Jabatan / Instansi</label>
+              <Input 
+                value={jabatanTamu} 
+                onChange={(e) => setJabatanTamu(e.target.value)} 
+                placeholder="Contoh: Kepala Dinas Pendidikan..." 
+                className="rounded-xl border-slate-200"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">Jenis Tamu</label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setTipeTamu('internal')}
+                  className={cn(
+                    "flex-1 py-2.5 rounded-xl border text-sm font-bold transition-all",
+                    tipeTamu === 'internal' 
+                      ? "bg-[#6B0000] border-[#6B0000] text-white shadow-md shadow-red-800/10" 
+                      : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                  )}
+                >
+                  Internal
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTipeTamu('eksternal')}
+                  className={cn(
+                    "flex-1 py-2.5 rounded-xl border text-sm font-bold transition-all",
+                    tipeTamu === 'eksternal' 
+                      ? "bg-[#6B0000] border-[#6B0000] text-white shadow-md shadow-red-800/10" 
+                      : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                  )}
+                >
+                  Eksternal
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">Rating Testimoni</label>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star 
+                    key={star} 
+                    onClick={() => setRatingTamu(star)}
+                    className={cn(
+                      "h-6 w-6 cursor-pointer transition-colors",
+                      star <= ratingTamu ? "text-amber-500 fill-amber-500" : "text-slate-200"
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Pesan Testimoni</label>
+              <Textarea 
+                value={isiTestimoni} 
+                onChange={(e) => setIsiTestimoni(e.target.value)} 
+                placeholder="Tuliskan testimoni atau kesan pesan dari tamu..." 
+                className="rounded-xl border-slate-200 min-h-[100px] resize-none"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0 pt-2 border-t border-slate-100">
+            <Button variant="ghost" onClick={() => setIsTestimoniModalOpen(false)} className="rounded-xl text-slate-500">Batal</Button>
+            <Button 
+              className="rounded-xl bg-[#6B0000] text-white hover:bg-red-950 font-bold"
+              disabled={tambahTestimoniMutation.isPending || !namaTamu.trim() || !isiTestimoni.trim()}
+              onClick={() => tambahTestimoniMutation.mutate()}
+            >
+              {tambahTestimoniMutation.isPending ? "Menyimpan..." : "Simpan Testimoni"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
