@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Users, UserCheck, ShieldCheck, Check, X, Sparkles } from "lucide-react";
+import { Search, Users, UserCheck, ShieldCheck, Check, X, Sparkles, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { BadgeStatus } from "@/components/BadgeStatus";
 import { BadgeKategori } from "@/components/BadgeKategori";
 import { cn } from "@/lib/utils";
+import { DetailAnggotaModal } from "./detail-modal";
 
 type Protokoler = {
   id: string;
@@ -49,6 +50,8 @@ export default function AnggotaPage() {
   const [selected, setSelected] = useState<Protokoler | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [dialogMode, setDialogMode] = useState<"approve" | "reject" | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [detailId, setDetailId] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["protokoler"],
@@ -235,19 +238,24 @@ export default function AnggotaPage() {
                   <TableHead className="font-bold text-slate-800">Kontak</TableHead>
                   <TableHead className="font-bold text-slate-800 text-center">Kegiatan</TableHead>
                   <TableHead className="font-bold text-slate-800">Status</TableHead>
-                  {tab === "semua" && <TableHead className="font-bold text-slate-800 pr-6">Pencapaian</TableHead>}
-                  {tab === "pending" && <TableHead className="font-bold text-slate-800 text-right pr-6">Verifikasi</TableHead>}
-                  {tab === "ditolak" && <TableHead className="font-bold text-slate-800 pr-6">Catatan Penolakan</TableHead>}
+                  {tab === "semua" && <TableHead className="font-bold text-slate-800">Pencapaian</TableHead>}
+                  {tab === "pending" && <TableHead className="font-bold text-slate-800 text-right">Verifikasi</TableHead>}
+                  {tab === "ditolak" && <TableHead className="font-bold text-slate-800">Catatan Penolakan</TableHead>}
+                  <TableHead className="font-bold text-slate-800 text-center pr-6 w-20">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading && (
-                  <TableRow><TableCell colSpan={7} className="h-24 text-center">Memuat data...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="h-24 text-center">Memuat data...</TableCell></TableRow>
                 )}
                 
                 {!isLoading && filtered.length > 0 && (
                   filtered.map((m) => (
-                    <TableRow key={m.id} className="hover:bg-slate-50 border-b border-slate-100 transition-colors">
+                    <TableRow 
+                      key={m.id} 
+                      className="hover:bg-slate-50/80 border-b border-slate-100 transition-colors cursor-pointer"
+                      onClick={() => { setDetailId(m.id); setIsDetailOpen(true); }}
+                    >
                       <TableCell className="pl-6">
                         <div className="font-bold text-slate-800">{m.nama_lengkap}</div>
                         <div className="text-xs text-slate-500 font-mono mt-0.5">{m.nim}</div>
@@ -265,7 +273,7 @@ export default function AnggotaPage() {
                       <TableCell><BadgeStatus status={m.status_akun} /></TableCell>
                       
                       {tab === "semua" && (
-                        <TableCell className="pr-6">
+                        <TableCell>
                           <div className="flex flex-col gap-1.5 items-start">
                             {m.kategori_sertifikat ? <BadgeKategori kategori={m.kategori_sertifikat} /> : <span className="text-xs text-slate-400">—</span>}
                           </div>
@@ -273,13 +281,13 @@ export default function AnggotaPage() {
                       )}
 
                       {tab === "pending" && (
-                        <TableCell className="text-right pr-6">
+                        <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">
                             <Button 
                               variant="outline" 
                               size="sm" 
                               className="rounded-xl border-green-500 text-green-700 hover:bg-green-50 font-bold"
-                              onClick={() => { setSelected(m); setDialogMode("approve"); }}
+                              onClick={(e) => { e.stopPropagation(); setSelected(m); setDialogMode("approve"); }}
                             >
                               <Check className="h-4 w-4 mr-1" /> Setujui
                             </Button>
@@ -287,7 +295,7 @@ export default function AnggotaPage() {
                               variant="outline" 
                               size="sm" 
                               className="rounded-xl border-red-500 text-red-700 hover:bg-red-50 font-bold"
-                              onClick={() => { setSelected(m); setDialogMode("reject"); setRejectReason(""); }}
+                              onClick={(e) => { e.stopPropagation(); setSelected(m); setDialogMode("reject"); setRejectReason(""); }}
                             >
                               <X className="h-4 w-4 mr-1" /> Tolak
                             </Button>
@@ -296,14 +304,29 @@ export default function AnggotaPage() {
                       )}
 
                       {tab === "ditolak" && (
-                        <TableCell className="pr-6 align-top">
+                        <TableCell className="align-top">
                           {m.catatan_penolakan ? (
-                            <p className="text-xs text-slate-600 bg-red-50 p-2 rounded-lg border border-red-100 leading-relaxed max-w-xs">{m.catatan_penolakan}</p>
+                             <p className="text-xs text-slate-600 bg-red-50 p-2 rounded-lg border border-red-100 leading-relaxed max-w-xs">{m.catatan_penolakan}</p>
                           ) : (
                             <span className="text-xs text-slate-400 italic">Tidak ada catatan</span>
                           )}
                         </TableCell>
                       )}
+
+                      <TableCell className="text-center pr-6" onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 rounded-lg text-slate-400 hover:text-red-800 hover:bg-red-50"
+                          onClick={() => {
+                            setDetailId(m.id);
+                            setIsDetailOpen(true);
+                          }}
+                        >
+                          <Eye className="h-4 w-4" />
+                          <span className="sr-only">Detail</span>
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
@@ -369,6 +392,16 @@ export default function AnggotaPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Detail Anggota Modal */}
+      <DetailAnggotaModal
+        isOpen={isDetailOpen}
+        onClose={() => {
+          setIsDetailOpen(false);
+          setDetailId(null);
+        }}
+        protokolerId={detailId}
+      />
     </div>
   );
 }

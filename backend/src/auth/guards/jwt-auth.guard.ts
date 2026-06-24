@@ -72,15 +72,6 @@ export class JwtAuthGuard implements CanActivate {
       const metaRole = user.user_metadata?.role || user.app_metadata?.role;
       if (metaRole && ['admin', 'protokoler', 'tamu', 'dokumentasi'].includes(metaRole)) {
         role = metaRole;
-      } else {
-        const email = user.email || '';
-        if (email.startsWith('admin@')) {
-          role = 'admin';
-        } else if (email.startsWith('pimpinan@') || email.startsWith('tamu@')) {
-          role = 'tamu';
-        } else if (email.startsWith('dokumentasi@')) {
-          role = 'dokumentasi';
-        }
       }
 
       dbUser = await this.prisma.user.create({

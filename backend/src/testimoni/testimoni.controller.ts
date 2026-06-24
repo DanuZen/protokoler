@@ -12,7 +12,7 @@ export class TestimoniController {
   @Post(':id/testimoni')
   async fillTestimoni(
     @Param('id') kegiatanId: string,
-    @Body() body: { nama_tamu: string; jabatan_tamu?: string; isi_testimoni: string; rating: number },
+    @Body() body: { nama_tamu: string; jabatan_tamu?: string; tipe_tamu?: 'internal' | 'eksternal'; isi_testimoni: string; rating?: number },
   ) {
     return this.testimoniService.createTestimoni(kegiatanId, body);
   }

@@ -4,12 +4,23 @@ import { SupabaseService } from '../supabase/supabase.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RoleEnum } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
+import { createClient } from '@supabase/supabase-js';
+import * as crypto from 'crypto';
+
+function hashPassword(password: string): string {
+  if (!password) return '';
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+  return `${salt}:${hash}`;
+}
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private supabaseService: SupabaseService,
+    private configService: ConfigService,
   ) {}
 
   async register(dto: RegisterDto, files: { foto_setengah_badan?: any; foto_full_body?: any }) {
@@ -36,13 +47,20 @@ export class AuthService {
     const fotoSetengahFile = files.foto_setengah_badan[0];
     const fotoFullFile = files.foto_full_body[0];
 
-    // 2. Create user in Supabase Auth
     const supabase = this.supabaseService.getClient();
-    const { data: authData, error: authErr } = await supabase.auth.admin.createUser({
+    // 2. Create user in Supabase Auth using public client to trigger verification email
+    const publicClient = createClient(
+      this.configService.get<string>('SUPABASE_URL') || '',
+      this.configService.get<string>('VITE_SUPABASE_PUBLISHABLE_KEY') || '',
+    );
+    const { data: authData, error: authErr } = await publicClient.auth.signUp({
       email: dto.email,
       password: dto.password,
-      email_confirm: true,
-      user_metadata: { nama_lengkap: dto.nama_lengkap },
+      options: {
+        data: {
+          nama_lengkap: dto.nama_lengkap,
+        }
+      }
     });
 
     if (authErr || !authData.user) {
@@ -70,21 +88,27 @@ export class AuthService {
         fotoFullFile.mimetype,
       );
 
+      const isBase64 = fotoSetengahUrl.startsWith('data:');
+      const avatarUrl = isBase64 ? `${this.configService.get<string>('BACKEND_URL') || 'http://localhost:4000'}/placeholder.png` : fotoSetengahUrl;
+
       // Sync avatar and photo URLs to Supabase Auth metadata
       await supabase.auth.admin.updateUserById(userId, {
         user_metadata: {
           nama_lengkap: dto.nama_lengkap,
-          avatar_url: fotoSetengahUrl,
-          foto_setengah_badan_url: fotoSetengahUrl,
+          avatar_url: avatarUrl,
+          foto_setengah_badan_url: avatarUrl,
         },
       });
 
+
+      const hashedPassword = hashPassword(dto.password);
       // 4. Save to Database using Prisma transaction
       const newUser = await this.prisma.$transaction(async (tx) => {
         const user = await tx.user.create({
           data: {
             id: userId,
             email: dto.email,
+            password: hashedPassword,
             role: 'protokoler',
           },
         });
@@ -140,6 +164,15 @@ export class AuthService {
       include: { protokoler: true },
     });
 
+    if (dbUser && !dbUser.password && dto.password) {
+      const hashedPassword = hashPassword(dto.password);
+      dbUser = await this.prisma.user.update({
+        where: { id: dbUser.id },
+        data: { password: hashedPassword },
+        include: { protokoler: true },
+      });
+    }
+
     if (!dbUser) {
       // Clean up stale user record with same email to avoid unique constraint issues
       const existingUserByEmail = await this.prisma.user.findUnique({
@@ -157,21 +190,14 @@ export class AuthService {
       const metaRole = authData.user.user_metadata?.role || authData.user.app_metadata?.role;
       if (metaRole && ['admin', 'protokoler', 'tamu', 'dokumentasi'].includes(metaRole)) {
         role = metaRole;
-      } else {
-        const email = authData.user.email || '';
-        if (email.startsWith('admin@')) {
-          role = 'admin';
-        } else if (email.startsWith('pimpinan@') || email.startsWith('tamu@')) {
-          role = 'tamu';
-        } else if (email.startsWith('dokumentasi@')) {
-          role = 'dokumentasi';
-        }
       }
 
+      const hashedPassword = hashPassword(dto.password);
       dbUser = await this.prisma.user.create({
         data: {
           id: authData.user.id,
           email: authData.user.email || '',
+          password: hashedPassword,
           role: role as RoleEnum,
         },
         include: { protokoler: true },

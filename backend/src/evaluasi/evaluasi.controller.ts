@@ -15,7 +15,7 @@ export class EvaluasiController {
   async fillEvaluasi(
     @Param('id') kegiatanId: string,
     @Req() req: any,
-    @Body() body: { evaluasi_kegiatan: string; refleksi_diri: string; rating_kegiatan: number },
+    @Body() body: { evaluasi_kegiatan: string; refleksi_diri: string; kendala?: string; rating_kegiatan: number },
   ) {
     if (!req.user.protokolerId) {
       throw new ForbiddenException('Hanya pengguna dengan profil protokoler yang dapat mengisi evaluasi');
