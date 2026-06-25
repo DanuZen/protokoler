@@ -82,7 +82,7 @@ export default function ManajemenBeritaPage() {
   const [isCompressing, setIsCompressing] = useState(false);
   const [formData, setFormData] = useState({
     kategori: '',
-    gambar: '/gallery_1.png',
+    gambar: '/gallery_1.webp',
     ringkasan: '',
   });
 
@@ -163,7 +163,7 @@ export default function ManajemenBeritaPage() {
           
           setFormData({
             kategori: firstPhotoWithKategori?.kategori || '',
-            gambar: '/gallery_1.png',
+            gambar: '/gallery_1.webp',
             ringkasan: firstPhotoWithKeterangan?.keterangan || '',
           });
           setFiles([]);
@@ -172,7 +172,7 @@ export default function ManajemenBeritaPage() {
         } else {
           setFormData({
             kategori: '',
-            gambar: '/gallery_1.png',
+            gambar: '/gallery_1.webp',
             ringkasan: '',
           });
           setFiles([]);
@@ -189,7 +189,7 @@ export default function ManajemenBeritaPage() {
     
     setFormData({
       kategori: firstPhotoWithKategori?.kategori || '',
-      gambar: '/gallery_1.png',
+      gambar: '/gallery_1.webp',
       ringkasan: firstPhotoWithKeterangan?.keterangan || '',
     });
     setFiles([]);
@@ -211,7 +211,7 @@ export default function ManajemenBeritaPage() {
       queryClient.invalidateQueries({ queryKey: ['postingan-list'] });
       queryClient.invalidateQueries({ queryKey: ['dokumentasi-kegiatan-detail', selectedId] });
       toast.success(`Dokumentasi berhasil dipublikasikan!`);
-      setFormData({ kategori: '', gambar: '/gallery_1.png', ringkasan: '' });
+      setFormData({ kategori: '', gambar: '/gallery_1.webp', ringkasan: '' });
       setFiles([]);
       setMediaType('foto');
       refetchDetail().then(() => {
@@ -268,7 +268,7 @@ export default function ManajemenBeritaPage() {
           queryClient.invalidateQueries({ queryKey: ['postingan-list'] });
           queryClient.invalidateQueries({ queryKey: ['dokumentasi-kegiatan-detail', selectedId] });
           toast.success('Postingan dokumentasi berhasil diperbarui!');
-          setFormData({ kategori: '', gambar: '/gallery_1.png', ringkasan: '' });
+          setFormData({ kategori: '', gambar: '/gallery_1.webp', ringkasan: '' });
           setFiles([]);
           setShowUploadForm(false);
         }
@@ -441,7 +441,7 @@ export default function ManajemenBeritaPage() {
                                   setSelectedId(keg.id); 
                                   setIsEditingMode(false);
                                   setShowUploadForm(false); 
-                                  setFormData({ kategori: '', gambar: '/gallery_1.png', ringkasan: '' });
+                                  setFormData({ kategori: '', gambar: '/gallery_1.webp', ringkasan: '' });
                                   setFiles([]);
                                 }}
                                 className="bg-red-900 hover:bg-red-800 text-white rounded-xl h-8 px-4 text-xs font-bold shadow-sm"
