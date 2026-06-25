@@ -58,4 +58,36 @@ export class RegulasiService {
       data: regulasi
     };
   }
+
+  async remove(id: string) {
+    const regulasi = await this.prisma.regulasi.findUnique({
+      where: { id }
+    });
+
+    if (!regulasi) {
+      throw new BadRequestException('Regulasi tidak ditemukan');
+    }
+
+    try {
+      if (regulasi.file_url) {
+        const bucket = 'regulasi';
+        const bucketStr = `/${bucket}/`;
+        const idx = regulasi.file_url.indexOf(bucketStr);
+        if (idx !== -1) {
+          const filePath = regulasi.file_url.substring(idx + bucketStr.length);
+          await this.supabase.deleteFile(bucket, filePath);
+        }
+      }
+    } catch (e) {
+      console.error(`Gagal menghapus file regulasi dari storage: ${e.message}`);
+    }
+
+    await this.prisma.regulasi.delete({
+      where: { id }
+    });
+
+    return {
+      message: 'Regulasi berhasil dihapus'
+    };
+  }
 }

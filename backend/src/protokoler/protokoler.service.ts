@@ -116,6 +116,31 @@ export class ProtokolerService {
     const protokoler = await this.findOne(id);
     const userId = protokoler.user_id;
 
+    // Hapus foto dari Supabase jika ada
+    try {
+      const bucket = 'protokoler-photos';
+      if (protokoler.foto_setengah_badan_url) {
+        const url = protokoler.foto_setengah_badan_url;
+        const bucketStr = `/${bucket}/`;
+        const idx = url.indexOf(bucketStr);
+        if (idx !== -1) {
+          const filePath = url.substring(idx + bucketStr.length);
+          await this.supabaseService.deleteFile(bucket, filePath);
+        }
+      }
+      if (protokoler.foto_full_body_url) {
+        const url = protokoler.foto_full_body_url;
+        const bucketStr = `/${bucket}/`;
+        const idx = url.indexOf(bucketStr);
+        if (idx !== -1) {
+          const filePath = url.substring(idx + bucketStr.length);
+          await this.supabaseService.deleteFile(bucket, filePath);
+        }
+      }
+    } catch (e) {
+      this.logger.error(`Gagal menghapus foto saat hapus protokoler: ${e.message}`);
+    }
+
     // Hapus user dari Supabase Auth (cascade di DB akan hapus protokoler & data terkait)
     const supabase = this.supabaseService.getClient();
     await supabase.auth.admin.deleteUser(userId);
@@ -155,11 +180,27 @@ export class ProtokolerService {
     }
 
     if (files) {
+      const bucket = 'protokoler-photos';
       if (files.foto_setengah_badan && files.foto_setengah_badan.length > 0) {
+        // Hapus foto lama jika ada
+        try {
+          if (protokoler.foto_setengah_badan_url) {
+            const url = protokoler.foto_setengah_badan_url;
+            const bucketStr = `/${bucket}/`;
+            const idx = url.indexOf(bucketStr);
+            if (idx !== -1) {
+              const filePath = url.substring(idx + bucketStr.length);
+              await this.supabaseService.deleteFile(bucket, filePath);
+            }
+          }
+        } catch (e) {
+          this.logger.warn(`Gagal menghapus foto setengah badan lama: ${e.message}`);
+        }
+
         const file = files.foto_setengah_badan[0];
         const ext = file.originalname.split('.').pop() || 'jpg';
         const url = await this.supabaseService.uploadFile(
-          'protokoler-photos',
+          bucket,
           `setengah_badan/${userId}_setengah_badan_${Date.now()}.${ext}`,
           file.buffer,
           file.mimetype,
@@ -168,10 +209,25 @@ export class ProtokolerService {
       }
 
       if (files.foto_full_body && files.foto_full_body.length > 0) {
+        // Hapus foto lama jika ada
+        try {
+          if (protokoler.foto_full_body_url) {
+            const url = protokoler.foto_full_body_url;
+            const bucketStr = `/${bucket}/`;
+            const idx = url.indexOf(bucketStr);
+            if (idx !== -1) {
+              const filePath = url.substring(idx + bucketStr.length);
+              await this.supabaseService.deleteFile(bucket, filePath);
+            }
+          }
+        } catch (e) {
+          this.logger.warn(`Gagal menghapus foto full body lama: ${e.message}`);
+        }
+
         const file = files.foto_full_body[0];
         const ext = file.originalname.split('.').pop() || 'jpg';
         const url = await this.supabaseService.uploadFile(
-          'protokoler-photos',
+          bucket,
           `full_body/${userId}_full_body_${Date.now()}.${ext}`,
           file.buffer,
           file.mimetype,

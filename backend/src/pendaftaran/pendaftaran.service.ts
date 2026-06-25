@@ -316,6 +316,20 @@ startxref
       kegiatanIds.push(pendaftaran.kegiatan_dialihkan_id);
     }
 
+    try {
+      if (pendaftaran.surat_tugas_url) {
+        const bucket = 'surat-tugas';
+        const bucketStr = `/${bucket}/`;
+        const idx = pendaftaran.surat_tugas_url.indexOf(bucketStr);
+        if (idx !== -1) {
+          const filePath = pendaftaran.surat_tugas_url.substring(idx + bucketStr.length);
+          await this.supabase.deleteFile(bucket, filePath);
+        }
+      }
+    } catch (e) {
+      console.error(`Gagal menghapus surat tugas dari storage: ${e.message}`);
+    }
+
     await this.prisma.$transaction(async (tx) => {
       await tx.absensi.deleteMany({
         where: {
