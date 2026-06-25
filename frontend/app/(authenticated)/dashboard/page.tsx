@@ -89,13 +89,13 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
-      <motion.div {...fadeUp(0)} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div {...fadeUp(0)} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <LayoutGrid className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <LayoutGrid className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -106,17 +106,112 @@ export default function Dashboard() {
             {isAuthLoading ? (
               <Skeleton className="h-12 w-64 mb-1.5 rounded-lg" />
             ) : (
-              <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h2>
+              <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h2>
+import { ViewportFitGrid } from '@/components/ViewportFitGrid';
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 15 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.4, delay, ease: 'easeOut' as const },
+});
+
+export default function Dashboard() {
+  const { user, loading: isAuthLoading } = useAuth();
+  const displayName = user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Demo Pimpinan';
+  const [hoveredBar, setHoveredBar] = useState<string | null>(null);
+
+  const { data: stats, isLoading: isStatsLoading } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: () => dashboardApi.stats(),
+  });
+
+  const { data: upcoming, isLoading: isUpcomingLoading } = useQuery({
+    queryKey: ['dashboard-upcoming'],
+    queryFn: () => dashboardApi.upcoming(8),
+  });
+
+  const recentActivity = (upcoming ?? []).slice(0, 5);
+
+  const kpiData = [
+    { 
+      label: 'Total Anggota', 
+      value: stats?.total_mahasiswa ?? '142', 
+      trend: '+5%', 
+      isUp: true,
+      chart: (
+        <div className="flex items-end gap-1 h-10 mt-2">
+          {[40, 70, 45, 90].map((h, i) => (
+            <div key={i} className="w-4 bg-red-700 rounded-sm transition-all hover:opacity-80" style={{ height: `${h}%` }} />
+          ))}
+        </div>
+      )
+    },
+    { 
+      label: 'Total Kegiatan', 
+      value: stats?.total_kegiatan ?? '86', 
+      trend: '+8%', 
+      isUp: true,
+      chart: (
+        <div className="w-16 h-10 mt-2 relative overflow-hidden">
+          <svg viewBox="0 0 100 40" className="w-full h-full stroke-red-700 fill-none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5,30 L25,15 L45,25 L70,5 L95,15" />
+          </svg>
+        </div>
+      )
+    },
+    { 
+      label: 'Mendatang', 
+      value: stats?.kegiatan_mendatang ?? '3', 
+      trend: '+12%', 
+      isUp: true,
+      chart: (
+        <div className="w-10 h-10 mt-2 rounded-full border-4 border-red-700/20 border-r-red-700 border-t-red-700 rotate-45" />
+      )
+    },
+    { 
+      label: 'Total Penugasan', 
+      value: stats?.total_penugasan ?? '512', 
+      trend: '-3%', 
+      isUp: false,
+      chart: (
+        <div className="flex items-end gap-0.5 h-10 mt-2 opacity-50">
+          {[80, 70, 85, 95, 70, 60, 50, 40].map((h, i) => (
+            <div key={i} className="w-2 bg-red-700 rounded-sm" style={{ height: `${h}%` }} />
+          ))}
+        </div>
+      )
+    },
+  ];
+
+  return (
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
+      
+      {/* ─── HEADER SECTION ──────────────────────────────────────── */}
+      <motion.div {...fadeUp(0)} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <LayoutGrid className="h-6 w-6 md:h-7 md:w-7" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
+                Ringkasan Sistem
+              </span>
+            </div>
+            {isAuthLoading ? (
+              <Skeleton className="h-12 w-64 mb-1.5 rounded-lg" />
+            ) : (
+              <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h2>
             )}
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Senang melihat Anda kembali. Mari mulai bekerja.</p>
+            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Senang melihat Anda kembali. Mari mulai bekerja.</p>
           </div>
         </div>
       </motion.div>
 
       {/* ─── SCALED CONTENT AREA ─────────────────────────────────────────── */}
       <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <ViewportFitGrid gridTemplateColumns="1fr" gap={0} className="w-full">
-          <div className="flex flex-col pb-6 pr-2">
+        <ViewportFitGrid gridTemplateColumns="none" gap={0} className="w-full">
+          <div className="flex flex-col pb-6 pr-2 w-full">
             
             {/* ─── KPI METRICS ─── */}
             <div className="shrink-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
@@ -138,9 +233,9 @@ export default function Dashboard() {
                           {isStatsLoading ? (
                             <Skeleton className="h-8 w-20 mb-1 rounded-md" />
                           ) : (
-                            <div className="text-[32px] font-bold text-slate-900 leading-none mb-1">{kpi.value}</div>
+                            <div className="text-2xl md:text-[32px] font-bold text-slate-900 leading-none mb-1">{kpi.value}</div>
                           )}
-                          <div className="text-[11px] font-medium text-slate-400">Bulan lalu</div>
+                          <div className="text-[10px] md:text-[11px] font-medium text-slate-400">Bulan lalu</div>
                         </div>
                         {isStatsLoading ? <Skeleton className="w-16 h-10 mt-2 rounded-md" /> : kpi.chart}
                       </div>
@@ -161,7 +256,7 @@ export default function Dashboard() {
               
               {/* BIG CHART: Sales Revenue Style */}
             <motion.div {...fadeUp(0.3)} className="lg:col-span-2 bg-white border border-slate-100 shadow-sm rounded-[24px] flex flex-col relative overflow-visible h-full">
-              <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
+              <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                     <Activity className="h-6 w-6 text-red-700" />
@@ -263,7 +358,7 @@ export default function Dashboard() {
 
             {/* LIST: Top Product Style */}
             <motion.div {...fadeUp(0.35)} className="bg-white border border-slate-100 shadow-sm rounded-[24px] flex flex-col relative overflow-hidden h-full">
-              <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
+              <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                     <CalendarDays className="h-6 w-6 text-red-700" />
@@ -326,7 +421,7 @@ export default function Dashboard() {
               </div>
             </motion.div>
           </div>
-        </div>
+          </div>
         </ViewportFitGrid>
       </main>
     </div>

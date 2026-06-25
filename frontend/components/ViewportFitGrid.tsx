@@ -113,9 +113,11 @@ export function ViewportFitGrid({
         className={className}
         style={{
           display: "grid",
-          gridTemplateColumns: isMobile
-            ? "1fr"
-            : (gridTemplateColumns || `repeat(auto-fit, minmax(${minCardWidth}px, 1fr))`),
+          ...(gridTemplateColumns !== 'none' ? {
+            gridTemplateColumns: isMobile
+              ? "1fr"
+              : (gridTemplateColumns || `repeat(auto-fit, minmax(${minCardWidth}px, 1fr))`)
+          } : {}),
           gap: `${gap}px`,
           transform: !shouldScale ? "none" : `scale(${scale})`,
           transformOrigin: "top left",

@@ -73,12 +73,12 @@ export default function EvaluasiDashboardPage() {
   const handleExport = () => toast.success('File ekspor berhasil disiapkan');
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <BarChart3 className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <BarChart3 className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -86,8 +86,8 @@ export default function EvaluasiDashboardPage() {
                 Data Penilaian
               </span>
             </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Transparansi Hasil Evaluasi</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau ringkasan evaluasi protokoler, testimoni tamu, dan feedback admin.</p>
+            <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Transparansi Hasil Evaluasi</h2>
+            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau ringkasan evaluasi protokoler, testimoni tamu, dan feedback admin.</p>
           </div>
         </div>
 
@@ -95,20 +95,20 @@ export default function EvaluasiDashboardPage() {
 
       {/* ─── Floating Stats Row ─── */}
       <section className="shrink-0 relative z-20 pb-0">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-2 xl:grid-cols-4">
             {summary.map((stat, index) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
-                  <div className="flex items-center justify-between relative z-10">
-                    <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                    <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors border group-hover:opacity-80", stat.bg, stat.color)}>
-                      <stat.icon className="h-5 w-5" />
+                <div className="bg-white border border-slate-200 rounded-[24px] p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
+                  <div className="flex items-start justify-between relative z-10 gap-2">
+                    <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
+                    <div className={cn("flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl transition-colors border group-hover:opacity-80", stat.bg, stat.color)}>
+                      <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
                     </div>
                   </div>
-                  <div className="mt-4 relative z-10">
-                    <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                  <div className="mt-3 md:mt-4 relative z-10">
+                    <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
                     <div className="flex items-center gap-1.5 mt-1.5">
-                      <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
+                      <span className="text-[10px] md:text-[11px] font-medium text-slate-400">{stat.hint}</span>
                     </div>
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export default function EvaluasiDashboardPage() {
             <div className="w-full min-h-0 flex flex-col">
               <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
                 <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                  <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col lg:flex-row justify-between lg:items-center gap-4 shrink-0">
+                  <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col lg:flex-row justify-between lg:items-center gap-4 shrink-0">
                     <div className="flex items-center gap-4">
                       <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                         <ClipboardList className="h-6 w-6" />
@@ -184,7 +184,7 @@ export default function EvaluasiDashboardPage() {
             <div className="w-full min-h-0 flex flex-col">
                 <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
                   <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                    <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
+                    <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                           <BarChart3 className="h-6 w-6" />
@@ -228,117 +228,123 @@ export default function EvaluasiDashboardPage() {
                           })}
                         </div>
 
-                        <div className="flex-1 overflow-y-auto min-h-0 pr-1 pt-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                        <div className="flex-1 flex flex-col overflow-y-auto min-h-0 pr-1 pt-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {tab === 'evaluasi' && (
-                          <div className="space-y-3">
+                          <>
                               {!realEvaluasi || realEvaluasi.length === 0 ? (
-                                <div className="p-8 text-center border border-slate-200 rounded-xl text-slate-400">
-                                  Belum ada evaluasi dari protokoler.
+                                <div className="flex flex-col items-center justify-center p-12 text-center h-full flex-1 w-full">
+                                  <ClipboardList className="h-12 w-12 text-slate-300 mb-3" />
+                                  <p className="text-[13px] font-medium text-slate-500">Belum ada evaluasi dari protokoler.</p>
                                 </div>
                               ) : (
-                                realEvaluasi.map((item: any) => (
-                                  <div key={item.id} className="border border-slate-200 bg-white rounded-xl shadow-sm overflow-hidden">
-                                    <div 
-                                      className="flex items-start justify-between gap-3 p-4 cursor-pointer hover:bg-slate-50 transition-colors"
-                                      onClick={() => setExpandedEval(expandedEval === item.id ? null : item.id)}
-                                    >
-                                      <div>
-                                        <div className="font-semibold text-slate-800">{item.protokoler?.nama_lengkap}</div>
-                                        <div className="flex items-center gap-2 text-xs mt-1">
-                                          <span className="text-slate-500">
-                                            {new Date(item.waktu_pengisian).toLocaleString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\./g, ':')}
-                                          </span>
-                                          <span className="h-1 w-1 rounded-full bg-slate-300"></span>
-                                          <span className={cn("font-medium", item.dalam_batas_waktu ? 'text-emerald-600' : 'text-red-800')}>{item.dalam_batas_waktu ? "Tepat waktu" : "Melewati batas"}</span>
+                                <div className="space-y-3">
+                                  {realEvaluasi.map((item: any) => (
+                                    <div key={item.id} className="border border-slate-200 bg-white rounded-xl shadow-sm overflow-hidden">
+                                      <div 
+                                        className="flex items-start justify-between gap-3 p-4 cursor-pointer hover:bg-slate-50 transition-colors"
+                                        onClick={() => setExpandedEval(expandedEval === item.id ? null : item.id)}
+                                      >
+                                        <div>
+                                          <div className="font-semibold text-slate-800">{item.protokoler?.nama_lengkap}</div>
+                                          <div className="flex items-center gap-2 text-xs mt-1">
+                                            <span className="text-slate-500">
+                                              {new Date(item.waktu_pengisian).toLocaleString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\./g, ':')}
+                                            </span>
+                                            <span className="h-1 w-1 rounded-full bg-slate-300"></span>
+                                            <span className={cn("font-medium", item.dalam_batas_waktu ? 'text-emerald-600' : 'text-red-800')}>{item.dalam_batas_waktu ? "Tepat waktu" : "Melewati batas"}</span>
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 shrink-0">
+                                          <div className="flex items-center gap-1 text-amber-500">
+                                            {[...Array(5)].map((_, index) => (
+                                              <Star key={index} className={cn("h-3.5 w-3.5", index < item.rating_kegiatan ? "fill-current" : "text-slate-200")} />
+                                            ))}
+                                          </div>
+                                          <ChevronDown className={cn("h-4 w-4 text-slate-400 transition-transform", expandedEval === item.id && "rotate-180")} />
                                         </div>
                                       </div>
-                                      <div className="flex items-center gap-3 shrink-0">
-                                        <div className="flex items-center gap-1 text-amber-500">
-                                          {[...Array(5)].map((_, index) => (
-                                            <Star key={index} className={cn("h-3.5 w-3.5", index < item.rating_kegiatan ? "fill-current" : "text-slate-200")} />
-                                          ))}
-                                        </div>
-                                        <ChevronDown className={cn("h-4 w-4 text-slate-400 transition-transform", expandedEval === item.id && "rotate-180")} />
-                                      </div>
-                                    </div>
-                                    <AnimatePresence>
-                                      {expandedEval === item.id && (
-                                        <motion.div
-                                          initial={{ height: 0, opacity: 0 }}
-                                          animate={{ height: "auto", opacity: 1 }}
-                                          exit={{ height: 0, opacity: 0 }}
-                                          className="px-4 pb-4 border-t border-slate-100 bg-slate-50/50"
-                                        >
-                                          <div className="mt-3 space-y-3 overflow-hidden">
-                                            <div>
-                                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Evaluasi Diri</span>
-                                              <p className="mt-1 text-[13px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-medium">
-                                                {item.refleksi_diri || "-"}
-                                              </p>
-                                            </div>
-                                            {item.kendala && (
+                                      <AnimatePresence>
+                                        {expandedEval === item.id && (
+                                          <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: "auto", opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="px-4 pb-4 border-t border-slate-100 bg-slate-50/50"
+                                          >
+                                            <div className="mt-3 space-y-3 overflow-hidden">
                                               <div>
-                                                <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider block">Kendala Lapangan</span>
-                                                <p className="mt-1 text-[13px] text-slate-600 bg-red-50/50 p-2.5 rounded-lg border border-red-100/50 leading-relaxed font-medium">
-                                                  {item.kendala}
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Evaluasi Diri</span>
+                                                <p className="mt-1 text-[13px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-medium">
+                                                  {item.refleksi_diri || "-"}
                                                 </p>
                                               </div>
-                                            )}
-                                            <div>
-                                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Saran & Masukan</span>
-                                              <p className="mt-1 text-[13px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-medium">
-                                                {item.saran || "-"}
-                                              </p>
+                                              {item.kendala && (
+                                                <div>
+                                                  <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider block">Kendala Lapangan</span>
+                                                  <p className="mt-1 text-[13px] text-slate-600 bg-red-50/50 p-2.5 rounded-lg border border-red-100/50 leading-relaxed font-medium">
+                                                    {item.kendala}
+                                                  </p>
+                                                </div>
+                                              )}
+                                              <div>
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Saran & Masukan</span>
+                                                <p className="mt-1 text-[13px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-medium">
+                                                  {item.saran || "-"}
+                                                </p>
+                                              </div>
                                             </div>
-                                          </div>
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence>
-                                  </div>
-                                ))
+                                          </motion.div>
+                                        )}
+                                      </AnimatePresence>
+                                    </div>
+                                  ))}
+                                </div>
                               )}
-                          </div>
+                          </>
                         )}
 
                         {tab === 'testimoni' && (
-                          <div className="space-y-3">
+                          <>
                             {!realTestimoni || realTestimoni.length === 0 ? (
-                              <div className="p-8 text-center border border-slate-200 rounded-xl text-slate-400">
-                                Belum ada testimoni dari tamu.
+                              <div className="flex flex-col items-center justify-center p-12 text-center h-full flex-1 w-full">
+                                <MessageSquare className="h-12 w-12 text-slate-300 mb-3" />
+                                <p className="text-[13px] font-medium text-slate-500">Belum ada testimoni dari tamu.</p>
                               </div>
                             ) : (
-                              realTestimoni.map((item: any) => (
-                                <div key={item.id} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
-                                  <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                      <div className="font-semibold text-slate-800 flex items-center gap-2">
-                                        {item.nama_tamu}
-                                        <span className={cn(
-                                          "text-[10px] font-bold uppercase px-2 py-0.5 rounded-md border",
-                                          item.tipe_tamu === 'eksternal' 
-                                            ? "bg-blue-50 text-blue-700 border-blue-200" 
-                                            : "bg-purple-50 text-purple-700 border-purple-200"
-                                        )}>
-                                          {item.tipe_tamu || "internal"}
-                                        </span>
+                              <div className="space-y-3">
+                                {realTestimoni.map((item: any) => (
+                                  <div key={item.id} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
+                                    <div className="flex items-start justify-between gap-3">
+                                      <div>
+                                        <div className="font-semibold text-slate-800 flex items-center gap-2">
+                                          {item.nama_tamu}
+                                          <span className={cn(
+                                            "text-[10px] font-bold uppercase px-2 py-0.5 rounded-md border",
+                                            item.tipe_tamu === 'eksternal' 
+                                              ? "bg-blue-50 text-blue-700 border-blue-200" 
+                                              : "bg-purple-50 text-purple-700 border-purple-200"
+                                          )}>
+                                            {item.tipe_tamu || "internal"}
+                                          </span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-xs mt-1">
+                                          <span className="text-slate-500">{item.jabatan_tamu || "Tamu Undangan"}</span>
+                                          <span className="h-1 w-1 rounded-full bg-slate-300"></span>
+                                          <span className={cn("font-medium", item.rating >= 4 ? 'text-emerald-600' : 'text-slate-500')}>{item.rating >= 4 ? "Positif" : "Netral"}</span>
+                                        </div>
                                       </div>
-                                      <div className="flex items-center gap-2 text-xs mt-1">
-                                        <span className="text-slate-500">{item.jabatan_tamu || "Tamu Undangan"}</span>
-                                        <span className="h-1 w-1 rounded-full bg-slate-300"></span>
-                                        <span className={cn("font-medium", item.rating >= 4 ? 'text-emerald-600' : 'text-slate-500')}>{item.rating >= 4 ? "Positif" : "Netral"}</span>
+                                      <div className="flex items-center gap-1 text-amber-500 shrink-0">
+                                        {[...Array(5)].map((_, index) => (
+                                          <Star key={index} className={cn("h-3.5 w-3.5", index < item.rating ? "fill-current" : "text-slate-200")} />
+                                        ))}
                                       </div>
                                     </div>
-                                    <div className="flex items-center gap-1 text-amber-500 shrink-0">
-                                      {[...Array(5)].map((_, index) => (
-                                        <Star key={index} className={cn("h-3.5 w-3.5", index < item.rating ? "fill-current" : "text-slate-200")} />
-                                      ))}
-                                    </div>
+                                    <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.isi_testimoni}</p>
                                   </div>
-                                  <p className="mt-3 text-sm text-slate-600 leading-relaxed">{item.isi_testimoni}</p>
-                                </div>
-                              ))
+                                ))}
+                              </div>
                             )}
-                          </div>
+                          </>
                         )}
 
                         {tab === 'feedback' && (

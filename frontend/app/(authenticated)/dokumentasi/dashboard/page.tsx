@@ -104,12 +104,12 @@ export default function DokumentasiDashboardPage() {
   if (authLoading || isRoleLoading) return null;
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <Camera className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <Camera className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -117,20 +117,20 @@ export default function DokumentasiDashboardPage() {
                 {role === 'dokumentasi' ? 'Daftar Acara & Dokumentasi' : 'Manajemen Dokumentasi'}
               </span>
             </div>
-            <h1 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">
+            <h1 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">
               {role === 'dokumentasi' ? `Selamat Datang, ${displayName}` : 'Daftar Acara & Dokumentasi'}
             </h1>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Kelola dan pantau status unggahan dokumentasi untuk seluruh kegiatan.</p>
+            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Kelola dan pantau status unggahan dokumentasi untuk seluruh kegiatan.</p>
           </div>
         </div>
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
       <section className="shrink-0 relative z-20 pb-0">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat, index) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                <div className="bg-white border border-slate-200 rounded-[24px] p-6 flex flex-col justify-between hover:shadow-md transition-all duration-300 h-full shadow-sm">
+                <div className="bg-white border border-slate-200 rounded-[24px] p-4 md:p-6 flex flex-col justify-between hover:shadow-md transition-all duration-300 h-full shadow-sm">
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-1.5 text-slate-500">
@@ -143,8 +143,8 @@ export default function DokumentasiDashboardPage() {
                     </div>
                     <div className="flex items-end justify-between">
                       <div>
-                        <div className="text-[32px] font-bold text-slate-900 leading-none mb-1">{stat.value}</div>
-                        <div className="text-[11px] font-medium text-slate-400">{stat.hint}</div>
+                        <div className="text-2xl md:text-[32px] font-bold text-slate-900 leading-none mb-1">{stat.value}</div>
+                        <div className="text-[10px] md:text-[11px] font-medium text-slate-400">{stat.hint}</div>
                       </div>
                       {stat.chart}
                     </div>
@@ -170,7 +170,7 @@ export default function DokumentasiDashboardPage() {
               <div className="w-full min-h-0 flex flex-col">
                 <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white/60 backdrop-blur-xl border-white/80">
                   <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                    <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col lg:flex-row justify-between lg:items-center gap-4 shrink-0">
+                    <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col lg:flex-row justify-between lg:items-center gap-4 shrink-0">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                           <CheckCircle2 className="h-6 w-6 text-red-700" />
@@ -235,7 +235,7 @@ export default function DokumentasiDashboardPage() {
               <div className="w-full min-h-0 flex flex-col">
                 <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white/60 backdrop-blur-xl border-white/80">
                   <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                    <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
+                    <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                           <FileText className="h-6 w-6 text-red-700" />
@@ -313,7 +313,7 @@ export default function DokumentasiDashboardPage() {
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} className="lg:col-span-2 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] overflow-hidden flex flex-col min-h-[320px] h-full">
               
               {/* Card Header */}
-              <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
+              <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                     <Activity className="h-6 w-6" />
@@ -332,7 +332,7 @@ export default function DokumentasiDashboardPage() {
                     ))}
                   </div>
                   <button className="p-1.5 border border-slate-200 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-white bg-white shadow-sm">
-                    <MoreVertical className="h-5 w-5" />
+                    <MoreVertical className="h-4 w-4 md:h-5 md:w-5" />
                   </button>
                 </div>
               </div>
@@ -416,7 +416,7 @@ export default function DokumentasiDashboardPage() {
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.35 }} className="lg:col-span-1 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] overflow-hidden flex flex-col min-h-[320px] h-full">
               
               {/* Card Header */}
-              <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col justify-between gap-4 shrink-0">
+              <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col justify-between gap-4 shrink-0">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                     <CheckCircle2 className="h-6 w-6" />

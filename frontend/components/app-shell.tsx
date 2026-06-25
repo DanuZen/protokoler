@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Camera, Bell, Settings, Home, CalendarCheck, BarChart3, Award, BookOpen, UploadCloud } from 'lucide-react';
+import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Camera, Bell, Settings, Home, CalendarCheck, BarChart3, Award, BookOpen, UploadCloud, Plus } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -98,6 +98,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const path = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const signOut = async () => {
     // Demo mode: hanya clear localStorage, tidak ada koneksi ke backend
@@ -232,8 +237,45 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="absolute top-[40%] right-[20%] w-[30%] h-[30%] rounded-full bg-emerald-400/10 blur-[100px] pointer-events-none" />
           
 
+          {/* ─── MOBILE TOP HEADER (Khusus Protokoler / Mahasiswa) ─── */}
+          {mounted && role === 'mahasiswa' && (
+            <div className="md:hidden flex items-center justify-between px-4 pt-6 pb-2 z-20 relative shrink-0">
+              <h1 className="text-2xl font-black text-slate-800 tracking-tight capitalize">
+                {navItems.find(item => path === item.to || path.startsWith(item.to + '/'))?.label || 'Protokoler'}
+              </h1>
+              <div className="flex items-center gap-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="h-10 w-10 bg-white text-[#6B0000] rounded-full flex items-center justify-center font-extrabold overflow-hidden text-sm shrink-0 shadow-sm ring-2 ring-white cursor-pointer">
+                      {demoAvatar || user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url ? (
+                        <img src={demoAvatar || user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url} alt="Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        initials
+                      )}
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side="bottom" align="end" className="w-48 rounded-xl border-slate-200/80 shadow-2xl bg-white/90 backdrop-blur-xl mt-2 z-[60]">
+                    <DropdownMenuItem className="cursor-pointer font-medium text-sm text-slate-700 focus:bg-red-50 focus:text-[#6B0000] rounded-lg py-2 px-3" onClick={() => router.push('/profil')}>
+                      <UserCircle2 className="mr-2 h-4 w-4" />
+                      <span>Profil Saya</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer font-medium text-sm text-slate-700 focus:bg-red-50 focus:text-[#6B0000] rounded-lg py-2 px-3" onClick={signOut}>
+                      <Users className="mr-2 h-4 w-4" />
+                      <span>Ganti Akun</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-slate-100 my-1" />
+                    <DropdownMenuItem className="cursor-pointer font-bold text-red-600 focus:bg-red-50 focus:text-red-700 rounded-lg py-2 px-3" onClick={signOut}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Logout</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          )}
+
           {/* Page Content Area */}
-          <div className="flex-1 flex flex-col min-h-0 relative z-10 p-6 md:p-8">
+          <div className={cn("flex-1 flex flex-col min-h-0 relative z-10 overflow-y-auto overflow-x-hidden md:overflow-hidden", role === 'mahasiswa' && "pb-24 md:pb-0")}>
             <motion.div className="flex-1 flex flex-col min-h-0 [&>div]:!h-full [&>div]:md:!h-full" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               {children}
             </motion.div>
@@ -241,6 +283,43 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </main>
 
       </div>
+
+      {/* ─── MOBILE BOTTOM NAVIGATION (Khusus Protokoler / Mahasiswa) ─── */}
+      {mounted && role === 'mahasiswa' && (
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#6B0000] border-t border-[#4A0000] shadow-[0_-4px_25px_rgba(107,0,0,0.3)] px-6 pb-safe pt-2 flex items-center justify-between h-[72px]">
+          {/* Ikon 1 & 2 (Kiri) */}
+          <div className="flex items-center gap-6">
+            <Link href="/beranda" className={cn("flex flex-col items-center justify-center gap-1 w-12", path === '/beranda' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
+              <Home className="h-[22px] w-[22px]" strokeWidth={path === '/beranda' ? 2.5 : 2} />
+              <span className="text-[9px] font-semibold">Beranda</span>
+            </Link>
+            <Link href="/kegiatan" className={cn("flex flex-col items-center justify-center gap-1 w-12", path === '/kegiatan' || path.startsWith('/kegiatan/') ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
+              <CalendarDays className="h-[22px] w-[22px]" strokeWidth={path === '/kegiatan' || path.startsWith('/kegiatan/') ? 2.5 : 2} />
+              <span className="text-[9px] font-semibold">Kegiatan</span>
+            </Link>
+          </div>
+
+          {/* Floating Action Button (FAB) di Tengah */}
+          <button 
+            className="absolute left-1/2 -translate-x-1/2 -top-6 h-14 w-14 bg-white rounded-full flex items-center justify-center text-[#6B0000] shadow-[0_8px_20px_rgba(0,0,0,0.2)] hover:bg-slate-50 transition-colors border-4 border-[#6B0000] z-50"
+            onClick={() => alert("Fitur scan QR / Absensi cepat akan segera hadir!")}
+          >
+            <Plus className="h-6 w-6" strokeWidth={3} />
+          </button>
+
+          {/* Ikon 4 & 5 (Kanan) */}
+          <div className="flex items-center gap-6">
+            <Link href="/evaluasi/dashboard" className={cn("flex flex-col items-center justify-center gap-1 w-12", path === '/evaluasi/dashboard' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
+              <BarChart3 className="h-[22px] w-[22px]" strokeWidth={path === '/evaluasi/dashboard' ? 2.5 : 2} />
+              <span className="text-[9px] font-semibold">Evaluasi</span>
+            </Link>
+            <Link href="/sertifikat" className={cn("flex flex-col items-center justify-center gap-1 w-12", path === '/sertifikat' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
+              <Award className="h-[22px] w-[22px]" strokeWidth={path === '/sertifikat' ? 2.5 : 2} />
+              <span className="text-[9px] font-semibold">Sertifikat</span>
+            </Link>
+          </div>
+        </nav>
+      )}
     </div>
   );
 }

@@ -40,12 +40,12 @@ function AdminSertifikatView() {
   const handleReject = (id: string) => toast.success(`Permintaan sertifikat ditolak.`);
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       {/* HEADER SECTION */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <Award className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <Award className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -53,8 +53,8 @@ function AdminSertifikatView() {
                 Pimpinan
               </span>
             </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Sertifikat</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Verifikasi, kelola, dan terbitkan sertifikat untuk tim protokoler.</p>
+            <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Sertifikat</h2>
+            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Verifikasi, kelola, dan terbitkan sertifikat untuk tim protokoler.</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -66,24 +66,24 @@ function AdminSertifikatView() {
 
       {/* STATS */}
       <section className="shrink-0 relative z-20 pb-0">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3">
           {[
             { label: "Menunggu Persetujuan", value: pendingCount, icon: Clock, hint: "Butuh verifikasi" },
             { label: "Total Diterbitkan", value: issuedCount, icon: BadgeCheck, hint: "Sertifikat & Penghargaan" },
             { label: "Total Pengajuan", value: data.length, icon: Award, hint: "Seluruh riwayat" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden h-full shadow-sm">
-                <div className="flex items-center justify-between relative z-10">
-                  <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                  <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl bg-red-50 text-red-800 transition-colors">
-                    <stat.icon className="h-5 w-5" />
+              <div className="bg-white border border-slate-200 rounded-[24px] p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden h-full shadow-sm">
+                <div className="flex items-start justify-between relative z-10 gap-2">
+                  <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
+                  <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl bg-red-50 text-red-800 transition-colors">
+                    <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
                   </div>
                 </div>
-                <div className="mt-4 relative z-10">
-                  <p className="text-[32px] font-bold leading-tight text-red-800">{stat.value}</p>
+                <div className="mt-3 md:mt-4 relative z-10">
+                  <p className="text-2xl md:text-[32px] font-bold leading-tight text-red-800">{stat.value}</p>
                   <div className="flex items-center gap-1.5 mt-1.5">
-                    <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
+                    <span className="text-[10px] md:text-[11px] font-medium text-slate-400">{stat.hint}</span>
                   </div>
                 </div>
               </div>
@@ -97,7 +97,7 @@ function AdminSertifikatView() {
         <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
           
           <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden flex flex-col flex-1 min-h-0">
-            <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col xl:flex-row justify-between xl:items-center gap-4 shrink-0">
+            <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col xl:flex-row justify-between xl:items-center gap-4 shrink-0">
               <div className="flex items-center gap-4">
                 <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                   <BadgeCheck className="h-6 w-6 text-red-700" />
@@ -207,12 +207,12 @@ function UserSertifikatView() {
   const displayedSertifikat = data.filter((s: any) => s.kategori === kategori);
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <Award className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <Award className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -220,32 +220,32 @@ function UserSertifikatView() {
                 Penghargaan
               </span>
             </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Sertifikat Saya</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Riwayat sertifikat penugasan dan keaktifan protokoler.</p>
+            <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Sertifikat Saya</h2>
+            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Riwayat sertifikat penugasan dan keaktifan protokoler.</p>
           </div>
         </div>
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
       <section className="shrink-0 relative z-20 pb-0">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3">
           {[
             { label: "Diterbitkan", value: issued, icon: BadgeCheck, hint: "Siap diunduh" },
             { label: "Dalam Proses", value: inProcess, icon: Clock, hint: "Menunggu admin" },
             { label: "Total", value: data.length, icon: Award, hint: "Seluruh riwayat" },
           ].map((stat, index) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden h-full shadow-sm">
-                <div className="flex items-center justify-between relative z-10">
-                  <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                  <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl bg-red-50 text-red-800 transition-colors">
-                    <stat.icon className="h-5 w-5" />
+              <div className="bg-white border border-slate-200 rounded-[24px] p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden h-full shadow-sm">
+                <div className="flex items-start justify-between relative z-10 gap-2">
+                  <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
+                  <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl bg-red-50 text-red-800 transition-colors">
+                    <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
                   </div>
                 </div>
-                <div className="mt-4 relative z-10">
-                  <p className="text-[32px] font-bold leading-tight text-red-800">{stat.value}</p>
+                <div className="mt-3 md:mt-4 relative z-10">
+                  <p className="text-2xl md:text-[32px] font-bold leading-tight text-red-800">{stat.value}</p>
                   <div className="flex items-center gap-1.5 mt-1.5">
-                    <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
+                    <span className="text-[10px] md:text-[11px] font-medium text-slate-400">{stat.hint}</span>
                   </div>
                 </div>
               </div>
@@ -259,7 +259,7 @@ function UserSertifikatView() {
         <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
 
           <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden flex flex-col flex-1 min-h-0">
-            <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
+            <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
               <div className="flex items-center gap-4">
                 <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                   <Award className="h-6 w-6" />

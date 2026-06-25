@@ -307,13 +307,13 @@ export default function ManajemenBeritaPage() {
 
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       
       {/* HEADER */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-800 to-red-800 shadow-lg shadow-red-900/20 text-white">
-            <BookOpen className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-800 to-red-800 shadow-lg shadow-red-900/20 text-white">
+            <BookOpen className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -321,8 +321,8 @@ export default function ManajemenBeritaPage() {
                 Workspace Terpadu
               </span>
             </div>
-            <h1 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Berita</h1>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau status kegiatan dan unggah dokumentasi untuk mempublikasikannya sebagai berita.</p>
+            <h1 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Berita</h1>
+            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau status kegiatan dan unggah dokumentasi untuk mempublikasikannya sebagai berita.</p>
           </div>
         </div>
       </motion.div>
@@ -338,16 +338,16 @@ export default function ManajemenBeritaPage() {
               { label: "Berita Dipublikasi", value: beritaPublished, icon: BookOpen, hint: "Berita yang sudah tayang", color: "text-red-800", bg: "bg-red-50" }
             ].map((stat, index) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-red-50/80 transition-all group relative overflow-hidden h-full">
-                  <div className="flex items-center justify-between relative z-10">
-                    <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                    <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
-                      <stat.icon className="h-5 w-5" />
+                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-red-50/80 transition-all group relative overflow-hidden h-full">
+                  <div className="flex items-start justify-between relative z-10 gap-2">
+                    <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
+                    <div className={cn("flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                      <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
                     </div>
                   </div>
-                  <div className="mt-4 relative z-10">
-                    <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
-                    <span className="text-[11px] font-medium text-slate-400 mt-1 block">{stat.hint}</span>
+                  <div className="mt-3 md:mt-4 relative z-10">
+                    <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                    <span className="text-[10px] md:text-[10px] md:text-[11px] font-medium text-slate-400 mt-1 block truncate md:whitespace-normal">{stat.hint}</span>
                   </div>
                 </div>
               </motion.div>

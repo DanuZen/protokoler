@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Calendar, ChevronRight, MapPin, Clock, Trophy, Star, Medal, Award, CheckCircle2, AlertCircle, ShieldCheck, Info, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ViewportFitGrid } from "@/components/ViewportFitGrid";
 
 const stagger = { visible: { transition: { staggerChildren: 0.07 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
@@ -49,14 +50,14 @@ export default function BerandaPage() {
   const displayName = protokoler?.nama_lengkap || user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Protokoler';
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       
       {/* ─── HEADER SECTION ─── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         {/* Left: Title & Description */}
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <Trophy className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <Trophy className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -64,13 +65,13 @@ export default function BerandaPage() {
                 Dashboard Anggota
               </span>
             </div>
-            <h1 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h1>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">{protokoler?.prodi ? `${protokoler.prodi} · Unit Protokoler UNP` : "Anggota aktif unit keprotokolan Universitas Negeri Padang."}</p>
+            <h1 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h1>
+            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">{protokoler?.prodi ? `${protokoler.prodi} · Unit Protokoler UNP` : "Anggota aktif unit keprotokolan Universitas Negeri Padang."}</p>
           </div>
         </div>
 
         {/* Right: Premium Badges */}
-        <div className="flex flex-col gap-2 md:items-end">
+        <div className="flex flex-row items-center gap-3">
           {/* Level Badge */}
           {kategori ? (
             <div className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border ${
@@ -106,7 +107,7 @@ export default function BerandaPage() {
 
       {/* ─── FLOATING STATS ─── */}
       <section className="shrink-0 relative z-20 pb-0">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-2 gap-3 md:gap-5 md:grid-cols-3">
           {[
             { 
               label: "Total Kegiatan", 
@@ -148,21 +149,21 @@ export default function BerandaPage() {
             },
           ].map((s, index) => (
             <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-white border border-slate-100 shadow-sm rounded-[24px] p-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all duration-300 h-full">
+              <div className="bg-white border border-slate-100 shadow-sm rounded-[24px] p-4 md:p-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all duration-300 h-full">
                 <div>
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-3 md:mb-4">
                     <div className="flex items-center gap-1.5 text-slate-500">
-                      <span className="text-sm font-semibold">{s.label}</span>
-                      <Info className="h-3.5 w-3.5 opacity-60" />
+                      <span className="text-xs md:text-sm font-semibold">{s.label}</span>
+                      <Info className="h-3 md:h-3.5 w-3 md:w-3.5 opacity-60" />
                     </div>
-                    <div className={cn("px-2 py-0.5 rounded-md text-[11px] font-bold", s.isUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>
+                    <div className={cn("px-2 py-0.5 rounded-md text-[10px] md:text-[11px] font-bold", s.isUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>
                       {s.trend}
                     </div>
                   </div>
                   <div className="flex items-end justify-between">
                     <div>
-                      <div className="text-[32px] font-bold text-slate-900 leading-none mb-1">{s.value}</div>
-                      <div className="text-[11px] font-medium text-slate-400">{s.hint}</div>
+                      <div className="text-2xl md:text-[32px] font-bold text-slate-900 leading-none mb-1">{s.value}</div>
+                      <div className="text-[10px] md:text-[11px] font-medium text-slate-400">{s.hint}</div>
                     </div>
                     {s.chart}
                   </div>
@@ -181,13 +182,13 @@ export default function BerandaPage() {
 
       {/* ─── BODY CONTENT ─── */}
       <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 flex-1 min-h-0">
+        <ViewportFitGrid gridTemplateColumns="none" gap={0} className="w-full">
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 flex-1 min-h-0 w-full pb-12 pr-2">
             {/* Gamification Progress Card */}
             {protokoler?.status_akun === "aktif" && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="xl:col-span-5">
                 <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl h-full flex flex-col relative overflow-hidden">
-                  <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
+                  <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
                     <div className="flex items-center gap-4">
                       <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                         <Trophy className="h-6 w-6" />
@@ -241,7 +242,7 @@ export default function BerandaPage() {
                           return (
                             <div key={g.level} className={`flex flex-col items-center justify-center py-4 px-2 text-center border transition-all duration-300 rounded-2xl ${isActive ? g.activeBg + ' shadow-md scale-105 border-transparent z-10' : 'bg-white ' + g.border}`}>
                               <div className={`mb-2.5 p-2 rounded-full ${isActive ? 'bg-white/20 text-white' : g.bg + ' ' + g.color}`}>
-                                <Icon className="h-5 w-5" />
+                                <Icon className="h-4 w-4 md:h-5 md:w-5" />
                               </div>
                               <div className={`text-[11px] font-bold uppercase tracking-widest ${isActive ? 'text-white' : 'text-slate-700'}`}>{g.level}</div>
                               <div className={`text-[10px] font-medium mt-1 ${isActive ? 'text-white/80' : 'text-slate-400'}`}>
@@ -260,7 +261,7 @@ export default function BerandaPage() {
             {/* Kegiatan Tersedia */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className={`h-full flex flex-col ${protokoler?.status_akun === 'aktif' ? 'xl:col-span-7' : 'xl:col-span-12'}`}>
               <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] h-full flex flex-col relative overflow-hidden">
-                <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
+                <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                       <Calendar className="h-6 w-6" />
@@ -310,7 +311,7 @@ export default function BerandaPage() {
                                   </span>
                                 </div>
                               </div>
-                              <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-red-50 transition-colors border border-slate-200 group-hover:border-red-200">
+                              <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-red-50 transition-colors border border-slate-200 group-hover:border-red-200">
                                 <ChevronRight className="h-5 w-5 text-slate-400 group-hover:text-red-700" />
                               </div>
                             </div>
@@ -323,7 +324,7 @@ export default function BerandaPage() {
               </Card>
             </motion.div>
           </div>
-        </section>
+        </ViewportFitGrid>
       </main>
     </div>
   );
