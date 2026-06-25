@@ -33,13 +33,12 @@ const BENTUK_OPTIONS = [
   { value: "seminar",     label: "Seminar",         icon: Megaphone },
   { value: "pelantikan",  label: "Pelantikan",      icon: Landmark },
   { value: "rapat_resmi", label: "Rapat Resmi",     icon: ClipboardList },
-  { value: "dokumentasi", label: "Dokumentasi",     icon: Camera },
   { value: "lainnya",     label: "Lainnya",         icon: CalendarDays },
 ];
 
 function FieldGroup({ label, hint, required, children }: { label: string; hint?: string; required?: boolean; children: React.ReactNode }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <Label className="text-[13px] font-bold text-slate-700 flex items-center gap-1">
         {label} {required && <span className="text-red-500">*</span>}
       </Label>
@@ -199,12 +198,13 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
               </div>
 
               {/* Isi Form */}
-              <div className="flex-1 overflow-y-auto p-6 md:p-8">
+              <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <div className="p-6 md:p-8 min-h-full flex flex-col">
                 <AnimatePresence mode="wait">
                   
                   {/* Step 1: Info Dasar */}
                   {step === 1 && (
-                    <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="space-y-7">
+                    <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="space-y-5 pb-4">
                       
                       <div className="grid md:grid-cols-2 gap-5">
                         <FieldGroup label="Nama Kegiatan" required>
@@ -229,7 +229,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                       </div>
 
                       <FieldGroup label="Bentuk / Jenis Kegiatan" required>
-                        <div className="flex flex-wrap gap-2.5">
+                        <div className="flex flex-nowrap overflow-x-auto gap-2.5 pb-1 -mb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                           {BENTUK_OPTIONS.map(opt => {
                             const BentukIcon = opt.icon;
                             const selected = form.bentuk_kegiatan === opt.value;
@@ -238,7 +238,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                                 key={opt.value}
                                 type="button"
                                 onClick={() => setForm({ ...form, bentuk_kegiatan: opt.value })}
-                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 text-[13px] font-bold transition-all ${
+                                className={`flex items-center shrink-0 gap-2 px-3.5 py-2 rounded-xl border-2 text-xs font-bold transition-all ${
                                   selected
                                     ? "border-[#6B0000] bg-red-50 text-[#6B0000] shadow-sm"
                                     : "border-slate-100 bg-white text-slate-500 hover:border-slate-200 hover:bg-slate-50"
@@ -255,9 +255,10 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                       <FieldGroup label="Waktu Pelaksanaan" required>
                         <div className="border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm flex flex-col md:flex-row w-fit">
                           {/* Kiri: Kalender Selalu Terlihat */}
-                          <div className="border-b md:border-b-0 md:border-r border-slate-100 bg-white p-2">
+                          <div className="border-b md:border-b-0 md:border-r border-slate-100 bg-white p-1 md:p-2">
                             <Calendar
                               mode="single"
+                              className="p-1 [--cell-size:1.6rem] md:[--cell-size:1.8rem]"
                               selected={form.tanggal ? new Date(form.tanggal) : undefined}
                               onSelect={(date) => {
                                 if (date) {
@@ -278,10 +279,10 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                                 {form.tanggal && form.jam_mulai && form.jam_selesai ? (
                                   <>
                                     <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4 text-[#6B0000] shadow-inner">
-                                      <Check className="w-6 h-6" />
+                                      <Check className="w-5 h-5" />
                                     </div>
                                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Waktu Terpilih</span>
-                                    <span className="text-sm font-semibold text-slate-800 mb-1">
+                                    <span className="text-sm font-semibold text-slate-800 mb-0.5">
                                       {format(new Date(form.tanggal), "PPP", { locale: id })}
                                     </span>
                                     <span className="text-lg font-bold text-[#6B0000] mb-4">
@@ -439,11 +440,10 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                         <Switch checked={form.is_open_recruitment} onCheckedChange={v => setForm({ ...form, is_open_recruitment: v })} className="data-[state=checked]:bg-[#6B0000]" />
                       </div>
 
-                      <div className="grid md:grid-cols-1 xl:grid-cols-3 gap-5">
+                      <div className="grid md:grid-cols-2 gap-5">
                         {[
                           { key: "jumlah_protokoler_dibutuhkan", label: "Protokoler", desc: "Tata acara & pendampingan VVIP", icon: UserCheck },
                           { key: "jumlah_lo_dibutuhkan",         label: "Liaison Officer", desc: "Pemandu utama audiens/tamu",    icon: Handshake },
-                          { key: "jumlah_dokumentasi_dibutuhkan", label: "Dokumentasi", desc: "Foto & video kegiatan",         icon: Camera },
                         ].map(item => {
                           const ItemIcon = item.icon;
                           const val = (form as any)[item.key];
@@ -467,6 +467,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                   )}
 
                 </AnimatePresence>
+                </div>
               </div>
 
             </div>
@@ -479,7 +480,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                 </button>
               </div>
 
-              <div className="relative px-6 xl:px-8 flex-1 overflow-y-auto">
+              <div className="relative px-6 xl:px-8 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 <h3 className="font-bold text-slate-800 text-lg mb-8 px-2">Progres Acara</h3>
                 {STEPS.map((s, i) => {
                   const Icon = s.icon;
@@ -523,7 +524,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
             ) : <div />}
 
             {step < 3 ? (
-              <Button type="button" className="rounded-xl bg-[#0F172A] hover:bg-black text-white h-11 px-8 font-bold shadow-md transition-all" onClick={handleNext}>
+              <Button type="button" className="rounded-xl bg-[#6B0000] hover:bg-red-950 text-white h-11 px-8 font-bold shadow-md shadow-red-900/20 transition-all" onClick={handleNext}>
                 Lanjut <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             ) : (
