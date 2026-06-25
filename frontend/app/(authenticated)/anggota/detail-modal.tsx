@@ -143,7 +143,7 @@ export function DetailAnggotaModal({ isOpen, onClose, protokolerId }: DetailAngg
                   {/* Left Column: Details */}
                   <div className="space-y-5 bg-slate-50/50 p-5 rounded-2xl border border-slate-100">
                     <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2">
-                      <GraduationCap className="h-4 w-4 text-red-800" /> Data Akademik & Kontak
+                      <GraduationCap className="h-4 w-4 text-red-800" /> Data Akademik
                     </h4>
                     
                     <div className="space-y-4">
@@ -166,50 +166,6 @@ export function DetailAnggotaModal({ isOpen, onClose, protokolerId }: DetailAngg
                           </div>
                         </div>
                       ))}
-
-                      <div className="flex gap-3">
-                        <div className="h-8 w-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
-                          <Mail className="h-4 w-4 text-slate-500" />
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                            Email Akun
-                          </span>
-                          {protokoler.user?.email ? (
-                            <a 
-                              href={`mailto:${protokoler.user.email}`}
-                              className="text-sm font-semibold text-red-800 hover:underline inline-flex items-center gap-1"
-                            >
-                              {protokoler.user.email} <ExternalLink className="h-3 w-3" />
-                            </a>
-                          ) : (
-                            <span className="text-sm font-semibold text-slate-800">—</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-3">
-                        <div className="h-8 w-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
-                          <Phone className="h-4 w-4 text-slate-500" />
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                            Nomor Telepon / WhatsApp
-                          </span>
-                          {protokoler.no_hp ? (
-                            <a 
-                              href={getWaLink(protokoler.no_hp)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-sm font-semibold text-red-800 hover:underline inline-flex items-center gap-1"
-                            >
-                              {protokoler.no_hp} <ExternalLink className="h-3 w-3" />
-                            </a>
-                          ) : (
-                            <span className="text-sm font-semibold text-slate-800">—</span>
-                          )}
-                        </div>
-                      </div>
                     </div>
 
                     {protokoler.status_akun === "ditolak" && protokoler.catatan_penolakan && (
