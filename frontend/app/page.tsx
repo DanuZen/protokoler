@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CalendarDays, ClipboardList, Users, ShieldCheck, ArrowRight, ChevronDown, Star, ArrowUpRight, Megaphone, Quote, Play, Camera, Trophy, MessageSquare, MapPin, Clock, BookOpen, FileText, ExternalLink, X, ChevronLeft, ChevronRight, Mail, Phone, Download } from 'lucide-react';
+import { CalendarDays, ClipboardList, Users, ShieldCheck, ArrowRight, ChevronDown, Star, ArrowUpRight, Megaphone, Quote, Play, Camera, Trophy, MessageSquare, MapPin, Clock, BookOpen, FileText, ExternalLink, X, ChevronLeft, ChevronRight, Mail, Phone, Download, Mic, UserCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
@@ -167,7 +167,7 @@ export default function Landing() {
 
   const { data: kegiatanPublik, isLoading } = useQuery({
     queryKey: ['kegiatan-publik-landing'],
-    queryFn: () => kegiatanApi.list({ status: 'publik' }),
+    queryFn: () => kegiatanApi.list(),
   });
 
   const { data: postinganDokumentasi } = useQuery({
@@ -459,35 +459,100 @@ export default function Landing() {
                     }
 
                     return (
-                      <div className="flex flex-col gap-6">
-                        <div>
-                          <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em] mb-2">Detail Acara</p>
-                          <h3 className="font-display text-3xl md:text-4xl font-bold text-slate-900 leading-tight">{event.nama_kegiatan}</h3>
-                          <p className="text-slate-500 text-sm mt-2">
+                      <div className="flex flex-col h-full">
+                        <div className="mb-6">
+                          <div className="flex items-center justify-between mb-4">
+                             <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em]">Detail Acara</p>
+                             <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${event.status === 'berlangsung' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+                               {event.status}
+                             </span>
+                          </div>
+                          <h3 className="font-display text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">{event.nama_kegiatan}</h3>
+                          <p className="text-slate-500 text-sm flex items-center gap-2">
+                            <CalendarDays className="w-4 h-4 text-slate-400" />
                             {selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                           </p>
                         </div>
-                        <div className="w-12 h-0.5 rounded-full" style={{ background: 'linear-gradient(to right, #6B0000, transparent)' }} />
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          {[
-                            { icon: MapPin, label: 'Lokasi', value: event.lokasi },
-                            { icon: Clock, label: 'Waktu Mulai', value: `${event.jam_mulai?.slice(0, 5)} WIB` },
-                            { icon: Users, label: 'Pimpinan', value: event.tamu_vvip?.join(', ') || 'Pimpinan Universitas' },
-                            { icon: Megaphone, label: 'Status', value: event.status?.toUpperCase() },
-                          ].map(({ icon: Icon, label, value }) => (
-                            <div key={label} className="rounded-2xl p-4 transition-all duration-200 hover:scale-[1.02] bg-slate-50 border border-slate-200">
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-red-50">
-                                  <Icon className="h-3.5 w-3.5 text-[#6B0000]" />
-                                </div>
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</span>
-                              </div>
-                              <p className={`font-bold text-sm ${label === 'Status' && event.status === 'berlangsung' ? 'text-emerald-600' : 'text-slate-900'}`}>
-                                {value}
+
+                        <div className="w-full h-px bg-slate-100 my-2" />
+
+                        <div className="flex-1 mt-4 grid sm:grid-cols-2 gap-x-6 gap-y-6">
+                          <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                              <Clock className="w-4 h-4 text-[#6B0000]" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Waktu</p>
+                              <p className="font-bold text-slate-900 text-sm">{event.jam_mulai?.slice(0, 5) || '--:--'} - {event.jam_selesai?.slice(0, 5) || 'Selesai'} WIB</p>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                              <MapPin className="w-4 h-4 text-[#6B0000]" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Lokasi</p>
+                              <p className="font-bold text-slate-900 text-sm line-clamp-2">{event.lokasi}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                              <Users className="w-4 h-4 text-[#6B0000]" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tamu / Pimpinan</p>
+                              <p className="font-bold text-slate-900 text-sm line-clamp-2">
+                                {event.tamu_vvip && Array.isArray(event.tamu_vvip) && event.tamu_vvip.length > 0 
+                                  ? event.tamu_vvip.map((t: any) => t.nama_tamu).filter(Boolean).join(', ') 
+                                  : 'Pimpinan Universitas'}
                               </p>
                             </div>
-                          ))}
+                          </div>
+
+                          <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                              <Megaphone className="w-4 h-4 text-[#6B0000]" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bentuk Kegiatan</p>
+                              <p className="font-bold text-slate-900 text-sm capitalize">{event.bentuk_kegiatan ? event.bentuk_kegiatan.replace('_', ' ') : '-'}</p>
+                            </div>
+                          </div>
+
+                          {event.audience && (
+                            <div className="flex gap-4">
+                              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                <UserCheck className="w-4 h-4 text-[#6B0000]" />
+                              </div>
+                              <div>
+                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Peserta</p>
+                                <p className="font-bold text-slate-900 text-sm line-clamp-2">{event.audience}</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {event.keynote && (
+                            <div className="flex gap-4">
+                              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                <Mic className="w-4 h-4 text-[#6B0000]" />
+                              </div>
+                              <div>
+                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Narasumber / Keynote</p>
+                                <p className="font-bold text-slate-900 text-sm line-clamp-2">{event.keynote}</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
+
+                        {event.rundown_url && (
+                          <div className="mt-8 pt-4 border-t border-slate-100">
+                             <a href={event.rundown_url} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-sm border border-slate-200 transition-colors">
+                                <ExternalLink className="w-4 h-4" /> Lihat Rundown Acara
+                             </a>
+                          </div>
+                        )}
                       </div>
                     );
                   })()}
