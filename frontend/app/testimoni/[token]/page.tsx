@@ -40,7 +40,7 @@ export default function TestimoniPage({ params }: { params: Promise<{ token: str
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <div className="relative h-16 w-16 mx-auto mb-4 bg-white/10 p-2 backdrop-blur-sm border border-white/20 overflow-hidden">
-            <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="64px" className="object-contain p-1" />
+            <Image src="/logo protokoler.webp" alt="Protokoler" fill sizes="64px" className="object-contain p-1" />
           </div>
           <h1 className="font-display text-3xl font-bold text-white">Testimoni Tamu</h1>
           <p className="text-white/70 text-sm mt-2">Bagikan pengalaman Anda atas pelayanan protokol kami.</p>
