@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { kegiatanApi, postinganApi, regulasiMockData } from '@/lib/api';
@@ -151,9 +151,14 @@ function PostCard({ post, isFeatured, onClick }: { post: any, isFeatured: boolea
 
 export default function Landing() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedPost, setSelectedPost] = useState<any | null>(null);
   const [modalPhotoIdx, setModalPhotoIdx] = useState(0);
+
+  const carouselPlugins = useRef([
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  ]);
 
   const handleSelectPost = (post: any) => {
     setSelectedPost(post);
@@ -179,6 +184,7 @@ export default function Landing() {
   const yHero = useTransform(scrollYProgress, [0, 1], [0, 300]);
 
   useEffect(() => {
+    setIsMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -428,7 +434,7 @@ export default function Landing() {
                   <div className="mt-auto pt-4 border-t border-white/10">
                     <p className="text-slate-400 text-xs uppercase tracking-widest mb-1">Tanggal Dipilih</p>
                     <p className="text-[#6B0000] font-bold text-sm">
-                      {selectedDate?.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) ?? '—'}
+                      {isMounted ? (selectedDate?.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) ?? '—') : 'Memuat...'}
                     </p>
                   </div>
                 </div>
@@ -444,7 +450,7 @@ export default function Landing() {
                           <div>
                             <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em] mb-1">Detail Acara</p>
                             <p className="text-slate-900 font-bold text-xl">
-                              {selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) ?? 'Belum ada tanggal dipilih'}
+                              {isMounted ? (selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) ?? 'Belum ada tanggal dipilih') : 'Memuat...'}
                             </p>
                           </div>
                           <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
@@ -470,7 +476,7 @@ export default function Landing() {
                           <h3 className="font-display text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">{event.nama_kegiatan}</h3>
                           <p className="text-slate-500 text-sm flex items-center gap-2">
                             <CalendarDays className="w-4 h-4 text-slate-400" />
-                            {selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                            {isMounted ? selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'Memuat...'}
                           </p>
                         </div>
 
@@ -673,7 +679,13 @@ export default function Landing() {
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="lg:col-span-2 min-w-0 w-full">
                 {/* Testimonial: Looping Carousel (All Screens) */}
                 <div className="-mx-6 sm:-mx-8 lg:mx-0 overflow-hidden mt-8 lg:mt-0">
-                  <Carousel opts={{ loop: true, align: 'center' }} plugins={[Autoplay({ delay: 4000 })]} className="w-full">
+                  <Carousel 
+                    opts={{ loop: true, align: 'center' }} 
+                    plugins={carouselPlugins.current} 
+                    onMouseEnter={() => carouselPlugins.current[0].stop()}
+                    onMouseLeave={() => carouselPlugins.current[0].reset()}
+                    className="w-full"
+                  >
                     <CarouselContent className="ml-0 lg:-ml-4">
                       {[
                         { name: 'Dr. Budi Santoso', role: 'Pembina Protokoler', image: '/tim_pengembang/danu.webp', text: 'Fitur evaluasi 3 Tata Protokol memastikan tidak ada celah di lapangan. Modul gamifikasi juga memacu mahasiswa untuk terus aktif.' },
