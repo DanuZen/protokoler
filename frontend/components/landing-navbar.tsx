@@ -53,7 +53,7 @@ export function LandingNavbar({ alwaysDark = false }: { alwaysDark?: boolean }) 
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
             <Link href="/" className="flex items-center gap-4 group">
               <div className="relative h-10 w-10 lg:h-12 lg:w-12 overflow-hidden transition-transform duration-500 group-hover:scale-110">
-                <Image src="/logo protokoler.png" alt="Logo Protokoler" fill sizes="48px" className="object-contain drop-shadow-md" priority />
+                <Image src="/logo protokoler.webp" alt="Logo Protokoler" fill sizes="48px" className="object-contain drop-shadow-md" priority />
               </div>
               <div className="flex flex-col">
                 <span className="font-display text-lg lg:text-xl font-bold tracking-widest leading-none mb-1 text-white group-hover:text-[#D2AD5C] transition-colors">PROTOKOLER</span>
