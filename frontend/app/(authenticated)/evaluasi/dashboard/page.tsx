@@ -10,9 +10,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, BarChart3, CalendarDays, ChevronRight, Clock, Search, Sparkles, Star, MessageSquare, Users, FileText, Download, CalendarCheck, ClipboardList } from 'lucide-react';
+import { ArrowLeft, BarChart3, CalendarDays, ChevronRight, ChevronDown, Clock, Search, Sparkles, Star, MessageSquare, Users, FileText, Download, CalendarCheck, ClipboardList } from 'lucide-react';
 import { toast } from 'sonner';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 type DetailTab = 'evaluasi' | 'testimoni' | 'feedback';
@@ -37,6 +37,7 @@ export default function EvaluasiDashboardPage() {
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [tab, setTab] = useState<DetailTab>('evaluasi');
+  const [expandedEval, setExpandedEval] = useState<string | null>(null);
   const [feedback, setFeedback] = useState(mockDetail.feedback);
 
   const { data: kegiatan } = useQuery({
@@ -152,7 +153,7 @@ export default function EvaluasiDashboardPage() {
                       filtered.map((item: any) => {
                         const active = activeDetail?.id === item.id;
                         return (
-                          <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-red-700' : 'border-transparent hover:bg-slate-50')}>
+                          <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-l-red-700' : 'border-l-transparent hover:bg-slate-50')}>
                             <div className="flex items-start justify-between gap-3">
                               <div className="min-w-0 flex-1">
                                 <div className={cn('font-semibold', active ? 'text-slate-900' : 'text-slate-900')}>{item.nama_kegiatan}</div>
@@ -236,8 +237,11 @@ export default function EvaluasiDashboardPage() {
                                 </div>
                               ) : (
                                 realEvaluasi.map((item: any) => (
-                                  <div key={item.id} className="border border-slate-200 bg-white p-4 rounded-xl shadow-sm">
-                                    <div className="flex items-start justify-between gap-3">
+                                  <div key={item.id} className="border border-slate-200 bg-white rounded-xl shadow-sm overflow-hidden">
+                                    <div 
+                                      className="flex items-start justify-between gap-3 p-4 cursor-pointer hover:bg-slate-50 transition-colors"
+                                      onClick={() => setExpandedEval(expandedEval === item.id ? null : item.id)}
+                                    >
                                       <div>
                                         <div className="font-semibold text-slate-800">{item.protokoler?.nama_lengkap}</div>
                                         <div className="flex items-center gap-2 text-xs mt-1">
@@ -248,34 +252,48 @@ export default function EvaluasiDashboardPage() {
                                           <span className={cn("font-medium", item.dalam_batas_waktu ? 'text-emerald-600' : 'text-red-800')}>{item.dalam_batas_waktu ? "Tepat waktu" : "Melewati batas"}</span>
                                         </div>
                                       </div>
-                                      <div className="flex items-center gap-1 text-amber-500 shrink-0">
-                                        {[...Array(5)].map((_, index) => (
-                                          <Star key={index} className={cn("h-3.5 w-3.5", index < item.rating_kegiatan ? "fill-current" : "text-slate-200")} />
-                                        ))}
-                                      </div>
-                                    </div>
-                                    <div className="mt-3 space-y-3">
-                                      <div>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Evaluasi Diri</span>
-                                        <p className="mt-1 text-[13px] text-slate-600 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100 leading-relaxed font-medium">
-                                          {item.refleksi_diri || "-"}
-                                        </p>
-                                      </div>
-                                      {item.kendala && (
-                                        <div>
-                                          <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider block">Kendala Lapangan</span>
-                                          <p className="mt-1 text-[13px] text-slate-600 bg-red-50/30 p-2.5 rounded-lg border border-red-100/50 leading-relaxed font-medium">
-                                            {item.kendala}
-                                          </p>
+                                      <div className="flex items-center gap-3 shrink-0">
+                                        <div className="flex items-center gap-1 text-amber-500">
+                                          {[...Array(5)].map((_, index) => (
+                                            <Star key={index} className={cn("h-3.5 w-3.5", index < item.rating_kegiatan ? "fill-current" : "text-slate-200")} />
+                                          ))}
                                         </div>
-                                      )}
-                                      <div>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Saran & Masukan</span>
-                                        <p className="mt-1 text-[13px] text-slate-600 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100 leading-relaxed font-medium">
-                                          {item.saran || "-"}
-                                        </p>
+                                        <ChevronDown className={cn("h-4 w-4 text-slate-400 transition-transform", expandedEval === item.id && "rotate-180")} />
                                       </div>
                                     </div>
+                                    <AnimatePresence>
+                                      {expandedEval === item.id && (
+                                        <motion.div
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{ height: "auto", opacity: 1 }}
+                                          exit={{ height: 0, opacity: 0 }}
+                                          className="px-4 pb-4 border-t border-slate-100 bg-slate-50/50"
+                                        >
+                                          <div className="mt-3 space-y-3 overflow-hidden">
+                                            <div>
+                                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Evaluasi Diri</span>
+                                              <p className="mt-1 text-[13px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-medium">
+                                                {item.refleksi_diri || "-"}
+                                              </p>
+                                            </div>
+                                            {item.kendala && (
+                                              <div>
+                                                <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider block">Kendala Lapangan</span>
+                                                <p className="mt-1 text-[13px] text-slate-600 bg-red-50/50 p-2.5 rounded-lg border border-red-100/50 leading-relaxed font-medium">
+                                                  {item.kendala}
+                                                </p>
+                                              </div>
+                                            )}
+                                            <div>
+                                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Saran & Masukan</span>
+                                              <p className="mt-1 text-[13px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed font-medium">
+                                                {item.saran || "-"}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
                                   </div>
                                 ))
                               )}

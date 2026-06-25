@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { ViewportFitGrid } from '@/components/ViewportFitGrid';
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 15 },
@@ -112,51 +113,54 @@ export default function Dashboard() {
         </div>
       </motion.div>
 
-      {/* ─── KPI METRICS ─────────────────────────────────────────── */}
-      <div className="shrink-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
-        {kpiData.map((kpi, i) => (
-          <motion.div {...fadeUp(0.15 + i * 0.05)} key={kpi.label} className="bg-white rounded-[24px] border border-slate-100 shadow-sm p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-            <>
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-1.5 text-slate-500">
-                    <span className="text-sm font-semibold">{kpi.label}</span>
-                    <Info className="h-3.5 w-3.5 opacity-60" />
-                  </div>
-                  <div className={cn("px-2 py-0.5 rounded-md text-[11px] font-bold", kpi.isUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>
-                    {kpi.trend}
-                  </div>
-                </div>
-                <div className="flex items-end justify-between">
-                  <div>
-                    {isStatsLoading ? (
-                      <Skeleton className="h-8 w-20 mb-1 rounded-md" />
-                    ) : (
-                      <div className="text-[32px] font-bold text-slate-900 leading-none mb-1">{kpi.value}</div>
-                    )}
-                    <div className="text-[11px] font-medium text-slate-400">Bulan lalu</div>
-                  </div>
-                  {isStatsLoading ? <Skeleton className="w-16 h-10 mt-2 rounded-md" /> : kpi.chart}
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-4 border-t border-slate-100">
-                <button className="w-full flex items-center justify-center gap-2 text-[13px] font-bold text-slate-600 hover:text-slate-900 transition-colors">
-                  Lihat Detail <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* ─── MAIN CHARTS & LISTS ─────────────────────────────────── */}
+      {/* ─── SCALED CONTENT AREA ─────────────────────────────────────────── */}
       <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <div className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
+        <ViewportFitGrid gridTemplateColumns="1fr" gap={0} className="w-full">
+          <div className="flex flex-col pb-6 pr-2">
             
-            {/* BIG CHART: Sales Revenue Style */}
-            <motion.div {...fadeUp(0.3)} className="lg:col-span-2 bg-white border border-slate-100 shadow-sm rounded-[24px] flex flex-col relative overflow-hidden h-full">
+            {/* ─── KPI METRICS ─── */}
+            <div className="shrink-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+              {kpiData.map((kpi, i) => (
+                <motion.div {...fadeUp(0.15 + i * 0.05)} key={kpi.label} className="bg-white rounded-[24px] border border-slate-100 shadow-sm p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <>
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-1.5 text-slate-500">
+                          <span className="text-sm font-semibold">{kpi.label}</span>
+                          <Info className="h-3.5 w-3.5 opacity-60" />
+                        </div>
+                        <div className={cn("px-2 py-0.5 rounded-md text-[11px] font-bold", kpi.isUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>
+                          {kpi.trend}
+                        </div>
+                      </div>
+                      <div className="flex items-end justify-between">
+                        <div>
+                          {isStatsLoading ? (
+                            <Skeleton className="h-8 w-20 mb-1 rounded-md" />
+                          ) : (
+                            <div className="text-[32px] font-bold text-slate-900 leading-none mb-1">{kpi.value}</div>
+                          )}
+                          <div className="text-[11px] font-medium text-slate-400">Bulan lalu</div>
+                        </div>
+                        {isStatsLoading ? <Skeleton className="w-16 h-10 mt-2 rounded-md" /> : kpi.chart}
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6 pt-4 border-t border-slate-100">
+                      <button className="w-full flex items-center justify-center gap-2 text-[13px] font-bold text-slate-600 hover:text-slate-900 transition-colors">
+                        Lihat Detail <ArrowRight className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* ─── MAIN CHARTS & LISTS ─── */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              
+              {/* BIG CHART: Sales Revenue Style */}
+            <motion.div {...fadeUp(0.3)} className="lg:col-span-2 bg-white border border-slate-100 shadow-sm rounded-[24px] flex flex-col relative overflow-visible h-full">
               <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
@@ -199,7 +203,7 @@ export default function Dashboard() {
                     <div className="flex items-end justify-between w-full h-full pb-2">
                       {[1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
                         <div key={i} className="flex flex-col items-center gap-2 flex-1 h-full justify-end">
-                          <div className="flex gap-2 items-end w-full max-w-[64px] lg:max-w-[76px] mx-auto h-[90%]">
+                          <div className="flex gap-2 items-end w-full max-w-[64px] lg:max-w-[76px] mx-auto flex-1 min-h-0">
                             <Skeleton className="w-1/2 rounded-t-md" style={{ height: `${[40, 60, 35, 70, 50, 80, 45, 65, 55, 75, 40, 60][i % 12]}%` }} />
                             <Skeleton className="w-1/2 rounded-t-md" style={{ height: `${[25, 40, 20, 50, 35, 60, 30, 45, 38, 55, 30, 42][i % 12]}%` }} />
                           </div>
@@ -224,7 +228,7 @@ export default function Dashboard() {
                           onMouseEnter={() => setHoveredBar(m)}
                           onMouseLeave={() => setHoveredBar(null)}
                         >
-                          <div className={cn("flex gap-1.5 md:gap-2 items-end w-full max-w-[48px] md:max-w-[64px] lg:max-w-[76px] mx-auto h-[90%] relative transition-opacity duration-300", isFaded ? "opacity-30" : "opacity-100")}>
+                          <div className={cn("flex gap-1.5 md:gap-2 items-end w-full max-w-[48px] md:max-w-[64px] lg:max-w-[76px] mx-auto flex-1 min-h-0 relative transition-opacity duration-300", isFaded ? "opacity-30" : "opacity-100")}>
                             {/* Internal (Left Bar) */}
                             <div className={cn("w-1/2 rounded-t-[6px] transition-all duration-300", isHovered ? "bg-red-700 shadow-md" : "bg-red-600")} style={{ height: `${h1}%` }} />
                             {/* Eksternal (Right Bar) */}
@@ -276,7 +280,7 @@ export default function Dashboard() {
                 </Link>
               </div>
 
-              <div className="p-6 md:p-8 flex-1 flex flex-col gap-4 overflow-y-auto">
+              <div className="p-6 md:p-8 flex-1 flex flex-col gap-4 overflow-hidden">
                 {isUpcomingLoading ? (
                   Array(5).fill(0).map((_, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 rounded-xl">
@@ -321,9 +325,9 @@ export default function Dashboard() {
                 )}
               </div>
             </motion.div>
-
           </div>
         </div>
+        </ViewportFitGrid>
       </main>
     </div>
   );

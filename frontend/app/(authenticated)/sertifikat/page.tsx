@@ -123,18 +123,18 @@ function AdminSertifikatView() {
               </div>
             </div>
 
-            <div className="flex-1 min-h-0 bg-white overflow-auto flex flex-col relative">
-              <table className="w-full text-sm text-left">
-                <thead className="bg-white text-slate-500 font-semibold border-b border-slate-200 sticky top-0 z-10">
+            <div className="flex-1 min-h-0 bg-white overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <table className="w-full text-sm text-left h-full">
+                <thead className="text-slate-500 font-semibold z-10">
                   <tr>
-                    <th className="px-6 py-4">Protokoler</th>
-                    <th className="px-6 py-4">Sertifikat / Kegiatan</th>
-                    <th className="px-6 py-4">Status</th>
-                    <th className="px-6 py-4 text-right">Aksi</th>
+                    <th className="px-6 py-4 sticky top-0 bg-white border-b border-slate-200 z-10">Protokoler</th>
+                    <th className="px-6 py-4 sticky top-0 bg-white border-b border-slate-200 z-10">Sertifikat / Kegiatan</th>
+                    <th className="px-6 py-4 sticky top-0 bg-white border-b border-slate-200 z-10">Status</th>
+                    <th className="px-6 py-4 text-right sticky top-0 bg-white border-b border-slate-200 z-10">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {filtered.length > 0 && filtered.map((s: any) => (
+                  {filtered.length > 0 ? filtered.map((s: any) => (
                     <motion.tr key={s.id} variants={fadeUp} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-6 py-4 align-top">
                         <div className="font-bold text-slate-900">{s.nama_protokoler}</div>
@@ -142,7 +142,7 @@ function AdminSertifikatView() {
                       </td>
                       <td className="px-6 py-4 align-top">
                         <div className="font-bold text-slate-700">{s.judul}</div>
-                        <div className="text-xs text-slate-500 mt-1">{s.kegiatan}</div>
+                        <div className="text-xs text-slate-500 mt-1">{typeof s.kegiatan === 'object' ? s.kegiatan?.nama_kegiatan : s.kegiatan}</div>
                       </td>
                       <td className="px-6 py-4 align-top">
                         <span className={cn("inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border",
@@ -170,17 +170,19 @@ function AdminSertifikatView() {
                         )}
                       </td>
                     </motion.tr>
-                  ))}
+                  )) : (
+                    <tr className="h-full">
+                      <td colSpan={4} className="p-0 h-full align-middle">
+                        <div className="flex flex-col items-center justify-center text-slate-400 p-10 h-full">
+                          <Sparkles className="mx-auto h-12 w-12 mb-4 text-slate-300" />
+                          <h3 className="text-sm font-bold text-slate-700 mb-1">Tidak Ada Data</h3>
+                          <p className="text-xs">Belum ada sertifikat yang cocok dengan filter atau pencarian Anda.</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
-              
-              {filtered.length === 0 && (
-                <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-10 min-h-[350px]">
-                  <Sparkles className="mx-auto h-12 w-12 mb-4 text-slate-300" />
-                  <h3 className="text-sm font-bold text-slate-700 mb-1">Tidak Ada Data</h3>
-                  <p className="text-xs">Belum ada sertifikat yang cocok dengan filter atau pencarian Anda.</p>
-                </div>
-              )}
             </div>
           </motion.div>
         </section>
@@ -283,7 +285,7 @@ function UserSertifikatView() {
               </div>
             </div>
 
-            <div className="flex-1 min-h-0 bg-white overflow-y-auto">
+            <div className="flex-1 min-h-0 bg-white overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {displayedSertifikat.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center p-16 text-center">
                   <Award className="h-12 w-12 mx-auto mb-4 text-slate-300" />
@@ -310,7 +312,7 @@ function UserSertifikatView() {
                           </div>
                           <div className="min-w-0">
                             <h3 className="font-bold text-slate-900 text-base group-hover:text-red-700 transition-colors truncate">{s.judul}</h3>
-                            <p className="text-slate-500 text-sm truncate">{s.kegiatan}</p>
+                            <p className="text-slate-500 text-sm truncate">{typeof s.kegiatan === 'object' ? s.kegiatan?.nama_kegiatan : s.kegiatan}</p>
                           </div>
                         </div>
 

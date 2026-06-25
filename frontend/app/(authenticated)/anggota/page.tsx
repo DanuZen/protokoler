@@ -235,7 +235,6 @@ export default function AnggotaPage() {
                 <TableRow className="border-none">
                   <TableHead className="font-bold text-slate-800 pl-6">Protokoler</TableHead>
                   <TableHead className="font-bold text-slate-800">Program Studi</TableHead>
-                  <TableHead className="font-bold text-slate-800">Kontak</TableHead>
                   <TableHead className="font-bold text-slate-800 text-center">Kegiatan</TableHead>
                   <TableHead className="font-bold text-slate-800">Status</TableHead>
                   {tab === "semua" && <TableHead className="font-bold text-slate-800">Pencapaian</TableHead>}
@@ -264,7 +263,6 @@ export default function AnggotaPage() {
                         <div className="text-slate-700">{m.prodi}</div>
                         <div className="text-xs text-slate-500 mt-0.5">{m.fakultas}</div>
                       </TableCell>
-                      <TableCell className="text-slate-600 text-sm">{m.no_hp}</TableCell>
                       <TableCell className="text-center">
                         <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-800 font-bold text-sm">
                           {m.total_kegiatan || 0}

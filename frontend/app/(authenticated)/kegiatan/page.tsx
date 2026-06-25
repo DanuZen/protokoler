@@ -112,7 +112,7 @@ export default function KegiatanPage() {
           </div>
         </div>
         {isAdmin && (
-          <Button onClick={() => setIsModalOpen(true)} className="h-11 rounded-xl px-6 shadow-sm bg-[#1a1a1a] hover:bg-black text-white font-bold transition-colors">
+          <Button onClick={() => setIsModalOpen(true)} className="h-11 rounded-xl px-6 shadow-sm bg-red-700 hover:bg-red-800 text-white font-bold transition-colors">
             <Plus className="mr-2 h-4 w-4" /> Buat Kegiatan
           </Button>
         )}
@@ -289,7 +289,7 @@ export default function KegiatanPage() {
                     <div />
                   </div>
 
-                  <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0">
+                  <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     {sortedFiltered.map((k: any) => {
                       const cfg = statusConfig[k.status] || statusConfig.draft;
                       const StatusIcon = cfg.Icon;
