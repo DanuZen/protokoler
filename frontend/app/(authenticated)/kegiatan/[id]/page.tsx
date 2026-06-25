@@ -1460,8 +1460,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 </div>
                               </div>
                             </details>
-                          ))
-                        )}
+                          ))}
                         </div>
                       )}
 
@@ -1507,8 +1506,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 {item.isi_testimoni}
                               </p>
                             </div>
-                          ))
-                        )}
+                          ))}
                         </div>
                       )}
 
