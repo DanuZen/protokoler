@@ -52,12 +52,51 @@ export default function BerandaPage() {
   return (
     <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       
-      {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
+      {/* ─── MOBILE COLORED HEADER ─── */}
+      <div className="md:hidden -mx-4 -mt-4 mb-0 pb-16 pt-10 px-6 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[2rem] relative shadow-lg shrink-0">
+        <div className="absolute inset-0 overflow-hidden rounded-b-[2rem] pointer-events-none">
+          <div className="absolute top-[-20%] right-[-10%] w-48 h-48 rounded-full bg-red-500/20 blur-3xl" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full bg-orange-500/10 blur-2xl" />
+        </div>
+
+        <div className="flex justify-between items-start relative z-10 mb-6">
+          <div className="h-11 w-11 bg-white text-red-800 rounded-full flex items-center justify-center font-extrabold overflow-hidden text-sm shrink-0 shadow-sm ring-4 ring-white/10">
+            {user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url ? (
+              <img src={user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              displayName.charAt(0).toUpperCase()
+            )}
+          </div>
+          
+          {/* Status Badge */}
+          {(() => {
+            const s = (protokoler?.status_akun ?? 'pending').toLowerCase();
+            const isAktif = s === 'aktif';
+            return (
+              <div className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border backdrop-blur-md", 
+                isAktif ? "bg-emerald-500/20 border-emerald-400/30 text-emerald-100" : "bg-amber-500/20 border-amber-400/30 text-amber-100")}>
+                {isAktif ? <CheckCircle2 className="h-3 w-3" /> : <AlertCircle className="h-3 w-3" />}
+                {s}
+              </div>
+            );
+          })()}
+        </div>
+
+        <div className="relative z-10">
+          <h1 className="text-[22px] font-bold text-white mb-1.5 leading-tight tracking-tight">Hai, {displayName}</h1>
+          <p className="text-[12px] text-red-100/90 font-medium leading-relaxed max-w-[90%]">
+            {total > 0 ? `Anda telah menyelesaikan ${total} penugasan. ` : "Belum ada penugasan selesai. "}
+            {next ? `${remaining} penugasan lagi menuju level ${next}.` : ''}
+          </p>
+        </div>
+      </div>
+
+      {/* ─── DESKTOP HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 relative z-10 hidden md:flex flex-row items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         {/* Left: Title & Description */}
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <Trophy className="h-6 w-6 md:h-7 md:w-7" />
+          <div className="h-14 w-14 shrink-0 flex items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <Trophy className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -65,8 +104,8 @@ export default function BerandaPage() {
                 Dashboard Anggota
               </span>
             </div>
-            <h1 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h1>
-            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">{protokoler?.prodi ? `${protokoler.prodi} · Unit Protokoler UNP` : "Anggota aktif unit keprotokolan Universitas Negeri Padang."}</p>
+            <h1 className="font-display text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h1>
+            <p className="text-base text-slate-500 font-medium max-w-xl leading-relaxed">{protokoler?.prodi ? `${protokoler.prodi} · Unit Protokoler UNP` : "Anggota aktif unit keprotokolan Universitas Negeri Padang."}</p>
           </div>
         </div>
 
@@ -106,7 +145,7 @@ export default function BerandaPage() {
       </motion.div>
 
       {/* ─── FLOATING STATS ─── */}
-      <section className="shrink-0 relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0 md:mt-0 -mt-8">
         <div className="grid grid-cols-2 gap-3 md:gap-5 md:grid-cols-3">
           {[
             { 

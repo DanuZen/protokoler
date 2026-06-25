@@ -238,7 +238,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           
 
           {/* ─── MOBILE TOP HEADER (Khusus Protokoler / Mahasiswa) ─── */}
-          {mounted && role === 'mahasiswa' && (
+          {mounted && role === 'mahasiswa' && path !== '/beranda' && (
             <div className="md:hidden flex items-center justify-between px-4 pt-6 pb-2 z-20 relative shrink-0">
               <h1 className="text-2xl font-black text-slate-800 tracking-tight capitalize">
                 {navItems.find(item => path === item.to || path.startsWith(item.to + '/'))?.label || 'Protokoler'}
@@ -286,38 +286,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* ─── MOBILE BOTTOM NAVIGATION (Khusus Protokoler / Mahasiswa) ─── */}
       {mounted && role === 'mahasiswa' && (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#6B0000] border-t border-[#4A0000] shadow-[0_-4px_25px_rgba(107,0,0,0.3)] px-6 pb-safe pt-2 flex items-center justify-between h-[72px]">
-          {/* Ikon 1 & 2 (Kiri) */}
-          <div className="flex items-center gap-6">
-            <Link href="/beranda" className={cn("flex flex-col items-center justify-center gap-1 w-12", path === '/beranda' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
-              <Home className="h-[22px] w-[22px]" strokeWidth={path === '/beranda' ? 2.5 : 2} />
-              <span className="text-[9px] font-semibold">Beranda</span>
-            </Link>
-            <Link href="/kegiatan" className={cn("flex flex-col items-center justify-center gap-1 w-12", path === '/kegiatan' || path.startsWith('/kegiatan/') ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
-              <CalendarDays className="h-[22px] w-[22px]" strokeWidth={path === '/kegiatan' || path.startsWith('/kegiatan/') ? 2.5 : 2} />
-              <span className="text-[9px] font-semibold">Kegiatan</span>
-            </Link>
-          </div>
-
-          {/* Floating Action Button (FAB) di Tengah */}
-          <button 
-            className="absolute left-1/2 -translate-x-1/2 -top-6 h-14 w-14 bg-white rounded-full flex items-center justify-center text-[#6B0000] shadow-[0_8px_20px_rgba(0,0,0,0.2)] hover:bg-slate-50 transition-colors border-4 border-[#6B0000] z-50"
-            onClick={() => alert("Fitur scan QR / Absensi cepat akan segera hadir!")}
-          >
-            <Plus className="h-6 w-6" strokeWidth={3} />
-          </button>
-
-          {/* Ikon 4 & 5 (Kanan) */}
-          <div className="flex items-center gap-6">
-            <Link href="/evaluasi/dashboard" className={cn("flex flex-col items-center justify-center gap-1 w-12", path === '/evaluasi/dashboard' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
-              <BarChart3 className="h-[22px] w-[22px]" strokeWidth={path === '/evaluasi/dashboard' ? 2.5 : 2} />
-              <span className="text-[9px] font-semibold">Evaluasi</span>
-            </Link>
-            <Link href="/sertifikat" className={cn("flex flex-col items-center justify-center gap-1 w-12", path === '/sertifikat' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
-              <Award className="h-[22px] w-[22px]" strokeWidth={path === '/sertifikat' ? 2.5 : 2} />
-              <span className="text-[9px] font-semibold">Sertifikat</span>
-            </Link>
-          </div>
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#6B0000] border-t border-[#4A0000] shadow-[0_-4px_25px_rgba(107,0,0,0.3)] px-4 pb-safe pt-2 flex items-center justify-between h-[72px]">
+          <Link href="/kegiatan" className={cn("flex flex-col items-center justify-center gap-1.5 w-14", path === '/kegiatan' || path.startsWith('/kegiatan/') ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
+            <CalendarDays className="h-6 w-6" strokeWidth={path === '/kegiatan' || path.startsWith('/kegiatan/') ? 2.5 : 2} />
+            <span className="text-[10px] font-semibold">Kegiatan</span>
+          </Link>
+          <Link href="/evaluasi/dashboard" className={cn("flex flex-col items-center justify-center gap-1.5 w-14", path === '/evaluasi/dashboard' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
+            <BarChart3 className="h-6 w-6" strokeWidth={path === '/evaluasi/dashboard' ? 2.5 : 2} />
+            <span className="text-[10px] font-semibold">Evaluasi</span>
+          </Link>
+          <Link href="/beranda" className={cn("flex flex-col items-center justify-center gap-1.5 w-14", path === '/beranda' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
+            <Home className="h-6 w-6" strokeWidth={path === '/beranda' ? 2.5 : 2} />
+            <span className="text-[10px] font-semibold">Beranda</span>
+          </Link>
+          <Link href="/sertifikat" className={cn("flex flex-col items-center justify-center gap-1.5 w-14", path === '/sertifikat' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
+            <Award className="h-6 w-6" strokeWidth={path === '/sertifikat' ? 2.5 : 2} />
+            <span className="text-[10px] font-semibold">Sertifikat</span>
+          </Link>
+          <Link href="/profil" className={cn("flex flex-col items-center justify-center gap-1.5 w-14", path === '/profil' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
+            <UserCircle2 className="h-6 w-6" strokeWidth={path === '/profil' ? 2.5 : 2} />
+            <span className="text-[10px] font-semibold">Profil</span>
+          </Link>
         </nav>
       )}
     </div>
