@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  outputFileTracingRoot: process.cwd(),
   // ─── DEMO MODE ───────────────────────────────────────────────────────────
   // Rewrite ke backend dinonaktifkan. Semua data menggunakan mock API lokal.
   // Aktifkan kembali blok di bawah jika backend sudah siap digunakan:
