@@ -77,7 +77,7 @@ export default function RegulasiPage() {
               </span>
             </div>
             <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Regulasi & SOP</h2>
-            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pusat informasi standar operasional dan tata tertib keprotokolan.</p>
+            <p className="hidden md:block text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pusat informasi standar operasional dan tata tertib keprotokolan.</p>
           </div>
         </div>
         

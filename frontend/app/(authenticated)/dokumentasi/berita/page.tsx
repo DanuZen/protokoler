@@ -322,7 +322,7 @@ export default function ManajemenBeritaPage() {
               </span>
             </div>
             <h1 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Berita</h1>
-            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau status kegiatan dan unggah dokumentasi untuk mempublikasikannya sebagai berita.</p>
+            <p className="hidden md:block text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau status kegiatan dan unggah dokumentasi untuk mempublikasikannya sebagai berita.</p>
           </div>
         </div>
       </motion.div>
@@ -347,7 +347,7 @@ export default function ManajemenBeritaPage() {
                   </div>
                   <div className="mt-3 md:mt-4 relative z-10">
                     <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
-                    <span className="text-[10px] md:text-[10px] md:text-[11px] font-medium text-slate-400 mt-1 block truncate md:whitespace-normal">{stat.hint}</span>
+                    <span className="hidden md:block text-[10px] md:text-[10px] md:text-[11px] font-medium text-slate-400 mt-1 truncate md:whitespace-normal">{stat.hint}</span>
                   </div>
                 </div>
               </motion.div>
@@ -361,7 +361,7 @@ export default function ManajemenBeritaPage() {
       <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
         {!selectedId ? (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col h-full overflow-hidden">
-            <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white flex flex-col h-full">
+            <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white flex flex-col md:h-full">
               <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
@@ -469,7 +469,7 @@ export default function ManajemenBeritaPage() {
             
             {existingPhotos.length > 0 && !showUploadForm ? (
               // ─── TAMPILAN DETAIL DOKUMENTASI & SLIDER ───
-              <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full flex flex-col h-full">
+              <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full flex flex-col md:h-full">
                 <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between gap-4 shrink-0">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-red-900 rounded-[14px] shadow-sm">
@@ -571,7 +571,7 @@ export default function ManajemenBeritaPage() {
               </Card>
             ) : (
               // ─── TAMPILAN FORM UPLOAD DOKUMENTASI ───
-              <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full flex flex-col h-full">
+              <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full flex flex-col md:h-full">
                 <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between gap-4 shrink-0">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-red-900 rounded-[14px] shadow-sm">

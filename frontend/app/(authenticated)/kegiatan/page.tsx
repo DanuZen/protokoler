@@ -108,7 +108,7 @@ export default function KegiatanPage() {
               </span>
             </div>
             <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Kegiatan</h2>
-            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Daftar kegiatan protokoler universitas.</p>
+            <p className="hidden md:block text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Daftar kegiatan protokoler universitas.</p>
           </div>
         </div>
         {isAdmin && (
@@ -137,7 +137,7 @@ export default function KegiatanPage() {
                 </div>
                 <div className="mt-3 md:mt-3 md:mt-4 relative z-10">
                   <p className="text-2xl md:text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
-                  <span className="text-[10px] md:text-[10px] md:text-[10px] md:text-[11px] font-medium text-slate-400 mt-1 block truncate md:whitespace-normal truncate md:whitespace-normal">{stat.hint}</span>
+                  <span className="hidden md:block text-[10px] md:text-[10px] md:text-[10px] md:text-[11px] font-medium text-slate-400 mt-1 block truncate md:whitespace-normal truncate md:whitespace-normal">{stat.hint}</span>
                 </div>
               </div>
             </motion.div>

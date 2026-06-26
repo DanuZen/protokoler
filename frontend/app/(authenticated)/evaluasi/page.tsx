@@ -133,7 +133,7 @@ export default function EvaluasiPage() {
               </span>
             </div>
             <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Evaluasi Kegiatan</h2>
-            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Berikan masukan dan penilaian terhadap kinerja protokoler.</p>
+            <p className="hidden md:block text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Berikan masukan dan penilaian terhadap kinerja protokoler.</p>
           </div>
         </div>
         <div className="flex items-stretch gap-3 shrink-0">

@@ -498,7 +498,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           <ViewportFitGrid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap={24} className="items-stretch h-full w-full">
             {/* Left Card: Informasi Kegiatan */}
             <div className="lg:col-span-2 flex flex-col h-full">
-              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
+              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col md:h-full">
                 <div className="p-6 md:p-8 flex flex-col flex-1">
                   <div className="flex items-center gap-4 mb-8">
                     <div className="flex items-center justify-center h-12 w-12 bg-red-50 text-red-800 rounded-xl shadow-sm border border-red-100 shrink-0">
@@ -626,7 +626,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
             {/* Right Card: Tamu VVIP */}
             <div className="lg:col-span-1 flex flex-col h-full">
-              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
+              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col md:h-full">
                 <div className="p-6 md:p-8 border-b border-slate-100 shrink-0 text-center">
                    <h2 className="text-[15px] font-bold text-slate-800">Tamu VVIP</h2>
                    <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Daftar kehadiran</p>
@@ -996,7 +996,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
         {/* ── Tab ABSENSI ── */}
         {tab === "absensi" && (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[400px] md:h-full flex flex-col">
             <div className="p-6 md:p-8 flex flex-col flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
@@ -1253,7 +1253,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           const hasSubmittedEvaluasi = isSuccessSubmit || evaluasi?.some((e: any) => e.protokoler_id === user?.id);
 
           return (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[400px] md:h-full flex flex-col">
             <div className="p-6 md:p-8 flex flex-col flex-1 min-h-0">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
@@ -1557,7 +1557,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
         })()}
         {/* ── Tab DOKUMENTASI ── */}
         {tab === "dokumentasi" && (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[400px] md:h-full flex flex-col">
             <div className="p-6 md:p-8 flex flex-col flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
