@@ -230,14 +230,14 @@ export default function KegiatanPage() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="xl:col-span-3 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl flex flex-col min-h-0 overflow-hidden">
               
               {/* Top Header & Search */}
-              <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
-                    <CalendarDays className="h-6 w-6" />
+              <div className="p-4 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                    <CalendarDays className="h-5 w-5 md:h-6 md:w-6" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Agenda</h2>
-                    <p className="text-sm text-slate-500 mt-1">Filter dan cari kegiatan mendatang.</p>
+                    <h2 className="text-base md:text-xl font-bold text-slate-900 leading-tight">Daftar Agenda</h2>
+                    <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1">Filter dan cari kegiatan mendatang.</p>
                   </div>
                 </div>
                 

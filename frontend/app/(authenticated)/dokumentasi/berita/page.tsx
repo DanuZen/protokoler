@@ -362,14 +362,14 @@ export default function ManajemenBeritaPage() {
         {!selectedId ? (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col h-full overflow-hidden">
             <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white flex flex-col md:h-full">
-              <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
-                    <ListTodo className="h-6 w-6" />
+              <div className="p-4 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                    <ListTodo className="h-5 w-5 md:h-6 md:w-6" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Acara & Status Dokumentasi</h2>
-                    <p className="text-sm text-slate-500 mt-1">Pilih acara pada tabel di bawah ini untuk mengunggah dokumentasi.</p>
+                    <h2 className="text-base md:text-xl font-bold text-slate-900 leading-tight">Daftar Acara & Status Dokumentasi</h2>
+                    <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1">Pilih acara pada tabel di bawah ini untuk mengunggah dokumentasi.</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-sm w-full md:max-w-xs">

@@ -184,14 +184,14 @@ export default function EvaluasiDashboardPage() {
             <div className="w-full min-h-0 flex flex-col">
                 <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
                   <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                    <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
-                          <BarChart3 className="h-6 w-6" />
+                    <div className="p-4 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">
+                      <div className="flex items-center gap-3 md:gap-4">
+                        <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                          <BarChart3 className="h-5 w-5 md:h-6 md:w-6" />
                         </div>
                         <div className="flex-1">
-                          <h2 className="text-xl font-bold text-slate-900 leading-tight">Detail Hasil Evaluasi</h2>
-                          <p className="text-sm text-slate-500 mt-1 line-clamp-1">Ringkasan evaluasi, testimoni, dan feedback admin.</p>
+                          <h2 className="text-base md:text-xl font-bold text-slate-900 leading-tight">Detail Hasil Evaluasi</h2>
+                          <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1 line-clamp-1">Ringkasan evaluasi, testimoni, dan feedback admin.</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">

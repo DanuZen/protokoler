@@ -259,14 +259,14 @@ function UserSertifikatView() {
         <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
 
           <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden flex flex-col flex-1 min-h-0">
-            <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
-                  <Award className="h-6 w-6" />
+            <div className="p-4 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                  <Award className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Sertifikat</h2>
-                  <p className="text-sm text-slate-500 mt-1 line-clamp-1">Arsip sertifikat dan penghargaan yang Anda terima.</p>
+                  <h2 className="text-base md:text-xl font-bold text-slate-900 leading-tight">Daftar Sertifikat</h2>
+                  <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1 line-clamp-1">Arsip sertifikat dan penghargaan yang Anda terima.</p>
                 </div>
               </div>
               <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 [&::-webkit-scrollbar]:hidden">

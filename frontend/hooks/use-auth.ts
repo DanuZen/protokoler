@@ -29,12 +29,12 @@ export function useAuth() {
 }
 
 export function useRole(user?: User | null) {
-  const [role, setRole] = useState<'admin' | 'mahasiswa' | 'dokumentasi' | null>(null);
+  const [role, setRole] = useState<'superadmin' | 'pimpinan' | 'admin' | 'mahasiswa' | 'dokumentasi' | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const cached = window.localStorage.getItem('cached_role');
-      if (cached) setRole(cached as 'admin' | 'mahasiswa' | 'dokumentasi');
+      if (cached) setRole(cached as 'superadmin' | 'pimpinan' | 'admin' | 'mahasiswa' | 'dokumentasi');
     }
   }, []);
   const [loading, setLoading] = useState(true);
