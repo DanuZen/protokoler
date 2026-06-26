@@ -50,7 +50,7 @@ export default function BerandaPage() {
   const displayName = protokoler?.nama_lengkap || user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Protokoler';
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
+    <div className="flex flex-col h-full min-h-0 pb-6 px-4 pt-4 md:px-8 md:pt-4 md:pb-0">
       
       {/* ─── MOBILE COLORED HEADER ─── */}
       <div className="md:hidden -mx-4 -mt-4 mb-0 pb-16 pt-10 px-6 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[2rem] relative shadow-lg shrink-0">
@@ -182,35 +182,35 @@ export default function BerandaPage() {
               hint: "Peringkat protokoler", 
               trend: "+1", 
               isUp: true,
+              hiddenClass: "hidden md:block",
               chart: (
                 <div className="w-10 h-10 mt-2 rounded-full border-4 border-amber-500/20 border-r-amber-500 border-t-amber-500 rotate-45" />
               )
             },
           ].map((s, index) => (
-            <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-              <div className="bg-white border border-slate-100 shadow-sm rounded-[24px] p-4 md:p-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all duration-300 h-full">
+            <motion.div key={s.label} className={s.hiddenClass || ""} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
+              <div className="bg-white border border-slate-100 shadow-sm rounded-2xl md:rounded-[24px] p-3.5 md:p-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all duration-300 h-full">
                 <div>
-                  <div className="flex items-center justify-between mb-3 md:mb-4">
+                  <div className="flex items-center justify-between mb-2 md:mb-4">
                     <div className="flex items-center gap-1.5 text-slate-500">
-                      <span className="text-xs md:text-sm font-semibold">{s.label}</span>
-                      <Info className="h-3 md:h-3.5 w-3 md:w-3.5 opacity-60" />
+                      <span className="text-[11px] md:text-sm font-semibold leading-tight">{s.label}</span>
                     </div>
-                    <div className={cn("px-2 py-0.5 rounded-md text-[10px] md:text-[11px] font-bold", s.isUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>
+                    <div className={cn("px-1.5 md:px-2 py-0.5 rounded-md text-[9px] md:text-[11px] font-bold", s.isUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>
                       {s.trend}
                     </div>
                   </div>
                   <div className="flex items-end justify-between">
                     <div>
                       <div className="text-2xl md:text-[32px] font-bold text-slate-900 leading-none mb-1">{s.value}</div>
-                      <div className="text-[10px] md:text-[11px] font-medium text-slate-400">{s.hint}</div>
+                      <div className="text-[9px] md:text-[11px] font-medium text-slate-400 max-w-[80%]">{s.hint}</div>
                     </div>
-                    {s.chart}
+                    <div className="hidden md:block">{s.chart}</div>
                   </div>
                 </div>
                 
-                <div className="mt-6 pt-4 border-t border-slate-100">
-                  <button className="w-full flex items-center justify-center gap-2 text-[13px] font-bold text-slate-600 hover:text-slate-900 transition-colors">
-                    Lihat Detail <ArrowRight className="h-3.5 w-3.5" />
+                <div className="mt-3 md:mt-6 pt-3 md:pt-4 border-t border-slate-100">
+                  <button className="w-full flex items-center justify-center gap-1.5 md:gap-2 text-[11px] md:text-[13px] font-bold text-slate-600 hover:text-slate-900 transition-colors">
+                    Lihat Detail <ArrowRight className="h-3 w-3 md:h-3.5 md:w-3.5" />
                   </button>
                 </div>
               </div>
@@ -220,9 +220,10 @@ export default function BerandaPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <ViewportFitGrid gridTemplateColumns="none" gap={0} className="w-full">
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 flex-1 min-h-0 w-full pb-12 pr-2">
+      <main className="flex-1 min-h-0 mt-4 md:mt-8 relative md:overflow-hidden">
+        <div className="md:absolute inset-0">
+          <ViewportFitGrid gridTemplateColumns="none" gap={0} className="w-full">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full pb-12 pr-2">
             {/* Gamification Progress Card */}
             {protokoler?.status_akun === "aktif" && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="xl:col-span-5">
@@ -364,6 +365,7 @@ export default function BerandaPage() {
             </motion.div>
           </div>
         </ViewportFitGrid>
+        </div>
       </main>
     </div>
   );
