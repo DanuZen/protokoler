@@ -172,7 +172,7 @@ export default function KegiatanPage() {
 
       {/* ─── BODY CONTENT ─── */}
       <main className="flex-1 min-h-0 flex flex-col mt-4 md:mt-8 overflow-hidden relative z-10">
-        <section className="flex-1 flex flex-col min-h-0 pb-20 md:pb-12 pr-0 md:pr-2">
+        <section className="flex-1 flex flex-col min-h-0 pb-2 md:pb-12 pr-0 md:pr-2">
           <div className="flex flex-col xl:grid xl:grid-cols-4 gap-6 flex-1 min-h-0">
 
             {/* ── Calendar Panel ── */}
@@ -317,7 +317,7 @@ export default function KegiatanPage() {
                   </p>
                 </div>
               ) : (
-                  <div className="flex-1 overflow-hidden min-h-0 bg-white/40">
+                  <div className="flex-1 flex flex-col overflow-hidden min-h-0 bg-white/40">
                     {/* Table header */}
                     <div className="hidden md:grid grid-cols-[56px_1fr_200px_160px_48px] gap-4 px-6 py-3 border-b border-slate-100 bg-white">
                       <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center">Tgl</div>
