@@ -74,7 +74,7 @@ export default function EvaluasiDashboardPage() {
   const handleExport = () => toast.success('File ekspor berhasil disiapkan');
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-3 md:px-8 pt-3 md:pt-4">
+    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
       {/* ─── MOBILE COLORED HEADER ─── */}
       <div className="md:hidden -mx-3 -mt-3 mb-0 pb-12 pt-6 px-4 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[1.5rem] relative shadow-lg shrink-0">
         <div className="absolute inset-0 overflow-hidden rounded-b-[1.5rem] pointer-events-none">
@@ -136,11 +136,11 @@ export default function EvaluasiDashboardPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 md:min-h-0 flex flex-col mt-4 md:mt-8 overflow-visible md:overflow-hidden">
-        <section className="flex-1 flex flex-col min-h-0 pr-0 md:pr-2 pb-12">
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6 flex-1 min-h-0">
-            <div className={cn("w-full min-h-0 flex-col", showMobileDetail ? "hidden xl:flex" : "flex")}>
-              <Card className="rounded-[20px] md:rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[400px] md:min-h-0 flex-1 bg-white">
+      <main className="flex-1 min-h-0 flex flex-col mt-4 md:mt-8 overflow-hidden relative z-10">
+        <section className="flex-1 flex flex-col min-h-0 pb-2 md:pb-12 pr-0 md:pr-2">
+          <div className="flex flex-col xl:grid xl:grid-cols-2 gap-4 md:gap-6 flex-1 min-h-0">
+            <div className={cn("w-full min-h-0 flex-col flex-1", showMobileDetail ? "hidden xl:flex" : "flex")}>
+              <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
                 <CardContent className="p-0 flex flex-col flex-1 min-h-0">
                   <div className="px-3 md:px-8 py-3 md:py-5 bg-slate-50 border-b border-slate-100 flex flex-col lg:flex-row justify-between lg:items-center gap-3 shrink-0">
                     <div className="flex items-center gap-3">
@@ -160,7 +160,7 @@ export default function EvaluasiDashboardPage() {
 
                   <div className="flex flex-col flex-1 bg-white min-h-0">
 
-                    <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0">
+                    <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                       {filtered.length === 0 ? (
                       <div className="flex-1 flex flex-col items-center justify-center p-10 text-center text-slate-400 h-full min-h-[200px]">
                         <Sparkles className="mx-auto h-12 w-12 mb-4 text-slate-300" />
@@ -171,7 +171,7 @@ export default function EvaluasiDashboardPage() {
                       filtered.map((item: any) => {
                         const active = activeDetail?.id === item.id;
                         return (
-                          <button key={item.id} onClick={() => { setSelectedId(item.id); setShowMobileDetail(true); }} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-l-red-700' : 'border-l-transparent hover:bg-slate-50')}>
+                          <button key={item.id} onClick={() => { setSelectedId(item.id); setShowMobileDetail(true); }} className={cn('w-full text-left px-5 py-4 transition-colors md:border-l-4', active ? 'bg-slate-50 md:border-l-red-700' : 'md:border-l-transparent hover:bg-slate-50')}>
                             <div className="flex items-start justify-between gap-3">
                               <div className="min-w-0 flex-1">
                                 <div className={cn('font-semibold', active ? 'text-slate-900' : 'text-slate-900')}>{item.nama_kegiatan}</div>
@@ -199,8 +199,8 @@ export default function EvaluasiDashboardPage() {
               </Card>
             </div>
 
-            <div className={cn("w-full min-h-0 flex-col", showMobileDetail ? "flex" : "hidden xl:flex")}>
-                <Card className="rounded-[20px] md:rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[400px] md:min-h-0 flex-1 bg-white">
+            <div className={cn("w-full min-h-0 flex-col flex-1", showMobileDetail ? "flex" : "hidden xl:flex")}>
+                <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
                   <CardContent className="p-0 flex flex-col flex-1 min-h-0">
                     <div className="p-3 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">
                       <div className="flex items-center gap-3 md:gap-4">
