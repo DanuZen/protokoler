@@ -271,6 +271,8 @@ export class AuthService {
     }
 
     const baseUrl = frontendUrl || this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    console.log('[Auth] Supabase resetPasswordForEmail redirection URL:', `${baseUrl}/auth/reset-password`);
+    
     const supabase = this.supabaseService.getClient();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${baseUrl}/auth/reset-password`,

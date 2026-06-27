@@ -46,9 +46,15 @@ export class AuthController {
   async forgotPassword(@Req() req: any, @Body('email') email: string) {
     const origin = req.headers.origin;
     const referer = req.headers.referer;
+    const xForwardedHost = req.headers['x-forwarded-host'];
+    const xForwardedProto = req.headers['x-forwarded-proto'] || 'http';
 
     let frontendUrl = origin;
-    if (!frontendUrl && referer) {
+
+    if (xForwardedHost) {
+      // Reconstruct URL from x-forwarded-host and x-forwarded-proto when proxied by Next.js server
+      frontendUrl = `${xForwardedProto}://${xForwardedHost}`;
+    } else if (!frontendUrl && referer) {
       try {
         const parsedUrl = new URL(referer);
         frontendUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
@@ -56,6 +62,14 @@ export class AuthController {
         // ignore
       }
     }
+
+    console.log('[Auth] Forgot password request headers:', {
+      origin,
+      referer,
+      xForwardedHost,
+      xForwardedProto,
+      resolvedFrontendUrl: frontendUrl,
+    });
 
     return this.authService.forgotPassword(email, frontendUrl);
   }
