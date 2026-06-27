@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText, Mail, Lock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { ViewportFitGrid } from '@/components/ViewportFitGrid';
+import { SplashScreen } from '@/components/splash-screen';
+import { cn } from '@/lib/utils';
 
 type AuthMode = 'login' | 'register';
 type RegisterStep = 1 | 2 | 3;
@@ -19,6 +21,7 @@ export default function AuthPage() {
   const [mode, setMode] = useState<AuthMode>('login');
   const [loading, setLoading] = useState(false);
   const [registered, setRegistered] = useState(false);
+  const [enteringDashboard, setEnteringDashboard] = useState<string | null>(null);
 
   // Login state
   const [email, setEmail] = useState('');
@@ -64,11 +67,12 @@ export default function AuthPage() {
 
       if (res.ok) {
         const userMe = await res.json();
-        toast.success(`Berhasil masuk sebagai ${userMe.role}!`);
         let route = '/beranda';
         if (userMe.role === 'admin') route = '/dashboard';
         else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
-        router.replace(route);
+        
+        toast.success(`Berhasil masuk sebagai ${userMe.role}!`);
+        setEnteringDashboard(route);
       } else {
         toast.error('Gagal memverifikasi role');
       }
@@ -127,7 +131,8 @@ export default function AuthPage() {
         let route = '/beranda';
         if (userMe.role === 'admin') route = '/dashboard';
         else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
-        router.replace(route);
+        
+        setEnteringDashboard(route);
       } else {
         toast.error('Gagal memverifikasi role di backend');
       }
@@ -205,8 +210,18 @@ export default function AuthPage() {
   ];
 
   return (
-    <div className="flex flex-col h-dvh overflow-hidden bg-slate-50">
-      <main className="flex-1 min-h-0 overflow-hidden relative">
+    <>
+      {enteringDashboard && (
+        <SplashScreen 
+          text="MEMASUKI DASHBOARD..." 
+          durationMs={2000} 
+          onComplete={() => router.replace(enteringDashboard)} 
+        />
+      )}
+
+      {/* Sembunyikan form login jika sedang masuk dashboard */}
+      <div className={cn("flex flex-col h-dvh overflow-hidden bg-slate-50", enteringDashboard ? "hidden" : "flex")}>
+        <main className="flex-1 min-h-0 overflow-hidden relative">
         <ViewportFitGrid forceScaleOnMobile gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full">
           <div className="grid lg:grid-cols-2 w-full h-full lg:min-h-[750px]">
             {/* ── Left Panel (branding) - Primary & Secondary Background ── */}
@@ -507,5 +522,6 @@ export default function AuthPage() {
         </ViewportFitGrid>
       </main>
     </div>
+    </>
   );
 }
