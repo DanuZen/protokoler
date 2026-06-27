@@ -31,6 +31,7 @@ interface ViewportFitGridProps {
   className?: string;
   gridTemplateColumns?: string;
   forceScaleOnMobile?: boolean;
+  outerClassName?: string;
 }
 
 export function ViewportFitGrid({
@@ -41,6 +42,7 @@ export function ViewportFitGrid({
   className = "",
   gridTemplateColumns,
   forceScaleOnMobile = false,
+  outerClassName = "",
 }: ViewportFitGridProps) {
   const outerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -102,9 +104,10 @@ export function ViewportFitGrid({
   return (
     <div
       ref={outerRef}
+      className={outerClassName}
       style={
         !shouldScale
-          ? { overflow: "visible", height: "auto", width: "100%" }
+          ? { overflow: "visible", height: "auto", width: "100%", minHeight: "100%", display: "flex", flexDirection: "column" }
           : { overflow: "hidden", height: "100%", width: "100%", position: "relative" }
       }
     >

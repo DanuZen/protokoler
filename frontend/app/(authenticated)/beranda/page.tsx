@@ -50,7 +50,7 @@ export default function BerandaPage() {
   const displayName = protokoler?.nama_lengkap || user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Protokoler';
 
   return (
-    <div className="flex flex-col h-full min-h-0 pb-6 px-4 pt-4 md:px-8 md:pt-4 md:pb-0">
+    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 pt-4 md:px-8 md:pt-4">
       
       {/* ─── MOBILE COLORED HEADER ─── */}
       <div className="md:hidden -mx-4 -mt-4 mb-0 pb-12 pt-6 px-5 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[1.5rem] relative shadow-lg shrink-0">
@@ -59,35 +59,15 @@ export default function BerandaPage() {
           <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full bg-orange-500/10 blur-2xl" />
         </div>
 
-        <div className="flex justify-between items-start relative z-10 mb-4">
-          <div className="h-10 w-10 bg-white text-red-800 rounded-full flex items-center justify-center font-extrabold overflow-hidden text-sm shrink-0 shadow-sm ring-4 ring-white/10">
-            {user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url ? (
-              <img src={user?.user_metadata?.avatar_url || user?.user_metadata?.foto_setengah_badan_url} alt="Avatar" className="w-full h-full object-cover" />
-            ) : (
-              displayName.charAt(0).toUpperCase()
-            )}
-          </div>
-          
-          {/* Status Badge */}
-          {(() => {
-            const s = (protokoler?.status_akun ?? 'pending').toLowerCase();
-            const isAktif = s === 'aktif';
-            return (
-              <div className={cn("flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border backdrop-blur-md", 
-                isAktif ? "bg-emerald-500/20 border-emerald-400/30 text-emerald-100" : "bg-amber-500/20 border-amber-400/30 text-amber-100")}>
-                {isAktif ? <CheckCircle2 className="h-3 w-3" /> : <AlertCircle className="h-3 w-3" />}
-                {s}
-              </div>
-            );
-          })()}
+        <div className="flex justify-end items-start relative z-10 mb-4 min-h-[40px]">
         </div>
 
-        <div className="relative z-10">
-          <h1 className="text-[20px] font-bold text-white mb-0.5 leading-tight tracking-tight">Hai, {displayName}</h1>
-          <p className="text-[11px] text-red-100/90 font-medium leading-relaxed max-w-[95%]">
-            {total > 0 ? `Anda telah menyelesaikan ${total} penugasan. ` : "Belum ada penugasan selesai. "}
-            {next ? `${remaining} penugasan lagi menuju level ${next}.` : ''}
-          </p>
+        <div className="relative z-10 text-center flex flex-col items-center">
+          <h1 className="font-display text-[26px] font-bold text-white mb-1.5 leading-tight tracking-tight">Hai, {displayName}</h1>
+          <div className="text-[14px] text-red-100/90 font-medium leading-relaxed max-w-[95%] mx-auto">
+            <span className="block mb-0.5">{total > 0 ? `Anda telah menyelesaikan ${total} penugasan.` : "Belum ada penugasan selesai."}</span>
+            {next ? <span className="block">{remaining} penugasan lagi menuju level {next}.</span> : null}
+          </div>
         </div>
       </div>
 
@@ -220,14 +200,14 @@ export default function BerandaPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 mt-4 md:mt-8 relative md:overflow-hidden">
-        <div className="md:absolute inset-0">
-          <ViewportFitGrid gridTemplateColumns="none" gap={0} className="w-full">
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full pb-24 md:pb-12 pr-2">
+      <main className="flex-1 min-h-0 mt-4 md:mt-8 relative overflow-hidden flex flex-col">
+        <div className="flex-1 min-h-0 w-full overflow-y-auto md:absolute md:inset-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col">
+          <ViewportFitGrid gridTemplateColumns="none" gap={0} outerClassName="flex-1 flex flex-col min-h-0" className="w-full flex-1 min-h-0">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 md:gap-8 w-full flex-1 pb-2 md:pb-12 pr-0 md:pr-2">
             {/* Gamification Progress Card */}
             {(protokolerLoading || protokoler?.status_akun === "aktif") && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="xl:col-span-5">
-                <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl md:h-full flex flex-col relative overflow-hidden">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="xl:col-span-5 flex-1 flex flex-col">
+                <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden flex-1 flex flex-col relative shrink-0">
                   <div className="px-5 md:px-8 py-4 md:py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0 rounded-t-[24px]">
                     <div className="flex items-center gap-3 md:gap-4">
                       <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-xl shadow-sm shrink-0">
@@ -297,7 +277,7 @@ export default function BerandaPage() {
             )}
 
             {/* Kegiatan Tersedia */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className={`md:h-full flex flex-col ${(protokolerLoading || protokoler?.status_akun === 'aktif') ? 'xl:col-span-7' : 'xl:col-span-12'}`}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className={`hidden md:flex flex-col md:h-full ${(protokolerLoading || protokoler?.status_akun === 'aktif') ? 'xl:col-span-7' : 'xl:col-span-12'}`}>
               <Card className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] md:h-full flex flex-col relative overflow-hidden">
                 <div className="px-5 md:px-8 py-4 md:py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0 rounded-t-[24px]">
                   <div className="flex items-center gap-3 md:gap-4">

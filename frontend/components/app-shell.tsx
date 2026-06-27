@@ -238,8 +238,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           
 
           {/* Page Content Area */}
-          <div className={cn("flex-1 flex flex-col min-h-0 relative z-10 overflow-y-auto overflow-x-hidden pb-24 md:pb-8 md:overflow-hidden md:p-8", role === 'mahasiswa' && "md:pb-8 md:pt-8")}>
-            <motion.div className="flex-1 flex flex-col min-h-0 [&>div]:!h-full [&>div]:md:!h-full" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+          <div className={cn("flex-1 flex flex-col min-h-0 relative z-10 overflow-y-auto overflow-x-hidden pb-24 md:pb-8 md:overflow-hidden md:p-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]", role === 'mahasiswa' && "md:pb-8 md:pt-8")}>
+            <motion.div className="flex-1 flex flex-col min-h-0 [&>div]:min-h-full md:[&>div]:!h-full" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               {children}
             </motion.div>
           </div>

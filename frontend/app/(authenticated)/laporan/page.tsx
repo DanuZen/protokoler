@@ -112,7 +112,7 @@ export default function Page() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-6 overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col mt-6 overflow-visible md:overflow-hidden">
         <section className="flex-1 flex flex-col pb-12 pr-2 min-h-0">
 
           {/* Kegiatan Table */}

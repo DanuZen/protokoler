@@ -37,6 +37,7 @@ export default function EvaluasiDashboardPage() {
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [tab, setTab] = useState<DetailTab>('evaluasi');
+  const [showMobileDetail, setShowMobileDetail] = useState(false);
   const [expandedEval, setExpandedEval] = useState<string | null>(null);
   const [feedback, setFeedback] = useState(mockDetail.feedback);
 
@@ -73,42 +74,59 @@ export default function EvaluasiDashboardPage() {
   const handleExport = () => toast.success('File ekspor berhasil disiapkan');
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
-      {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-3 md:px-8 pt-3 md:pt-4">
+      {/* ─── MOBILE COLORED HEADER ─── */}
+      <div className="md:hidden -mx-3 -mt-3 mb-0 pb-12 pt-6 px-4 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[1.5rem] relative shadow-lg shrink-0">
+        <div className="absolute inset-0 overflow-hidden rounded-b-[1.5rem] pointer-events-none">
+          <div className="absolute top-[-20%] right-[-10%] w-48 h-48 rounded-full bg-red-500/20 blur-3xl" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full bg-orange-500/10 blur-2xl" />
+        </div>
+
+        <div className="flex justify-end items-start relative z-10 mb-4 min-h-[40px]" />
+
+        <div className="relative z-10 text-center flex flex-col items-center">
+          <h1 className="font-display text-[26px] font-bold text-white mb-1.5 leading-tight tracking-tight">Evaluasi Kinerja</h1>
+          <p className="text-[14px] text-red-100/90 font-medium leading-relaxed max-w-[95%] mx-auto">
+            Pantau ulasan, umpan balik, dan sentimen kegiatan.
+          </p>
+        </div>
+      </div>
+
+      {/* ─── DESKTOP HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 hidden md:flex flex-row md:items-center justify-between gap-3 md:gap-4 mb-3 pb-3 md:mb-8 md:pb-6 border-b border-slate-200/60 relative z-10">
+        <div className="flex items-center gap-3">
+          <div className="hidden md:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <BarChart3 className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
+            <div className="flex items-center gap-1 md:gap-2 mb-0.5 md:mb-1.5">
+              <span className="inline-flex items-center text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Data Penilaian
               </span>
             </div>
-            <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Transparansi Hasil Evaluasi</h2>
-            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau ringkasan evaluasi protokoler, testimoni tamu, dan feedback admin.</p>
+            <h2 className="font-display text-xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Transparansi Hasil Evaluasi</h2>
+            <p className="text-[11px] md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau ringkasan evaluasi protokoler, testimoni tamu, dan feedback admin.</p>
           </div>
         </div>
 
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="shrink-0 relative z-20 pb-0">
-        <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="shrink-0 relative z-20 pb-0 md:mt-0 -mt-8">
+        <div className="grid grid-cols-2 gap-2 md:gap-4 xl:grid-cols-4">
             {summary.map((stat, index) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                <div className="bg-white border border-slate-200 rounded-[24px] p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
+                <div className="bg-white border border-slate-200 rounded-[16px] md:rounded-[24px] p-3 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative h-full shadow-sm">
                   <div className="flex items-start justify-between relative z-10 gap-2">
-                    <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
-                    <div className={cn("flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl transition-colors border group-hover:opacity-80", stat.bg, stat.color)}>
-                      <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
+                    <p className="text-[11px] md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
+                    <div className={cn("flex-shrink-0 h-7 w-7 md:h-10 md:w-10 flex items-center justify-center rounded-lg md:rounded-xl transition-colors border group-hover:opacity-80", stat.bg, stat.color)}>
+                      <stat.icon className="h-3.5 w-3.5 md:h-5 md:w-5" />
                     </div>
                   </div>
-                  <div className="mt-3 md:mt-4 relative z-10">
-                    <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
-                    <div className="flex items-center gap-1.5 mt-1.5">
-                      <span className="text-[10px] md:text-[11px] font-medium text-slate-400">{stat.hint}</span>
+                  <div className="mt-2 md:mt-4 relative z-10">
+                    <p className="text-[22px] md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                    <div className="flex items-center gap-1 mt-0.5 md:mt-1.5">
+                      <span className="text-[9px] md:text-[11px] font-medium text-slate-400">{stat.hint}</span>
                     </div>
                   </div>
                 </div>
@@ -118,25 +136,25 @@ export default function EvaluasiDashboardPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <section className="flex-1 flex flex-col min-h-0 pr-2 pb-12">
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 flex-1 min-h-0">
-            <div className="w-full min-h-0 flex flex-col">
-              <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
+      <main className="flex-1 md:min-h-0 flex flex-col mt-4 md:mt-8 overflow-visible md:overflow-hidden">
+        <section className="flex-1 flex flex-col min-h-0 pr-0 md:pr-2 pb-12">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6 flex-1 min-h-0">
+            <div className={cn("w-full min-h-0 flex-col", showMobileDetail ? "hidden xl:flex" : "flex")}>
+              <Card className="rounded-[20px] md:rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[400px] md:min-h-0 flex-1 bg-white">
                 <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                  <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col lg:flex-row justify-between lg:items-center gap-4 shrink-0">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
-                        <ClipboardList className="h-6 w-6" />
+                  <div className="px-3 md:px-8 py-3 md:py-5 bg-slate-50 border-b border-slate-100 flex flex-col lg:flex-row justify-between lg:items-center gap-3 shrink-0">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-xl md:rounded-[14px] shadow-sm shrink-0">
+                        <ClipboardList className="h-5 w-5 md:h-6 md:w-6" />
                       </div>
                       <div className="flex-1">
-                        <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Kegiatan</h2>
-                        <p className="text-sm text-slate-500 mt-1 line-clamp-1">Filter dan pilih kegiatan yang ingin ditinjau.</p>
+                        <h2 className="text-[15px] md:text-xl font-bold text-slate-900 leading-tight">Daftar Kegiatan</h2>
+                        <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1 line-clamp-1">Filter dan pilih kegiatan yang ingin ditinjau.</p>
                       </div>
                     </div>
                     <div className="relative w-full lg:w-72 shrink-0">
                       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                      <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama kegiatan atau lokasi..." className="rounded-xl border-slate-200 bg-white text-slate-900 placeholder-slate-400 pl-9 h-10 shadow-sm" />
+                      <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama kegiatan atau lokasi..." className="rounded-xl border-slate-200 bg-white text-slate-900 placeholder-slate-400 pl-9 h-10 shadow-sm text-xs md:text-sm" />
                     </div>
                   </div>
 
@@ -153,19 +171,19 @@ export default function EvaluasiDashboardPage() {
                       filtered.map((item: any) => {
                         const active = activeDetail?.id === item.id;
                         return (
-                          <button key={item.id} onClick={() => setSelectedId(item.id)} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-l-red-700' : 'border-l-transparent hover:bg-slate-50')}>
+                          <button key={item.id} onClick={() => { setSelectedId(item.id); setShowMobileDetail(true); }} className={cn('w-full text-left px-5 py-4 transition-colors border-l-4', active ? 'bg-slate-50 border-l-red-700' : 'border-l-transparent hover:bg-slate-50')}>
                             <div className="flex items-start justify-between gap-3">
                               <div className="min-w-0 flex-1">
                                 <div className={cn('font-semibold', active ? 'text-slate-900' : 'text-slate-900')}>{item.nama_kegiatan}</div>
-                                <div className={cn('mt-1 flex flex-wrap items-center gap-3 text-xs', active ? 'text-slate-600' : 'text-slate-500')}>
+                                <div className={cn('mt-1 flex flex-wrap items-center gap-2 md:gap-3 text-[10px] md:text-xs', active ? 'text-slate-600' : 'text-slate-500')}>
                                   <span className="inline-flex items-center gap-1">
-                                    <CalendarDays className="h-3.5 w-3.5" /> {new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    <CalendarDays className="h-3 w-3 md:h-3.5 md:w-3.5" /> {new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                                   </span>
                                   <span className="inline-flex items-center gap-1">
-                                    <Clock className="h-3.5 w-3.5" /> {item.jam_mulai?.slice(0, 5)} WIB
+                                    <Clock className="h-3 w-3 md:h-3.5 md:w-3.5" /> {item.jam_mulai?.slice(0, 5)} WIB
                                   </span>
                                   <span className="inline-flex items-center gap-1">
-                                    <Users className="h-3.5 w-3.5" /> 12 evaluasi
+                                    <Users className="h-3 w-3 md:h-3.5 md:w-3.5" /> 12 evaluasi
                                   </span>
                                 </div>
                               </div>
@@ -181,32 +199,35 @@ export default function EvaluasiDashboardPage() {
               </Card>
             </div>
 
-            <div className="w-full min-h-0 flex flex-col">
-                <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-0 flex-1 bg-white">
+            <div className={cn("w-full min-h-0 flex-col", showMobileDetail ? "flex" : "hidden xl:flex")}>
+                <Card className="rounded-[20px] md:rounded-[24px] border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[400px] md:min-h-0 flex-1 bg-white">
                   <CardContent className="p-0 flex flex-col flex-1 min-h-0">
-                    <div className="p-4 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">
+                    <div className="p-3 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">
                       <div className="flex items-center gap-3 md:gap-4">
-                        <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
-                          <BarChart3 className="h-5 w-5 md:h-6 md:w-6" />
+                        <button onClick={() => setShowMobileDetail(false)} className="xl:hidden flex items-center justify-center h-10 w-10 bg-white border border-slate-200 text-slate-500 rounded-xl shadow-sm hover:bg-slate-50 active:scale-95 transition-all shrink-0">
+                          <ArrowLeft className="h-5 w-5" />
+                        </button>
+                        <div className="hidden xl:flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                          <BarChart3 className="h-6 w-6" />
                         </div>
                         <div className="flex-1">
-                          <h2 className="text-base md:text-xl font-bold text-slate-900 leading-tight">Detail Hasil Evaluasi</h2>
+                          <h2 className="text-[15px] md:text-xl font-bold text-slate-900 leading-tight">Detail Hasil Evaluasi</h2>
                           <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1 line-clamp-1">Ringkasan evaluasi, testimoni, dan feedback admin.</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         {activeDetail && (
-                          <Button onClick={handleExport} size="sm" className="h-10 rounded-xl bg-[#6B0000] text-white hover:bg-[#4A0000] text-[13px] font-bold px-4 shadow-sm transition-colors">
-                            <Download className="mr-1.5 h-4 w-4" /> Export Data
+                          <Button onClick={handleExport} size="sm" className="h-9 md:h-10 rounded-xl bg-[#6B0000] text-white hover:bg-[#4A0000] text-[11px] md:text-[13px] font-bold px-3 md:px-4 shadow-sm transition-colors w-full md:w-auto">
+                            <Download className="mr-1.5 h-3.5 w-3.5 md:h-4 md:w-4" /> Export Data
                           </Button>
                         )}
                       </div>
                     </div>
-                    <div className="p-6 flex flex-col flex-1 min-h-0 space-y-4">
+                    <div className="p-3 md:p-6 flex flex-col flex-1 min-h-0 space-y-3 md:space-y-4">
 
                     {activeDetail ? (
                       <>
-                        <div className="grid grid-cols-3 gap-2 shrink-0">
+                        <div className="grid grid-cols-3 gap-1.5 md:gap-2 shrink-0">
                           {[
                             { key: 'evaluasi', label: 'Evaluasi' },
                             { key: 'testimoni', label: 'Testimoni' },

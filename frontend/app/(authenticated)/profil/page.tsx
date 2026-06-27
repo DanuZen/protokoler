@@ -166,9 +166,33 @@ export default function ProfilPage() {
   };
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
-      {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className={`shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60 ${view === 'overview' ? 'flex' : 'hidden md:flex'}`}>
+    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
+      {/* ─── MOBILE COLORED HEADER (Overview) ─── */}
+      <div className={`md:hidden -mx-4 -mt-4 mb-0 pb-12 pt-8 px-5 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[1.5rem] relative shadow-lg shrink-0 ${view === 'overview' ? 'block' : 'hidden'}`}>
+        <div className="absolute inset-0 overflow-hidden rounded-b-[1.5rem] pointer-events-none">
+          <div className="absolute top-[-20%] right-[-10%] w-48 h-48 rounded-full bg-red-500/20 blur-3xl" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full bg-orange-500/10 blur-2xl" />
+        </div>
+
+        <div className="flex flex-col items-center text-center relative z-10 mb-4">
+          <div className="h-20 w-20 bg-white text-red-800 rounded-2xl flex items-center justify-center font-extrabold overflow-hidden shrink-0 shadow-sm ring-4 ring-white/10 mb-4">
+            {photoHalf ? (
+              <img src={photoHalf} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-3xl font-bold text-red-800">{form.nama.charAt(0) || 'P'}</span>
+            )}
+          </div>
+          <h1 className="font-display text-[26px] font-bold text-white mb-1.5 leading-tight tracking-tight">{form.nama || 'Pengguna'}</h1>
+          <p className="text-[14px] text-red-100/90 font-medium mb-4 tracking-wide">{form.nim || '-'}</p>
+          <div className="flex gap-2 justify-center">
+            <span className="px-3 py-1 bg-red-900/50 text-red-100 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-red-500/30">{form.tingkat}</span>
+            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-100 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-emerald-400/30">{form.status}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── DESKTOP HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className={`shrink-0 hidden md:flex flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60 relative z-10`}>
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <User className="h-6 w-6 md:h-7 md:w-7" />
@@ -205,20 +229,7 @@ export default function ProfilPage() {
       </motion.div>
 
       {/* ─── MOBILE OVERVIEW ─── */}
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className={`md:hidden flex-1 flex flex-col gap-6 ${view === 'overview' ? 'flex' : 'hidden'}`}>
-        {/* Profile Summary Card */}
-        <div className="bg-white rounded-[24px] p-6 border border-slate-200 shadow-sm flex flex-col items-center text-center">
-          <div className="h-24 w-24 rounded-2xl bg-[#6b0000] border-4 border-slate-50 shadow-md overflow-hidden mb-4 flex items-center justify-center">
-             {photoHalf ? <img src={photoHalf} alt="Avatar" className="w-full h-full object-cover" /> : <span className="text-3xl font-bold text-white">{form.nama.charAt(0)}</span>}
-          </div>
-          <h3 className="text-xl font-bold text-slate-900 leading-tight mb-1">{form.nama}</h3>
-          <p className="text-xs text-slate-500 font-medium mb-4 tracking-wide">{form.nim}</p>
-          <div className="flex gap-2">
-            <span className="px-3 py-1.5 bg-red-50 text-red-800 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-red-100">{form.tingkat}</span>
-            <span className="px-3 py-1.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-emerald-100">{form.status}</span>
-          </div>
-        </div>
-
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className={`md:hidden flex-1 min-h-0 flex flex-col gap-6 relative z-20 overflow-y-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${view === 'overview' ? 'flex -mt-6' : 'hidden'}`}>
         {/* Menu Buttons */}
         <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
           <button onClick={() => setView('detail')} className="flex items-center gap-4 p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors text-left w-full">
@@ -267,8 +278,9 @@ export default function ProfilPage() {
       </motion.div>
 
       {/* ─── Main Content ─── */}
-      <main className={`flex-1 min-h-0 flex-col mt-4 overflow-visible md:overflow-hidden relative ${view === 'detail' ? 'flex' : 'hidden md:flex'}`}>
-        <ViewportFitGrid gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full max-h-full">
+      <main className={`flex-1 min-h-0 flex-col mt-4 overflow-hidden relative ${view === 'detail' ? 'flex' : 'hidden md:flex'}`}>
+        <div className="flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <ViewportFitGrid gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full max-h-full">
           
           <div className="flex flex-col xl:flex-row gap-6 w-full h-full items-stretch">
 
@@ -423,8 +435,9 @@ export default function ProfilPage() {
                 </div>
               </motion.div>
             </div>
-          </div>
-        </ViewportFitGrid>
+            </div>
+          </ViewportFitGrid>
+        </div>
       </main>
       {/* ── Crop Modal ── */}
       {cropModalOpen && currentImageSrc && (

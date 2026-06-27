@@ -89,66 +89,66 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-4 md:pb-6 px-3 md:px-8 pt-3 md:pt-4">
       
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
-      <motion.div {...fadeUp(0)} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <LayoutGrid className="h-6 w-6 md:h-7 md:w-7" />
+      <motion.div {...fadeUp(0)} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-3 pb-3 md:mb-8 md:pb-6 border-b border-slate-200/60">
+        <div className="flex items-center gap-3 md:gap-4">
+          <div className="hidden md:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <LayoutGrid className="h-7 w-7" />
           </div>
           <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
+            <div className="flex items-center gap-2 mb-1 md:mb-1.5">
+              <span className="inline-flex items-center text-[9px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-red-800">
                 Ringkasan Sistem
               </span>
             </div>
             {isAuthLoading ? (
-              <Skeleton className="h-12 w-64 mb-1.5 rounded-lg" />
+              <Skeleton className="h-8 md:h-12 w-48 md:w-64 mb-1.5 rounded-lg" />
             ) : (
-              <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h2>
+              <h2 className="font-display text-[22px] md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Selamat Datang, {displayName}</h2>
             )}
-            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Senang melihat Anda kembali. Mari mulai bekerja.</p>
+            <p className="text-[11px] md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Senang melihat Anda kembali. Mari mulai bekerja.</p>
           </div>
         </div>
       </motion.div>
 
       {/* ─── SCALED CONTENT AREA ─────────────────────────────────────────── */}
-      <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col md:min-h-0 overflow-visible md:overflow-hidden">
         <ViewportFitGrid gridTemplateColumns="none" gap={0} className="w-full">
-          <div className="flex flex-col pb-6 pr-2 w-full">
+          <div className="flex flex-col pb-6 pr-0 md:pr-2 w-full">
             
             {/* ─── KPI METRICS ─── */}
-            <div className="shrink-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+            <div className="shrink-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-5 mb-5 md:mb-8">
               {kpiData.map((kpi, i) => (
-                <motion.div {...fadeUp(0.15 + i * 0.05)} key={kpi.label} className="bg-white rounded-[24px] border border-slate-100 shadow-sm p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <motion.div {...fadeUp(0.15 + i * 0.05)} key={kpi.label} className="bg-white rounded-[20px] md:rounded-[24px] border border-slate-100 shadow-sm p-4 md:p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                   <>
                     <div>
-                      <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center justify-between mb-3 md:mb-4">
                         <div className="flex items-center gap-1.5 text-slate-500">
-                          <span className="text-sm font-semibold">{kpi.label}</span>
-                          <Info className="h-3.5 w-3.5 opacity-60" />
+                          <span className="text-[13px] md:text-sm font-semibold">{kpi.label}</span>
+                          <Info className="h-3 w-3 md:h-3.5 md:w-3.5 opacity-60" />
                         </div>
-                        <div className={cn("px-2 py-0.5 rounded-md text-[11px] font-bold", kpi.isUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>
+                        <div className={cn("px-2 py-0.5 rounded-md text-[10px] md:text-[11px] font-bold", kpi.isUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>
                           {kpi.trend}
                         </div>
                       </div>
                       <div className="flex items-end justify-between">
                         <div>
                           {isStatsLoading ? (
-                            <Skeleton className="h-8 w-20 mb-1 rounded-md" />
+                            <Skeleton className="h-7 md:h-8 w-16 md:w-20 mb-1 rounded-md" />
                           ) : (
-                            <div className="text-2xl md:text-[32px] font-bold text-slate-900 leading-none mb-1">{kpi.value}</div>
+                            <div className="text-xl md:text-[32px] font-bold text-slate-900 leading-none mb-1">{kpi.value}</div>
                           )}
-                          <div className="text-[10px] md:text-[11px] font-medium text-slate-400">Bulan lalu</div>
+                          <div className="text-[9px] md:text-[11px] font-medium text-slate-400">Bulan lalu</div>
                         </div>
-                        {isStatsLoading ? <Skeleton className="w-16 h-10 mt-2 rounded-md" /> : kpi.chart}
+                        {isStatsLoading ? <Skeleton className="w-14 md:w-16 h-8 md:h-10 mt-2 rounded-md" /> : <div className="scale-75 md:scale-100 origin-bottom-right">{kpi.chart}</div>}
                       </div>
                     </div>
                     
-                    <div className="mt-6 pt-4 border-t border-slate-100">
-                      <button className="w-full flex items-center justify-center gap-2 text-[13px] font-bold text-slate-600 hover:text-slate-900 transition-colors">
-                        Lihat Detail <ArrowRight className="h-3.5 w-3.5" />
+                    <div className="mt-4 md:mt-6 pt-3 md:pt-4 border-t border-slate-100">
+                      <button className="w-full flex items-center justify-center gap-1.5 md:gap-2 text-xs md:text-[13px] font-bold text-slate-600 hover:text-slate-900 transition-colors">
+                        Lihat Detail <ArrowRight className="h-3 md:h-3.5 w-3 md:w-3.5" />
                       </button>
                     </div>
                   </>
@@ -157,40 +157,40 @@ export default function Dashboard() {
             </div>
 
             {/* ─── MAIN CHARTS & LISTS ─── */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
               
               {/* BIG CHART: Sales Revenue Style */}
-            <motion.div {...fadeUp(0.3)} className="lg:col-span-2 bg-white border border-slate-100 shadow-sm rounded-[24px] flex flex-col relative overflow-visible h-full">
-              <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
-                    <Activity className="h-6 w-6 text-red-700" />
+            <motion.div {...fadeUp(0.3)} className="lg:col-span-2 bg-white border border-slate-100 shadow-sm rounded-[20px] md:rounded-[24px] flex flex-col relative overflow-visible h-full">
+              <div className="p-4 md:px-8 md:py-5 bg-slate-50 border-b border-slate-100 flex flex-row justify-between items-center gap-3 md:gap-4 shrink-0 rounded-t-[20px] md:rounded-t-[24px]">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-[12px] md:rounded-[14px] shadow-sm shrink-0">
+                    <Activity className="h-5 w-5 md:h-6 md:w-6 text-red-700" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-xl font-bold text-slate-900 leading-tight">Statistik Kegiatan</h2>
-                    <p className="text-sm text-slate-500 mt-1 line-clamp-1">Grafik jumlah kegiatan internal & eksternal.</p>
+                    <h2 className="text-lg md:text-xl font-bold text-slate-900 leading-tight">Statistik Kegiatan</h2>
+                    <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1 line-clamp-1">Grafik jumlah kegiatan internal & eksternal.</p>
                   </div>
                 </div>
               </div>
               
-              <div className="p-6 md:p-8 flex-1 flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+              <div className="p-4 md:p-8 flex-1 flex flex-col">
+                <div className="flex items-center gap-2 md:gap-3 mb-1.5 md:mb-2">
                   {isStatsLoading ? (
-                    <Skeleton className="h-8 w-32 rounded-lg" />
+                    <Skeleton className="h-7 md:h-8 w-24 md:w-32 rounded-lg" />
                   ) : (
-                    <div className="text-[28px] font-bold text-slate-900">{stats?.total_kegiatan ?? 124} <span className="text-sm font-medium text-slate-500 ml-1">kegiatan</span></div>
+                    <div className="text-[22px] md:text-[28px] font-bold text-slate-900">{stats?.total_kegiatan ?? 124} <span className="text-xs md:text-sm font-medium text-slate-500 ml-1">kegiatan</span></div>
                   )}
-                  <div className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-700">+12%</div>
+                  <div className="px-2 py-0.5 rounded-md text-[10px] md:text-[11px] font-bold bg-emerald-100 text-emerald-700">+12%</div>
                 </div>
-                <div className="flex gap-4 mb-4">
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500"><span className="h-2 w-2 rounded-full bg-red-700" /> Internal</div>
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500"><span className="h-2 w-2 rounded-full bg-red-100" /> Eksternal</div>
+                <div className="flex gap-3 md:gap-4 mb-3 md:mb-4">
+                  <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] font-bold text-slate-500"><span className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-red-700" /> Internal</div>
+                  <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] font-bold text-slate-500"><span className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-red-100" /> Eksternal</div>
                 </div>
               
                 {/* Mock Chart Area */}
-                <div className="flex-1 min-h-[240px] flex items-end gap-2 md:gap-4 justify-between relative mt-4">
+                <div className="flex-1 min-h-[180px] md:min-h-[240px] flex items-end gap-1 md:gap-4 justify-between relative mt-2 md:mt-4">
                 {/* Y-axis labels */}
-                <div className="absolute left-0 top-0 bottom-6 w-8 flex flex-col justify-between text-[10px] font-bold text-slate-400">
+                <div className="absolute left-0 top-0 bottom-6 w-6 md:w-8 flex flex-col justify-between text-[9px] md:text-[10px] font-bold text-slate-400">
                   <span>40</span>
                   <span>30</span>
                   <span>20</span>
@@ -198,7 +198,7 @@ export default function Dashboard() {
                   <span>0</span>
                 </div>
                 {/* Chart Bars */}
-                <div className="flex-1 flex items-end justify-between ml-10 border-b border-slate-100 pb-2 h-full">
+                <div className="flex-1 flex items-end justify-between ml-6 md:ml-10 border-b border-slate-100 pb-2 h-full overflow-x-auto hide-scrollbar gap-2 md:gap-0">
                   {isStatsLoading ? (
                     <div className="flex items-end justify-between w-full h-full pb-2">
                       {[1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
@@ -262,25 +262,28 @@ export default function Dashboard() {
           </motion.div>
 
             {/* LIST: Top Product Style */}
-            <motion.div {...fadeUp(0.35)} className="bg-white border border-slate-100 shadow-sm rounded-[24px] flex flex-col relative overflow-hidden h-full">
-              <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0 rounded-t-[24px]">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
-                    <CalendarDays className="h-6 w-6 text-red-700" />
+            <motion.div {...fadeUp(0.35)} className="bg-white border border-slate-100 shadow-sm rounded-[20px] md:rounded-[24px] flex flex-col relative overflow-hidden h-full">
+              <div className="p-4 md:px-8 md:py-5 bg-slate-50 border-b border-slate-100 flex flex-row justify-between items-center gap-3 md:gap-4 shrink-0 rounded-t-[20px] md:rounded-t-[24px]">
+                <div className="flex items-center gap-3 md:gap-4 flex-1">
+                  <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-[12px] md:rounded-[14px] shadow-sm shrink-0">
+                    <CalendarDays className="h-5 w-5 md:h-6 md:w-6 text-red-700" />
                   </div>
-                  <div className="flex-1">
-                    <h2 className="text-xl font-bold text-slate-900 leading-tight">Aktivitas Terkini</h2>
-                    <p className="text-sm text-slate-500 mt-1 line-clamp-1">Kegiatan yang baru saja diterbitkan.</p>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-lg md:text-xl font-bold text-slate-900 leading-tight truncate">Aktivitas Terkini</h2>
+                    <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1 line-clamp-1">Kegiatan yang baru diterbitkan.</p>
                   </div>
                 </div>
                 <Link href="/kegiatan">
-                  <Button variant="outline" className="rounded-xl border-slate-300 text-slate-700 font-bold bg-white hover:bg-slate-100 hover:text-slate-800 h-10 px-4">
+                  <Button variant="outline" size="sm" className="hidden md:flex rounded-xl border-slate-300 text-slate-700 font-bold bg-white hover:bg-slate-100 hover:text-slate-800 h-10 px-4">
                     Semua Kegiatan <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                  <Button variant="outline" size="icon" className="md:hidden rounded-[10px] h-8 w-8 border-slate-300 text-slate-700 bg-white">
+                    <ChevronRight className="h-4 w-4" />
                   </Button>
                 </Link>
               </div>
 
-              <div className="p-6 md:p-8 flex-1 flex flex-col gap-4 overflow-hidden">
+              <div className="p-4 md:p-8 flex-1 flex flex-col gap-3 md:gap-4 overflow-hidden">
                 {isUpcomingLoading ? (
                   Array(5).fill(0).map((_, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 rounded-xl">
@@ -304,20 +307,20 @@ export default function Dashboard() {
                   recentActivity.map((k: any, i: number) => {
                     const d = new Date(k.tanggal);
                     return (
-                      <Link key={k.id} href={`/kegiatan/${k.id}`} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
-                        <div className="h-10 w-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 group-hover:bg-white group-hover:text-red-700 group-hover:shadow-sm border border-slate-200/50 transition-all">
-                          <CalendarDays className="h-4 w-4" />
+                      <Link key={k.id} href={`/kegiatan/${k.id}`} className="flex items-center gap-2.5 md:gap-3 p-2.5 md:p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
+                        <div className="h-9 w-9 md:h-10 md:w-10 bg-slate-100 rounded-lg shrink-0 flex items-center justify-center text-slate-500 group-hover:bg-white group-hover:text-red-700 group-hover:shadow-sm border border-slate-200/50 transition-all">
+                          <CalendarDays className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-bold text-slate-900 truncate group-hover:text-red-700 transition-colors">{k.nama_kegiatan}</div>
-                          <div className="text-[11px] font-medium text-slate-500 truncate flex items-center gap-2 mt-0.5">
+                          <div className="text-[13px] md:text-sm font-bold text-slate-900 truncate group-hover:text-red-700 transition-colors">{k.nama_kegiatan}</div>
+                          <div className="text-[10px] md:text-[11px] font-medium text-slate-500 truncate flex items-center gap-1.5 md:gap-2 mt-0.5">
                             <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {k.jam_mulai?.slice(0,5)} WIB</span>
-                            <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {k.lokasi || 'Kampus'}</span>
+                            <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> <span className="truncate max-w-[80px] md:max-w-[150px]">{k.lokasi || 'Kampus'}</span></span>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-[11px] font-bold text-slate-900">{d.getDate()} {d.toLocaleDateString('id-ID', { month: 'short' })}</div>
-                          <div className="text-[9px] font-bold text-slate-400 uppercase">{k.status}</div>
+                        <div className="text-right shrink-0 ml-1">
+                          <div className="text-[10px] md:text-[11px] font-bold text-slate-900">{d.getDate()} {d.toLocaleDateString('id-ID', { month: 'short' })}</div>
+                          <div className="text-[8px] md:text-[9px] font-bold text-slate-400 uppercase mt-0.5">{k.status}</div>
                         </div>
                       </Link>
                     )

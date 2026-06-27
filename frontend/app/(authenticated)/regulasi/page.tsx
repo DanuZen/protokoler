@@ -148,7 +148,7 @@ export default function RegulasiPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col mt-8 overflow-visible md:overflow-hidden">
         <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
 
           {/* Regulasi List */}

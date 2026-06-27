@@ -40,7 +40,7 @@ function AdminSertifikatView() {
   const handleReject = (id: string) => toast.success(`Permintaan sertifikat ditolak.`);
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
+    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
       {/* HEADER SECTION */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
@@ -93,8 +93,8 @@ function AdminSertifikatView() {
       </section>
 
       {/* BODY CONTENT */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
+      <main className="flex-1 min-h-0 flex flex-col mt-4 md:mt-8 overflow-hidden">
+        <section className="flex-1 flex flex-col min-h-0 pb-2 md:pb-12 pr-0 md:pr-2">
           
           <motion.div initial="hidden" animate="visible" variants={stagger} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden flex flex-col flex-1 min-h-0">
             <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col xl:flex-row justify-between xl:items-center gap-4 shrink-0">
@@ -192,6 +192,7 @@ function AdminSertifikatView() {
 }
 
 function UserSertifikatView() {
+  const { user } = useAuth();
   const { data: sertifikatList } = useQuery({
     queryKey: ["sertifikat-me"],
     queryFn: () => sertifikatApi.byProtokoler(),
@@ -207,9 +208,26 @@ function UserSertifikatView() {
   const displayedSertifikat = data.filter((s: any) => s.kategori === kategori);
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
-      {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
+    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
+      {/* ─── MOBILE COLORED HEADER ─── */}
+      <div className="md:hidden -mx-4 -mt-4 mb-0 pb-12 pt-6 px-5 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[1.5rem] relative shadow-lg shrink-0">
+        <div className="absolute inset-0 overflow-hidden rounded-b-[1.5rem] pointer-events-none">
+          <div className="absolute top-[-20%] right-[-10%] w-48 h-48 rounded-full bg-red-500/20 blur-3xl" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full bg-orange-500/10 blur-2xl" />
+        </div>
+
+        <div className="flex justify-end items-start relative z-10 mb-4 min-h-[40px]" />
+
+        <div className="relative z-10 text-center flex flex-col items-center">
+          <h1 className="font-display text-[26px] font-bold text-white mb-1.5 leading-tight tracking-tight">Sertifikat Saya</h1>
+          <p className="text-[14px] text-red-100/90 font-medium leading-relaxed max-w-[95%] mx-auto">
+            Riwayat penghargaan dan sertifikat penugasan.
+          </p>
+        </div>
+      </div>
+
+      {/* ─── DESKTOP HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 hidden md:flex flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60 relative z-10">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <Award className="h-6 w-6 md:h-7 md:w-7" />
@@ -227,14 +245,14 @@ function UserSertifikatView() {
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="shrink-0 relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0 md:mt-0 -mt-8">
         <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3">
           {[
-            { label: "Diterbitkan", value: issued, icon: BadgeCheck, hint: "Siap diunduh" },
-            { label: "Dalam Proses", value: inProcess, icon: Clock, hint: "Menunggu admin" },
-            { label: "Total", value: data.length, icon: Award, hint: "Seluruh riwayat" },
+            { label: "Diterbitkan", value: issued, icon: BadgeCheck, hint: "Siap diunduh", hideOnMobile: false },
+            { label: "Dalam Proses", value: inProcess, icon: Clock, hint: "Menunggu admin", hideOnMobile: false },
+            { label: "Total", value: data.length, icon: Award, hint: "Seluruh riwayat", hideOnMobile: true },
           ].map((stat, index) => (
-            <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
+            <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }} className={stat.hideOnMobile ? "hidden md:block" : ""}>
               <div className="bg-white border border-slate-200 rounded-[24px] p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden h-full shadow-sm">
                 <div className="flex items-start justify-between relative z-10 gap-2">
                   <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
@@ -255,8 +273,8 @@ function UserSertifikatView() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
+      <main className="flex-1 min-h-0 flex flex-col mt-4 md:mt-8 overflow-hidden">
+        <section className="flex-1 flex flex-col min-h-0 pb-2 md:pb-12 pr-0 md:pr-2">
 
           <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden flex flex-col flex-1 min-h-0">
             <div className="p-4 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">

@@ -489,7 +489,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Tab Panels */}
-      <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col overflow-visible md:overflow-hidden">
         <div className="flex-1 overflow-y-auto pb-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="h-full flex flex-col">
             

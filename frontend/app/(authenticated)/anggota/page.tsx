@@ -154,7 +154,7 @@ export default function AnggotaPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-6 overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col mt-6 overflow-visible md:overflow-hidden">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden flex flex-col h-full">
           
           {/* Toolbar */}

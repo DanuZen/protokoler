@@ -358,7 +358,7 @@ export default function ManajemenBeritaPage() {
         </>
       )}
 
-      <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col overflow-visible md:overflow-hidden">
         {!selectedId ? (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col h-full overflow-hidden">
             <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white flex flex-col md:h-full">

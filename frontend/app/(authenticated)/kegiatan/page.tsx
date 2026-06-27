@@ -11,7 +11,7 @@ import {
   ChevronLeft, ChevronRight, ListTodo, CheckCircle2, Loader2,
   AlertCircle, XCircle, Radio, Circle
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { BuatKegiatanModal } from "@/components/kegiatan/buat-kegiatan-modal";
@@ -57,6 +57,7 @@ export default function KegiatanPage() {
   const [search, setSearch] = useState("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobileCalendarOpen, setIsMobileCalendarOpen] = useState(false);
 
   const { data: kegiatan, isLoading } = useQuery({
     queryKey: ["kegiatan"],
@@ -94,9 +95,33 @@ export default function KegiatanPage() {
   const todayStr = getLocalISODate(today);
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
-      {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
+    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
+      {/* ─── MOBILE COLORED HEADER ─── */}
+      <div className="md:hidden -mx-4 -mt-4 mb-0 pb-12 pt-6 px-5 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[1.5rem] relative shadow-lg shrink-0">
+        <div className="absolute inset-0 overflow-hidden rounded-b-[1.5rem] pointer-events-none">
+          <div className="absolute top-[-20%] right-[-10%] w-48 h-48 rounded-full bg-red-500/20 blur-3xl" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full bg-orange-500/10 blur-2xl" />
+        </div>
+
+        <div className="flex justify-end items-start relative z-10 mb-4 min-h-[40px]">
+          
+          {isAdmin && (
+            <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider bg-white/20 border border-white/30 text-white backdrop-blur-md">
+              <Plus className="h-3.5 w-3.5" /> Buat
+            </button>
+          )}
+        </div>
+
+        <div className="relative z-10 text-center flex flex-col items-center">
+          <h1 className="font-display text-[26px] font-bold text-white mb-1.5 leading-tight tracking-tight">Agenda Kegiatan</h1>
+          <p className="text-[14px] text-red-100/90 font-medium leading-relaxed max-w-[95%] mx-auto">
+            Pantau dan kelola jadwal penugasan protokoler.
+          </p>
+        </div>
+      </div>
+
+      {/* ─── DESKTOP HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 hidden md:flex flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60 relative z-10">
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
             <CalendarDays className="h-6 w-6 md:h-7 md:w-7" />
@@ -119,7 +144,7 @@ export default function KegiatanPage() {
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
-      <section className="shrink-0 relative z-20 pb-0">
+      <section className="shrink-0 relative z-20 pb-0 md:mt-0 -mt-8">
         <div className="grid grid-cols-2 gap-3 md:gap-6 md:grid-cols-2 xl:grid-cols-4">
           {[
             { label: "Akan Datang", value: upcoming, icon: Clock, hint: "Segera dilaksanakan", color: "text-red-800", bg: "bg-red-50" },
@@ -146,12 +171,12 @@ export default function KegiatanPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
-        <section className="flex-1 flex flex-col min-h-0 pb-12 pr-2">
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 flex-1 min-h-0">
+      <main className="flex-1 min-h-0 flex flex-col mt-4 md:mt-8 overflow-hidden relative z-10">
+        <section className="flex-1 flex flex-col min-h-0 pb-20 md:pb-12 pr-0 md:pr-2">
+          <div className="flex flex-col xl:grid xl:grid-cols-4 gap-6 flex-1 min-h-0">
 
             {/* ── Calendar Panel ── */}
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="xl:col-span-1 bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden flex flex-col min-h-0">
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="hidden xl:flex xl:col-span-1 bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden flex-col min-h-0">
               {/* Month nav header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
                 <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-red-700 hover:text-red-700 text-slate-400 bg-white transition-colors shadow-sm">
@@ -227,7 +252,7 @@ export default function KegiatanPage() {
             </motion.div>
 
             {/* ── Agenda List ── */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="xl:col-span-3 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl flex flex-col min-h-0 overflow-hidden">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="xl:col-span-3 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] flex flex-col min-h-0 overflow-hidden flex-1">
               
               {/* Top Header & Search */}
               <div className="p-4 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">
@@ -251,8 +276,21 @@ export default function KegiatanPage() {
                       onChange={(e) => setSearch(e.target.value)}
                     />
                   </div>
+                  <button
+                    onClick={() => setIsMobileCalendarOpen(true)}
+                    className={cn(
+                      "xl:hidden shrink-0 flex items-center gap-1.5 px-3 h-10 text-[11px] font-semibold border rounded-xl transition-all shadow-sm",
+                      selectedDate ? "bg-red-50 border-red-200 text-red-800" : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
+                    )}>
+                    <CalendarDays className="h-3.5 w-3.5" />
+                    {selectedDate ? (
+                      <span>{formatDateLabel(selectedDate)}</span>
+                    ) : (
+                      <span>Filter Tanggal</span>
+                    )}
+                  </button>
                   <div className={cn(
-                    "shrink-0 flex items-center gap-1.5 px-3 h-10 text-[11px] font-semibold border rounded-xl",
+                    "hidden xl:flex shrink-0 items-center gap-1.5 px-3 h-10 text-[11px] font-semibold border rounded-xl",
                     selectedDate ? "bg-red-50 border-red-200 text-red-800" : "bg-slate-50 border-slate-200 text-slate-500"
                   )}>
                     {selectedDate ? (
@@ -279,84 +317,162 @@ export default function KegiatanPage() {
                   </p>
                 </div>
               ) : (
-                <div className="flex-1 flex flex-col min-h-0 bg-white/40">
-                  {/* Table header */}
-                  <div className="hidden md:grid grid-cols-[56px_1fr_200px_160px_48px] gap-4 px-6 py-3 border-b border-slate-100 bg-white">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center">Tgl</div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Kegiatan</div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Waktu & Lokasi</div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Status</div>
-                    <div />
-                  </div>
+                  <div className="flex-1 overflow-hidden min-h-0 bg-white/40">
+                    {/* Table header */}
+                    <div className="hidden md:grid grid-cols-[56px_1fr_200px_160px_48px] gap-4 px-6 py-3 border-b border-slate-100 bg-white">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center">Tgl</div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Kegiatan</div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Waktu & Lokasi</div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Status</div>
+                      <div />
+                    </div>
 
-                  <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {sortedFiltered.map((k: any) => {
-                      const cfg = statusConfig[k.status] || statusConfig.draft;
-                      const StatusIcon = cfg.Icon;
-                      return (
-                        <motion.div key={k.id} variants={fadeUp} className="group hover:bg-slate-50/50 transition-colors">
-                          <Link href={`/kegiatan/${k.id}`} className="block">
-                            <div className="grid grid-cols-1 md:grid-cols-[56px_1fr_200px_160px_48px] gap-4 items-center px-6 py-5">
+                    <div className="divide-y divide-slate-100 flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                        {sortedFiltered.map((k: any) => {
+                          const cfg = statusConfig[k.status] || statusConfig.draft;
+                          const StatusIcon = cfg.Icon;
+                          return (
+                            <motion.div key={k.id} variants={fadeUp} className="group hover:bg-slate-50/50 transition-colors w-full">
+                              <Link href={`/kegiatan/${k.id}`} className="block">
+                                <div className="grid grid-cols-[1fr_auto] md:grid-cols-[56px_1fr_200px_160px_48px] gap-x-3 gap-y-2 md:gap-4 items-center px-4 py-3 md:px-6 md:py-5">
 
-                              {/* Date block */}
-                              <div className="hidden md:flex flex-col items-center justify-center bg-slate-50 text-slate-500 w-14 h-14 rounded-xl shrink-0 border border-slate-200 group-hover:bg-red-700 group-hover:text-white group-hover:border-red-700 transition-colors shadow-sm">
-                                <span className="text-xl font-bold leading-none">
-                                  {new Date(k.tanggal).getDate()}
-                                </span>
-                                <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5 font-semibold">
-                                  {MONTHS[new Date(k.tanggal).getMonth()].slice(0, 3)}
-                                </span>
-                              </div>
-
-                              {/* Title & type */}
-                              <div className="flex flex-col gap-1.5 min-w-0">
-                                <div className="flex items-center gap-2">
-                                  <div className="h-5 w-5 flex items-center justify-center text-slate-400 group-hover:text-red-700 transition-colors shrink-0">
-                                    <BentukIcon bentuk={k.bentuk_kegiatan || k.bentuk} className="h-3.5 w-3.5" />
+                                  {/* Date block */}
+                                  <div className="hidden md:flex flex-col items-center justify-center bg-slate-50 text-slate-500 w-14 h-14 rounded-xl shrink-0 border border-slate-200 group-hover:bg-red-700 group-hover:text-white group-hover:border-red-700 transition-colors shadow-sm order-1">
+                                    <span className="text-xl font-bold leading-none">
+                                      {new Date(k.tanggal).getDate()}
+                                    </span>
+                                    <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5 font-semibold">
+                                      {MONTHS[new Date(k.tanggal).getMonth()].slice(0, 3)}
+                                    </span>
                                   </div>
-                                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{(k.bentuk_kegiatan || k.bentuk || '').replace(/_/g, " ")}</span>
-                                </div>
-                                <h3 className="font-bold text-slate-800 text-base group-hover:text-red-800 transition-colors line-clamp-1">{k.nama_kegiatan}</h3>
-                              </div>
 
-                              {/* Time & location */}
-                              <div className="flex flex-col gap-1.5">
-                                <div className="flex items-center gap-1.5 text-slate-700 text-sm font-semibold">
-                                  <Clock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                                  <span>{k.jam_mulai?.slice(0, 5)} – {k.jam_selesai?.slice(0, 5)} WIB</span>
-                                </div>
-                                <div className="flex items-center gap-1.5 text-slate-500 text-xs">
-                                  <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" />
-                                  <span className="truncate">{k.lokasi}</span>
-                                </div>
-                              </div>
+                                  {/* Title & type */}
+                                  <div className="flex flex-col gap-1 md:gap-1.5 min-w-0 order-2">
+                                    <div className="flex items-center gap-1.5 md:gap-2">
+                                      <div className="h-4 w-4 md:h-5 md:w-5 flex items-center justify-center text-slate-400 group-hover:text-red-700 transition-colors shrink-0">
+                                        <BentukIcon bentuk={k.bentuk_kegiatan || k.bentuk} className="h-3 w-3 md:h-3.5 md:w-3.5" />
+                                      </div>
+                                      <span className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-wider">{(k.bentuk_kegiatan || k.bentuk || '').replace(/_/g, " ")}</span>
+                                    </div>
+                                    <h3 className="font-bold text-slate-800 text-[13px] md:text-base group-hover:text-red-800 transition-colors line-clamp-1">{k.nama_kegiatan}</h3>
+                                  </div>
 
-                              {/* Status */}
-                              <div className="flex justify-start">
-                                <div className={cn("inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[10px] font-bold tracking-wider uppercase bg-white shadow-sm", cfg.color.replace("bg-", "text-").replace("50", "600"), cfg.color.replace("bg-", "border-").replace("50", "200"))}>
-                                  <StatusIcon className="h-3.5 w-3.5" />
-                                  {cfg.label}
-                                </div>
-                              </div>
+                                  {/* Time & location */}
+                                  <div className="flex flex-col gap-1 md:gap-1.5 order-4 md:order-3 col-span-2 md:col-span-1">
+                                    <div className="flex items-center gap-1.5 text-slate-700 text-xs md:text-sm font-semibold">
+                                      <Clock className="h-3 w-3 md:h-3.5 md:w-3.5 text-slate-400 shrink-0" />
+                                      <span>{k.jam_mulai?.slice(0, 5)} – {k.jam_selesai?.slice(0, 5)} WIB</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 text-slate-500 text-[11px] md:text-xs">
+                                      <MapPin className="h-3 w-3 md:h-3.5 md:w-3.5 shrink-0 text-slate-400" />
+                                      <span className="truncate">{k.lokasi}</span>
+                                    </div>
+                                  </div>
 
-                              {/* Arrow */}
-                              <div className="hidden md:flex justify-end pr-2">
-                                <div className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-300 group-hover:bg-red-50 group-hover:border-red-200 group-hover:text-red-700 transition-all">
-                                  <ArrowRight className="h-4 w-4" />
+                                  {/* Status */}
+                                  <div className="flex justify-end md:justify-start order-3 md:order-4 self-start md:self-auto mt-0.5 md:mt-0">
+                                    <div className={cn("inline-flex items-center gap-1 md:gap-1.5 px-2 py-0.5 md:px-3 md:py-1.5 rounded-lg border text-[9px] md:text-[10px] font-bold tracking-wider uppercase bg-white shadow-sm", cfg.color.replace("bg-", "text-").replace("50", "600"), cfg.color.replace("bg-", "border-").replace("50", "200"))}>
+                                      <StatusIcon className="h-3 w-3 md:h-3.5 md:w-3.5" />
+                                      {cfg.label}
+                                    </div>
+                                  </div>
+
+                                  {/* Arrow */}
+                                  <div className="hidden md:flex justify-end pr-2 order-5">
+                                    <div className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-300 group-hover:bg-red-50 group-hover:border-red-200 group-hover:text-red-700 transition-all">
+                                      <ArrowRight className="h-4 w-4" />
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          </Link>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+                              </Link>
+                            </motion.div>
+                          );
+                        })}
+                    </div>
                 </div>
               )}
             </motion.div>
           </div>
         </section>
       </main>
+      
+      {/* ── Mobile Calendar Modal ── */}
+      <AnimatePresence>
+        {isMobileCalendarOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 xl:hidden">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMobileCalendarOpen(false)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-[320px] bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col">
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
+                <button onClick={prevMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-red-700 hover:text-red-700 text-slate-400 bg-white transition-colors shadow-sm">
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <div className="font-bold text-slate-800 text-sm uppercase tracking-widest">
+                  {MONTHS[viewMonth]} {viewYear}
+                </div>
+                <button onClick={nextMonth} className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:border-red-700 hover:text-red-700 text-slate-400 bg-white transition-colors shadow-sm">
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Day labels */}
+              <div className="grid grid-cols-7 border-b border-slate-100 bg-white">
+                {DAYS_SHORT.map((d) => (
+                  <div key={d} className="text-center py-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{d}</div>
+                ))}
+              </div>
+
+              {/* Date cells */}
+              <div className="grid grid-cols-7 p-3 gap-1 bg-white">
+                {calendarDays.map((day, i) => {
+                  if (!day) return <div key={`empty-modal-${i}`} />;
+                  const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+                  const hasEvent = !!kegiatanByDate[dateStr];
+                  const isToday = dateStr === todayStr;
+                  const isSelected = dateStr === selectedDate;
+
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => {
+                        setSelectedDate(isSelected ? null : dateStr);
+                        setTimeout(() => setIsMobileCalendarOpen(false), 200);
+                      }}
+                      className={cn(
+                        "relative h-10 w-full flex flex-col items-center justify-center text-sm font-bold transition-all rounded-xl",
+                        isSelected && "bg-red-900 text-white shadow-sm",
+                        !isSelected && isToday && "ring-2 ring-red-900 text-red-900",
+                        !isSelected && !isToday && "hover:bg-slate-50 text-slate-700",
+                      )}
+                    >
+                      {day}
+                      {hasEvent && (
+                        <span className={cn(
+                          "absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full",
+                          isSelected ? "bg-white" : "bg-red-600"
+                        )} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Footer */}
+              <div className="px-5 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3 text-xs text-slate-500">
+                <span className="flex items-center gap-2 font-medium">
+                  <span className="h-1.5 w-1.5 rounded-full bg-red-600 inline-block" />
+                  Ada kegiatan
+                </span>
+                {selectedDate && (
+                  <button onClick={() => { setSelectedDate(null); setIsMobileCalendarOpen(false); }} className="text-red-700 font-bold hover:text-red-800 transition-colors flex items-center gap-1.5">
+                    <XCircle className="h-3.5 w-3.5" /> Reset Filter
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
       
       {/* ── Modal Buat Kegiatan ── */}
       <BuatKegiatanModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

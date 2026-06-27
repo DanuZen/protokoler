@@ -162,7 +162,7 @@ export default function DokumentasiDashboardPage() {
       </section>
 
       {/* ─── MAIN CHARTS & LISTS ─────────────────────────────────── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col mt-8 overflow-visible md:overflow-hidden">
         <div className="flex-1 overflow-y-auto md:overflow-hidden overflow-x-hidden pr-2 pb-6 min-h-0">
           {role === 'admin' ? (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-h-full md:h-full">
