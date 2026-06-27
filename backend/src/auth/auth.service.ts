@@ -270,11 +270,8 @@ export class AuthService {
       throw new ConflictException('Email tidak terdaftar');
     }
 
-    const publicClient = createClient(
-      this.configService.get<string>('SUPABASE_URL') || '',
-      this.configService.get<string>('VITE_SUPABASE_PUBLISHABLE_KEY') || '',
-    );
-    const { error } = await publicClient.auth.resetPasswordForEmail(email, {
+    const supabase = this.supabaseService.getClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000'}/auth/reset-password`,
     });
 
