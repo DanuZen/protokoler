@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useRole } from '@/hooks/use-auth';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type Role = 'admin' | 'mahasiswa' | 'dokumentasi';
 
@@ -239,9 +239,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           {/* Page Content Area */}
           <div className={cn("flex-1 flex flex-col min-h-0 relative z-10 overflow-y-auto overflow-x-hidden pb-24 md:pb-8 md:overflow-hidden md:p-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]", role === 'mahasiswa' && "md:pb-8 md:pt-8")}>
-            <motion.div className="flex-1 flex flex-col min-h-0 [&>div]:min-h-full md:[&>div]:!h-full" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-              {children}
-            </motion.div>
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={path}
+                className="flex-1 flex flex-col min-h-0 [&>div]:min-h-full md:[&>div]:!h-full" 
+                initial={{ opacity: 0, y: 15, scale: 0.98 }} 
+                animate={{ opacity: 1, y: 0, scale: 1 }} 
+                exit={{ opacity: 0, y: -15, scale: 0.98 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </main>
 
@@ -249,28 +258,48 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* ─── MOBILE BOTTOM NAVIGATION (Selalu ada kecuali untuk admin) ─── */}
       {mounted && role !== 'superadmin' && role !== 'admin' && role !== 'pimpinan' && (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#6B0000] border-t border-[#4A0000] shadow-[0_-4px_25px_rgba(107,0,0,0.3)] px-4 pb-safe pt-1.5 flex items-center justify-between h-[60px]">
-          <Link href="/kegiatan" className={cn("flex flex-col items-center justify-center gap-1 w-14", path === '/kegiatan' || path.startsWith('/kegiatan/') ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
-            <CalendarDays className="h-5 w-5" strokeWidth={path === '/kegiatan' || path.startsWith('/kegiatan/') ? 2.5 : 2} />
-            <span className="text-[9px] font-semibold">Kegiatan</span>
+        <motion.nav 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 20 }}
+          className="md:hidden fixed bottom-5 left-4 right-4 z-[999] bg-gradient-to-r from-[#7a0000] via-[#5a0000] to-[#7a0000] shadow-[0_8px_30px_rgba(107,0,0,0.4)] rounded-[24px] px-2 py-1.5 flex items-center justify-between"
+        >
+          
+          <Link href="/kegiatan" className="relative flex flex-col items-center justify-center gap-1 w-[19%] py-1.5 rounded-xl transition-all">
+            {(path === '/kegiatan' || path.startsWith('/kegiatan/')) && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-xl -z-10 shadow-inner" transition={{ type: "spring", stiffness: 300, damping: 25 }} />}
+            <CalendarDays className={cn("h-5 w-5", (path === '/kegiatan' || path.startsWith('/kegiatan/')) ? "text-white" : "text-red-200")} strokeWidth={(path === '/kegiatan' || path.startsWith('/kegiatan/')) ? 2.5 : 2} />
+            <span className={cn("text-[9px] font-bold tracking-wide", (path === '/kegiatan' || path.startsWith('/kegiatan/')) ? "text-white" : "text-red-200")}>Kegiatan</span>
           </Link>
-          <Link href="/evaluasi/dashboard" className={cn("flex flex-col items-center justify-center gap-1 w-14", path === '/evaluasi/dashboard' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
-            <BarChart3 className="h-5 w-5" strokeWidth={path === '/evaluasi/dashboard' ? 2.5 : 2} />
-            <span className="text-[9px] font-semibold">Evaluasi</span>
+
+          <Link href="/evaluasi/dashboard" className="relative flex flex-col items-center justify-center gap-1 w-[19%] py-1.5 rounded-xl transition-all">
+            {path === '/evaluasi/dashboard' && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-xl -z-10 shadow-inner" transition={{ type: "spring", stiffness: 300, damping: 25 }} />}
+            <BarChart3 className={cn("h-5 w-5", path === '/evaluasi/dashboard' ? "text-white" : "text-red-200")} strokeWidth={path === '/evaluasi/dashboard' ? 2.5 : 2} />
+            <span className={cn("text-[9px] font-bold tracking-wide", path === '/evaluasi/dashboard' ? "text-white" : "text-red-200")}>Evaluasi</span>
           </Link>
-          <Link href="/beranda" className={cn("flex flex-col items-center justify-center gap-1 w-14", path === '/beranda' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
-            <Home className="h-5 w-5" strokeWidth={path === '/beranda' ? 2.5 : 2} />
-            <span className="text-[9px] font-semibold">Beranda</span>
+
+          {/* FAB Beranda */}
+          <div className="relative w-[20%] flex flex-col items-center justify-center pt-1.5">
+            <div className="absolute -top-7">
+              <Link href="/beranda" className={cn("flex flex-col items-center justify-center h-[52px] w-[52px] md:h-14 md:w-14 rounded-full shadow-[0_8px_20px_rgba(0,0,0,0.3)] transition-transform active:scale-95 group border-4 border-slate-50", path === '/beranda' ? "bg-white" : "bg-slate-100")}>
+                <Home className={cn("h-[22px] w-[22px] md:h-6 md:w-6", path === '/beranda' ? "text-[#8B0000]" : "text-slate-400")} strokeWidth={path === '/beranda' ? 2.5 : 2} />
+              </Link>
+            </div>
+            <span className={cn("text-[9px] font-bold tracking-wide mt-7", path === '/beranda' ? "text-white" : "text-red-200")}>Beranda</span>
+          </div>
+
+          <Link href="/sertifikat" className="relative flex flex-col items-center justify-center gap-1 w-[19%] py-1.5 rounded-xl transition-all">
+            {path === '/sertifikat' && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-xl -z-10 shadow-inner" transition={{ type: "spring", stiffness: 300, damping: 25 }} />}
+            <Award className={cn("h-5 w-5", path === '/sertifikat' ? "text-white" : "text-red-200")} strokeWidth={path === '/sertifikat' ? 2.5 : 2} />
+            <span className={cn("text-[9px] font-bold tracking-wide", path === '/sertifikat' ? "text-white" : "text-red-200")}>Sertifikat</span>
           </Link>
-          <Link href="/sertifikat" className={cn("flex flex-col items-center justify-center gap-1 w-14", path === '/sertifikat' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
-            <Award className="h-5 w-5" strokeWidth={path === '/sertifikat' ? 2.5 : 2} />
-            <span className="text-[9px] font-semibold">Sertifikat</span>
+
+          <Link href="/profil" className="relative flex flex-col items-center justify-center gap-1 w-[19%] py-1.5 rounded-xl transition-all">
+            {path === '/profil' && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-xl -z-10 shadow-inner" transition={{ type: "spring", stiffness: 300, damping: 25 }} />}
+            <UserCircle2 className={cn("h-5 w-5", path === '/profil' ? "text-white" : "text-red-200")} strokeWidth={path === '/profil' ? 2.5 : 2} />
+            <span className={cn("text-[9px] font-bold tracking-wide", path === '/profil' ? "text-white" : "text-red-200")}>Profil</span>
           </Link>
-          <Link href="/profil" className={cn("flex flex-col items-center justify-center gap-1 w-14", path === '/profil' ? "text-white drop-shadow-md" : "text-red-200 hover:text-white")}>
-            <UserCircle2 className="h-5 w-5" strokeWidth={path === '/profil' ? 2.5 : 2} />
-            <span className="text-[9px] font-semibold">Profil</span>
-          </Link>
-        </nav>
+
+        </motion.nav>
       )}
     </div>
   );
