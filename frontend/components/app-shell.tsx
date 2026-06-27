@@ -196,7 +196,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {isSidebarOpen && (
                     <div className="flex-1 min-w-0 text-left">
                       <div className="text-[13px] font-black text-white leading-tight truncate transition-colors">{displayName}</div>
-                      <div className="text-[10px] font-semibold text-red-200 capitalize tracking-wide">{role ?? 'Admin'}</div>
+                      <div className="text-[10px] font-semibold text-red-200 capitalize tracking-wide">{role ?? 'Memuat...'}</div>
                     </div>
                   )}
                 </div>

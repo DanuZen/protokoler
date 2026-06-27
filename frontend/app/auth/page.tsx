@@ -71,7 +71,6 @@ export default function AuthPage() {
         if (userMe.role === 'admin') route = '/dashboard';
         else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
         
-        toast.success(`Berhasil masuk sebagai ${userMe.role}!`);
         setEnteringDashboard(route);
       } else {
         toast.error('Gagal memverifikasi role');
@@ -118,8 +117,6 @@ export default function AuthPage() {
         return;
       }
 
-      toast.success('Login berhasil!');
-      
       const res = await fetch('/api/auth/me', {
         headers: {
           Authorization: `Bearer ${data.session.access_token}`,
