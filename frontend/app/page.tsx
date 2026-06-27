@@ -15,6 +15,7 @@ import { id } from 'date-fns/locale';
 import { useAuth, useRole } from '@/hooks/use-auth';
 import { LandingNavbar } from '@/components/landing-navbar';
 import { LandingFooter } from '@/components/landing-footer';
+import { SplashScreen } from '@/components/splash-screen';
 // Varied Animation Variants
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -155,6 +156,7 @@ export default function Landing() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedPost, setSelectedPost] = useState<any | null>(null);
   const [modalPhotoIdx, setModalPhotoIdx] = useState(0);
+  const [showSplash, setShowSplash] = useState(true);
 
   const carouselPlugins = useRef([
     Autoplay({ delay: 4000, stopOnInteraction: true })
@@ -185,6 +187,13 @@ export default function Landing() {
 
   useEffect(() => {
     setIsMounted(true);
+    
+    // Cek sessionStorage untuk Splash Screen
+    const hasSeenSplash = sessionStorage.getItem('hasSeenSplash_landing');
+    if (hasSeenSplash) {
+      setShowSplash(false);
+    }
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -193,8 +202,21 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-red-100 overflow-x-hidden font-sans">
-      {/* Interactive Dynamic Navbar */}
+    <>
+      {showSplash && (
+        <SplashScreen 
+          text="PROTOKOLER UNP" 
+          durationMs={2000} 
+          onComplete={() => {
+            sessionStorage.setItem('hasSeenSplash_landing', 'true');
+            setShowSplash(false);
+          }} 
+        />
+      )}
+
+      {/* Sembunyikan konten web utama selama splash screen aktif agar tidak ada yang bocor (flicker) */}
+      <div className={cn("min-h-screen bg-white text-slate-900 selection:bg-red-100 overflow-x-hidden font-sans", showSplash ? "hidden" : "block")}>
+        {/* Interactive Dynamic Navbar */}
       <LandingNavbar />
 
       <main className="relative z-10">
@@ -931,5 +953,6 @@ export default function Landing() {
       {/* Footer */}
       <LandingFooter />
     </div>
+    </>
   );
 }
