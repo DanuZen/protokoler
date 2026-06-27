@@ -404,7 +404,48 @@ export default function SertifikatPage() {
   const { data: role, loading: isRoleLoading } = useRole(user);
   const isAdmin = role === "admin" || (role as string) === "pimpinan";
 
-  if (authLoading || isRoleLoading) return null;
+  if (authLoading || isRoleLoading) {
+    return (
+      <div className="flex flex-col h-full overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4 animate-pulse">
+        {/* MOBILE SKELETON HEADER */}
+        <div className="md:hidden -mx-4 -mt-4 mb-0 pb-12 pt-6 px-5 bg-slate-200 rounded-b-[1.5rem] relative shrink-0">
+          <div className="h-[40px] mb-4" />
+          <div className="flex flex-col items-center">
+            <div className="h-8 w-48 bg-slate-300 rounded-lg mb-2" />
+            <div className="h-4 w-64 bg-slate-300 rounded-lg" />
+          </div>
+        </div>
+
+        {/* DESKTOP SKELETON HEADER */}
+        <div className="shrink-0 hidden md:flex flex-row items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60 mt-2">
+          <div className="flex items-center gap-4">
+            <div className="h-14 w-14 rounded-xl bg-slate-200" />
+            <div className="flex flex-col gap-2">
+              <div className="h-3 w-24 bg-slate-200 rounded-lg" />
+              <div className="h-8 w-64 bg-slate-200 rounded-lg" />
+              <div className="h-4 w-96 bg-slate-200 rounded-lg" />
+            </div>
+          </div>
+        </div>
+
+        {/* STAT CARDS SKELETON */}
+        <section className="shrink-0 relative z-20 pb-0 md:mt-0 -mt-8">
+          <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className={`bg-white border border-slate-200 rounded-[24px] h-[110px] md:h-32 ${i === 3 ? 'hidden md:block' : ''}`} />
+            ))}
+          </div>
+        </section>
+        
+        {/* BODY SKELETON */}
+        <main className="flex-1 min-h-0 flex flex-col mt-4 md:mt-8">
+           <div className="bg-white/40 border border-white/60 rounded-[24px] flex-1 min-h-0 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-full border-4 border-slate-200 border-t-red-700 animate-spin" />
+           </div>
+        </main>
+      </div>
+    );
+  }
 
   if (isAdmin) {
     return <AdminSertifikatView />;
