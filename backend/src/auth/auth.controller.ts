@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseInterceptors, UploadedFiles, HttpCode, HttpStatus, Get, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors, UploadedFiles, HttpCode, HttpStatus, Get, UseGuards, Req, Patch } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -40,4 +40,18 @@ export class AuthController {
   async getMe(@Req() req: any) {
     return req.user;
   }
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('reset-password')
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Req() req: any, @Body('password') password: string) {
+    return this.authService.resetPassword(req.user.id, password);
+  }
 }
+

@@ -164,7 +164,7 @@ export class AuthService {
       include: { protokoler: true },
     });
 
-    if (dbUser && !dbUser.password && dto.password) {
+    if (dbUser && dto.password) {
       const hashedPassword = hashPassword(dto.password);
       dbUser = await this.prisma.user.update({
         where: { id: dbUser.id },
@@ -260,5 +260,37 @@ export class AuthService {
         foto_setengah_badan_url: dbUser.protokoler?.foto_setengah_badan_url || null,
       },
     };
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) {
+      throw new ConflictException('Email tidak terdaftar');
+    }
+
+    const publicClient = createClient(
+      this.configService.get<string>('SUPABASE_URL') || '',
+      this.configService.get<string>('VITE_SUPABASE_PUBLISHABLE_KEY') || '',
+    );
+    const { error } = await publicClient.auth.resetPasswordForEmail(email, {
+      redirectTo: `${this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000'}/auth/reset-password`,
+    });
+
+    if (error) {
+      throw new UnprocessableEntityException(error.message);
+    }
+
+    return { message: 'Email instruksi reset password berhasil dikirim' };
+  }
+
+  async resetPassword(userId: string, newPassword: string) {
+    const hashedPassword = hashPassword(newPassword);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+    return { message: 'Kata sandi berhasil diperbarui' };
   }
 }

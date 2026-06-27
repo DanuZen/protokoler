@@ -48,6 +48,7 @@ model Protokoler {
   user                    User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   sertifikat              Sertifikat[]
 
+  @@index([status_akun])
   @@map("protokoler")
 }
 
@@ -83,6 +84,8 @@ model Kegiatan {
   tamu_vvip                    TamuVVIP[]
   testimoni                    TestimoniTamu[]
 
+  @@index([status])
+  @@index([tanggal])
   @@map("kegiatan")
 }
 
@@ -97,6 +100,7 @@ model TamuVVIP {
   created_at       DateTime?    @default(now()) @db.Timestamptz(6)
   kegiatan         Kegiatan     @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
 
+  @@index([kegiatan_id])
   @@map("tamu_vvip")
 }
 
@@ -117,6 +121,7 @@ model PendaftaranKegiatan {
   protokoler            Protokoler            @relation(fields: [protokoler_id], references: [id], onDelete: Cascade)
   reviewer              User?                 @relation("ReviewedBy", fields: [reviewed_by], references: [id])
 
+  @@index([status])
   @@unique([kegiatan_id, protokoler_id])
   @@map("pendaftaran_kegiatan")
 }
@@ -165,6 +170,7 @@ model TestimoniTamu {
   waktu_pengisian DateTime?     @default(now()) @db.Timestamptz(6)
   kegiatan        Kegiatan      @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
 
+  @@index([kegiatan_id])
   @@map("testimoni_tamu")
 }
 
@@ -195,6 +201,7 @@ model DokumentasiKegiatan {
   user_unggah   User?     @relation("DiunggahOleh", fields: [diunggah_oleh], references: [id])
   kegiatan      Kegiatan  @relation(fields: [kegiatan_id], references: [id], onDelete: Cascade)
 
+  @@index([kegiatan_id])
   @@map("dokumentasi_kegiatan")
 }
 

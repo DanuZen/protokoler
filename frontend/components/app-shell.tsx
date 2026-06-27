@@ -41,6 +41,7 @@ function NavItem({ item, active, isOpen }: { item: { to: string; icon: any; labe
   return (
     <Link
       href={item.to}
+      prefetch={false}
       className={cn(
         "relative group flex items-center mb-1 rounded-xl transition-all duration-200 overflow-hidden",
         isOpen ? "w-full px-4 h-[46px] gap-3" : "justify-center w-12 h-12"
@@ -215,6 +216,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {/* Home */}
             <Link
               href="/"
+              prefetch={false}
               className={cn("text-red-100 hover:text-white transition-colors flex items-center rounded-xl mt-1", isSidebarOpen ? "gap-3 py-3 px-4 hover:bg-white/10" : "p-3 hover:bg-white/10 justify-center")}
             >
               <Home className="h-5 w-5 shrink-0" />
