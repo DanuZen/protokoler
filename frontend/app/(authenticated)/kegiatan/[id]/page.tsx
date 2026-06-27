@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
-import * as blazeface from "@tensorflow-models/blazeface";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -100,7 +98,10 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     const loadingToast = toast.loading("Mendeteksi wajah...");
     
     try {
-      // Load the model
+      // Load the model dynamically to speed up compilation and page load
+      const tf = await import("@tensorflow/tfjs");
+      const blazeface = await import("@tensorflow-models/blazeface");
+
       await tf.ready();
       const model = await blazeface.load();
       

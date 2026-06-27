@@ -13,7 +13,7 @@ import { ViewportFitGrid } from '@/components/ViewportFitGrid';
 import { SplashScreen } from '@/components/splash-screen';
 import { cn } from '@/lib/utils';
 
-type AuthMode = 'login' | 'register';
+type AuthMode = 'login' | 'register' | 'forgot-password';
 type RegisterStep = 1 | 2 | 3;
 
 export default function AuthPage() {
@@ -138,6 +138,31 @@ export default function AuthPage() {
       }
     } catch (err: any) {
       toast.error(err.message || 'Gagal login');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+      const resData = await res.json();
+      if (res.ok) {
+        toast.success(resData.message || 'Email instruksi reset kata sandi telah dikirim!');
+        setMode('login');
+      } else {
+        toast.error(resData.message || 'Gagal mengirim email reset');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Terjadi kesalahan saat memproses permintaan');
     } finally {
       setLoading(false);
     }
@@ -328,7 +353,7 @@ export default function AuthPage() {
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
                         <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Password</Label>
-                        <a href="#" className="text-xs font-bold text-red-700 hover:text-red-800 transition-colors">Lupa password?</a>
+                        <button type="button" onClick={() => setMode('forgot-password')} className="text-xs font-bold text-red-700 hover:text-red-800 transition-colors">Lupa password?</button>
                       </div>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -356,6 +381,36 @@ export default function AuthPage() {
                   >
                     Daftar Sebagai Protokoler
                   </Button>
+                </motion.div>
+              )}
+
+              {/* ── FORGOT PASSWORD MODE ── */}
+              {mode === 'forgot-password' && (
+                <motion.div key="forgot-password" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
+                  <button onClick={() => setMode('login')} className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-5 font-semibold transition-colors">
+                    <ArrowLeft className="h-4 w-4" /> Kembali ke Login
+                  </button>
+
+                  <div className="mb-5 text-center">
+                    <h2 className="font-display text-2xl font-bold text-slate-900 tracking-tight mb-1 lg:mb-2">Lupa Kata Sandi</h2>
+                    <p className="text-sm text-slate-500 font-medium">Masukkan email Anda untuk menerima instruksi pemulihan.</p>
+                  </div>
+
+                  <form onSubmit={handleForgotPassword} className="space-y-4 lg:space-y-5">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Email</Label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                          <Mail className="h-4 w-4 text-slate-400" />
+                        </div>
+                        <Input type="email" value={email} onChange={e => setEmail(e.target.value)} className="rounded-xl h-11 lg:h-12 pl-10 border-slate-200 text-sm bg-slate-50 focus:bg-white focus:border-red-600 transition-colors shadow-sm" placeholder="nama@kampus.ac.id" required />
+                      </div>
+                    </div>
+
+                    <Button type="submit" disabled={loading} className="w-full rounded-xl h-11 lg:h-12 font-bold bg-[#5b1511] hover:bg-[#4a100e] text-white mt-1 shadow-lg shadow-[#5b1511]/20 transition-all">
+                      {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Mengirim...</> : 'Kirim Link Reset'}
+                    </Button>
+                  </form>
                 </motion.div>
               )}
 
