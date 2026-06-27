@@ -174,20 +174,13 @@ export default function ProfilPage() {
           <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full bg-orange-500/10 blur-2xl" />
         </div>
 
-        <div className="flex flex-col items-center text-center relative z-10 mb-4">
-          <div className="h-20 w-20 bg-white text-red-800 rounded-2xl flex items-center justify-center font-extrabold overflow-hidden shrink-0 shadow-sm ring-4 ring-white/10 mb-4">
-            {photoHalf ? (
-              <img src={photoHalf} alt="Avatar" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-3xl font-bold text-red-800">{form.nama.charAt(0) || 'P'}</span>
-            )}
-          </div>
-          <h1 className="font-display text-[26px] font-bold text-white mb-1.5 leading-tight tracking-tight">{form.nama || 'Pengguna'}</h1>
-          <p className="text-[14px] text-red-100/90 font-medium mb-4 tracking-wide">{form.nim || '-'}</p>
-          <div className="flex gap-2 justify-center">
-            <span className="px-3 py-1 bg-red-900/50 text-red-100 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-red-500/30">{form.tingkat}</span>
-            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-100 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-emerald-400/30">{form.status}</span>
-          </div>
+        <div className="flex justify-end items-start relative z-10 mb-4 min-h-[40px]" />
+
+        <div className="relative z-10 text-center flex flex-col items-center">
+          <h1 className="font-display text-[26px] font-bold text-white mb-1.5 leading-tight tracking-tight">Profil Saya</h1>
+          <p className="text-[14px] text-red-100/90 font-medium leading-relaxed max-w-[95%] mx-auto">
+            Informasi akun dan pengaturan keanggotaan.
+          </p>
         </div>
       </div>
 
@@ -229,9 +222,27 @@ export default function ProfilPage() {
       </motion.div>
 
       {/* ─── MOBILE OVERVIEW ─── */}
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className={`md:hidden flex-1 min-h-0 flex flex-col gap-6 relative z-20 overflow-y-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${view === 'overview' ? 'flex -mt-6' : 'hidden'}`}>
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className={`md:hidden flex-1 min-h-0 flex flex-col gap-6 relative z-20 overflow-y-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${view === 'overview' ? 'flex -mt-8' : 'hidden'}`}>
+        
+        {/* Profile Card */}
+        <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm p-6 flex flex-col items-center text-center mx-1">
+          <div className="h-24 w-24 bg-slate-50 text-red-800 rounded-2xl flex items-center justify-center font-extrabold overflow-hidden shrink-0 shadow-sm ring-1 ring-slate-200 mb-4">
+            {photoHalf ? (
+              <img src={photoHalf} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-[40px] font-bold text-red-800">{form.nama.charAt(0) || 'P'}</span>
+            )}
+          </div>
+          <h2 className="font-bold text-xl text-slate-900 leading-tight">{form.nama || 'Pengguna'}</h2>
+          <p className="text-sm font-medium text-slate-500 mt-1 mb-4">{form.nim || '-'}</p>
+          <div className="flex gap-2 justify-center">
+            <span className="px-3 py-1 bg-red-50 text-red-800 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-red-100">{form.tingkat}</span>
+            <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-emerald-200">{form.status}</span>
+          </div>
+        </div>
+
         {/* Menu Buttons */}
-        <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden flex flex-col mx-1">
           <button onClick={() => setView('detail')} className="flex items-center gap-4 p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors text-left w-full">
             <div className="h-12 w-12 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
               <User className="h-5 w-5" />
