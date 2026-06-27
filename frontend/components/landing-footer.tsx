@@ -12,7 +12,7 @@ export function LandingFooter() {
           <div className="lg:col-span-2 flex flex-col items-center lg:items-start">
             <div className="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
               <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0">
-                <Image src="/logo protokoler.png" alt="Logo Protokoler" fill sizes="(max-width: 1024px) 48px, 56px" className="object-contain drop-shadow-md lg:drop-shadow-none" />
+                <Image src="/logo protokoler.webp" alt="Logo Protokoler" fill sizes="(max-width: 1024px) 48px, 56px" className="object-contain drop-shadow-md lg:drop-shadow-none" />
               </div>
               <div className="flex flex-col items-start lg:items-start text-left">
                 <span className="font-display text-xl sm:text-2xl font-bold text-white tracking-widest leading-none mb-1 sm:mb-2 lg:mb-1">PROTOKOLER</span>

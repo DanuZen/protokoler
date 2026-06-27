@@ -63,12 +63,12 @@ export default function RegulasiPage() {
   );
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <BookOpen className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <BookOpen className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -76,8 +76,8 @@ export default function RegulasiPage() {
                 Pedoman
               </span>
             </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Regulasi & SOP</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pusat informasi standar operasional dan tata tertib keprotokolan.</p>
+            <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Regulasi & SOP</h2>
+            <p className="hidden md:block text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pusat informasi standar operasional dan tata tertib keprotokolan.</p>
           </div>
         </div>
         
@@ -141,14 +141,14 @@ export default function RegulasiPage() {
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
             <Input className="pl-12 bg-white border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl h-11 text-base focus-visible:ring-slate-200 shadow-sm" placeholder="Cari SOP atau regulasi..." value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
-          <div className="text-sm font-semibold text-slate-500 shrink-0 bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl">
+          <div className="text-xs md:text-sm font-semibold text-slate-500 leading-tight shrink-0 bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl">
             <span className="text-slate-900">{filtered.length}</span> dokumen
           </div>
         </motion.div>
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-8 overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col mt-8 overflow-visible md:overflow-hidden">
         <section className="flex-1 overflow-y-auto overflow-x-hidden pb-12 pr-2">
 
           {/* Regulasi List */}
@@ -156,7 +156,7 @@ export default function RegulasiPage() {
             <div className="flex items-center justify-between border-b border-white/40 px-6 py-4 bg-white/40 backdrop-blur-md">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-white border border-slate-200 text-slate-600 rounded-xl">
-                  <FileCheck className="h-5 w-5" />
+                  <FileCheck className="h-4 w-4 md:h-5 md:w-5" />
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Daftar SOP & Regulasi</h2>

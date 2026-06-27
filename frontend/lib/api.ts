@@ -402,7 +402,7 @@ export const postinganApi = {
       // Map data backend ke format yang dipakai frontend
       return (res.data || []).map((item: any) => {
         const photos = (item.dokumentasi || []).filter((d: any) => d.media_type === 'foto');
-        const defaultImage = '/gallery_1.png';
+        const defaultImage = '/gallery_1.webp';
         
         // Cari keterangan berita riil dari salah satu foto, default ke hitungan berkas jika tidak ada
         const firstPhotoWithKeterangan = (item.dokumentasi || []).find((d: any) => d.keterangan && d.keterangan.trim() !== '');

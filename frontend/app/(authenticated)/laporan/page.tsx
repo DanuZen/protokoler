@@ -52,12 +52,12 @@ export default function Page() {
   };
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <FileBarChart className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <FileBarChart className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -65,8 +65,8 @@ export default function Page() {
                 Data & Analitik
               </span>
             </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Laporan & Rekap</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Laporan kegiatan dan rekap penugasan mahasiswa per periode.</p>
+            <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Laporan & Rekap</h2>
+            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Laporan kegiatan dan rekap penugasan mahasiswa per periode.</p>
           </div>
         </div>
       </motion.div>
@@ -112,7 +112,7 @@ export default function Page() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-6 overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col mt-6 overflow-visible md:overflow-hidden">
         <section className="flex-1 flex flex-col pb-12 pr-2 min-h-0">
 
           {/* Kegiatan Table */}
@@ -121,7 +121,7 @@ export default function Page() {
             <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
-                  <FileBarChart className="h-5 w-5" />
+                  <FileBarChart className="h-4 w-4 md:h-5 md:w-5" />
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Laporan Kegiatan</h2>
@@ -186,7 +186,7 @@ export default function Page() {
             <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
-                  <Users className="h-5 w-5" />
+                  <Users className="h-4 w-4 md:h-5 md:w-5" />
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Rekap Penugasan Mahasiswa</h2>

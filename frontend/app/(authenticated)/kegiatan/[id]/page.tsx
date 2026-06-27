@@ -421,12 +421,12 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const tabs = baseTabs;
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4 relative z-10">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4 relative z-10">
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
         <div className="flex items-start md:items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-800/20 text-white">
-            <Calendar className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-800/20 text-white">
+            <Calendar className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -452,7 +452,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 </span>
               </div>
             </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none text-slate-900 drop-shadow-sm">
+            <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none text-slate-900 drop-shadow-sm">
               {keg.nama_kegiatan}
             </h2>
           </div>
@@ -490,7 +490,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Tab Panels */}
-      <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col overflow-visible md:overflow-hidden">
         <div className="flex-1 overflow-y-auto pb-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="h-full flex flex-col">
             
@@ -499,7 +499,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           <ViewportFitGrid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap={24} className="items-stretch h-full w-full">
             {/* Left Card: Informasi Kegiatan */}
             <div className="lg:col-span-2 flex flex-col h-full">
-              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
+              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col md:h-full">
                 <div className="p-6 md:p-8 flex flex-col flex-1">
                   <div className="flex items-center gap-4 mb-8">
                     <div className="flex items-center justify-center h-12 w-12 bg-red-50 text-red-800 rounded-xl shadow-sm border border-red-100 shrink-0">
@@ -627,7 +627,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
             {/* Right Card: Tamu VVIP */}
             <div className="lg:col-span-1 flex flex-col h-full">
-              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
+              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col md:h-full">
                 <div className="p-6 md:p-8 border-b border-slate-100 shrink-0 text-center">
                    <h2 className="text-[15px] font-bold text-slate-800">Tamu VVIP</h2>
                    <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Daftar kehadiran</p>
@@ -687,7 +687,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   <div className="p-6 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                       <div className={`flex items-center justify-center h-10 w-10 rounded-xl border shadow-sm transition-colors ${isDaftarOpen ? "bg-green-50 border-green-100 text-green-600" : "bg-slate-50 border-slate-200 text-slate-500"}`}>
-                        <UserCheck className="h-5 w-5" />
+                        <UserCheck className="h-4 w-4 md:h-5 md:w-5" />
                       </div>
                       <div>
                         <h2 className="text-lg font-bold text-slate-800">Status Open Recruitment</h2>
@@ -807,7 +807,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5 bg-slate-50/50 shrink-0">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center justify-center h-10 w-10 bg-white border border-slate-200 text-slate-700 rounded-xl shadow-sm">
-                          <Briefcase className="h-5 w-5" />
+                          <Briefcase className="h-4 w-4 md:h-5 md:w-5" />
                         </div>
                         <div>
                           <h2 className="text-[15px] font-bold text-slate-800 uppercase tracking-wider">Seleksi Pendaftar</h2>
@@ -892,7 +892,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 <div className="p-6 border-b border-slate-100 shrink-0 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center h-10 w-10 bg-red-50 border border-red-100 text-red-800 rounded-xl shadow-sm">
-                      <Users className="h-5 w-5" />
+                      <Users className="h-4 w-4 md:h-5 md:w-5" />
                     </div>
                     <div>
                       <h2 className="text-[15px] font-bold text-slate-800 uppercase tracking-wider">Tim Pelaksana</h2>
@@ -915,7 +915,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                         <div key={p.id} className="flex items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm group/item">
                           <div className="flex items-center gap-3">
                             <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 border ${p.role === 'Liaison Officer' || p.role === 'lo' ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-red-50 border-red-200 text-red-800'}`}>
-                              {p.role === 'Liaison Officer' || p.role === 'lo' ? <UserCheck className="h-5 w-5" /> : <Users className="h-5 w-5" />}
+                              {p.role === 'Liaison Officer' || p.role === 'lo' ? <UserCheck className="h-4 w-4 md:h-5 md:w-5" /> : <Users className="h-4 w-4 md:h-5 md:w-5" />}
                             </div>
                             <div>
                               <p className="font-bold text-sm text-slate-800">{p.nama_lengkap}</p>
@@ -976,7 +976,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 <div className="p-6 md:p-8 flex flex-col gap-5 flex-1 bg-white">
                   <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-2xl shadow-sm hover:border-slate-200 transition-all flex-1 p-5 group">
                     <div className="h-14 w-14 rounded-2xl bg-red-50 text-red-800 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                      <Users className="h-7 w-7" />
+                      <Users className="h-6 w-6 md:h-7 md:w-7" />
                     </div>
                     <span className="text-[15px] font-bold text-slate-800 mb-2">Protokoler</span>
                     <span className="font-bold text-red-800 bg-white border border-red-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_protokoler_dibutuhkan || 0} Orang</span>
@@ -984,7 +984,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   
                   <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-2xl shadow-sm hover:border-slate-200 transition-all flex-1 p-5 group">
                     <div className="h-14 w-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                      <UserCheck className="h-7 w-7" />
+                      <UserCheck className="h-6 w-6 md:h-7 md:w-7" />
                     </div>
                     <span className="text-[15px] font-bold text-slate-800 mb-2">Liaison Officer</span>
                     <span className="font-bold text-amber-700 bg-white border border-amber-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_lo_dibutuhkan || 0} Orang</span>
@@ -997,7 +997,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
         {/* ── Tab ABSENSI ── */}
         {tab === "absensi" && (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[400px] md:h-full flex flex-col">
             <div className="p-6 md:p-8 flex flex-col flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
@@ -1079,14 +1079,14 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                         <div className={`w-full ${attendanceType === 'hadir' ? 'max-w-md md:max-w-3xl' : 'max-w-md'}`}>
                           {!attendanceType ? (
                             <div className="flex gap-4">
-                              <div className="flex-1 border-2 border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-green-50 hover:border-green-400 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('hadir')}>
+                              <div className="flex-1 border-2 border-slate-200 rounded-2xl p-4 md:p-6 flex flex-col items-center justify-center bg-white hover:bg-green-50 hover:border-green-400 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('hadir')}>
                                 <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-green-100 group-hover:text-green-600 flex items-center justify-center mb-4 transition-colors">
                                   <Camera className="h-6 w-6" />
                                 </div>
                                 <h4 className="font-bold text-slate-700 group-hover:text-green-700">Saya Hadir</h4>
                                 <p className="text-xs text-slate-500 text-center mt-1">Ambil selfie di lokasi</p>
                               </div>
-                              <div className="flex-1 border-2 border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center bg-white hover:bg-red-50 hover:border-red-400 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('izin')}>
+                              <div className="flex-1 border-2 border-slate-200 rounded-2xl p-4 md:p-6 flex flex-col items-center justify-center bg-white hover:bg-red-50 hover:border-red-400 transition-colors cursor-pointer group shadow-sm hover:shadow-md" onClick={() => setAttendanceType('izin')}>
                                 <div className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 group-hover:bg-red-100 group-hover:text-red-800 flex items-center justify-center mb-4 transition-colors">
                                   <XCircle className="h-6 w-6" />
                                 </div>
@@ -1195,17 +1195,17 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     {absensi && (
                     <div className="flex gap-6 mb-6 p-4 bg-slate-50 border border-slate-200 rounded-xl justify-center w-fit mx-auto md:w-full md:mx-0">
                       <div className="text-center px-4">
-                        <div className="text-3xl font-bold text-green-600">{absensi.filter((a: any) => a.status === "hadir").length}</div>
+                        <div className="text-2xl md:text-3xl font-bold text-green-600">{absensi.filter((a: any) => a.status === "hadir").length}</div>
                         <div className="text-xs text-slate-500 font-semibold uppercase mt-1">Hadir</div>
                       </div>
                       <div className="w-px bg-slate-200" />
                       <div className="text-center px-4">
-                        <div className="text-3xl font-bold text-red-500">{absensi.filter((a: any) => a.status !== "hadir").length}</div>
+                        <div className="text-2xl md:text-3xl font-bold text-red-500">{absensi.filter((a: any) => a.status !== "hadir").length}</div>
                         <div className="text-xs text-slate-500 font-semibold uppercase mt-1">Tidak Hadir</div>
                       </div>
                       <div className="w-px bg-slate-200" />
                       <div className="text-center px-4">
-                        <div className="text-3xl font-bold text-slate-800">{absensi.length}</div>
+                        <div className="text-2xl md:text-3xl font-bold text-slate-800">{absensi.length}</div>
                         <div className="text-xs text-slate-500 font-semibold uppercase mt-1">Total</div>
                       </div>
                     </div>
@@ -1254,7 +1254,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
           const hasSubmittedEvaluasi = isSuccessSubmit || evaluasi?.some((e: any) => e.protokoler_id === user?.id);
 
           return (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[400px] md:h-full flex flex-col">
             <div className="p-6 md:p-8 flex flex-col flex-1 min-h-0">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">
@@ -1345,24 +1345,24 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
             {/* Floating Stats Grid */}
             {isAdmin && (
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3">
                 {[
                   { label: 'Rata-rata Rating', value: avgRating, hint: 'Dari tamu undangan', icon: Star },
                   { label: 'Total Testimoni', value: totalTestimoni.toString(), hint: 'Umpan balik masuk', icon: MessageSquare },
                   { label: 'Respon Positif', value: positiveCount.toString(), hint: 'Rating 4 ke atas', icon: ClipboardCheck },
                 ].map((stat, index) => (
                   <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                    <div className="bg-white border border-slate-200 rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
-                      <div className="flex items-center justify-between relative z-10">
-                        <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                        <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors bg-slate-50 text-slate-600 border border-slate-100 group-hover:bg-slate-100">
-                          <stat.icon className="h-5 w-5" />
+                    <div className="bg-white border border-slate-200 rounded-[24px] p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
+                      <div className="flex items-start justify-between relative z-10 gap-2">
+                        <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
+                        <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl transition-colors bg-slate-50 text-slate-600 border border-slate-100 group-hover:bg-slate-100">
+                          <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
                         </div>
                       </div>
-                      <div className="mt-4 relative z-10">
-                        <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                      <div className="mt-3 md:mt-4 relative z-10">
+                        <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
                         <div className="flex items-center gap-1.5 mt-1.5">
-                          <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
+                          <span className="text-[10px] md:text-[11px] font-medium text-slate-400">{stat.hint}</span>
                         </div>
                       </div>
                     </div>
@@ -1376,7 +1376,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 px-6 py-4 bg-slate-50 gap-4 shrink-0">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center h-10 w-10 bg-white text-slate-600 rounded-xl border border-slate-200">
-                      <BarChart3 className="h-5 w-5" />
+                      <BarChart3 className="h-4 w-4 md:h-5 md:w-5" />
                     </div>
                     <div>
                       <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Detail Hasil Evaluasi</h2>
@@ -1409,11 +1409,14 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   <div className="flex-1 flex flex-col min-h-0">
                   {evaluasiTab === 'evaluasi' && (
                     <div className="flex-1 flex flex-col justify-between space-y-4 min-h-0">
-                      <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white shadow-sm flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                        {!evaluasi?.length ? (
-                          <div className="p-8 text-center text-slate-400">Belum ada evaluasi dari protokoler.</div>
-                        ) : (
-                          evaluasi.map((item: any) => (
+                      {!evaluasi?.length ? (
+                        <div className="flex flex-col items-center justify-center p-12 text-center flex-1">
+                          <FileSignature className="h-12 w-12 text-slate-300 mb-3" />
+                          <p className="text-[13px] font-medium text-slate-500">Belum ada evaluasi dari protokoler.</p>
+                        </div>
+                      ) : (
+                        <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white shadow-sm flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                          {evaluasi.map((item: any) => (
                             <details key={item.id} className="group p-5 border-b border-slate-100 last:border-0 [&_summary::-webkit-details-marker]:hidden">
                               <summary className="flex items-center justify-between gap-3 cursor-pointer outline-none select-none">
                                 <div>
@@ -1458,20 +1461,23 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 </div>
                               </div>
                             </details>
-                          ))
-                        )}
-                      </div>
+                          ))}
+                        </div>
+                      )}
 
                     </div>
                   )}
 
                   {evaluasiTab === 'testimoni' && (
                     <div className="flex-1 flex flex-col justify-between space-y-4 min-h-0">
-                      <div className="space-y-4 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                        {!testimoni?.length ? (
-                          <div className="p-8 text-center border border-slate-200 rounded-xl text-slate-400">Belum ada testimoni dari tamu.</div>
-                        ) : (
-                          testimoni.map((item: any) => (
+                      {!testimoni?.length ? (
+                        <div className="flex flex-col items-center justify-center p-12 text-center flex-1">
+                          <MessageSquare className="h-12 w-12 text-slate-300 mb-3" />
+                          <p className="text-[13px] font-medium text-slate-500">Belum ada testimoni dari tamu.</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-4 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                          {testimoni.map((item: any) => (
                             <div key={item.id} className="border border-slate-200 bg-white rounded-xl p-5 shadow-sm">
                               <div className="flex items-start justify-between gap-3">
                                 <div>
@@ -1501,9 +1507,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                                 {item.isi_testimoni}
                               </p>
                             </div>
-                          ))
-                        )}
-                      </div>
+                          ))}
+                        </div>
+                      )}
 
                     </div>
                   )}
@@ -1552,7 +1558,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
         })()}
         {/* ── Tab DOKUMENTASI ── */}
         {tab === "dokumentasi" && (
-          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[500px] h-full flex flex-col">
+          <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white min-h-[400px] md:h-full flex flex-col">
             <div className="p-6 md:p-8 flex flex-col flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-start md:items-center gap-4">

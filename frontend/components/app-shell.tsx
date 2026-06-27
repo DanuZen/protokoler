@@ -2,14 +2,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Camera, Bell, Settings, Home, CalendarCheck, BarChart3, Award, BookOpen, UploadCloud } from 'lucide-react';
+import { ShieldCheck, LayoutDashboard, Users, CalendarDays, ClipboardList, FileBarChart, LogOut, UserCircle2, Menu, Camera, Bell, Settings, Home, CalendarCheck, BarChart3, Award, BookOpen, UploadCloud, Plus } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useRole } from '@/hooks/use-auth';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type Role = 'admin' | 'mahasiswa' | 'dokumentasi';
 
@@ -99,6 +99,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const path = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const signOut = async () => {
     // Demo mode: hanya clear localStorage, tidak ada koneksi ke backend
@@ -149,7 +154,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             className={cn("mb-8 flex items-center h-16 overflow-hidden w-full hover:opacity-80 transition-opacity cursor-pointer", isSidebarOpen ? "px-6 justify-start gap-3" : "justify-center")}
           >
             <div className="h-[52px] w-[52px] shrink-0 flex items-center justify-center overflow-hidden bg-white rounded-full shadow-lg">
-              <img src="/logo protokoler.png" alt="Protokoler Logo" className="w-[96%] h-[96%] object-contain drop-shadow-sm" />
+              <img src="/logo protokoler.webp" alt="Protokoler Logo" className="w-[96%] h-[96%] object-contain drop-shadow-sm" />
             </div>
             {isSidebarOpen && (
               <div className="flex flex-col justify-center text-left">
@@ -235,14 +240,69 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           
 
           {/* Page Content Area */}
-          <div className="flex-1 flex flex-col min-h-0 relative z-10 p-6 md:p-8">
-            <motion.div className="flex-1 flex flex-col min-h-0 [&>div]:!h-full [&>div]:md:!h-full" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-              {children}
-            </motion.div>
+          <div className={cn("flex-1 flex flex-col min-h-0 relative z-10 overflow-y-auto overflow-x-hidden pb-24 md:pb-8 md:overflow-hidden md:p-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]", role === 'mahasiswa' && "md:pb-8 md:pt-8")}>
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={path}
+                className="flex-1 flex flex-col min-h-0 [&>div]:min-h-full md:[&>div]:!h-full" 
+                initial={{ opacity: 0, y: 15, scale: 0.98 }} 
+                animate={{ opacity: 1, y: 0, scale: 1 }} 
+                exit={{ opacity: 0, y: -15, scale: 0.98 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </main>
 
       </div>
+
+      {/* ─── MOBILE BOTTOM NAVIGATION (Selalu ada kecuali untuk admin) ─── */}
+      {mounted && role !== 'superadmin' && role !== 'admin' && role !== 'pimpinan' && (
+        <motion.nav 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 20 }}
+          className="md:hidden fixed bottom-5 left-4 right-4 z-[999] bg-gradient-to-r from-[#7a0000] via-[#5a0000] to-[#7a0000] shadow-[0_8px_30px_rgba(107,0,0,0.4)] rounded-[24px] px-2 py-1.5 flex items-center justify-between"
+        >
+          
+          <Link href="/kegiatan" className="relative flex flex-col items-center justify-center gap-1 w-[19%] py-1.5 rounded-xl transition-all">
+            {(path === '/kegiatan' || path.startsWith('/kegiatan/')) && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-xl -z-10 shadow-inner" transition={{ type: "spring", stiffness: 300, damping: 25 }} />}
+            <CalendarDays className={cn("h-5 w-5", (path === '/kegiatan' || path.startsWith('/kegiatan/')) ? "text-white" : "text-red-200")} strokeWidth={(path === '/kegiatan' || path.startsWith('/kegiatan/')) ? 2.5 : 2} />
+            <span className={cn("text-[9px] font-bold tracking-wide", (path === '/kegiatan' || path.startsWith('/kegiatan/')) ? "text-white" : "text-red-200")}>Kegiatan</span>
+          </Link>
+
+          <Link href="/evaluasi/dashboard" className="relative flex flex-col items-center justify-center gap-1 w-[19%] py-1.5 rounded-xl transition-all">
+            {path === '/evaluasi/dashboard' && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-xl -z-10 shadow-inner" transition={{ type: "spring", stiffness: 300, damping: 25 }} />}
+            <BarChart3 className={cn("h-5 w-5", path === '/evaluasi/dashboard' ? "text-white" : "text-red-200")} strokeWidth={path === '/evaluasi/dashboard' ? 2.5 : 2} />
+            <span className={cn("text-[9px] font-bold tracking-wide", path === '/evaluasi/dashboard' ? "text-white" : "text-red-200")}>Evaluasi</span>
+          </Link>
+
+          {/* FAB Beranda */}
+          <div className="relative w-[20%] flex flex-col items-center justify-center pt-1.5">
+            <div className="absolute -top-7">
+              <Link href="/beranda" className={cn("flex flex-col items-center justify-center h-[52px] w-[52px] md:h-14 md:w-14 rounded-full shadow-[0_8px_20px_rgba(0,0,0,0.3)] transition-transform active:scale-95 group border-4 border-slate-50", path === '/beranda' ? "bg-white" : "bg-slate-100")}>
+                <Home className={cn("h-[22px] w-[22px] md:h-6 md:w-6", path === '/beranda' ? "text-[#8B0000]" : "text-slate-400")} strokeWidth={path === '/beranda' ? 2.5 : 2} />
+              </Link>
+            </div>
+            <span className={cn("text-[9px] font-bold tracking-wide mt-7", path === '/beranda' ? "text-white" : "text-red-200")}>Beranda</span>
+          </div>
+
+          <Link href="/sertifikat" className="relative flex flex-col items-center justify-center gap-1 w-[19%] py-1.5 rounded-xl transition-all">
+            {path === '/sertifikat' && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-xl -z-10 shadow-inner" transition={{ type: "spring", stiffness: 300, damping: 25 }} />}
+            <Award className={cn("h-5 w-5", path === '/sertifikat' ? "text-white" : "text-red-200")} strokeWidth={path === '/sertifikat' ? 2.5 : 2} />
+            <span className={cn("text-[9px] font-bold tracking-wide", path === '/sertifikat' ? "text-white" : "text-red-200")}>Sertifikat</span>
+          </Link>
+
+          <Link href="/profil" className="relative flex flex-col items-center justify-center gap-1 w-[19%] py-1.5 rounded-xl transition-all">
+            {path === '/profil' && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-xl -z-10 shadow-inner" transition={{ type: "spring", stiffness: 300, damping: 25 }} />}
+            <UserCircle2 className={cn("h-5 w-5", path === '/profil' ? "text-white" : "text-red-200")} strokeWidth={path === '/profil' ? 2.5 : 2} />
+            <span className={cn("text-[9px] font-bold tracking-wide", path === '/profil' ? "text-white" : "text-red-200")}>Profil</span>
+          </Link>
+
+        </motion.nav>
+      )}
     </div>
   );
 }

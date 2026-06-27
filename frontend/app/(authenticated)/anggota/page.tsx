@@ -96,7 +96,7 @@ export default function AnggotaPage() {
         <div className="bg-red-100 text-red-700 p-5 rounded-full mb-6 shadow-sm border border-red-200">
           <ShieldCheck className="h-12 w-12" />
         </div>
-        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Akses Ditolak</h1>
+        <h1 className="text-2xl md:text-2xl md:text-3xl font-bold text-slate-900 mb-2">Akses Ditolak</h1>
         <p className="text-slate-500 max-w-md text-center text-sm md:text-base leading-relaxed">
           Maaf, Anda tidak memiliki izin untuk mengakses halaman ini. Halaman manajemen anggota hanya diperuntukkan bagi Administrator.
         </p>
@@ -105,13 +105,13 @@ export default function AnggotaPage() {
   }
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       
       {/* ─── HEADER SECTION ──────────────────────────────────────── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 pb-6 border-b border-slate-200/60 shrink-0">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60 shrink-0">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <Users className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <Users className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -119,32 +119,32 @@ export default function AnggotaPage() {
                 Manajemen Tim
               </span>
             </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Anggota</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Verifikasi dan kelola tim protokoler universitas.</p>
+            <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Anggota</h2>
+            <p className="text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Verifikasi dan kelola tim protokoler universitas.</p>
           </div>
         </div>
       </motion.div>
 
       {/* ─── Floating Stats Row ─── */}
       <section className="relative z-20 pb-0 shrink-0">
-        <motion.div initial="hidden" animate="visible" variants={stagger} className="grid gap-4 md:grid-cols-3">
+        <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3">
           {[
             { label: "Menunggu Verifikasi", value: pendingCount, icon: ShieldCheck, hint: "Perlu ditinjau" },
             { label: "Protokoler Aktif", value: aktifCount, icon: UserCheck, hint: "Anggota aktif" },
             { label: "Total Terdaftar", value: allData.length, icon: Users, hint: "Seluruh anggota" },
           ].map((stat, i) => (
             <motion.div key={stat.label} variants={fadeUp}>
-              <div className="bg-white border border-slate-200 shadow-sm rounded-[24px] py-6 px-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden h-full">
-                <div className="flex items-center justify-between relative z-10">
-                  <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                  <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl bg-red-50 text-red-800 transition-colors">
-                    <stat.icon className="h-5 w-5" />
+              <div className="bg-white border border-slate-200 shadow-sm rounded-[24px] p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden h-full">
+                <div className="flex items-start justify-between relative z-10 gap-2">
+                  <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
+                  <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl bg-red-50 text-red-800 transition-colors">
+                    <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
                   </div>
                 </div>
-                <div className="mt-4 relative z-10">
-                  <p className="text-[32px] font-bold leading-tight text-red-800">{stat.value}</p>
+                <div className="mt-3 md:mt-4 relative z-10">
+                  <p className="text-2xl md:text-[32px] font-bold leading-tight text-red-800">{stat.value}</p>
                   <div className="flex items-center gap-1.5 mt-1.5">
-                    <span className="text-[11px] font-medium text-slate-400">{stat.hint}</span>
+                    <span className="text-[10px] md:text-[11px] font-medium text-slate-400">{stat.hint}</span>
                   </div>
                 </div>
               </div>
@@ -154,11 +154,11 @@ export default function AnggotaPage() {
       </section>
 
       {/* ─── BODY CONTENT ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-6 overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col mt-6 overflow-visible md:overflow-hidden">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl overflow-hidden flex flex-col h-full">
           
           {/* Toolbar */}
-          <div className="px-6 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col xl:flex-row justify-between xl:items-center gap-4 shrink-0">
+          <div className="px-4 md:px-8 py-5 bg-slate-50 border-b border-slate-100 flex flex-col xl:flex-row justify-between xl:items-center gap-4 shrink-0">
             <div className="flex items-center gap-4">
               <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                 <Users className="h-6 w-6 text-red-700" />
@@ -235,7 +235,6 @@ export default function AnggotaPage() {
                 <TableRow className="border-none">
                   <TableHead className="font-bold text-slate-800 pl-6">Protokoler</TableHead>
                   <TableHead className="font-bold text-slate-800">Program Studi</TableHead>
-                  <TableHead className="font-bold text-slate-800">Kontak</TableHead>
                   <TableHead className="font-bold text-slate-800 text-center">Kegiatan</TableHead>
                   <TableHead className="font-bold text-slate-800">Status</TableHead>
                   {tab === "semua" && <TableHead className="font-bold text-slate-800">Pencapaian</TableHead>}
@@ -264,7 +263,6 @@ export default function AnggotaPage() {
                         <div className="text-slate-700">{m.prodi}</div>
                         <div className="text-xs text-slate-500 mt-0.5">{m.fakultas}</div>
                       </TableCell>
-                      <TableCell className="text-slate-600 text-sm">{m.no_hp}</TableCell>
                       <TableCell className="text-center">
                         <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-800 font-bold text-sm">
                           {m.total_kegiatan || 0}

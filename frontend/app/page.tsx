@@ -1,12 +1,12 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CalendarDays, ClipboardList, Users, ShieldCheck, ArrowRight, ChevronDown, Star, ArrowUpRight, Megaphone, Quote, Play, Camera, Trophy, MessageSquare, MapPin, Clock, BookOpen, FileText, ExternalLink, X, ChevronLeft, ChevronRight, Mail, Phone, Download } from 'lucide-react';
+import { CalendarDays, ClipboardList, Users, ShieldCheck, ArrowRight, ChevronDown, Star, ArrowUpRight, Megaphone, Quote, Play, Camera, Trophy, MessageSquare, MapPin, Clock, BookOpen, FileText, ExternalLink, X, ChevronLeft, ChevronRight, Mail, Phone, Download, Mic, UserCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { kegiatanApi, postinganApi, regulasiMockData } from '@/lib/api';
@@ -15,6 +15,7 @@ import { id } from 'date-fns/locale';
 import { useAuth, useRole } from '@/hooks/use-auth';
 import { LandingNavbar } from '@/components/landing-navbar';
 import { LandingFooter } from '@/components/landing-footer';
+import { SplashScreen } from '@/components/splash-screen';
 // Varied Animation Variants
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -46,7 +47,7 @@ const staggerContainer = {
 
 function PostCard({ post, isFeatured, onClick }: { post: any, isFeatured: boolean, onClick: () => void }) {
   const [activeIdx, setActiveIdx] = useState(0);
-  const images = post.images || [post.gambar || '/gallery_1.png'];
+  const images = post.images || [post.gambar || '/gallery_1.webp'];
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -151,9 +152,15 @@ function PostCard({ post, isFeatured, onClick }: { post: any, isFeatured: boolea
 
 export default function Landing() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedPost, setSelectedPost] = useState<any | null>(null);
   const [modalPhotoIdx, setModalPhotoIdx] = useState(0);
+  const [showSplash, setShowSplash] = useState(true);
+
+  const carouselPlugins = useRef([
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  ]);
 
   const handleSelectPost = (post: any) => {
     setSelectedPost(post);
@@ -167,7 +174,7 @@ export default function Landing() {
 
   const { data: kegiatanPublik, isLoading } = useQuery({
     queryKey: ['kegiatan-publik-landing'],
-    queryFn: () => kegiatanApi.list({ status: 'publik' }),
+    queryFn: () => kegiatanApi.list(),
   });
 
   const { data: postinganDokumentasi } = useQuery({
@@ -179,6 +186,14 @@ export default function Landing() {
   const yHero = useTransform(scrollYProgress, [0, 1], [0, 300]);
 
   useEffect(() => {
+    setIsMounted(true);
+    
+    // Cek sessionStorage untuk Splash Screen
+    const hasSeenSplash = sessionStorage.getItem('hasSeenSplash_landing');
+    if (hasSeenSplash) {
+      setShowSplash(false);
+    }
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -187,8 +202,21 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-red-100 overflow-x-hidden font-sans">
-      {/* Interactive Dynamic Navbar */}
+    <>
+      {showSplash && (
+        <SplashScreen 
+          text="PROTOKOLER UNP" 
+          durationMs={2000} 
+          onComplete={() => {
+            sessionStorage.setItem('hasSeenSplash_landing', 'true');
+            setShowSplash(false);
+          }} 
+        />
+      )}
+
+      {/* Sembunyikan konten web utama selama splash screen aktif agar tidak ada yang bocor (flicker) */}
+      <div className={cn("min-h-screen bg-white text-slate-900 selection:bg-red-100 overflow-x-hidden font-sans", showSplash ? "hidden" : "block")}>
+        {/* Interactive Dynamic Navbar */}
       <LandingNavbar />
 
       <main className="relative z-10">
@@ -272,7 +300,7 @@ export default function Landing() {
                 <div className="relative w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[500px] aspect-square mx-auto lg:mx-0">
                    {/* Main Image */}
                    <div className="absolute top-0 right-0 w-[85%] h-[85%] rounded-[2rem] overflow-hidden shadow-2xl">
-                     <Image src="/team-collab.png" alt="Tim Protokoler" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                     <Image src="/team-collab.webp" alt="Tim Protokoler" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                    </div>
                    {/* Secondary Image */}
@@ -280,7 +308,7 @@ export default function Landing() {
                      whileHover={{ y: -10 }}
                      className="absolute bottom-0 left-0 w-[55%] h-[55%] rounded-3xl overflow-hidden shadow-2xl border-8 border-white"
                    >
-                     <Image src="/rektorat.jpg" alt="Rektorat UNP" fill sizes="(max-width: 1024px) 50vw, 30vw" className="object-cover" />
+                     <Image src="/rektorat.webp" alt="Rektorat UNP" fill sizes="(max-width: 1024px) 50vw, 30vw" className="object-cover" />
                    </motion.div>
                 </div>
                 
@@ -428,7 +456,7 @@ export default function Landing() {
                   <div className="mt-auto pt-4 border-t border-white/10">
                     <p className="text-slate-400 text-xs uppercase tracking-widest mb-1">Tanggal Dipilih</p>
                     <p className="text-[#6B0000] font-bold text-sm">
-                      {selectedDate?.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) ?? '—'}
+                      {isMounted ? (selectedDate?.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) ?? '—') : 'Memuat...'}
                     </p>
                   </div>
                 </div>
@@ -444,7 +472,7 @@ export default function Landing() {
                           <div>
                             <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em] mb-1">Detail Acara</p>
                             <p className="text-slate-900 font-bold text-xl">
-                              {selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) ?? 'Belum ada tanggal dipilih'}
+                              {isMounted ? (selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) ?? 'Belum ada tanggal dipilih') : 'Memuat...'}
                             </p>
                           </div>
                           <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
@@ -459,35 +487,100 @@ export default function Landing() {
                     }
 
                     return (
-                      <div className="flex flex-col gap-6">
-                        <div>
-                          <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em] mb-2">Detail Acara</p>
-                          <h3 className="font-display text-3xl md:text-4xl font-bold text-slate-900 leading-tight">{event.nama_kegiatan}</h3>
-                          <p className="text-slate-500 text-sm mt-2">
-                            {selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                      <div className="flex flex-col h-full">
+                        <div className="mb-6">
+                          <div className="flex items-center justify-between mb-4">
+                             <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em]">Detail Acara</p>
+                             <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${event.status === 'berlangsung' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+                               {event.status}
+                             </span>
+                          </div>
+                          <h3 className="font-display text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">{event.nama_kegiatan}</h3>
+                          <p className="text-slate-500 text-sm flex items-center gap-2">
+                            <CalendarDays className="w-4 h-4 text-slate-400" />
+                            {isMounted ? selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'Memuat...'}
                           </p>
                         </div>
-                        <div className="w-12 h-0.5 rounded-full" style={{ background: 'linear-gradient(to right, #6B0000, transparent)' }} />
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          {[
-                            { icon: MapPin, label: 'Lokasi', value: event.lokasi },
-                            { icon: Clock, label: 'Waktu Mulai', value: `${event.jam_mulai?.slice(0, 5)} WIB` },
-                            { icon: Users, label: 'Pimpinan', value: event.tamu_vvip?.join(', ') || 'Pimpinan Universitas' },
-                            { icon: Megaphone, label: 'Status', value: event.status?.toUpperCase() },
-                          ].map(({ icon: Icon, label, value }) => (
-                            <div key={label} className="rounded-2xl p-4 transition-all duration-200 hover:scale-[1.02] bg-slate-50 border border-slate-200">
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-red-50">
-                                  <Icon className="h-3.5 w-3.5 text-[#6B0000]" />
-                                </div>
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</span>
-                              </div>
-                              <p className={`font-bold text-sm ${label === 'Status' && event.status === 'berlangsung' ? 'text-emerald-600' : 'text-slate-900'}`}>
-                                {value}
+
+                        <div className="w-full h-px bg-slate-100 my-2" />
+
+                        <div className="flex-1 mt-4 grid sm:grid-cols-2 gap-x-6 gap-y-6">
+                          <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                              <Clock className="w-4 h-4 text-[#6B0000]" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Waktu</p>
+                              <p className="font-bold text-slate-900 text-sm">{event.jam_mulai?.slice(0, 5) || '--:--'} - {event.jam_selesai?.slice(0, 5) || 'Selesai'} WIB</p>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                              <MapPin className="w-4 h-4 text-[#6B0000]" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Lokasi</p>
+                              <p className="font-bold text-slate-900 text-sm line-clamp-2">{event.lokasi}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                              <Users className="w-4 h-4 text-[#6B0000]" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tamu / Pimpinan</p>
+                              <p className="font-bold text-slate-900 text-sm line-clamp-2">
+                                {event.tamu_vvip && Array.isArray(event.tamu_vvip) && event.tamu_vvip.length > 0 
+                                  ? event.tamu_vvip.map((t: any) => t.nama_tamu).filter(Boolean).join(', ') 
+                                  : 'Pimpinan Universitas'}
                               </p>
                             </div>
-                          ))}
+                          </div>
+
+                          <div className="flex gap-4">
+                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                              <Megaphone className="w-4 h-4 text-[#6B0000]" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bentuk Kegiatan</p>
+                              <p className="font-bold text-slate-900 text-sm capitalize">{event.bentuk_kegiatan ? event.bentuk_kegiatan.replace('_', ' ') : '-'}</p>
+                            </div>
+                          </div>
+
+                          {event.audience && (
+                            <div className="flex gap-4">
+                              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                <UserCheck className="w-4 h-4 text-[#6B0000]" />
+                              </div>
+                              <div>
+                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Peserta</p>
+                                <p className="font-bold text-slate-900 text-sm line-clamp-2">{event.audience}</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {event.keynote && (
+                            <div className="flex gap-4">
+                              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                <Mic className="w-4 h-4 text-[#6B0000]" />
+                              </div>
+                              <div>
+                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Narasumber / Keynote</p>
+                                <p className="font-bold text-slate-900 text-sm line-clamp-2">{event.keynote}</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
+
+                        {event.rundown_url && (
+                          <div className="mt-8 pt-4 border-t border-slate-100">
+                             <a href={event.rundown_url} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-sm border border-slate-200 transition-colors">
+                                <ExternalLink className="w-4 h-4" /> Lihat Rundown Acara
+                             </a>
+                          </div>
+                        )}
                       </div>
                     );
                   })()}
@@ -541,7 +634,7 @@ export default function Landing() {
                     
                     {/* Watermark Logo Background */}
                     <div className="absolute -right-8 -bottom-8 w-40 h-40 sm:w-56 sm:h-56 lg:w-64 lg:h-64 opacity-[0.02] group-hover:opacity-[0.06] transition-all duration-700 pointer-events-none transform group-hover:scale-110 group-hover:-rotate-6 z-0">
-                      <Image src="/logo protokoler.png" alt="Watermark" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
+                      <Image src="/logo protokoler.webp" alt="Watermark" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
                     </div>
 
                     {/* Icon Block */}
@@ -608,7 +701,13 @@ export default function Landing() {
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="lg:col-span-2 min-w-0 w-full">
                 {/* Testimonial: Looping Carousel (All Screens) */}
                 <div className="-mx-6 sm:-mx-8 lg:mx-0 overflow-hidden mt-8 lg:mt-0">
-                  <Carousel opts={{ loop: true, align: 'center' }} plugins={[Autoplay({ delay: 4000 })]} className="w-full">
+                  <Carousel 
+                    opts={{ loop: true, align: 'center' }} 
+                    plugins={carouselPlugins.current} 
+                    onMouseEnter={() => carouselPlugins.current[0].stop()}
+                    onMouseLeave={() => carouselPlugins.current[0].reset()}
+                    className="w-full"
+                  >
                     <CarouselContent className="ml-0 lg:-ml-4">
                       {[
                         { name: 'Dr. Budi Santoso', role: 'Pembina Protokoler', image: '/tim_pengembang/danu.webp', text: 'Fitur evaluasi 3 Tata Protokol memastikan tidak ada celah di lapangan. Modul gamifikasi juga memacu mahasiswa untuk terus aktif.' },
@@ -762,7 +861,7 @@ export default function Landing() {
                    <div className="px-6 py-5 md:px-8 md:py-6 border-b border-slate-100 flex items-center justify-between bg-white z-10 shadow-sm">
                      <div className="flex items-center gap-4">
                        <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 border border-red-100 overflow-hidden">
-                          <Image src="/logo protokoler.png" width={28} height={28} alt="Protokoler" className="object-contain" />
+                          <Image src="/logo protokoler.webp" width={28} height={28} alt="Protokoler" className="object-contain" />
                        </div>
                        <div>
                          <p className="font-bold text-sm text-slate-900 leading-tight">Protokoler UNP</p>
@@ -854,5 +953,6 @@ export default function Landing() {
       {/* Footer */}
       <LandingFooter />
     </div>
+    </>
   );
 }

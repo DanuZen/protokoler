@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/hooks/use-auth";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, GraduationCap, Hash, Shield, Camera, Edit3, CheckCircle2, Building2, Library } from "lucide-react";
+import { User, Mail, Phone, GraduationCap, Hash, Shield, Camera, Edit3, CheckCircle2, Building2, Library, LogOut, RefreshCw, Home as HomeIcon, ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useRef, useCallback, useEffect } from "react";
@@ -12,6 +12,9 @@ import { cn } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { protokolerApi } from "@/lib/api";
 import { ViewportFitGrid } from "@/components/ViewportFitGrid";
+import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const fadeUp = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 const stagger = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.08 } } };
@@ -19,6 +22,9 @@ const stagger = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { s
 export default function ProfilPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const [view, setView] = useState<'overview' | 'detail'>('overview');
 
   const { data: protokoler } = useQuery({
     queryKey: ["protokoler-me"],
@@ -152,13 +158,37 @@ export default function ProfilPage() {
     }
   };
 
+  const handleSignOut = async () => {
+    toast.loading("Keluar dari akun...");
+    await supabase.auth.signOut();
+    toast.dismiss();
+    router.push('/login');
+  };
+
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
-      {/* ─── HEADER SECTION ─── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200/60">
+    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
+      {/* ─── MOBILE COLORED HEADER (Overview) ─── */}
+      <div className={`md:hidden -mx-4 -mt-4 mb-0 pb-12 pt-8 px-5 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[1.5rem] relative shadow-lg shrink-0 ${view === 'overview' ? 'block' : 'hidden'}`}>
+        <div className="absolute inset-0 overflow-hidden rounded-b-[1.5rem] pointer-events-none">
+          <div className="absolute top-[-20%] right-[-10%] w-48 h-48 rounded-full bg-red-500/20 blur-3xl" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full bg-orange-500/10 blur-2xl" />
+        </div>
+
+        <div className="flex justify-end items-start relative z-10 mb-4 min-h-[40px]" />
+
+        <div className="relative z-10 text-center flex flex-col items-center">
+          <h1 className="font-display text-[26px] font-bold text-white mb-1.5 leading-tight tracking-tight">Profil Saya</h1>
+          <p className="text-[14px] text-red-100/90 font-medium leading-relaxed max-w-[95%] mx-auto">
+            Informasi akun dan pengaturan keanggotaan.
+          </p>
+        </div>
+      </div>
+
+      {/* ─── DESKTOP HEADER SECTION ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className={`shrink-0 hidden md:flex flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60 relative z-10`}>
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
-            <User className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-700 to-red-800 shadow-lg shadow-red-700/20 text-white">
+            <User className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -166,8 +196,8 @@ export default function ProfilPage() {
                 Pengaturan Akun
               </span>
             </div>
-            <h2 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Profil Saya</h2>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Informasi akun dan data keanggotaan protokoler.</p>
+            <h2 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Profil Saya</h2>
+            <p className="hidden md:block text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Informasi akun dan data keanggotaan protokoler.</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -180,9 +210,88 @@ export default function ProfilPage() {
         </div>
       </motion.div>
 
+      {/* ─── MOBILE DETAIL HEADER (WITH BACK BUTTON) ─── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className={`md:hidden shrink-0 flex items-center gap-3 mb-4 pb-4 border-b border-slate-200/60 ${view === 'detail' ? 'flex' : 'hidden'}`}>
+        <button onClick={() => setView('overview')} className="h-10 w-10 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-600 shadow-sm">
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <div>
+          <h2 className="font-bold text-lg text-slate-900 leading-none">Detail Profil</h2>
+          <p className="text-[11px] text-slate-500 font-medium mt-1">Perbarui foto dan data diri Anda</p>
+        </div>
+      </motion.div>
+
+      {/* ─── MOBILE OVERVIEW ─── */}
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className={`md:hidden flex-1 min-h-0 flex flex-col gap-6 relative z-20 overflow-y-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${view === 'overview' ? 'flex -mt-8' : 'hidden'}`}>
+        
+        {/* Profile Card */}
+        <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm p-6 flex flex-col items-center text-center mx-1">
+          <div className="h-24 w-24 bg-slate-50 text-red-800 rounded-2xl flex items-center justify-center font-extrabold overflow-hidden shrink-0 shadow-sm ring-1 ring-slate-200 mb-4">
+            {photoHalf ? (
+              <img src={photoHalf} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-[40px] font-bold text-red-800">{form.nama.charAt(0) || 'P'}</span>
+            )}
+          </div>
+          <h2 className="font-bold text-xl text-slate-900 leading-tight">{form.nama || 'Pengguna'}</h2>
+          <p className="text-sm font-medium text-slate-500 mt-1 mb-4">{form.nim || '-'}</p>
+          <div className="flex gap-2 justify-center">
+            <span className="px-3 py-1 bg-red-50 text-red-800 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-red-100">{form.tingkat}</span>
+            <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-lg uppercase tracking-widest border border-emerald-200">{form.status}</span>
+          </div>
+        </div>
+
+        {/* Menu Buttons */}
+        <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden flex flex-col mx-1">
+          <button onClick={() => setView('detail')} className="flex items-center gap-4 p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors text-left w-full">
+            <div className="h-12 w-12 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+              <User className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <div className="font-bold text-slate-800 text-[15px]">Lihat Profil</div>
+              <div className="text-[11px] text-slate-500 font-medium mt-0.5">Edit foto dan data diri</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-slate-300" />
+          </button>
+          
+          <Link href="/" className="flex items-center gap-4 p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors text-left w-full">
+            <div className="h-12 w-12 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+              <HomeIcon className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <div className="font-bold text-slate-800 text-[15px]">Beranda Utama</div>
+              <div className="text-[11px] text-slate-500 font-medium mt-0.5">Kembali ke website publik</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-slate-300" />
+          </Link>
+
+          <button onClick={handleSignOut} className="flex items-center gap-4 p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors text-left w-full">
+            <div className="h-12 w-12 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+              <RefreshCw className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <div className="font-bold text-slate-800 text-[15px]">Ganti Akun</div>
+              <div className="text-[11px] text-slate-500 font-medium mt-0.5">Masuk dengan akun berbeda</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-slate-300" />
+          </button>
+
+          <button onClick={handleSignOut} className="flex items-center gap-4 p-4 hover:bg-red-50 transition-colors text-left w-full group">
+            <div className="h-12 w-12 rounded-xl bg-red-50 border border-red-100 text-red-600 flex items-center justify-center shrink-0 group-hover:bg-red-100">
+              <LogOut className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <div className="font-bold text-red-600 text-[15px]">Logout</div>
+              <div className="text-[11px] text-red-400 font-medium mt-0.5">Keluar dari sesi saat ini</div>
+            </div>
+          </button>
+        </div>
+      </motion.div>
+
       {/* ─── Main Content ─── */}
-      <main className="flex-1 min-h-0 flex flex-col mt-4 overflow-visible md:overflow-hidden relative">
-        <ViewportFitGrid gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full max-h-full">
+      <main className={`flex-1 min-h-0 flex-col mt-4 overflow-hidden relative ${view === 'detail' ? 'flex' : 'hidden md:flex'}`}>
+        <div className="flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <ViewportFitGrid gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full max-h-full">
           
           <div className="flex flex-col xl:flex-row gap-6 w-full h-full items-stretch">
 
@@ -337,8 +446,9 @@ export default function ProfilPage() {
                 </div>
               </motion.div>
             </div>
-          </div>
-        </ViewportFitGrid>
+            </div>
+          </ViewportFitGrid>
+        </div>
       </main>
       {/* ── Crop Modal ── */}
       {cropModalOpen && currentImageSrc && (

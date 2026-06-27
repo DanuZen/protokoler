@@ -82,7 +82,7 @@ export default function ManajemenBeritaPage() {
   const [isCompressing, setIsCompressing] = useState(false);
   const [formData, setFormData] = useState({
     kategori: '',
-    gambar: '/gallery_1.png',
+    gambar: '/gallery_1.webp',
     ringkasan: '',
   });
 
@@ -163,7 +163,7 @@ export default function ManajemenBeritaPage() {
           
           setFormData({
             kategori: firstPhotoWithKategori?.kategori || '',
-            gambar: '/gallery_1.png',
+            gambar: '/gallery_1.webp',
             ringkasan: firstPhotoWithKeterangan?.keterangan || '',
           });
           setFiles([]);
@@ -172,7 +172,7 @@ export default function ManajemenBeritaPage() {
         } else {
           setFormData({
             kategori: '',
-            gambar: '/gallery_1.png',
+            gambar: '/gallery_1.webp',
             ringkasan: '',
           });
           setFiles([]);
@@ -189,7 +189,7 @@ export default function ManajemenBeritaPage() {
     
     setFormData({
       kategori: firstPhotoWithKategori?.kategori || '',
-      gambar: '/gallery_1.png',
+      gambar: '/gallery_1.webp',
       ringkasan: firstPhotoWithKeterangan?.keterangan || '',
     });
     setFiles([]);
@@ -211,7 +211,7 @@ export default function ManajemenBeritaPage() {
       queryClient.invalidateQueries({ queryKey: ['postingan-list'] });
       queryClient.invalidateQueries({ queryKey: ['dokumentasi-kegiatan-detail', selectedId] });
       toast.success(`Dokumentasi berhasil dipublikasikan!`);
-      setFormData({ kategori: '', gambar: '/gallery_1.png', ringkasan: '' });
+      setFormData({ kategori: '', gambar: '/gallery_1.webp', ringkasan: '' });
       setFiles([]);
       setMediaType('foto');
       refetchDetail().then(() => {
@@ -268,7 +268,7 @@ export default function ManajemenBeritaPage() {
           queryClient.invalidateQueries({ queryKey: ['postingan-list'] });
           queryClient.invalidateQueries({ queryKey: ['dokumentasi-kegiatan-detail', selectedId] });
           toast.success('Postingan dokumentasi berhasil diperbarui!');
-          setFormData({ kategori: '', gambar: '/gallery_1.png', ringkasan: '' });
+          setFormData({ kategori: '', gambar: '/gallery_1.webp', ringkasan: '' });
           setFiles([]);
           setShowUploadForm(false);
         }
@@ -307,13 +307,13 @@ export default function ManajemenBeritaPage() {
 
 
   return (
-    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-6 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-6 px-4 md:px-8 pt-4">
       
       {/* HEADER */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-800 to-red-800 shadow-lg shadow-red-900/20 text-white">
-            <BookOpen className="h-7 w-7" />
+          <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-800 to-red-800 shadow-lg shadow-red-900/20 text-white">
+            <BookOpen className="h-6 w-6 md:h-7 md:w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -321,8 +321,8 @@ export default function ManajemenBeritaPage() {
                 Workspace Terpadu
               </span>
             </div>
-            <h1 className="font-display text-3xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Berita</h1>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau status kegiatan dan unggah dokumentasi untuk mempublikasikannya sebagai berita.</p>
+            <h1 className="font-display text-2xl md:text-[2.5rem] font-bold tracking-tight leading-none mb-1 md:mb-1.5 text-slate-900 drop-shadow-sm">Manajemen Berita</h1>
+            <p className="hidden md:block text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau status kegiatan dan unggah dokumentasi untuk mempublikasikannya sebagai berita.</p>
           </div>
         </div>
       </motion.div>
@@ -338,16 +338,16 @@ export default function ManajemenBeritaPage() {
               { label: "Berita Dipublikasi", value: beritaPublished, icon: BookOpen, hint: "Berita yang sudah tayang", color: "text-red-800", bg: "bg-red-50" }
             ].map((stat, index) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl py-6 px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-red-50/80 transition-all group relative overflow-hidden h-full">
-                  <div className="flex items-center justify-between relative z-10">
-                    <p className="text-sm font-semibold text-slate-500">{stat.label}</p>
-                    <div className={cn("flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
-                      <stat.icon className="h-5 w-5" />
+                <div className="bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-xl hover:shadow-red-50/80 transition-all group relative overflow-hidden h-full">
+                  <div className="flex items-start justify-between relative z-10 gap-2">
+                    <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
+                    <div className={cn("flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl transition-colors", stat.bg, stat.color)}>
+                      <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
                     </div>
                   </div>
-                  <div className="mt-4 relative z-10">
-                    <p className="text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
-                    <span className="text-[11px] font-medium text-slate-400 mt-1 block">{stat.hint}</span>
+                  <div className="mt-3 md:mt-4 relative z-10">
+                    <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
+                    <span className="hidden md:block text-[10px] md:text-[10px] md:text-[11px] font-medium text-slate-400 mt-1 truncate md:whitespace-normal">{stat.hint}</span>
                   </div>
                 </div>
               </motion.div>
@@ -358,18 +358,18 @@ export default function ManajemenBeritaPage() {
         </>
       )}
 
-      <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
+      <main className="flex-1 md:min-h-0 flex flex-col overflow-visible md:overflow-hidden">
         {!selectedId ? (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="flex flex-col h-full overflow-hidden">
-            <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white flex flex-col h-full">
-              <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-4 shrink-0">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
-                    <ListTodo className="h-6 w-6" />
+            <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white flex flex-col md:h-full">
+              <div className="p-4 md:px-8 md:py-6 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-4 shrink-0">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
+                    <ListTodo className="h-5 w-5 md:h-6 md:w-6" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-slate-900 leading-tight">Daftar Acara & Status Dokumentasi</h2>
-                    <p className="text-sm text-slate-500 mt-1">Pilih acara pada tabel di bawah ini untuk mengunggah dokumentasi.</p>
+                    <h2 className="text-base md:text-xl font-bold text-slate-900 leading-tight">Daftar Acara & Status Dokumentasi</h2>
+                    <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1">Pilih acara pada tabel di bawah ini untuk mengunggah dokumentasi.</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 shadow-sm w-full md:max-w-xs">
@@ -441,7 +441,7 @@ export default function ManajemenBeritaPage() {
                                   setSelectedId(keg.id); 
                                   setIsEditingMode(false);
                                   setShowUploadForm(false); 
-                                  setFormData({ kategori: '', gambar: '/gallery_1.png', ringkasan: '' });
+                                  setFormData({ kategori: '', gambar: '/gallery_1.webp', ringkasan: '' });
                                   setFiles([]);
                                 }}
                                 className="bg-red-900 hover:bg-red-800 text-white rounded-xl h-8 px-4 text-xs font-bold shadow-sm"
@@ -469,7 +469,7 @@ export default function ManajemenBeritaPage() {
             
             {existingPhotos.length > 0 && !showUploadForm ? (
               // ─── TAMPILAN DETAIL DOKUMENTASI & SLIDER ───
-              <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full flex flex-col h-full">
+              <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full flex flex-col md:h-full">
                 <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between gap-4 shrink-0">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-red-900 rounded-[14px] shadow-sm">
@@ -571,7 +571,7 @@ export default function ManajemenBeritaPage() {
               </Card>
             ) : (
               // ─── TAMPILAN FORM UPLOAD DOKUMENTASI ───
-              <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full flex flex-col h-full">
+              <Card className="overflow-hidden border-slate-200 shadow-sm rounded-2xl bg-white w-full flex flex-col md:h-full">
                 <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between gap-4 shrink-0">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-red-900 rounded-[14px] shadow-sm">

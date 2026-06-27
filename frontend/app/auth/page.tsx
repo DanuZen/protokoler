@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText, Mail, Lock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { ViewportFitGrid } from '@/components/ViewportFitGrid';
+import { SplashScreen } from '@/components/splash-screen';
+import { cn } from '@/lib/utils';
 
 type AuthMode = 'login' | 'register' | 'forgot-password';
 type RegisterStep = 1 | 2 | 3;
@@ -19,6 +21,7 @@ export default function AuthPage() {
   const [mode, setMode] = useState<AuthMode>('login');
   const [loading, setLoading] = useState(false);
   const [registered, setRegistered] = useState(false);
+  const [enteringDashboard, setEnteringDashboard] = useState<string | null>(null);
 
   // Login state
   const [email, setEmail] = useState('');
@@ -64,11 +67,12 @@ export default function AuthPage() {
 
       if (res.ok) {
         const userMe = await res.json();
-        toast.success(`Berhasil masuk sebagai ${userMe.role}!`);
         let route = '/beranda';
         if (userMe.role === 'admin') route = '/dashboard';
         else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
-        router.replace(route);
+        
+        toast.success(`Berhasil masuk sebagai ${userMe.role}!`);
+        setEnteringDashboard(route);
       } else {
         toast.error('Gagal memverifikasi role');
       }
@@ -127,7 +131,8 @@ export default function AuthPage() {
         let route = '/beranda';
         if (userMe.role === 'admin') route = '/dashboard';
         else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
-        router.replace(route);
+        
+        setEnteringDashboard(route);
       } else {
         toast.error('Gagal memverifikasi role di backend');
       }
@@ -230,8 +235,18 @@ export default function AuthPage() {
   ];
 
   return (
-    <div className="flex flex-col h-dvh overflow-hidden bg-slate-50">
-      <main className="flex-1 min-h-0 overflow-hidden relative">
+    <>
+      {enteringDashboard && (
+        <SplashScreen 
+          text="MEMASUKI DASHBOARD..." 
+          durationMs={2000} 
+          onComplete={() => router.replace(enteringDashboard)} 
+        />
+      )}
+
+      {/* Sembunyikan form login jika sedang masuk dashboard */}
+      <div className={cn("flex flex-col h-dvh overflow-hidden bg-slate-50", enteringDashboard ? "hidden" : "flex")}>
+        <main className="flex-1 min-h-0 overflow-hidden relative">
         <ViewportFitGrid forceScaleOnMobile gap={0} minScale={0.5} gridTemplateColumns="1fr" className="w-full h-full">
           <div className="grid lg:grid-cols-2 w-full h-full lg:min-h-[750px]">
             {/* ── Left Panel (branding) - Primary & Secondary Background ── */}
@@ -244,7 +259,7 @@ export default function AuthPage() {
         {/* Header: Logo ditaruh paling atas */}
         <div className="relative z-10 flex items-center gap-5">
           <div className="relative h-20 w-20 bg-white rounded-full shadow-lg border border-white/10 flex-shrink-0 overflow-hidden">
-            <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
+            <Image src="/logo protokoler.webp" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
           </div>
           <div>
             <span className="font-display text-3xl font-bold tracking-tight leading-none block text-white drop-shadow-sm mb-1">PROTOKOLER</span>
@@ -304,7 +319,7 @@ export default function AuthPage() {
           {/* Mobile logo */}
           <div className="flex flex-col items-center justify-center gap-3 mb-6 lg:hidden text-center">
             <div className="relative h-20 w-20 drop-shadow-sm">
-              <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
+              <Image src="/logo protokoler.webp" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
             </div>
             <div>
               <span className="font-display text-2xl font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>
@@ -562,5 +577,6 @@ export default function AuthPage() {
         </ViewportFitGrid>
       </main>
     </div>
+    </>
   );
 }

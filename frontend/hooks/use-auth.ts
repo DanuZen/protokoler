@@ -29,35 +29,38 @@ export function useAuth() {
 }
 
 export function useRole(user?: User | null) {
-  const [role, setRole] = useState<'admin' | 'mahasiswa' | 'dokumentasi' | null>(null);
-
-  useEffect(() => {
+  const [role, setRole] = useState<'superadmin' | 'pimpinan' | 'admin' | 'mahasiswa' | 'dokumentasi' | null>(() => {
     if (typeof window !== 'undefined') {
       const cached = window.localStorage.getItem('cached_role');
-      if (cached) setRole(cached as 'admin' | 'mahasiswa' | 'dokumentasi');
+      if (cached) return cached as 'superadmin' | 'pimpinan' | 'admin' | 'mahasiswa' | 'dokumentasi';
     }
-  }, []);
+    return null;
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      setRole(null);
-      setLoading(false);
-      return;
-    }
+    let mounted = true;
 
-    const fetchRole = async () => {
-      setLoading(true);
+    const fetchRole = async (currentSession?: Session | null) => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          setRole(null);
+        let activeSession = currentSession;
+        if (activeSession === undefined) {
+          const { data } = await supabase.auth.getSession();
+          activeSession = data.session;
+        }
+
+        if (!activeSession) {
+          if (mounted) {
+            setRole(null);
+            setLoading(false);
+          }
+          if (typeof window !== 'undefined') window.localStorage.removeItem('cached_role');
           return;
         }
 
         const res = await fetch('/api/auth/me', {
           headers: {
-            Authorization: `Bearer ${session.access_token}`,
+            Authorization: `Bearer ${activeSession.access_token}`,
           },
         });
 
@@ -71,7 +74,11 @@ export function useRole(user?: User | null) {
             mappedRole = 'dokumentasi';
           }
           
-          setRole(mappedRole);
+          if (mounted) {
+            setRole(mappedRole);
+            setLoading(false);
+          }
+          
           if (typeof window !== 'undefined') {
             window.localStorage.setItem('cached_role', mappedRole);
             if (data.nama_lengkap) {
@@ -84,18 +91,29 @@ export function useRole(user?: User | null) {
             }
           }
         } else {
-          setRole(null);
+          if (mounted) {
+            setRole(null);
+            setLoading(false);
+          }
           if (typeof window !== 'undefined') window.localStorage.removeItem('cached_role');
         }
       } catch (err) {
         console.error('Failed to fetch role from backend:', err);
-      } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
 
     fetchRole();
-  }, [user]);
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      fetchRole(session);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return { data: role, loading };
 }

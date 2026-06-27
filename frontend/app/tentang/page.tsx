@@ -24,7 +24,7 @@ export default function TentangKami() {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0">
-          <Image src="/rektorat.jpg" alt="UNP Rektorat" fill sizes="100vw" className="object-cover" priority />
+          <Image src="/rektorat.webp" alt="UNP Rektorat" fill sizes="100vw" className="object-cover" priority />
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent opacity-30"></div>
         </div>
@@ -85,7 +85,7 @@ export default function TentangKami() {
               <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative h-[400px] lg:h-[500px] flex items-center justify-center">
                  <div className="absolute inset-0 bg-gradient-to-tr from-red-50 to-amber-50 rounded-[3rem] transform rotate-3"></div>
                  <div className="relative w-64 h-64 md:w-80 md:h-80 drop-shadow-2xl">
-                   <Image src="/logo protokoler.png" alt="Logo Protokoler" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
+                   <Image src="/logo protokoler.webp" alt="Logo Protokoler" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
                  </div>
               </motion.div>
             </div>
@@ -106,17 +106,17 @@ export default function TentangKami() {
               {/* Kolase Foto Interaktif */}
               <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-20 max-w-5xl mx-auto">
                 <motion.div initial={{ opacity: 0, y: 20, rotate: -5 }} whileInView={{ opacity: 1, y: 0, rotate: -3 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="relative w-72 h-52 md:w-64 md:h-48 rounded-3xl overflow-hidden shadow-xl hover:rotate-0 hover:scale-105 transition-all duration-500 border-4 border-white z-0">
-                  <Image src="/gallery_1.png" alt="Protokoler 1" fill className="object-cover" />
+                  <Image src="/gallery_1.webp" alt="Protokoler 1" fill className="object-cover" />
                   <div className="absolute inset-0 bg-[#6B0000]/10 hover:bg-transparent transition-colors duration-500"></div>
                 </motion.div>
                 
                 <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }} className="relative w-80 h-64 md:w-72 md:h-60 rounded-3xl overflow-hidden shadow-2xl hover:-translate-y-2 hover:scale-105 transition-all duration-500 border-4 border-white z-10 md:-mt-8">
-                  <Image src="/gallery_2.png" alt="Protokoler 2" fill className="object-cover" />
+                  <Image src="/gallery_2.webp" alt="Protokoler 2" fill className="object-cover" />
                   <div className="absolute inset-0 bg-[#D2AD5C]/10 hover:bg-transparent transition-colors duration-500"></div>
                 </motion.div>
                 
                 <motion.div initial={{ opacity: 0, y: 20, rotate: 5 }} whileInView={{ opacity: 1, y: 0, rotate: 3 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }} className="relative w-72 h-52 md:w-64 md:h-48 rounded-3xl overflow-hidden shadow-xl hover:rotate-0 hover:scale-105 transition-all duration-500 border-4 border-white z-0">
-                  <Image src="/gallery_3.png" alt="Protokoler 3" fill className="object-cover" />
+                  <Image src="/gallery_3.webp" alt="Protokoler 3" fill className="object-cover" />
                   <div className="absolute inset-0 bg-blue-900/10 hover:bg-transparent transition-colors duration-500"></div>
                 </motion.div>
               </div>

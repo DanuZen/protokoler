@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Req, UseGuards, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, Req, UseGuards, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RegulasiService } from './regulasi.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -34,5 +34,11 @@ export class RegulasiController {
       kategori: body.kategori,
       tahun_terbit: tahunTerbitNum
     });
+  }
+
+  @Delete(':id')
+  @Roles(RoleEnum.admin)
+  async deleteRegulasi(@Param('id') id: string) {
+    return this.regulasiService.remove(id);
   }
 }
