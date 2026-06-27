@@ -43,8 +43,21 @@ export class AuthController {
 
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
-  async forgotPassword(@Body('email') email: string) {
-    return this.authService.forgotPassword(email);
+  async forgotPassword(@Req() req: any, @Body('email') email: string) {
+    const origin = req.headers.origin;
+    const referer = req.headers.referer;
+
+    let frontendUrl = origin;
+    if (!frontendUrl && referer) {
+      try {
+        const parsedUrl = new URL(referer);
+        frontendUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    return this.authService.forgotPassword(email, frontendUrl);
   }
 
   @UseGuards(JwtAuthGuard)

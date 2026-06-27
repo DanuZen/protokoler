@@ -262,7 +262,7 @@ export class AuthService {
     };
   }
 
-  async forgotPassword(email: string) {
+  async forgotPassword(email: string, frontendUrl?: string) {
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -270,9 +270,10 @@ export class AuthService {
       throw new ConflictException('Email tidak terdaftar');
     }
 
+    const baseUrl = frontendUrl || this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     const supabase = this.supabaseService.getClient();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000'}/auth/reset-password`,
+      redirectTo: `${baseUrl}/auth/reset-password`,
     });
 
     if (error) {
