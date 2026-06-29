@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { BadgeStatus } from "@/components/BadgeStatus";
 import { BadgeKategori } from "@/components/BadgeKategori";
 import { 
-  User, Mail, Phone, GraduationCap, Building2, Library, 
+  User, Mail, GraduationCap, Building2, Library, 
   Calendar, Clock, Shield, Award, ExternalLink, Activity,
   Briefcase, ChevronRight, Image as ImageIcon
 } from "lucide-react";
@@ -47,15 +47,7 @@ export function DetailAnggotaModal({ isOpen, onClose, protokolerId }: DetailAngg
     });
   };
 
-  // Convert phone number to WA format (e.g. 08... -> 628...)
-  const getWaLink = (phone: string) => {
-    if (!phone) return "";
-    let clean = phone.replace(/[^0-9]/g, "");
-    if (clean.startsWith("0")) {
-      clean = "62" + clean.slice(1);
-    }
-    return `https://wa.me/${clean}`;
-  };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>

@@ -121,7 +121,6 @@ export class AuthService {
             prodi: dto.prodi,
             departemen: dto.departemen,
             fakultas: dto.fakultas,
-            no_hp: dto.no_hp,
             foto_setengah_badan_url: fotoSetengahUrl,
             foto_full_body_url: fotoFullUrl,
             status_akun: 'pending',
@@ -223,7 +222,6 @@ export class AuthService {
             prodi: dbUser.role === 'protokoler' ? 'Teknik Informatika' : 'Sistem Informasi',
             departemen: 'Teknik',
             fakultas: 'FT',
-            no_hp: '08123456789',
             status_akun: 'aktif',
           },
         });
@@ -239,7 +237,6 @@ export class AuthService {
             prodi: dbUser.role === 'protokoler' ? 'Teknik Informatika' : 'Sistem Informasi',
             departemen: 'Teknik',
             fakultas: 'FT',
-            no_hp: '08123456789',
             status_akun: 'aktif',
           },
         });
@@ -271,6 +268,8 @@ export class AuthService {
     }
 
     const baseUrl = frontendUrl || this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    console.log('[Auth] Supabase resetPasswordForEmail redirection URL:', `${baseUrl}/auth/reset-password`);
+    
     const supabase = this.supabaseService.getClient();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${baseUrl}/auth/reset-password`,

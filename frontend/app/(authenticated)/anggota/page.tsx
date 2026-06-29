@@ -22,7 +22,6 @@ type Protokoler = {
   prodi: string;
   departemen: string;
   fakultas: string;
-  no_hp: string;
   status_akun: "pending" | "aktif" | "ditolak" | "tidak_aktif";
   total_kegiatan: number;
   kategori_sertifikat: "perak" | "silver" | "gold" | null;

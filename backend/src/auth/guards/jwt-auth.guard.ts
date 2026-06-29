@@ -103,7 +103,6 @@ export class JwtAuthGuard implements CanActivate {
             prodi: dbUser.role === 'protokoler' ? 'Teknik Informatika' : 'Sistem Informasi',
             departemen: 'Teknik',
             fakultas: 'FT',
-            no_hp: '08123456789',
             status_akun: 'aktif',
           },
         });
@@ -119,7 +118,6 @@ export class JwtAuthGuard implements CanActivate {
             prodi: dbUser.role === 'protokoler' ? 'Teknik Informatika' : 'Sistem Informasi',
             departemen: 'Teknik',
             fakultas: 'FT',
-            no_hp: '08123456789',
             status_akun: 'aktif',
           },
         });

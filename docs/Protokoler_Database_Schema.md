@@ -158,7 +158,6 @@ _Data lengkap anggota tim protokoler_
 | `prodi`                   | VARCHAR(100)             | NOT NULL                    | Program studi                 |
 | `departemen`              | VARCHAR(100)             | NOT NULL                    | Departemen/jurusan            |
 | `fakultas`                | VARCHAR(100)             | NOT NULL                    | Fakultas                      |
-| `no_hp`                   | VARCHAR(20)              | NOT NULL                    | Nomor WhatsApp aktif          |
 | `foto_setengah_badan_url` | TEXT                     |                             | URL foto setengah badan       |
 | `foto_full_body_url`      | TEXT                     |                             | URL foto full body            |
 | `status_akun`             | status_akun_enum         | NOT NULL, DEFAULT 'pending' | Status verifikasi             |
@@ -177,7 +176,6 @@ CREATE TABLE protokoler (
   prodi VARCHAR(100) NOT NULL,
   departemen VARCHAR(100) NOT NULL,
   fakultas VARCHAR(100) NOT NULL,
-  no_hp VARCHAR(20) NOT NULL,
   foto_setengah_badan_url TEXT,
   foto_full_body_url TEXT,
   status_akun status_akun_enum NOT NULL DEFAULT 'pending',

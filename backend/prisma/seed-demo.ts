@@ -102,7 +102,6 @@ async function main() {
           prodi: 'Sistem Informasi',
           departemen: 'Teknik Informatika',
           fakultas: 'Fakultas Teknik',
-          no_hp: '081234567890',
           status_akun: 'aktif',
         }
       });

@@ -33,7 +33,6 @@ model Protokoler {
   prodi                   String                  @db.VarChar(100)
   departemen              String                  @db.VarChar(100)
   fakultas                String                  @db.VarChar(100)
-  no_hp                   String                  @db.VarChar(20)
   foto_setengah_badan_url String?
   foto_full_body_url      String?
   status_akun             StatusAkunEnum          @default(pending)
