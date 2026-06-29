@@ -229,7 +229,6 @@ _(Indikator 1: Peraturan + Indikator 3: Laporan + Indikator 4: Inovasi)_
 | prodi                   | String  | Program studi                           |
 | departemen              | String  | Departemen                              |
 | fakultas                | String  | Fakultas                                |
-| no_hp                   | String  | Nomor WhatsApp aktif                    |
 | email                   | String  | Email kampus                            |
 | foto_setengah_badan_url | String  | URL foto setengah badan                 |
 | foto_full_body_url      | String  | URL foto full body                      |

@@ -61,7 +61,6 @@ nama_lengkap      : string (required)
 prodi             : string (required)
 departemen        : string (required)
 fakultas          : string (required)
-no_hp             : string (required)
 email             : string (required)
 password          : string (required, min 8 karakter)
 foto_setengah_badan : file (required, jpg/png, max 2MB)
@@ -185,7 +184,6 @@ Detail profil anggota protokoler.
   "prodi": "Teknik Informatika",
   "departemen": "Teknik",
   "fakultas": "FT",
-  "no_hp": "08123456789",
   "foto_setengah_badan_url": "https://storage.../foto1.jpg",
   "foto_full_body_url": "https://storage.../foto2.jpg",
   "status_akun": "aktif",
@@ -234,7 +232,6 @@ Update profil sendiri (oleh protokoler).
 **Request Body (multipart/form-data, semua opsional):**
 
 ```
-no_hp                 : string
 foto_setengah_badan   : file
 foto_full_body        : file
 ```

@@ -64,7 +64,7 @@ export class ProtokolerController {
   async updateProfile(
     @Param('id') id: string,
     @Req() req: any,
-    @Body() body: { no_hp?: string; nama_lengkap?: string; prodi?: string; departemen?: string; fakultas?: string },
+    @Body() body: { nama_lengkap?: string; prodi?: string; departemen?: string; fakultas?: string },
     @UploadedFiles() files: { foto_setengah_badan?: any[]; foto_full_body?: any[] },
   ) {
     // Enforce owner-only profile updates: check either protokolerId or user_id

@@ -31,7 +31,7 @@ export default function AuthPage() {
   const [step, setStep] = useState<RegisterStep>(1);
   const [regForm, setRegForm] = useState({
     nim: '', nama_lengkap: '', prodi: '', departemen: '',
-    fakultas: '', no_hp: '', email: '', password: '', password_confirm: '',
+    fakultas: '', email: '', password: '', password_confirm: '',
   });
   const [fotoSetengahPreview, setFotoSetengahPreview] = useState<string | null>(null);
   const [fotoFullPreview, setFotoFullPreview] = useState<string | null>(null);
@@ -180,7 +180,6 @@ export default function AuthPage() {
       formData.append('prodi', regForm.prodi);
       formData.append('departemen', regForm.departemen || 'Teknik');
       formData.append('fakultas', regForm.fakultas || 'FT');
-      formData.append('no_hp', regForm.no_hp);
 
       const responseSetengah = await fetch(fotoSetengahPreview!);
       const blobSetengah = await responseSetengah.blob();
@@ -435,15 +434,9 @@ export default function AuthPage() {
                     {step === 1 && (
                       <motion.div key="s1" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="space-y-4">
                         <h2 className="font-display text-xl font-bold text-slate-900">Data Diri</h2>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="space-y-1.5">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">NIM <span className="text-red-500">*</span></Label>
-                            <Input className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.nim} onChange={(e) => setRegForm({ ...regForm, nim: e.target.value })} placeholder="22000XXXXX" />
-                          </div>
-                          <div className="space-y-1.5">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">No. HP <span className="text-red-500">*</span></Label>
-                            <Input className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.no_hp} onChange={(e) => setRegForm({ ...regForm, no_hp: e.target.value })} placeholder="08XX" />
-                          </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">NIM <span className="text-red-500">*</span></Label>
+                          <Input className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.nim} onChange={(e) => setRegForm({ ...regForm, nim: e.target.value })} placeholder="22000XXXXX" />
                         </div>
                         <div className="space-y-1.5">
                           <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap <span className="text-red-500">*</span></Label>

@@ -121,7 +121,6 @@ export class AuthService {
             prodi: dto.prodi,
             departemen: dto.departemen,
             fakultas: dto.fakultas,
-            no_hp: dto.no_hp,
             foto_setengah_badan_url: fotoSetengahUrl,
             foto_full_body_url: fotoFullUrl,
             status_akun: 'pending',
@@ -223,7 +222,6 @@ export class AuthService {
             prodi: dbUser.role === 'protokoler' ? 'Teknik Informatika' : 'Sistem Informasi',
             departemen: 'Teknik',
             fakultas: 'FT',
-            no_hp: '08123456789',
             status_akun: 'aktif',
           },
         });
@@ -239,7 +237,6 @@ export class AuthService {
             prodi: dbUser.role === 'protokoler' ? 'Teknik Informatika' : 'Sistem Informasi',
             departemen: 'Teknik',
             fakultas: 'FT',
-            no_hp: '08123456789',
             status_akun: 'aktif',
           },
         });

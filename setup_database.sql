@@ -63,7 +63,6 @@ CREATE TABLE public.mahasiswa (
   nama_lengkap TEXT NOT NULL,
   prodi TEXT NOT NULL,
   angkatan INT NOT NULL,
-  no_hp TEXT,
   email TEXT,
   foto_url TEXT,
   status public.mahasiswa_status NOT NULL DEFAULT 'aktif',

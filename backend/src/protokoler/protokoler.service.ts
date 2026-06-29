@@ -155,17 +155,13 @@ export class ProtokolerService {
 
   async updateProfile(
     id: string,
-    body: { no_hp?: string; nama_lengkap?: string; prodi?: string; departemen?: string; fakultas?: string },
+    body: { nama_lengkap?: string; prodi?: string; departemen?: string; fakultas?: string },
     files?: { foto_setengah_badan?: any[]; foto_full_body?: any[] }
   ) {
     const protokoler = await this.findOne(id);
     const userId = protokoler.user_id;
 
     const updateData: any = {};
-
-    if (body.no_hp) {
-      updateData.no_hp = body.no_hp;
-    }
     if (body.nama_lengkap) {
       updateData.nama_lengkap = body.nama_lengkap;
     }
@@ -299,7 +295,6 @@ export class ProtokolerService {
         prodi: 'Sistem Informasi',
         departemen: 'Teknik',
         fakultas: 'FT',
-        no_hp: '08123456789',
         status_akun: 'aktif',
       },
     });

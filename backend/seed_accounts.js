@@ -98,7 +98,6 @@ async function seed() {
             prodi: 'Teknik Informatika',
             departemen: 'Teknik',
             fakultas: 'FT',
-            no_hp: '08123456789',
             status_akun: 'aktif',
           }
         });

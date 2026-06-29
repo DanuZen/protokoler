@@ -4,7 +4,6 @@ export class RegisterDto {
   prodi!: string;
   departemen!: string;
   fakultas!: string;
-  no_hp!: string;
   email!: string;
   password!: string;
 }

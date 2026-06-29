@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/hooks/use-auth";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, GraduationCap, Hash, Shield, Camera, Edit3, CheckCircle2, Building2, Library, LogOut, RefreshCw, Home as HomeIcon, ChevronRight, ChevronLeft } from "lucide-react";
+import { User, Mail, GraduationCap, Hash, Shield, Camera, Edit3, CheckCircle2, Building2, Library, LogOut, RefreshCw, Home as HomeIcon, ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useRef, useCallback, useEffect } from "react";
@@ -108,7 +108,6 @@ export default function ProfilPage() {
     departemen: "",
     fakultas: "",
     angkatan: "",
-    no_hp: "",
     email: "",
     tingkat: "Bronze",
     status: "pending",
@@ -123,7 +122,6 @@ export default function ProfilPage() {
         departemen: protokoler.departemen || "",
         fakultas: protokoler.fakultas || "",
         angkatan: protokoler.nim ? "20" + protokoler.nim.slice(0, 2) : "2020",
-        no_hp: protokoler.no_hp || "",
         email: protokoler.user?.email || user?.email || "",
         tingkat: protokoler.kategori_sertifikat || "Bronze",
         status: protokoler.status_akun || "pending",
@@ -139,7 +137,6 @@ export default function ProfilPage() {
     try {
       await protokolerApi.update(protokoler.id, {
         nama_lengkap: form.nama,
-        no_hp: form.no_hp,
         prodi: form.prodi,
         departemen: form.departemen,
         fakultas: form.fakultas,
@@ -398,7 +395,6 @@ export default function ProfilPage() {
                   { icon: Hash,  key: "angkatan", label: "Angkatan" },
                   { icon: Shield, key: "tingkat", label: "Tingkat Member" },
                   { icon: Mail,  key: "email", label: "Email Akun" },
-                  { icon: Phone, key: "no_hp", label: "Nomor HP / WA" },
                 ].map(({ icon: Icon, key, label }) => (
                   <div key={key} className="space-y-2">
                     <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">

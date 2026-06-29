@@ -20,7 +20,6 @@ Semua endpoint autentikasi kecuali registrasi awal dan login tidak memerlukan ot
   - `prodi` (String)
   - `departemen` (String)
   - `fakultas` (String)
-  - `no_hp` (String)
   - `foto_setengah_badan` (File Image - Opsional/Wajib)
   - `foto_full_body` (File Image - Opsional/Wajib)
 
