@@ -40,7 +40,7 @@ async function createDemoUser(email: string, password: string, role: 'admin' | '
 
   // Cek apakah sudah ada di Supabase Auth
   const { data: listData } = await supabase.auth.admin.listUsers();
-  const existingAuth = listData?.users?.find(u => u.email === email);
+  const existingAuth = listData?.users?.find((u: any) => u.email === email);
   
   let userId: string;
 

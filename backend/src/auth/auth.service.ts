@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException, UnprocessableEntityException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SupabaseService } from '../supabase/supabase.service';
 import { RegisterDto } from './dto/register.dto';
@@ -17,13 +17,15 @@ function hashPassword(password: string): string {
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private prisma: PrismaService,
     private supabaseService: SupabaseService,
     private configService: ConfigService,
   ) {}
 
-  async register(dto: RegisterDto, files: { foto_setengah_badan?: any; foto_full_body?: any }) {
+  async register(dto: RegisterDto, files: { foto_setengah_badan?: any[]; foto_full_body?: any[] }) {
     // 1. Verify unique constraints
     const existingUser = await this.prisma.user.findUnique({
       where: { email: dto.email },
@@ -39,8 +41,14 @@ export class AuthService {
       throw new ConflictException('NIM sudah terdaftar');
     }
 
-    // Check if files are uploaded
-    if (!files.foto_setengah_badan || !files.foto_full_body) {
+    // Check if files are uploaded safely
+    if (
+      !files ||
+      !files.foto_setengah_badan ||
+      !files.foto_full_body ||
+      !files.foto_setengah_badan[0] ||
+      !files.foto_full_body[0]
+    ) {
       throw new UnprocessableEntityException('Foto setengah badan dan full body wajib diunggah');
     }
 
@@ -49,22 +57,38 @@ export class AuthService {
 
     const supabase = this.supabaseService.getClient();
     // 2. Create user in Supabase Auth using public client to trigger verification email
-    const publicClient = createClient(
-      this.configService.get<string>('SUPABASE_URL') || '',
-      this.configService.get<string>('VITE_SUPABASE_PUBLISHABLE_KEY') || '',
-    );
-    const { data: authData, error: authErr } = await publicClient.auth.signUp({
-      email: dto.email,
-      password: dto.password,
-      options: {
-        data: {
-          nama_lengkap: dto.nama_lengkap,
-        }
-      }
-    });
+    const supabaseUrl = this.configService.get<string>('SUPABASE_URL') || '';
+    const supabaseAnonKey =
+      this.configService.get<string>('VITE_SUPABASE_PUBLISHABLE_KEY') ||
+      this.configService.get<string>('SUPABASE_ANON_KEY') ||
+      this.configService.get<string>('SUPABASE_PUBLISHABLE_KEY') ||
+      '';
 
-    if (authErr || !authData.user) {
-      throw new UnprocessableEntityException(authErr?.message || 'Gagal mendaftarkan akun di Supabase Auth');
+    if (!supabaseUrl || !supabaseAnonKey) {
+      this.logger.error('Supabase URL atau Anon Key tidak terdefinisi di backend environment variables');
+      throw new UnprocessableEntityException('Konfigurasi backend Supabase tidak lengkap');
+    }
+
+    let authData: any;
+    try {
+      const publicClient = createClient(supabaseUrl, supabaseAnonKey);
+      const { data, error: authErr } = await publicClient.auth.signUp({
+        email: dto.email,
+        password: dto.password,
+        options: {
+          data: {
+            nama_lengkap: dto.nama_lengkap,
+          }
+        }
+      });
+
+      if (authErr || !data.user) {
+        throw new UnprocessableEntityException(authErr?.message || 'Gagal mendaftarkan akun di Supabase Auth');
+      }
+      authData = data;
+    } catch (err: any) {
+      this.logger.error(`Supabase Auth signUp crash: ${err.message}`, err.stack);
+      throw new UnprocessableEntityException(err.message || 'Gagal melakukan pendaftaran di Supabase Auth');
     }
 
     const userId = authData.user.id;
@@ -140,8 +164,13 @@ export class AuthService {
         },
       };
     } catch (err: any) {
+      this.logger.error(`Database/Storage error during register: ${err.message}`, err.stack);
       // Rollback Supabase user if database insert fails
-      await supabase.auth.admin.deleteUser(userId);
+      try {
+        await supabase.auth.admin.deleteUser(userId);
+      } catch (rollbackErr: any) {
+        this.logger.error(`Gagal menghapus user Supabase saat rollback: ${rollbackErr.message}`);
+      }
       throw new UnprocessableEntityException(err.message || 'Gagal menyimpan data pendaftaran ke database');
     }
   }
