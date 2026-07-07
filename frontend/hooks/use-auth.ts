@@ -54,7 +54,14 @@ export function useRole(user?: User | null) {
             setRole(null);
             setLoading(false);
           }
-          if (typeof window !== 'undefined') window.localStorage.removeItem('cached_role');
+          if (typeof window !== 'undefined') {
+            window.localStorage.removeItem('cached_role');
+            window.localStorage.removeItem('demo_role');
+            window.localStorage.removeItem('demo_name');
+            window.localStorage.removeItem('demo_avatar');
+            window.dispatchEvent(new Event('demo_name_updated'));
+            window.dispatchEvent(new Event('demo_avatar_updated'));
+          }
           return;
         }
 
