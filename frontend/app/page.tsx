@@ -710,9 +710,11 @@ export default function Landing() {
                   >
                     <CarouselContent className="ml-0 lg:-ml-4">
                       {[
-                        { name: 'Dr. Budi Santoso', role: 'Pembina Protokoler', image: '/tim_pengembang/danu.webp', text: 'Fitur evaluasi 3 Tata Protokol memastikan tidak ada celah di lapangan. Modul gamifikasi juga memacu mahasiswa untuk terus aktif.' },
-                        { name: 'Siti Nurhaliza', role: 'Protokoler (Gold)', image: '/tim_pengembang/hafiz.webp', text: 'Absensi selfie membuat kami lebih teratur dan adil. Poin kegiatan langsung terakumulasi untuk mengejar sertifikat tertinggi!' },
-                        { name: 'Ahmad Fauzi', role: 'Ketua Pelaksana', image: '/tim_pengembang/danu.webp', text: 'Koordinasi tim jauh lebih mudah berkat sistem terpusat. Informasi jadwal dan SOP bisa diakses secara real-time kapan pun.' },
+                        { name: 'Dr. Ir. Krismadinata, S.T., M.T', role: 'Rektor Universitas Negeri Padang', image: '/tim_pengembang/danu.webp', text: 'Sistem keprotokolan terpadu ini sangat membantu dalam memastikan kelancaran dan standar tinggi pada setiap agenda resmi universitas.' },
+                        { name: 'Prof. Dr. Refnaldi, S.Pd., M.Litt', role: 'Wakil Rektor Bidang Akademik, Kemahasiswaan dan Alumni', image: '/tim_pengembang/danu.webp', text: 'Koordinasi kegiatan kemahasiswaan dan akademik kini menjadi lebih tertata, disiplin, dan profesional berkat inovasi layanan ini.' },
+                        { name: 'Prof. Dr. Ir. Remon Lapisa, S.T., M.T., M.Sc', role: 'Wakil Rektor Bidang Keuangan, Umum dan Usaha', image: '/tim_pengembang/danu.webp', text: 'Efisiensi dan efektivitas dalam pengelolaan acara universitas meningkat signifikan, mendukung tata kelola yang lebih baik secara keseluruhan.' },
+                        { name: 'Prof. Dr. Ir. Anni Faridah, M.Si', role: 'Wakil Rektor Bidang Sumber Daya Manusia dan Inovasi', image: '/tim_pengembang/danu.webp', text: 'Inovasi digital dalam tata keprotokolan mencerminkan komitmen kita dalam pengembangan sumber daya manusia yang adaptif dan modern.' },
+                        { name: 'Dr. rer. nat. Deski Beri, S.Si, M.Si', role: 'Wakil Rektor Bidang Perencanaan, Kerja Sama dan Hubungan Internasional', image: '/tim_pengembang/danu.webp', text: 'Layanan prima yang ditampilkan memberikan impresi positif bagi mitra kerja sama, baik di tingkat nasional maupun internasional.' },
                       ].map((testi, i) => (
                         <CarouselItem key={i} className="pl-0 basis-full lg:pl-4">
                           <div className="w-full px-6 lg:px-0">
