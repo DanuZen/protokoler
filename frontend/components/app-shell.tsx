@@ -153,8 +153,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className={cn("mb-8 flex items-center h-16 overflow-hidden w-full hover:opacity-80 transition-opacity cursor-pointer", isSidebarOpen ? "px-6 justify-start gap-3" : "justify-center")}
           >
-            <div className="h-[52px] w-[52px] shrink-0 flex items-center justify-center overflow-hidden bg-white rounded-full shadow-lg">
-              <img src="/logo protokoler.webp" alt="Protokoler Logo" className="w-[96%] h-[96%] object-contain drop-shadow-sm" />
+            <div className="h-[52px] w-[52px] shrink-0 flex items-center justify-center overflow-hidden">
+              <img src="/logo-protokoler-new.webp" alt="Protokoler Logo" className="w-full h-full object-contain drop-shadow-sm" />
             </div>
             {isSidebarOpen && (
               <div className="flex flex-col justify-center text-left">

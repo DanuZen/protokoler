@@ -634,7 +634,7 @@ export default function Landing() {
                     
                     {/* Watermark Logo Background */}
                     <div className="absolute -right-8 -bottom-8 w-40 h-40 sm:w-56 sm:h-56 lg:w-64 lg:h-64 opacity-[0.02] group-hover:opacity-[0.06] transition-all duration-700 pointer-events-none transform group-hover:scale-110 group-hover:-rotate-6 z-0">
-                      <Image src="/logo protokoler.webp" alt="Watermark" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
+                      <Image src="/logo-protokoler-new.webp" alt="Watermark" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
                     </div>
 
                     {/* Icon Block */}
@@ -861,7 +861,7 @@ export default function Landing() {
                    <div className="px-6 py-5 md:px-8 md:py-6 border-b border-slate-100 flex items-center justify-between bg-white z-10 shadow-sm">
                      <div className="flex items-center gap-4">
                        <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 border border-red-100 overflow-hidden">
-                          <Image src="/logo protokoler.webp" width={28} height={28} alt="Protokoler" className="object-contain" />
+                          <Image src="/logo-protokoler-new.webp" width={28} height={28} alt="Protokoler" className="object-contain" />
                        </div>
                        <div>
                          <p className="font-bold text-sm text-slate-900 leading-tight">Protokoler UNP</p>

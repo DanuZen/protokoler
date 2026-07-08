@@ -118,8 +118,8 @@ export default function ResetPasswordPage() {
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
               
               <div className="relative z-10 flex items-center gap-5">
-                <div className="relative h-20 w-20 bg-white rounded-full border border-white/10 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                  <Image src="/logo protokoler.png" alt="Protokoler Logo" fill sizes="80px" className="object-contain" priority />
+                <div className="relative h-20 w-20 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                  <Image src="/logo-protokoler-new.png" alt="Protokoler Logo" fill sizes="80px" className="object-contain" priority />
                 </div>
                 <div>
                   <span className="font-display text-3xl font-bold tracking-tight leading-none block text-white drop-shadow-sm mb-1">PROTOKOLER</span>
@@ -155,7 +155,7 @@ export default function ResetPasswordPage() {
                 {/* Mobile Logo Header */}
                 <div className="flex flex-col items-center justify-center gap-3 mb-6 lg:hidden text-center">
                   <div className="relative h-20 w-20 drop-shadow-sm">
-                    <Image src="/logo protokoler.png" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
+                    <Image src="/logo-protokoler-new.png" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
                   </div>
                   <div>
                     <span className="font-display text-2xl font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>
