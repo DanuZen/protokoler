@@ -51,7 +51,7 @@ export function SplashScreen({
               className="relative h-28 w-28 md:h-36 md:w-36 mb-6 drop-shadow-2xl"
            >
               <Image 
-                src="/logo protokoler.webp" 
+                src="/logo-protokoler-new.webp" 
                 alt="Logo Protokoler" 
                 fill 
                 className="object-contain" 

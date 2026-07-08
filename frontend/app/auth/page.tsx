@@ -254,8 +254,8 @@ export default function AuthPage() {
 
         {/* Header: Logo ditaruh paling atas */}
         <div className="relative z-10 flex items-center gap-5">
-          <div className="relative h-20 w-20 bg-white rounded-full shadow-lg border border-white/10 flex-shrink-0 overflow-hidden">
-            <Image src="/logo protokoler.webp" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
+          <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden">
+            <Image src="/logo-protokoler-new.webp" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
           </div>
           <div>
             <span className="font-display text-3xl font-bold tracking-tight leading-none block text-white drop-shadow-sm mb-1">PROTOKOLER</span>
@@ -315,7 +315,7 @@ export default function AuthPage() {
           {/* Mobile logo */}
           <div className="flex flex-col items-center justify-center gap-3 mb-6 lg:hidden text-center">
             <div className="relative h-20 w-20 drop-shadow-sm">
-              <Image src="/logo protokoler.webp" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
+              <Image src="/logo-protokoler-new.webp" alt="Protokoler" fill sizes="80px" className="object-contain" priority />
             </div>
             <div>
               <span className="font-display text-2xl font-bold tracking-tight text-slate-900 leading-none mb-1 block">PROTOKOLER</span>

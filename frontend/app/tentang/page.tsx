@@ -85,7 +85,7 @@ export default function TentangKami() {
               <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative h-[400px] lg:h-[500px] flex items-center justify-center">
                  <div className="absolute inset-0 bg-gradient-to-tr from-red-50 to-amber-50 rounded-[3rem] transform rotate-3"></div>
                  <div className="relative w-64 h-64 md:w-80 md:h-80 drop-shadow-2xl">
-                   <Image src="/logo protokoler.webp" alt="Logo Protokoler" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
+                   <Image src="/logo-protokoler-new.webp" alt="Logo Protokoler" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
                  </div>
               </motion.div>
             </div>
