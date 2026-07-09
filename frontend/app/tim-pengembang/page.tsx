@@ -97,7 +97,7 @@ export default function TimPengembang() {
                 </div>
                 
                 {/* Text Section */}
-                <div className="flex-1 flex flex-col justify-center text-center md:text-inherit md:max-w-xl">
+                <div className={`flex-1 flex flex-col justify-center text-center md:text-inherit ${i % 2 === 0 ? 'md:pr-16' : 'md:pl-16'}`}>
                   <h3 className="font-display text-2xl md:text-4xl font-bold text-slate-900 mb-2">{member.name}</h3>
                   <p className="text-xs md:text-sm font-bold text-[#D2AD5C] uppercase tracking-wider mb-4 md:mb-6">{member.role}</p>
                   <p className="text-sm md:text-lg text-slate-500 leading-relaxed transition-all duration-300">

@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
         hostname: 'protokoler.unp.ac.id',
       },
       {
+        protocol: 'https',
+        hostname: 'storage.siproto.ac.id',
+      },
+      {
         protocol: 'http',
         hostname: 'localhost',
         port: '4000',
