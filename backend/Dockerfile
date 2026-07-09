@@ -1,4 +1,7 @@
-FROM node:22-alpine
+FROM node:22-slim
+
+# Install openssl and ca-certificates for Prisma compatibility
+RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Set directory
 WORKDIR /app
@@ -23,5 +26,5 @@ EXPOSE 7860
 ENV PORT=7860
 ENV NODE_ENV=production
 
-# Run migrations, build NestJS, and start app
-CMD ["sh", "-c", "npx prisma db push && npm run build && npm run start:prod"]
+# Run migrations and start app (removed redundant npm run build)
+CMD ["sh", "-c", "npx prisma db push && npm run start:prod"]

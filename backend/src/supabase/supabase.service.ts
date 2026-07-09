@@ -50,14 +50,20 @@ export class SupabaseService {
     const client = this.getClient();
     
     // Ensure bucket exists (or try uploading directly, Supabase will return error if it doesn't exist)
-    const { data: buckets } = await client.storage.listBuckets();
+    const { data: buckets, error: listError } = await client.storage.listBuckets();
+    if (listError) {
+      this.logger.error(`Gagal list buckets: ${listError.message}`);
+    }
     const bucketExists = buckets?.some(b => b.name === bucket);
     
     if (!bucketExists) {
-      await client.storage.createBucket(bucket, {
+      const { error: createError } = await client.storage.createBucket(bucket, {
         public: true,
-        fileSizeLimit: 100 * 1024 * 1024, // 100MB max limit
       });
+      if (createError) {
+        this.logger.error(`Gagal membuat bucket ${bucket}: ${createError.message}`);
+        throw createError;
+      }
     }
 
     const { data, error } = await client.storage.from(bucket).upload(filePath, buffer, {
