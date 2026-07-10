@@ -87,7 +87,7 @@ export function LandingNavbar({ alwaysDark = false }: { alwaysDark?: boolean }) 
               <div className="flex items-center gap-5">
                 <div className="hidden md:flex flex-col items-end mr-2">
                   <span className="text-sm font-bold leading-tight text-white">{user.user_metadata?.nama_lengkap || user.email}</span>
-                  <span className="text-[10px] text-[#D2AD5C] uppercase tracking-[0.2em] font-bold mt-0.5">{role === 'admin' ? 'Pimpinan' : role === 'dokumentasi' ? 'Dokumentasi' : 'Protokoler'}</span>
+                  <span className="text-[10px] text-[#D2AD5C] tracking-[0.1em] font-bold mt-0.5">{role === 'admin' ? 'Pimpinan' : role === 'dokumentasi' ? 'Dokumentasi' : 'Protokoler'}</span>
                 </div>
                 <Link href={dashboardHref}>
                   <Button className="rounded-full shadow-[0_0_20px_rgba(210,173,92,0.2)] transition-all px-5 lg:px-7 bg-gradient-to-r from-[#D2AD5C] to-[#b39045] text-white hover:shadow-[0_0_25px_rgba(210,173,92,0.4)] hover:-translate-y-0.5 border-none h-10 lg:h-11 font-bold tracking-wider uppercase text-[9px] lg:text-[10px]">Dashboard</Button>
@@ -137,7 +137,7 @@ export function LandingNavbar({ alwaysDark = false }: { alwaysDark?: boolean }) 
                 <>
                   <div className="flex flex-col items-center mb-4 text-center">
                     <span className="text-base font-bold leading-tight text-white/90">{user.user_metadata?.nama_lengkap || user.email}</span>
-                    <span className="text-xs text-[#D2AD5C] uppercase tracking-[0.2em] font-bold mt-1">{role === 'admin' ? 'Pimpinan' : role === 'dokumentasi' ? 'Dokumentasi' : 'Protokoler'}</span>
+                    <span className="text-xs text-[#D2AD5C] tracking-[0.1em] font-bold mt-1">{role === 'admin' ? 'Pimpinan' : role === 'dokumentasi' ? 'Dokumentasi' : 'Protokoler'}</span>
                   </div>
                   <Link href={dashboardHref} onClick={() => setIsMobileMenuOpen(false)} className="w-full">
                     <Button className="w-full rounded-full shadow-[0_0_20px_rgba(210,173,92,0.2)] bg-gradient-to-r from-[#D2AD5C] to-[#b39045] text-white hover:shadow-[0_0_25px_rgba(210,173,92,0.4)] border-none h-14 font-bold tracking-widest uppercase text-xs">Dashboard</Button>

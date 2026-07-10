@@ -17,6 +17,7 @@ export class CreateKegiatanDto {
   lokasi!: string;
   audience?: string;
   keynote?: string;
+  mc?: string;
   status?: StatusKegiatanEnum;
   jumlah_protokoler_dibutuhkan?: number;
   jumlah_lo_dibutuhkan?: number;

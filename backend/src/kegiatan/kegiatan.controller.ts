@@ -59,6 +59,7 @@ export class KegiatanController {
       checklist_tata_tempat?: boolean;
       checklist_tata_upacara?: boolean;
       checklist_tata_penghormatan?: boolean;
+      is_open_recruitment?: boolean;
     },
   ) {
     return this.kegiatanService.updateChecklist(id, body);

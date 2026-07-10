@@ -419,6 +419,22 @@ export const postinganApi = {
           gambar: photos.length > 0 ? photos[0].file_url : defaultImage,
           images: photos.length > 0 ? photos.map((p: any) => p.file_url) : [defaultImage],
           tanggal: item.tanggal,
+          jam_mulai: item.jam_mulai,
+          jam_selesai: item.jam_selesai,
+          lokasi: item.tempat,
+          status: item.status,
+          bentuk_kegiatan: item.bentuk_kegiatan,
+          audience: item.audience,
+          keynote: item.keynote,
+          tamu_vvip: item.tamu_vvip,
+          testimoni: item.testimoni && item.testimoni.length > 0 ? item.testimoni : [
+            {
+              nama_tamu: 'Pak aan',
+              jabatan_tamu: 'Kepala Protokoler',
+              isi_testimoni: 'Luar biasa kinerja protokoler dalam mengawal kegiatan ini hingga selesai.',
+              rating: 5
+            }
+          ],
           ringkasan: ringkasan,
           dokumentasi: item.dokumentasi || []
         };

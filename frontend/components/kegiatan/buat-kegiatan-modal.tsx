@@ -11,7 +11,7 @@ import {
   Check, Plus, Trash2, ChevronRight, ChevronLeft,
   CalendarDays, MapPin, Users, GraduationCap, Handshake,
   Megaphone, Landmark, ClipboardList, Camera, FileText, Info,
-  UserCheck, Star, X
+  UserCheck, Star, X, Mic, Crown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar } from "@/components/ui/calendar";
@@ -23,8 +23,9 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 
 const STEPS = [
   { id: 1, label: "Info Dasar",     desc: "Nama, jenis, dan waktu",    icon: Info },
-  { id: 2, label: "Detail Acara",   desc: "Tamu VVIP & rundown",       icon: Star },
-  { id: 3, label: "Kebutuhan Tim",  desc: "Jumlah petugas lapangan",   icon: Users },
+  { id: 2, label: "Detail Acara",   desc: "Target, MC, & rundown",     icon: Star },
+  { id: 3, label: "Tamu VVIP",      desc: "Daftar tamu penting",       icon: Crown },
+  { id: 4, label: "Kebutuhan Tim",  desc: "Jumlah petugas lapangan",   icon: Users },
 ];
 
 const BENTUK_OPTIONS = [
@@ -57,6 +58,7 @@ const initialForm = {
   lokasi: "",
   audience: "",
   keynote: "",
+  mc: "",
   rundown_url: "",
   jumlah_protokoler_dibutuhkan: 1,
   jumlah_lo_dibutuhkan: 1,
@@ -71,6 +73,8 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
   const [form, setForm] = useState(initialForm);
   const [tamuVvip, setTamuVvip] = useState<any[]>([]);
   const [timeView, setTimeView] = useState<"date" | "start" | "end">("date");
+  const [isAddingTamu, setIsAddingTamu] = useState(false);
+  const [newTamu, setNewTamu] = useState({ nama_tamu: "", jabatan: "", instansi: "", tipe: "eksternal", jumlah_rombongan: 1 });
 
   // Load data for editing if editId is provided
   const { data: editData } = useQuery({
@@ -92,6 +96,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
           lokasi: editData.lokasi || "",
           audience: editData.audience || "",
           keynote: editData.keynote || "",
+          mc: editData.mc || "",
           rundown_url: editData.rundown_url || "",
           jumlah_protokoler_dibutuhkan: editData.jumlah_protokoler_dibutuhkan || 1,
           jumlah_lo_dibutuhkan: editData.jumlah_lo_dibutuhkan || 1,
@@ -100,26 +105,33 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
         });
         setTamuVvip(editData.tamu_vvip || []);
         setTimeView("date");
+        setIsAddingTamu(false);
       } else if (!editId) {
         setStep(1);
         setForm(initialForm);
         setTamuVvip([]);
         setTimeView("date");
+        setIsAddingTamu(false);
       }
     }
   }, [isOpen, editId, editData]);
 
-  const addTamu = () =>
-    setTamuVvip([...tamuVvip, { nama_tamu: "", jabatan: "", instansi: "", tipe: "eksternal", jumlah_rombongan: 1 }]);
+  const addTamu = () => {
+    setNewTamu({ nama_tamu: "", jabatan: "", instansi: "", tipe: "eksternal", jumlah_rombongan: 1 });
+    setIsAddingTamu(true);
+  };
+
+  const saveNewTamu = () => {
+    if (!newTamu.nama_tamu.trim()) {
+      toast.error("Nama tamu wajib diisi");
+      return;
+    }
+    setTamuVvip([...tamuVvip, newTamu]);
+    setIsAddingTamu(false);
+  };
 
   const removeTamu = (idx: number) =>
     setTamuVvip(tamuVvip.filter((_, i) => i !== idx));
-
-  const updateTamu = (idx: number, field: string, value: any) => {
-    const nw = [...tamuVvip];
-    nw[idx][field] = value;
-    setTamuVvip(nw);
-  };
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -152,7 +164,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
       if (!form.jam_mulai || !form.jam_selesai) { toast.error("Jam mulai dan selesai wajib diisi"); return; }
       if (!form.lokasi.trim()) { toast.error("Lokasi kegiatan wajib diisi"); return; }
     }
-    setStep(s => Math.min(3, s + 1));
+    setStep(s => Math.min(4, s + 1));
   };
 
   const handlePrev = () => setStep(s => Math.max(1, s - 1));
@@ -184,7 +196,8 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                   <div className="flex items-center justify-center h-12 w-12 bg-white border border-slate-200 text-primary rounded-[14px] shadow-sm shrink-0">
                     {step === 1 && <Info className="h-6 w-6 text-[#6B0000]" />}
                     {step === 2 && <Star className="h-6 w-6 text-[#6B0000]" />}
-                    {step === 3 && <Users className="h-6 w-6 text-[#6B0000]" />}
+                    {step === 3 && <Crown className="h-6 w-6 text-[#6B0000]" />}
+                    {step === 4 && <Users className="h-6 w-6 text-[#6B0000]" />}
                   </div>
                   <div className="flex-1">
                     <h2 className="text-xl font-bold text-slate-900 leading-tight">Langkah {step}: {STEPS[step-1].label}</h2>
@@ -253,9 +266,9 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                       </FieldGroup>
 
                       <FieldGroup label="Waktu Pelaksanaan" required>
-                        <div className="border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm flex flex-col md:flex-row w-fit">
+                        <div className="border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm flex flex-col md:flex-row w-full">
                           {/* Kiri: Kalender Selalu Terlihat */}
-                          <div className="border-b md:border-b-0 md:border-r border-slate-100 bg-white p-1 md:p-2">
+                          <div className="border-b md:border-b-0 md:border-r border-slate-100 bg-white p-1 md:p-4 flex-1 flex justify-center items-center">
                             <Calendar
                               mode="single"
                               className="p-1 [--cell-size:1.6rem] md:[--cell-size:1.8rem]"
@@ -273,7 +286,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                           </div>
 
                           {/* Kanan: Hasil Pilihan / Jam Analog */}
-                          <div className="w-[260px] flex flex-col bg-slate-50 relative">
+                          <div className="flex-1 flex flex-col bg-slate-50 relative min-w-[260px]">
                             {timeView === "date" && (
                               <div className="flex-1 flex flex-col items-center justify-center p-6 text-center animate-in fade-in zoom-in-95 duration-300">
                                 {form.tanggal && form.jam_mulai && form.jam_selesai ? (
@@ -352,6 +365,13 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                           <Input className={stepInputCls} placeholder="Contoh: Prof. Dr. Rektor UNP" value={form.keynote} onChange={e => setForm({ ...form, keynote: e.target.value })} />
                         </FieldGroup>
                       </div>
+                      
+                      <FieldGroup label="MC yang Bertugas" hint="Opsional — Master of Ceremony untuk acara ini">
+                        <div className="relative">
+                          <Mic className="absolute left-3.5 top-[15px] h-4 w-4 text-slate-400" />
+                          <Input className={`${stepInputCls} pl-10`} placeholder="Contoh: Dandi & Nisa" value={form.mc} onChange={e => setForm({ ...form, mc: e.target.value })} />
+                        </div>
+                      </FieldGroup>
 
                       <FieldGroup label="Link Rundown Acara" hint="Opsional — tautan ke dokumen Google Drive, PDF, dll.">
                         <div className="relative">
@@ -359,7 +379,12 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                           <Input type="url" className={`${stepInputCls} pl-10`} placeholder="https://drive.google.com/..." value={form.rundown_url} onChange={e => setForm({ ...form, rundown_url: e.target.value })} />
                         </div>
                       </FieldGroup>
+                    </motion.div>
+                  )}
 
+                  {/* Step 3: Tamu VVIP */}
+                  {step === 3 && (
+                    <motion.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="space-y-7">
                       <div className="border border-slate-100 bg-slate-50 rounded-[1.5rem] p-6">
                         <div className="flex items-center justify-between mb-5">
                           <div>
@@ -371,50 +396,71 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                           </Button>
                         </div>
 
-                        {tamuVvip.length === 0 ? (
+                        {isAddingTamu ? (
+                          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                            <div className="flex items-center justify-between mb-4">
+                              <h4 className="font-bold text-slate-800 text-sm">Tambah Tamu Baru</h4>
+                              <button type="button" onClick={() => setIsAddingTamu(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="col-span-2 space-y-1">
+                                <Label className="text-[11px] font-bold text-slate-500">Nama Lengkap *</Label>
+                                <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Nama tamu" value={newTamu.nama_tamu} onChange={e => setNewTamu({ ...newTamu, nama_tamu: e.target.value })} />
+                              </div>
+                              <div className="col-span-2 sm:col-span-1 space-y-1">
+                                <Label className="text-[11px] font-bold text-slate-500">Tipe Tamu</Label>
+                                <select 
+                                  className="flex h-9 w-full rounded-lg border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400/20 focus-visible:border-[#6B0000]"
+                                  value={newTamu.tipe} 
+                                  onChange={e => setNewTamu({ ...newTamu, tipe: e.target.value })}
+                                >
+                                  <option value="eksternal">Eksternal</option>
+                                  <option value="internal">Internal</option>
+                                </select>
+                              </div>
+                              <div className="col-span-2 sm:col-span-1 space-y-1">
+                                <Label className="text-[11px] font-bold text-slate-500">Jumlah Rombongan</Label>
+                                <Input type="number" min={1} className="h-9 rounded-lg border-slate-200 text-sm" value={newTamu.jumlah_rombongan} onChange={e => setNewTamu({ ...newTamu, jumlah_rombongan: Number(e.target.value) })} />
+                              </div>
+                              <div className="col-span-2 sm:col-span-1 space-y-1">
+                                <Label className="text-[11px] font-bold text-slate-500">Jabatan</Label>
+                                <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Contoh: Rektor" value={newTamu.jabatan} onChange={e => setNewTamu({ ...newTamu, jabatan: e.target.value })} />
+                              </div>
+                              <div className="col-span-2 sm:col-span-1 space-y-1">
+                                <Label className="text-[11px] font-bold text-slate-500">Instansi</Label>
+                                <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Contoh: UNP" value={newTamu.instansi} onChange={e => setNewTamu({ ...newTamu, instansi: e.target.value })} />
+                              </div>
+                            </div>
+                            <div className="mt-5 flex justify-end gap-2">
+                              <Button type="button" variant="ghost" size="sm" onClick={() => setIsAddingTamu(false)} className="h-8 text-xs font-bold text-slate-500 hover:text-slate-700">Batal</Button>
+                              <Button type="button" size="sm" onClick={saveNewTamu} className="h-8 text-xs font-bold bg-[#6B0000] text-white hover:bg-red-900 rounded-lg">Simpan Tamu</Button>
+                            </div>
+                          </div>
+                        ) : tamuVvip.length === 0 ? (
                           <div className="border border-dashed border-slate-300 rounded-xl p-8 text-center bg-white/50">
                             <Users className="h-6 w-6 mx-auto text-slate-300 mb-3" />
                             <p className="text-xs font-bold text-slate-400">Belum ada tamu VVIP</p>
                           </div>
                         ) : (
-                          <div className="space-y-3">
+                          <div className="space-y-2">
                             {tamuVvip.map((tamu, idx) => (
-                              <div key={idx} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                                <div className="flex items-center justify-between mb-3">
-                                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tamu #{idx + 1}</span>
-                                  <button type="button" onClick={() => removeTamu(idx)} className="h-7 w-7 flex items-center justify-center rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
-                                    <Trash2 className="h-3.5 w-3.5" />
-                                  </button>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div className="col-span-2 space-y-1">
-                                    <Label className="text-[11px] font-bold text-slate-500">Nama Lengkap</Label>
-                                    <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Nama tamu" value={tamu.nama_tamu} onChange={e => updateTamu(idx, "nama_tamu", e.target.value)} />
+                              <div key={idx} className="bg-white border border-slate-200 rounded-xl p-3 flex items-center justify-between shadow-sm group">
+                                <div className="flex items-center gap-3">
+                                  <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                                    <Crown className="h-4 w-4 text-slate-400 group-hover:text-[#6B0000] transition-colors" />
                                   </div>
-                                  <div className="col-span-2 sm:col-span-1 space-y-1">
-                                    <Label className="text-[11px] font-bold text-slate-500">Tipe Tamu</Label>
-                                    <select 
-                                      className="flex h-9 w-full rounded-lg border border-slate-200 bg-white px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400/20 focus-visible:border-[#6B0000]"
-                                      value={tamu.tipe} 
-                                      onChange={e => updateTamu(idx, "tipe", e.target.value)}
-                                    >
-                                      <option value="eksternal">Eksternal</option>
-                                      <option value="internal">Internal</option>
-                                    </select>
-                                  </div>
-                                  <div className="col-span-2 sm:col-span-1 space-y-1">
-                                    <Label className="text-[11px] font-bold text-slate-500">Jumlah Rombongan</Label>
-                                    <Input type="number" min={1} className="h-9 rounded-lg border-slate-200 text-sm" value={tamu.jumlah_rombongan} onChange={e => updateTamu(idx, "jumlah_rombongan", Number(e.target.value))} />
-                                  </div>
-                                  <div className="col-span-2 sm:col-span-1 space-y-1">
-                                    <Label className="text-[11px] font-bold text-slate-500">Jabatan</Label>
-                                    <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Contoh: Rektor" value={tamu.jabatan} onChange={e => updateTamu(idx, "jabatan", e.target.value)} />
-                                  </div>
-                                  <div className="col-span-2 sm:col-span-1 space-y-1">
-                                    <Label className="text-[11px] font-bold text-slate-500">Instansi</Label>
-                                    <Input className="h-9 rounded-lg border-slate-200 text-sm" placeholder="Contoh: UNP" value={tamu.instansi} onChange={e => updateTamu(idx, "instansi", e.target.value)} />
+                                  <div>
+                                    <p className="text-xs font-bold text-slate-800">{tamu.nama_tamu}</p>
+                                    <p className="text-[10px] text-slate-500 leading-tight">
+                                      {tamu.jabatan || 'Tamu'} {tamu.instansi ? `• ${tamu.instansi}` : ''} ({tamu.jumlah_rombongan} org)
+                                    </p>
                                   </div>
                                 </div>
+                                <button type="button" onClick={() => removeTamu(idx)} className="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
                               </div>
                             ))}
                           </div>
@@ -423,9 +469,9 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                     </motion.div>
                   )}
 
-                  {/* Step 3: Kebutuhan Tim */}
-                  {step === 3 && (
-                    <motion.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="space-y-7">
+                  {/* Step 4: Kebutuhan Tim */}
+                  {step === 4 && (
+                    <motion.div key="step4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="space-y-7">
                       
                       <div className="flex items-center justify-between p-5 bg-white border border-slate-200 rounded-[1.5rem] shadow-sm">
                         <div className="flex items-center gap-4">
@@ -523,7 +569,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
               </Button>
             ) : <div />}
 
-            {step < 3 ? (
+            {step < 4 ? (
               <Button type="button" className="rounded-xl bg-[#6B0000] hover:bg-red-950 text-white h-11 px-8 font-bold shadow-md shadow-red-900/20 transition-all" onClick={handleNext}>
                 Lanjut <ChevronRight className="h-4 w-4 ml-1" />
               </Button>

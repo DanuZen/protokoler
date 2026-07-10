@@ -14,8 +14,9 @@ import { BadgeKategori } from "@/components/BadgeKategori";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle, Trash2, Plus, ChevronDown } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Calendar, Users, CheckSquare, Square, Star, Image, FileText, Info, Crown, ClipboardCheck, MessageSquare, Camera, Briefcase, FileSignature, CheckCircle2, XCircle, UserCheck, Check, X, BarChart3, Download, AlertCircle, Trash2, Plus, ChevronDown, Mic, ExternalLink, Maximize2, Minimize2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ViewportFitGrid } from "@/components/ViewportFitGrid";
@@ -29,6 +30,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
+  const [isSuratModalOpen, setIsSuratModalOpen] = useState(false);
   const [selectedProtokolerId, setSelectedProtokolerId] = useState("");
   const [selectedPeran, setSelectedPeran] = useState<'protokoler' | 'lo'>("protokoler");
 
@@ -43,6 +45,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const isAdmin = role === "admin";
   const qc = useQueryClient();
   const [tab, setTab] = useState<Tab>("info");
+  const [rekrutmenTab, setRekrutmenTab] = useState<'seleksi' | 'tim'>('seleksi');
   const [evaluasiTab, setEvaluasiTab] = useState<'evaluasi' | 'testimoni' | 'feedback'>('evaluasi');
   const [feedbackText, setFeedbackText] = useState('');
   const [ratingAcara, setRatingAcara] = useState(0);
@@ -58,6 +61,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
   const [isiTestimoni, setIsiTestimoni] = useState('');
   const [ratingTamu, setRatingTamu] = useState(5);
   const [selectedRole, setSelectedRole] = useState<'Protokoler' | 'Liaison Officer'>('Protokoler');
+  const [activeAdminTab, setActiveAdminTab] = useState<'seleksi' | 'tim'>('seleksi');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
   // State untuk Kamera (Absensi)
@@ -394,7 +398,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
     return <div className="p-8 text-center text-red-500">Kegiatan tidak ditemukan.</div>;
   }
 
-  const isDaftarOpen = true; // (keg as any).is_open_recruitment; // Diubah untuk demo agar selalu terbuka
+  const isDaftarOpen = (keg as any).is_open_recruitment ?? true;
   const myPendaftar = (keg as any).pendaftar?.find((p: any) => 
     p.user_id === user?.id || p.protokoler_id === user?.id || p.protokoler_id === protokoler?.id
   );
@@ -563,19 +567,19 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 </div>
                 
                 <div className="flex-1 flex flex-col">
-                  {!((keg as any).audience || (keg as any).keynote || (keg as any).rundown_url || (keg as any).peserta || (keg as any).deskripsi || (keg as any).catatan) ? (
+                  {!((keg as any).audience || (keg as any).keynote || (keg as any).mc || (keg as any).rundown_url || (keg as any).peserta || (keg as any).deskripsi || (keg as any).catatan) ? (
                     <div className="flex flex-col flex-1 items-center justify-center py-8 px-6 text-center bg-slate-50 rounded-xl border border-slate-100 border-dashed">
                       <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-100 mb-4 text-slate-400">
                         <FileText className="h-6 w-6" />
                       </div>
                       <p className="text-[14px] font-bold text-slate-700">Belum Ada Detail Acara</p>
-                      <p className="text-[12px] text-slate-500 mt-1 max-w-[250px]">Target audiens, keynote, rundown, atau catatan belum ditambahkan.</p>
+                      <p className="text-[12px] text-slate-500 mt-1 max-w-[250px]">Target audiens, keynote, MC, rundown, atau catatan belum ditambahkan.</p>
                     </div>
                   ) : (
                     <div className="flex flex-col flex-1 gap-5">
                       <div className="grid sm:grid-cols-2 gap-5">
                         {((keg as any).audience || (keg as any).peserta) && (
-                          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center">
                             <div className="flex items-center gap-2 text-slate-500 mb-1">
                               <Users className="h-4 w-4 text-red-700" />
                               <p className="text-[11px] font-bold uppercase tracking-wider">Target Peserta / Audiens</p>
@@ -583,8 +587,19 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <p className="font-bold text-slate-800 text-[14px]">{(keg as any).audience || (keg as any).peserta}</p>
                           </div>
                         )}
+
+                        {(keg as any).mc && (
+                          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center">
+                            <div className="flex items-center gap-2 text-slate-500 mb-1">
+                              <Mic className="h-4 w-4 text-red-700" />
+                              <p className="text-[11px] font-bold uppercase tracking-wider">MC / Pembawa Acara</p>
+                            </div>
+                            <p className="font-bold text-slate-800 text-[14px]">{(keg as any).mc}</p>
+                          </div>
+                        )}
+
                         {(keg as any).keynote && (
-                          <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
+                          <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50 flex flex-col justify-center">
                             <div className="flex items-center gap-2 text-amber-700 mb-1">
                               <Star className="h-4 w-4 text-amber-600" />
                               <p className="text-[11px] font-bold uppercase tracking-wider">Keynote / Narasumber Utama</p>
@@ -592,28 +607,30 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <p className="font-bold text-amber-900 text-[14px]">{(keg as any).keynote}</p>
                           </div>
                         )}
-                      </div>
-                      
-                      {(keg as any).rundown_url && (
-                        <div>
-                          <a href={(keg as any).rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full sm:w-auto h-10 px-6 bg-red-800 text-white font-bold text-[13px] rounded-xl shadow-sm hover:bg-red-900 transition-all">
-                            <FileText className="mr-2 h-4 w-4" /> Buka Link Rundown Acara
-                          </a>
-                        </div>
-                      )}
-                      
-                      <div className="flex-1 flex flex-col bg-slate-50/50 p-4 rounded-xl border border-slate-100">
-                        <div className="flex items-center gap-2 text-slate-500 mb-2">
-                          <FileText className="h-4 w-4 text-red-700" />
-                          <p className="text-[11px] font-bold uppercase tracking-wider">Catatan Tambahan / Deskripsi</p>
-                        </div>
-                        {((keg as any).deskripsi || (keg as any).catatan) ? (
-                          <p className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-wrap">{(keg as any).deskripsi || (keg as any).catatan}</p>
-                        ) : (
-                          <div className="flex-1 flex flex-col items-center justify-center text-center opacity-70 py-4">
-                            <p className="text-[12px] font-medium text-slate-500">Tidak ada catatan khusus untuk acara ini.</p>
+                        
+                        {(keg as any).rundown_url && (
+                          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center">
+                            <div className="flex items-center gap-2 text-slate-500 mb-2">
+                              <FileText className="h-4 w-4 text-red-700" />
+                              <p className="text-[11px] font-bold uppercase tracking-wider">Rundown Acara</p>
+                            </div>
+                            <a href={(keg as any).rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-1.5 w-fit bg-red-50 hover:bg-red-100 text-red-800 font-bold text-[12px] px-3 py-1.5 rounded-lg border border-red-100 transition-colors">
+                              <ExternalLink className="h-3.5 w-3.5" /> Buka Rundown
+                            </a>
                           </div>
                         )}
+
+                        <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center">
+                          <div className="flex items-center gap-2 text-slate-500 mb-2">
+                            <FileText className="h-4 w-4 text-red-700" />
+                            <p className="text-[11px] font-bold uppercase tracking-wider">Catatan Tambahan</p>
+                          </div>
+                          {((keg as any).deskripsi || (keg as any).catatan) ? (
+                            <p className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-wrap">{(keg as any).deskripsi || (keg as any).catatan}</p>
+                          ) : (
+                            <p className="text-[12px] font-medium text-slate-500">Tidak ada catatan.</p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -681,31 +698,6 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
         {tab === "rekrutmen" && (
           <ViewportFitGrid gridTemplateColumns="repeat(4, minmax(0, 1fr))" gap={24} className="items-stretch h-full w-full">
             <div className="lg:col-span-3 flex flex-col gap-6 h-full">
-              {/* Admin: Pengaturan Open Recruitment */}
-              {isAdmin && (
-                <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden relative shrink-0">
-                  <div className="p-6 flex flex-wrap items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className={`flex items-center justify-center h-10 w-10 rounded-xl border shadow-sm transition-colors ${isDaftarOpen ? "bg-green-50 border-green-100 text-green-600" : "bg-slate-50 border-slate-200 text-slate-500"}`}>
-                        <UserCheck className="h-4 w-4 md:h-5 md:w-5" />
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-bold text-slate-800">Status Open Recruitment</h2>
-                        <p className="text-[13px] font-medium text-slate-500 mt-0.5">Buka atau tutup pendaftaran untuk seluruh anggota</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-100">
-                      <span className={`text-[13px] font-bold uppercase tracking-wider ${isDaftarOpen ? "text-green-600" : "text-slate-500"}`}>{isDaftarOpen ? "Dibuka" : "Ditutup"}</span>
-                      <Switch
-                        checked={isDaftarOpen}
-                        onCheckedChange={v => updateChecklist.mutate({ is_open_recruitment: v })}
-                        className="data-[state=checked]:bg-green-500 shadow-sm"
-                      />
-                    </div>
-                  </div>
-                </Card>
-              )}
-
               {/* Mahasiswa: Bursa Tugas */}
               {!isAdmin && (
                 <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
@@ -800,25 +792,51 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 </Card>
               )}
 
-              {/* Admin: Seleksi Pendaftar */}
-              {isAdmin && (
-                <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white flex-1 flex flex-col">
-                  <CardContent className="p-0 flex flex-col h-full">
-                    <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5 bg-slate-50/50 shrink-0">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center justify-center h-10 w-10 bg-white border border-slate-200 text-slate-700 rounded-xl shadow-sm">
-                          <Briefcase className="h-4 w-4 md:h-5 md:w-5" />
-                        </div>
-                        <div>
-                          <h2 className="text-[15px] font-bold text-slate-800 uppercase tracking-wider">Seleksi Pendaftar</h2>
-                          <p className="text-[12px] text-slate-500 mt-0.5 font-medium">Kelola anggota yang telah mengajukan diri</p>
-                        </div>
+              <div className="flex-1 min-h-0 flex flex-col gap-6">
+                <Card className="rounded-[24px] border-slate-200 shadow-sm overflow-hidden bg-white flex flex-col min-h-0 h-full relative">
+                  <div className="p-4 md:p-6 border-b border-slate-100 shrink-0 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-slate-50/50">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center h-10 w-10 bg-red-50 border border-red-100 text-[#5B1015] rounded-xl shadow-sm">
+                        {(!isAdmin || rekrutmenTab === 'tim') ? <Users className="h-4 w-4 md:h-5 md:w-5" /> : <Briefcase className="h-4 w-4 md:h-5 md:w-5" />}
+                      </div>
+                      <div>
+                        <h2 className="text-[15px] font-bold text-slate-800 uppercase tracking-wider">
+                          {(!isAdmin || rekrutmenTab === 'tim') ? 'Tim Pelaksana' : 'Seleksi Pendaftar'}
+                        </h2>
+                        <p className="text-[12px] text-slate-500 mt-0.5 font-medium">
+                          {(!isAdmin || rekrutmenTab === 'tim') ? 'Daftar anggota yang telah ditugaskan' : 'Kelola anggota yang telah mengajukan diri'}
+                        </p>
                       </div>
                     </div>
-                    <div className="flex-1 overflow-auto bg-white">
-                      {keg.pendaftar && keg.pendaftar.length > 0 ? (
+
+                    {isAdmin && (
+                      <div className="flex bg-white rounded-xl p-1 border border-slate-200 shadow-sm w-full md:w-auto">
+                        <button
+                          onClick={() => setRekrutmenTab('seleksi')}
+                          className={cn("flex-1 md:flex-none px-4 py-2 rounded-lg text-[13px] font-bold transition-all flex items-center justify-center gap-2", 
+                            rekrutmenTab === 'seleksi' ? "bg-[#5B1015] text-white shadow-md shadow-red-900/10" : "text-slate-500 hover:bg-slate-50"
+                          )}
+                        >
+                          <Briefcase className="h-3.5 w-3.5" /> Pendaftar
+                        </button>
+                        <button
+                          onClick={() => setRekrutmenTab('tim')}
+                          className={cn("flex-1 md:flex-none px-4 py-2 rounded-lg text-[13px] font-bold transition-all flex items-center justify-center gap-2", 
+                            rekrutmenTab === 'tim' ? "bg-[#5B1015] text-white shadow-md shadow-red-900/10" : "text-slate-500 hover:bg-slate-50"
+                          )}
+                        >
+                          <Users className="h-3.5 w-3.5" /> Tim Pelaksana
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-6 bg-slate-50/30 flex-1 overflow-auto">
+                    {(isAdmin && rekrutmenTab === 'seleksi') ? (
+                      keg.pendaftar && keg.pendaftar.length > 0 ? (
+                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                         <Table>
-                          <TableHeader className="bg-white border-b border-slate-100">
+                          <TableHeader className="bg-slate-50/50 border-b border-slate-100">
                             <TableRow className="hover:bg-transparent">
                               <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 py-3 pl-6">Nama Pendaftar</TableHead>
                               <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 py-3">Performa</TableHead>
@@ -875,119 +893,153 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             })}
                           </TableBody>
                         </Table>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center h-full p-12 text-center min-h-[300px]">
-                          <Briefcase className="h-10 w-10 text-slate-300 mb-4" />
-                          <h3 className="font-bold text-slate-800">Belum ada pendaftar</h3>
-                          <p className="text-sm text-slate-500 mt-1">Anggota protokoler dapat mendaftar jika status Open Recruitment aktif.</p>
                         </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Daftar Tim Pelaksana (Untuk Semua User) */}
-              <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
-                <div className="p-6 border-b border-slate-100 shrink-0 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center h-10 w-10 bg-red-50 border border-red-100 text-red-800 rounded-xl shadow-sm">
-                      <Users className="h-4 w-4 md:h-5 md:w-5" />
-                    </div>
-                    <div>
-                      <h2 className="text-[15px] font-bold text-slate-800 uppercase tracking-wider">Tim Pelaksana</h2>
-                      <p className="text-[12px] text-slate-500 mt-0.5 font-medium">Daftar anggota yang telah ditugaskan</p>
-                    </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-full py-8 text-center bg-white rounded-xl border border-dashed border-slate-200">
+                          <Briefcase className="h-8 w-8 text-slate-300 mb-3" />
+                          <p className="text-[13px] font-bold text-slate-600">Belum ada pendaftar</p>
+                          <p className="text-[11px] text-slate-500 mt-1 max-w-[250px]">Anggota dapat mendaftar jika status Open Recruitment aktif.</p>
+                        </div>
+                      )
+                    ) : (
+                      keg.pendaftar && keg.pendaftar.filter((p: any) => p.status === 'diterima' || p.status === 'dialihkan').length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {keg.pendaftar.filter((p: any) => p.status === 'diterima' || p.status === 'dialihkan').map((p: any) => (
+                            <div key={p.id} className="flex items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm group/item">
+                              <div className="flex items-center gap-3">
+                                <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 border ${p.role === 'Liaison Officer' || p.role === 'lo' ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                                  {p.role === 'Liaison Officer' || p.role === 'lo' ? <UserCheck className="h-4 w-4 md:h-5 md:w-5" /> : <Users className="h-4 w-4 md:h-5 md:w-5" />}
+                                </div>
+                                <div>
+                                  <p className="font-bold text-sm text-slate-800">{p.nama_lengkap}</p>
+                                  <div className="flex items-center gap-1.5 mt-0.5">
+                                    <span className="text-[11px] font-semibold text-slate-500 capitalize">{p.role || 'Protokoler'}</span>
+                                    {p.status === 'dialihkan' && (
+                                      <span className="text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-200/50 px-1.5 py-0.2 rounded capitalize">Dialihkan</span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              {isAdmin && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg shrink-0 transition-colors"
+                                  onClick={() => {
+                                      if (confirm(`Apakah Anda yakin ingin mengeluarkan ${p.nama_lengkap} dari Tim Pelaksana?`)) {
+                                        deletePendaftaran.mutate(p.id);
+                                      }
+                                  }}
+                                  disabled={deletePendaftaran.isPending}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-full py-8 text-center bg-white rounded-xl border border-dashed border-slate-200">
+                          <Users className="h-8 w-8 text-slate-300 mb-3" />
+                          <p className="text-[13px] font-bold text-slate-600">Belum ada tim yang ditugaskan</p>
+                        </div>
+                      )
+                    )}
                   </div>
-                  {isAdmin && (
-                    <Button 
+                  {(isAdmin && rekrutmenTab === 'tim') && (
+                    <Button
                       onClick={() => setIsAddMemberModalOpen(true)}
-                      className="rounded-xl bg-[#5B1015] hover:bg-[#4E0D11] text-white font-bold h-9 px-3 text-xs flex items-center gap-1.5 shadow-sm transition-all"
+                      size="icon"
+                      className="absolute bottom-6 right-6 h-12 w-12 rounded-full bg-[#5B1015] hover:bg-[#4E0D11] text-white shadow-xl transition-all hover:scale-105 z-10"
+                      title="Tambah Anggota"
                     >
-                      <Plus className="h-4 w-4" /> Tambah Anggota
+                      <Plus className="h-6 w-6" />
                     </Button>
                   )}
-                </div>
-                <div className="p-6 bg-slate-50/30 flex-1 overflow-y-auto">
-                  {keg.pendaftar && keg.pendaftar.filter((p: any) => p.status === 'diterima' || p.status === 'dialihkan').length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {keg.pendaftar.filter((p: any) => p.status === 'diterima' || p.status === 'dialihkan').map((p: any) => (
-                        <div key={p.id} className="flex items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm group/item">
-                          <div className="flex items-center gap-3">
-                            <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 border ${p.role === 'Liaison Officer' || p.role === 'lo' ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-red-50 border-red-200 text-red-800'}`}>
-                              {p.role === 'Liaison Officer' || p.role === 'lo' ? <UserCheck className="h-4 w-4 md:h-5 md:w-5" /> : <Users className="h-4 w-4 md:h-5 md:w-5" />}
-                            </div>
-                            <div>
-                              <p className="font-bold text-sm text-slate-800">{p.nama_lengkap}</p>
-                              <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="text-[11px] font-semibold text-slate-500 capitalize">{p.role || 'Protokoler'}</span>
-                                {p.status === 'dialihkan' && (
-                                  <span className="text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-200/50 px-1.5 py-0.2 rounded capitalize">Dialihkan</span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          {isAdmin && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg shrink-0 transition-colors"
-                              onClick={() => {
-                                  if (confirm(`Apakah Anda yakin ingin mengeluarkan ${p.nama_lengkap} dari Tim Pelaksana?`)) {
-                                    deletePendaftaran.mutate(p.id);
-                                  }
-                              }}
-                              disabled={deletePendaftaran.isPending}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-8 text-center bg-white rounded-xl border border-dashed border-slate-200">
-                      <Users className="h-8 w-8 text-slate-300 mb-3" />
-                      <p className="text-[13px] font-bold text-slate-600">Belum ada tim yang ditugaskan</p>
-                    </div>
-                  )}
-                </div>
-              </Card>
+                </Card>
+              </div>
             </div>
 
             {/* Sidebar Rekrutmen */}
             <div className="flex flex-col gap-6 h-full lg:col-span-1">
+              {/* Admin: Pengaturan & Tindakan */}
               {isAdmin && (
                 <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden shrink-0">
-                  <div className="p-6 flex flex-col justify-center items-center h-[104px]">
-                    <Button variant="outline" className="w-full rounded-xl border-green-200 bg-green-50 shadow-sm h-11 font-bold hover:bg-green-100 text-green-700 transition-colors" onClick={() => toast.success("Menerbitkan & membagikan surat tugas...")}>
-                      <FileSignature className="mr-2 h-4 w-4" /> Terbitkan Surat Tugas
-                    </Button>
-                    <p className="text-[11px] font-medium text-slate-500 mt-2 text-center">Terbitkan surat jika tim sudah final</p>
+                  <div className="p-4 md:p-5 flex flex-col gap-4">
+                    {/* Status Rekrutmen (Secondary Color) */}
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`flex items-center justify-center h-10 w-10 shrink-0 rounded-xl border shadow-sm transition-colors ${isDaftarOpen ? "bg-emerald-50 border-emerald-200 text-emerald-600" : "bg-slate-50 border-slate-200 text-slate-500"}`}>
+                          <UserCheck className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h2 className="text-[14px] font-bold text-slate-800">Status Rekrutmen</h2>
+                          <p className="text-[11px] font-medium text-slate-500">Buka/tutup pendaftaran</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 w-full">
+                        <span className={`text-[12px] font-bold uppercase tracking-wider ${isDaftarOpen ? "text-emerald-600" : "text-slate-500"}`}>{isDaftarOpen ? "Dibuka" : "Ditutup"}</span>
+                        <Switch
+                          checked={isDaftarOpen}
+                          onCheckedChange={v => updateChecklist.mutate({ is_open_recruitment: v })}
+                          className="data-[state=checked]:bg-emerald-500 shadow-sm scale-90"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="h-px w-full bg-slate-100"></div>
+
+                    {/* Terbitkan Surat Tugas (Primary Color) */}
+                    <div className="flex flex-col justify-center items-center pt-1">
+                      <Button className="w-full rounded-xl bg-[#5B1015] hover:bg-[#4E0D11] text-white shadow-sm h-10 font-bold transition-all" onClick={() => setIsSuratModalOpen(true)}>
+                        <FileSignature className="mr-2 h-4 w-4" /> Terbitkan Surat Tugas
+                      </Button>
+                      <p className="text-[11px] font-medium text-slate-500 mt-2.5 text-center leading-snug">Cetak / bagikan surat tugas tim</p>
+                    </div>
                   </div>
                 </Card>
               )}
-              
+
               <Card className="rounded-[24px] bg-white border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
-                <div className="p-6 md:p-8 border-b border-slate-100 shrink-0 text-center">
-                   <h2 className="text-[15px] font-bold text-slate-800">Kebutuhan Petugas</h2>
-                   <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Kuota tim yang diperlukan</p>
+                <div className="p-4 md:p-5 border-b border-slate-100 bg-slate-50/50">
+                   <h2 className="text-[14px] font-bold text-slate-800">Kebutuhan Petugas</h2>
+                   <p className="text-[11px] font-medium text-slate-500 mt-0.5">Kuota tim yang diperlukan</p>
                 </div>
-                <div className="p-6 md:p-8 flex flex-col gap-5 flex-1 bg-white">
-                  <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-2xl shadow-sm hover:border-slate-200 transition-all flex-1 p-5 group">
-                    <div className="h-14 w-14 rounded-2xl bg-red-50 text-red-800 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                      <Users className="h-6 w-6 md:h-7 md:w-7" />
+                <div className="p-4 md:p-5 flex flex-col gap-5 bg-white">
+                  {/* Protokoler */}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center h-10 w-10 shrink-0 rounded-xl border shadow-sm bg-red-50 border-red-100 text-red-800">
+                        <Users className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h2 className="text-[14px] font-bold text-slate-800">Protokoler</h2>
+                        <p className="text-[11px] font-medium text-slate-500">Petugas acara & teknis</p>
+                      </div>
                     </div>
-                    <span className="text-[15px] font-bold text-slate-800 mb-2">Protokoler</span>
-                    <span className="font-bold text-red-800 bg-white border border-red-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_protokoler_dibutuhkan || 0} Orang</span>
+                    <div className="flex items-center justify-between bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 w-full">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Dibutuhkan</span>
+                      <span className="text-[12px] font-bold text-red-700 bg-white border border-red-200 shadow-sm px-3 py-1 rounded-md">{keg.jumlah_protokoler_dibutuhkan || 0} Orang</span>
+                    </div>
                   </div>
                   
-                  <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-2xl shadow-sm hover:border-slate-200 transition-all flex-1 p-5 group">
-                    <div className="h-14 w-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                      <UserCheck className="h-6 w-6 md:h-7 md:w-7" />
+                  <div className="h-px w-full bg-slate-100"></div>
+
+                  {/* Liaison Officer */}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center h-10 w-10 shrink-0 rounded-xl border shadow-sm bg-amber-50 border-amber-100 text-amber-600">
+                        <UserCheck className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h2 className="text-[14px] font-bold text-slate-800">Liaison Officer</h2>
+                        <p className="text-[11px] font-medium text-slate-500">Pendamping tamu VIP</p>
+                      </div>
                     </div>
-                    <span className="text-[15px] font-bold text-slate-800 mb-2">Liaison Officer</span>
-                    <span className="font-bold text-amber-700 bg-white border border-amber-200 px-4 py-1.5 rounded-lg text-[13px] shadow-sm">{keg.jumlah_lo_dibutuhkan || 0} Orang</span>
+                    <div className="flex items-center justify-between bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 w-full">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Dibutuhkan</span>
+                      <span className="text-[12px] font-bold text-amber-700 bg-white border border-amber-200 shadow-sm px-3 py-1 rounded-md">{keg.jumlah_lo_dibutuhkan || 0} Orang</span>
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -1016,7 +1068,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 )}
               </div>
               
-              <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm w-full flex-1 flex flex-col justify-center">
+              <div className="w-full flex-1 flex flex-col">
                 
                 {/* Modul Kamera Absensi untuk Protokoler (Non-Admin & Diterima) */}
                 {!isAdmin && isDiterima && (() => {
@@ -1191,26 +1243,30 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 )}
 
                 {isAdmin && (
-                  <div className="w-full">
+                  <div className="w-full flex-1 flex flex-col">
                     {absensi && (
-                    <div className="flex gap-6 mb-6 p-4 bg-slate-50 border border-slate-200 rounded-xl justify-center w-fit mx-auto md:w-full md:mx-0">
-                      <div className="text-center px-4">
-                        <div className="text-2xl md:text-3xl font-bold text-green-600">{absensi.filter((a: any) => a.status === "hadir").length}</div>
-                        <div className="text-xs text-slate-500 font-semibold uppercase mt-1">Hadir</div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 w-full">
+                        {[
+                          { label: 'Hadir', value: absensi.filter((a: any) => a.status === "hadir").length.toString(), icon: CheckCircle2, colorClass: 'text-primary', bgClass: 'bg-primary/5 border border-primary/20', borderHover: 'hover:border-primary/40', glow: 'bg-primary/10' },
+                          { label: 'Tidak Hadir', value: absensi.filter((a: any) => a.status !== "hadir").length.toString(), icon: XCircle, colorClass: 'text-destructive', bgClass: 'bg-destructive/5 border border-destructive/20', borderHover: 'hover:border-destructive/40', glow: 'bg-destructive/10' },
+                          { label: 'Total Tim', value: absensi.length.toString(), icon: Users, colorClass: 'text-slate-700', bgClass: 'bg-slate-100 border border-slate-200', borderHover: 'hover:border-slate-300', glow: 'bg-slate-200' },
+                        ].map((stat, index) => (
+                          <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
+                            <div className={`flex items-center justify-between p-3 pr-5 rounded-xl bg-white border border-slate-200 shadow-sm relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 ${stat.borderHover}`}>
+                              <div className={`absolute -right-4 -top-4 w-20 h-20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${stat.glow}`}></div>
+                              <div className="flex items-center gap-3 relative z-10">
+                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${stat.bgClass} ${stat.colorClass}`}>
+                                  <stat.icon className="h-5 w-5" />
+                                </div>
+                                <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">{stat.label}</span>
+                              </div>
+                              <span className={`text-2xl font-black relative z-10 transition-colors duration-300 ${stat.colorClass}`}>{stat.value}</span>
+                            </div>
+                          </motion.div>
+                        ))}
                       </div>
-                      <div className="w-px bg-slate-200" />
-                      <div className="text-center px-4">
-                        <div className="text-2xl md:text-3xl font-bold text-red-500">{absensi.filter((a: any) => a.status !== "hadir").length}</div>
-                        <div className="text-xs text-slate-500 font-semibold uppercase mt-1">Tidak Hadir</div>
-                      </div>
-                      <div className="w-px bg-slate-200" />
-                      <div className="text-center px-4">
-                        <div className="text-2xl md:text-3xl font-bold text-slate-800">{absensi.length}</div>
-                        <div className="text-xs text-slate-500 font-semibold uppercase mt-1">Total</div>
-                      </div>
-                    </div>
                     )}
-                    <div className="rounded-xl overflow-hidden border border-slate-200 w-full">
+                    <div className="rounded-[20px] border border-slate-200 w-full shadow-sm bg-white flex-1 flex flex-col min-h-[300px]">
                       <Table className="w-full">
                         <TableHeader className="bg-slate-50/50">
                           <TableRow>
@@ -1219,9 +1275,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             <TableHead className="font-bold text-right pr-6 py-4">Status</TableHead>
                           </TableRow>
                         </TableHeader>
-                        <TableBody>
+                        <TableBody className="flex-1">
                           {!absensi?.length ? (
-                            <TableRow><TableCell colSpan={3} className="h-32 text-center text-slate-400">Belum ada data absensi.</TableCell></TableRow>
+                            <TableRow className="hover:bg-transparent border-0"><TableCell colSpan={3} className="h-[250px] md:h-[350px] text-center text-slate-400 font-medium">Belum ada data absensi.</TableCell></TableRow>
                           ) : (
                             absensi.map((a: any) => (
                               <TableRow key={a.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
@@ -1293,7 +1349,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                   )}
                 </div>
               </div>
-              <div className="w-full flex-1 flex flex-col space-y-8 mt-2 min-h-0">
+              <div className="w-full flex-1 flex flex-col space-y-4 mt-2 min-h-0">
             
             {/* Form Pengisian Evaluasi untuk Protokoler */}
             {!isAdmin && !hasSubmittedEvaluasi && (
@@ -1345,26 +1401,22 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
             {/* Floating Stats Grid */}
             {isAdmin && (
-              <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 w-full">
                 {[
-                  { label: 'Rata-rata Rating', value: avgRating, hint: 'Dari tamu undangan', icon: Star },
-                  { label: 'Total Testimoni', value: totalTestimoni.toString(), hint: 'Umpan balik masuk', icon: MessageSquare },
-                  { label: 'Respon Positif', value: positiveCount.toString(), hint: 'Rating 4 ke atas', icon: ClipboardCheck },
+                  { label: 'Rata-rata Rating', value: avgRating, icon: Star, colorClass: 'text-primary', bgClass: 'bg-primary/5 border border-primary/20', borderHover: 'hover:border-primary/40', glow: 'bg-primary/10' },
+                  { label: 'Total Testimoni', value: totalTestimoni.toString(), icon: MessageSquare, colorClass: 'text-primary', bgClass: 'bg-primary/5 border border-primary/20', borderHover: 'hover:border-primary/40', glow: 'bg-primary/10' },
+                  { label: 'Respon Positif', value: positiveCount.toString(), icon: ClipboardCheck, colorClass: 'text-primary', bgClass: 'bg-primary/5 border border-primary/20', borderHover: 'hover:border-primary/40', glow: 'bg-primary/10' },
                 ].map((stat, index) => (
                   <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * index }}>
-                    <div className="bg-white border border-slate-200 rounded-[24px] p-4 md:py-6 md:px-6 flex flex-col justify-between hover:shadow-lg hover:shadow-slate-100 transition-all group relative overflow-hidden h-full shadow-sm">
-                      <div className="flex items-start justify-between relative z-10 gap-2">
-                        <p className="text-xs md:text-sm font-semibold text-slate-500 leading-tight">{stat.label}</p>
-                        <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-xl transition-colors bg-slate-50 text-slate-600 border border-slate-100 group-hover:bg-slate-100">
-                          <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
+                    <div className={`flex items-center justify-between p-3 pr-5 rounded-xl bg-white border border-slate-200 shadow-sm relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 ${stat.borderHover}`}>
+                      <div className={`absolute -right-4 -top-4 w-20 h-20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${stat.glow}`}></div>
+                      <div className="flex items-center gap-3 relative z-10">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${stat.bgClass} ${stat.colorClass}`}>
+                          <stat.icon className="h-5 w-5" />
                         </div>
+                        <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">{stat.label}</span>
                       </div>
-                      <div className="mt-3 md:mt-4 relative z-10">
-                        <p className="text-2xl md:text-[32px] font-bold leading-tight text-slate-900">{stat.value}</p>
-                        <div className="flex items-center gap-1.5 mt-1.5">
-                          <span className="text-[10px] md:text-[11px] font-medium text-slate-400">{stat.hint}</span>
-                        </div>
-                      </div>
+                      <span className={`text-2xl font-black relative z-10 transition-colors duration-300 ${stat.colorClass}`}>{stat.value}</span>
                     </div>
                   </motion.div>
                 ))}
@@ -1773,67 +1825,143 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
 
       {/* Modal Tambah Anggota (Admin) */}
       <Dialog open={isAddMemberModalOpen} onOpenChange={(open) => !open && setIsAddMemberModalOpen(false)}>
-        <DialogContent className="sm:max-w-md rounded-2xl border border-slate-200 shadow-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-bold text-xl text-slate-900">Tambah Anggota Tim Pelaksana</DialogTitle>
+        <DialogContent className="sm:max-w-[450px] p-0 overflow-hidden bg-white rounded-[24px] border border-slate-200 shadow-2xl">
+          <DialogHeader className="p-6 pb-4 border-b border-slate-100 bg-white">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-xl bg-red-50 text-[#5B1015] flex items-center justify-center shadow-sm">
+                <Users className="h-6 w-6" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-bold text-slate-800 text-left">Tambah Anggota</DialogTitle>
+                <p className="text-[13px] font-medium text-slate-500 mt-0.5 text-left">Pilih anggota dan tentukan perannya</p>
+              </div>
+            </div>
           </DialogHeader>
 
-          <div className="space-y-4 py-3">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">Pilih Anggota Protokoler (Aktif)</label>
-              <select
-                value={selectedProtokolerId}
-                onChange={(e) => setSelectedProtokolerId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 focus:border-[#5B1015] focus:outline-none focus:ring-1 focus:ring-[#5B1015]"
-              >
-                <option value="">-- Pilih Anggota --</option>
-                {availableProtokolers.map((p: any) => (
-                  <option key={p.id} value={p.id}>
-                    {p.nama_lengkap} ({p.nim}) - {p.prodi}
-                  </option>
-                ))}
-              </select>
+          <div className="p-6 space-y-6 bg-slate-50/30">
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Anggota Protokoler (Aktif)</label>
+              <Select value={selectedProtokolerId} onValueChange={setSelectedProtokolerId}>
+                <SelectTrigger className="w-full bg-white border-slate-200 text-[14px] text-slate-800 font-medium py-6 px-4 shadow-sm focus:ring-[#5B1015]/20 focus:border-[#5B1015] rounded-xl transition-all">
+                  <SelectValue placeholder="-- Pilih Anggota --" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-slate-200 shadow-xl z-[100]">
+                  {availableProtokolers.map((p: any) => (
+                    <SelectItem key={p.id} value={p.id} className="cursor-pointer py-2.5 px-4 font-medium text-slate-700 hover:bg-slate-50 hover:text-[#5B1015] focus:bg-slate-50 focus:text-[#5B1015]">
+                      {p.nama_lengkap} ({p.nim})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">Peran Kegiatan</label>
-              <div className="flex gap-2">
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Peran Kegiatan</label>
+              <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => setSelectedPeran('protokoler')}
                   className={cn(
-                    "flex-1 py-2.5 rounded-xl border text-sm font-bold transition-all",
+                    "flex-1 py-3 rounded-xl border text-[13px] font-bold transition-all flex items-center justify-center gap-2",
                     selectedPeran === 'protokoler'
-                      ? "bg-[#5B1015] border-[#5B1015] text-white shadow-md shadow-red-800/10"
-                      : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                      ? "bg-[#5B1015] border-[#5B1015] text-white shadow-md shadow-red-900/20"
+                      : "bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50 shadow-sm"
                   )}
                 >
-                  Protokoler
+                  <Users className="h-4 w-4" /> Protokoler
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedPeran('lo')}
                   className={cn(
-                    "flex-1 py-2.5 rounded-xl border text-sm font-bold transition-all",
+                    "flex-1 py-3 rounded-xl border text-[13px] font-bold transition-all flex items-center justify-center gap-2",
                     selectedPeran === 'lo'
-                      ? "bg-amber-500 border-amber-500 text-white shadow-md shadow-amber-800/10"
-                      : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                      ? "bg-amber-500 border-amber-500 text-white shadow-md shadow-amber-500/20"
+                      : "bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50 shadow-sm"
                   )}
                 >
-                  Liaison Officer
+                  <UserCheck className="h-4 w-4" /> Liaison Officer
                 </button>
               </div>
             </div>
           </div>
 
-          <DialogFooter className="gap-2 sm:gap-0 pt-2 border-t border-slate-100">
-            <Button variant="ghost" onClick={() => setIsAddMemberModalOpen(false)} className="rounded-xl text-slate-500">Batal</Button>
+          <DialogFooter className="p-4 border-t border-slate-100 bg-white flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <Button variant="outline" onClick={() => setIsAddMemberModalOpen(false)} className="rounded-xl flex-1 font-bold shadow-sm border-slate-200">
+              Batal
+            </Button>
             <Button
-              className="rounded-xl bg-[#5B1015] text-white hover:bg-[#4E0D11] font-bold"
+              className="rounded-xl bg-[#5B1015] text-white hover:bg-[#4E0D11] font-bold flex-1 shadow-sm transition-all"
               disabled={addMemberMutation.isPending || !selectedProtokolerId}
               onClick={() => addMemberMutation.mutate({ protokolerId: selectedProtokolerId, peran: selectedPeran })}
             >
-              {addMemberMutation.isPending ? "Menyimpan..." : "Tambah"}
+              {addMemberMutation.isPending ? "Menyimpan..." : "Tambah Anggota"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL SURAT TUGAS */}
+      <Dialog open={isSuratModalOpen} onOpenChange={setIsSuratModalOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-white rounded-[24px] border border-slate-200 shadow-2xl">
+          <DialogHeader className="p-6 pb-4 border-b border-slate-100 bg-white">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-xl bg-red-50 text-[#5B1015] flex items-center justify-center shadow-sm">
+                <FileSignature className="h-6 w-6" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-bold text-slate-800">Surat Tugas Tim</DialogTitle>
+                <p className="text-[13px] font-medium text-slate-500 mt-0.5">Daftar surat tugas yang telah diterbitkan</p>
+              </div>
+            </div>
+          </DialogHeader>
+          
+          <div className="p-6 max-h-[50vh] overflow-y-auto bg-slate-50/30">
+            {keg?.pendaftar?.filter((p: any) => p.status === 'diterima' || p.status === 'dialihkan').length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {keg.pendaftar.filter((p: any) => p.status === 'diterima' || p.status === 'dialihkan').map((p: any) => (
+                  <div key={p.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between shadow-sm group">
+                    <div className="flex items-center gap-3">
+                      <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 border ${p.role === 'Liaison Officer' || p.role === 'lo' ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                        {p.role === 'Liaison Officer' || p.role === 'lo' ? <UserCheck className="h-5 w-5" /> : <Users className="h-5 w-5" />}
+                      </div>
+                      <div>
+                        <p className="font-bold text-[14px] text-slate-800">{p.nama_lengkap}</p>
+                        <p className="text-[11px] font-semibold text-slate-500 capitalize">{p.role || 'Protokoler'}</p>
+                      </div>
+                    </div>
+                    {p.surat_tugas_url ? (
+                      <Button 
+                        variant="outline"
+                        size="sm"
+                        className="rounded-xl border-slate-200 hover:border-[#5B1015] hover:text-[#5B1015] hover:bg-red-50 transition-colors shadow-sm"
+                        onClick={() => window.open(p.surat_tugas_url, '_blank')}
+                      >
+                        <Download className="h-4 w-4 md:mr-1.5" />
+                        <span className="hidden md:inline font-bold">Unduh PDF</span>
+                      </Button>
+                    ) : (
+                      <Badge variant="outline" className="bg-slate-50 text-slate-400 border-slate-200 font-medium">
+                        Belum ada
+                      </Badge>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10 px-6 text-center bg-white rounded-xl border border-dashed border-slate-200 shadow-sm">
+                <FileSignature className="h-10 w-10 text-slate-300 mb-4" />
+                <p className="text-[14px] font-bold text-slate-700">Belum Ada Tim</p>
+                <p className="text-[12px] text-slate-500 mt-1 max-w-[250px]">
+                  Tambahkan anggota ke dalam tim pelaksana untuk menerbitkan surat tugas.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="p-4 border-t border-slate-100 bg-white">
+            <Button variant="outline" onClick={() => setIsSuratModalOpen(false)} className="rounded-xl w-full font-bold shadow-sm border-slate-200">
+              Tutup
             </Button>
           </DialogFooter>
         </DialogContent>

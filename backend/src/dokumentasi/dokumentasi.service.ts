@@ -33,6 +33,8 @@ export class DokumentasiService {
           _count: {
             select: { dokumentasi: true }
           },
+          tamu_vvip: true,
+          testimoni: true,
           dokumentasi: {
             select: {
               id: true,
@@ -54,8 +56,15 @@ export class DokumentasiService {
       kegiatan_id: k.id,
       nama_kegiatan: k.nama_kegiatan,
       tanggal: k.tanggal,
+      jam_mulai: k.jam_mulai,
+      jam_selesai: k.jam_selesai,
       tempat: k.lokasi,
       status: k.status,
+      bentuk_kegiatan: k.bentuk_kegiatan,
+      audience: k.audience,
+      keynote: k.keynote,
+      tamu_vvip: k.tamu_vvip,
+      testimoni: k.testimoni,
       dokumentasi_count: k._count.dokumentasi,
       dokumentasi_uploaded: k._count.dokumentasi > 0,
       dokumentasi: k.dokumentasi.map(d => ({

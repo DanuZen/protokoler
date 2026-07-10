@@ -12,7 +12,7 @@ interface SplashScreenProps {
 export function SplashScreen({ 
   onComplete, 
   text = "PROTOKOLER UNP",
-  durationMs = 2500 
+  durationMs = 2800 
 }: SplashScreenProps) {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -20,65 +20,123 @@ export function SplashScreen({
     // Tahan splash screen selama waktu yang ditentukan
     const timer = setTimeout(() => {
       setIsVisible(false);
-      // Beri jeda 500ms agar animasi exit framer-motion selesai sebelum trigger callback
+      // Beri jeda 800ms agar animasi exit framer-motion selesai dengan mulus
       setTimeout(() => {
         if (onComplete) onComplete();
-      }, 500); 
+      }, 800); 
     }, durationMs);
 
     return () => clearTimeout(timer);
   }, [onComplete, durationMs]);
+
+  const textVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { 
+        staggerChildren: 0.08,
+        delayChildren: 0.5,
+      } 
+    }
+  };
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
+    visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: 'spring', damping: 12, stiffness: 200 } }
+  };
 
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-gradient-to-br from-[#6B0000] via-[#5a0000] to-[#8a0000] overflow-hidden"
+          exit={{ opacity: 0, scale: 1.1, filter: "blur(20px)" }}
+          transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#0a0000] overflow-hidden"
         >
-           {/* Decorative Blurs */}
-           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-red-500/20 rounded-full blur-[120px] pointer-events-none" />
-           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
-           <div className="absolute inset-0 bg-black/10 pointer-events-none mix-blend-overlay" />
+           {/* Dynamic Animated Background */}
+           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#4a0000] via-[#1a0000] to-[#0a0000] opacity-80" />
+           
+           <motion.div 
+             animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }} 
+             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} 
+             className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-red-600/40 rounded-full blur-[120px] pointer-events-none mix-blend-screen" 
+           />
+           <motion.div 
+             animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.5, 0.2] }} 
+             transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }} 
+             className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#D2AD5C]/30 rounded-full blur-[120px] pointer-events-none mix-blend-screen" 
+           />
+           
+           {/* Animated Grid Overlay */}
+           <motion.div 
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 0.15 }}
+             transition={{ duration: 1.5 }}
+             className="absolute inset-0 pointer-events-none"
+             style={{ 
+               backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+               backgroundSize: '40px 40px',
+               maskImage: 'radial-gradient(circle at center, black, transparent 80%)',
+               WebkitMaskImage: 'radial-gradient(circle at center, black, transparent 80%)'
+             }} 
+           />
            
            {/* Animated Logo */}
-           <motion.div
-              initial={{ scale: 0.7, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, type: "spring", stiffness: 150, damping: 20 }}
-              className="relative h-28 w-28 md:h-36 md:w-36 mb-6 drop-shadow-2xl"
-           >
-              <Image 
-                src="/logo-protokoler-new.webp" 
-                alt="Logo Protokoler" 
-                fill 
-                className="object-contain" 
-                priority 
-              />
-           </motion.div>
+           <div className="relative mb-8">
+             <motion.div
+                initial={{ scale: 0.8, opacity: 0, rotateY: 90 }}
+                animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 100, damping: 20 }}
+                className="relative h-28 w-28 md:h-36 md:w-36 drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)] z-10"
+             >
+                <Image 
+                  src="/logo-protokoler-new.webp" 
+                  alt="Logo Protokoler" 
+                  fill 
+                  className="object-contain" 
+                  priority 
+                />
+             </motion.div>
+             {/* Logo Glow Pulse */}
+             <motion.div
+               animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
+               transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+               className="absolute inset-0 bg-[#D2AD5C] blur-[60px] rounded-full z-0"
+             />
+           </div>
            
-           {/* Animated Text */}
-           <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
-              className="text-white font-display text-2xl md:text-3xl font-bold tracking-[0.2em] md:tracking-[0.25em] uppercase drop-shadow-md text-center px-4"
-           >
-              {text}
-           </motion.h1>
-
-           {/* Elegant Loading Dots */}
+           {/* Staggered Animated Text */}
            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="mt-10 flex gap-2.5"
+              variants={textVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex justify-center z-10 px-4"
            >
-              <div className="w-2.5 h-2.5 rounded-full bg-[#D2AD5C] animate-bounce shadow-[0_0_10px_rgba(210,173,92,0.8)]" style={{ animationDelay: '0ms', animationDuration: '1s' }} />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#D2AD5C] animate-bounce shadow-[0_0_10px_rgba(210,173,92,0.8)]" style={{ animationDelay: '150ms', animationDuration: '1s' }} />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#D2AD5C] animate-bounce shadow-[0_0_10px_rgba(210,173,92,0.8)]" style={{ animationDelay: '300ms', animationDuration: '1s' }} />
+              {text.split("").map((char, index) => (
+                <motion.span 
+                  key={index} 
+                  variants={letterVariants}
+                  className="text-white font-display text-2xl md:text-4xl font-bold tracking-[0.2em] md:tracking-[0.25em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+                >
+                  {char === " " ? "\u00A0" : char}
+                </motion.span>
+              ))}
+           </motion.div>
+
+           {/* Elegant Loading Line */}
+           <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="mt-12 relative w-48 h-[2px] bg-white/10 rounded-full overflow-hidden z-10"
+           >
+              <motion.div 
+                initial={{ width: "0%", left: "0%" }} 
+                animate={{ width: ["0%", "100%", "0%"], left: ["0%", "0%", "100%"] }} 
+                transition={{ duration: 2, ease: "easeInOut", repeat: Infinity }} 
+                className="absolute top-0 h-full bg-gradient-to-r from-transparent via-[#D2AD5C] to-[#ffeeb0] shadow-[0_0_15px_rgba(210,173,92,1)]" 
+              />
            </motion.div>
         </motion.div>
       )}

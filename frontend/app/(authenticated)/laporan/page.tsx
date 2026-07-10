@@ -76,7 +76,7 @@ export default function Page() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col xl:flex-row items-center justify-between gap-4 border border-slate-200 bg-white shadow-sm rounded-[24px] p-5">
           
           {/* TABS */}
-          <div className="flex gap-2 overflow-x-auto w-full xl:w-auto [&::-webkit-scrollbar]:hidden shrink-0 pb-2 xl:pb-0">
+          <div className="flex gap-2 overflow-x-auto w-full xl:w-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shrink-0 pb-2 xl:pb-0">
             <button 
               onClick={() => setTab("kegiatan")} 
               className={cn(
@@ -135,7 +135,7 @@ export default function Page() {
                 <Download className="h-4 w-4" /> Export CSV
               </Button>
             </div>
-            <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [&::-webkit-scrollbar]:hidden">
+            <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
                 <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50 sticky top-0 z-10">
@@ -200,7 +200,7 @@ export default function Page() {
                 <Download className="h-4 w-4" /> Export CSV
               </Button>
             </div>
-            <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [&::-webkit-scrollbar]:hidden">
+            <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
                 <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50 sticky top-0 z-10">

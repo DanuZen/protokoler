@@ -51,6 +51,7 @@ export class KegiatanService {
         lokasi: dto.lokasi,
         audience: dto.audience,
         keynote: dto.keynote,
+        mc: dto.mc,
         status: dto.status || StatusKegiatanEnum.draf,
         jumlah_protokoler_dibutuhkan: dto.jumlah_protokoler_dibutuhkan || 0,
         jumlah_lo_dibutuhkan: dto.jumlah_lo_dibutuhkan || 0,
@@ -239,6 +240,7 @@ export class KegiatanService {
     if (dto.lokasi !== undefined) updateData.lokasi = dto.lokasi;
     if (dto.audience !== undefined) updateData.audience = dto.audience;
     if (dto.keynote !== undefined) updateData.keynote = dto.keynote;
+    if (dto.mc !== undefined) updateData.mc = dto.mc;
     if ((dto as any).rundown_url !== undefined) updateData.rundown_url = (dto as any).rundown_url;
     if (dto.status !== undefined) updateData.status = dto.status;
     if (dto.jumlah_protokoler_dibutuhkan !== undefined) updateData.jumlah_protokoler_dibutuhkan = dto.jumlah_protokoler_dibutuhkan;
@@ -279,6 +281,7 @@ export class KegiatanService {
     checklist_tata_tempat?: boolean;
     checklist_tata_upacara?: boolean;
     checklist_tata_penghormatan?: boolean;
+    is_open_recruitment?: boolean;
   }) {
     if (!this.isValidUuid(id)) {
       throw new NotFoundException('Kegiatan tidak ditemukan');

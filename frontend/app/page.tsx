@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CalendarDays, ClipboardList, Users, ShieldCheck, ArrowRight, ChevronDown, Star, ArrowUpRight, Megaphone, Quote, Play, Camera, Trophy, MessageSquare, MapPin, Clock, BookOpen, FileText, ExternalLink, X, ChevronLeft, ChevronRight, Mail, Phone, Download, Mic, UserCheck } from 'lucide-react';
+import { CalendarDays, ClipboardList, Users, ShieldCheck, ArrowRight, ChevronDown, Star, ArrowUpRight, Megaphone, Quote, Play, Camera, Trophy, MessageSquare, MapPin, Clock, BookOpen, FileText, ExternalLink, X, ChevronLeft, ChevronRight, Mail, Phone, Download, Mic, UserCheck, Mic2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
@@ -16,6 +16,8 @@ import { useAuth, useRole } from '@/hooks/use-auth';
 import { LandingNavbar } from '@/components/landing-navbar';
 import { LandingFooter } from '@/components/landing-footer';
 import { SplashScreen } from '@/components/splash-screen';
+import { PostCard } from '@/components/post-card';
+import { PostModal } from '@/components/post-modal';
 // Varied Animation Variants
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -45,126 +47,28 @@ const staggerContainer = {
   },
 };
 
-function PostCard({ post, isFeatured, onClick }: { post: any, isFeatured: boolean, onClick: () => void }) {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const images = post.images || [post.gambar || '/gallery_1.webp'];
-
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setActiveIdx((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setActiveIdx((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  let gridClass = "h-[360px] md:h-[400px]";
-  if (isFeatured) {
-    gridClass += " md:col-span-2 lg:col-span-2";
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.6 }}
-      whileHover={{ scale: 1.02 }}
-      onClick={onClick}
-      className={cn(
-        "group relative overflow-hidden cursor-pointer rounded-3xl w-full",
-        gridClass
-      )}
-      style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05)' }}
-    >
-      {/* Slider Images */}
-      {images.map((img: string, idx: number) => (
-        <motion.div
-          key={img + idx}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: idx === activeIdx ? 1 : 0 }}
-          transition={{ duration: 0.4 }}
-          className="absolute inset-0 z-0"
-        >
-          <Image 
-            src={img} 
-            alt={post.judul} 
-            fill 
-            sizes={isFeatured ? "(max-width: 1024px) 100vw, 60vw" : "(max-width: 1024px) 100vw, 40vw"} 
-            className="object-cover transition-transform duration-1000 group-hover:scale-108" 
-          />
-        </motion.div>
-      ))}
-
-      {/* Slide Navigation Buttons */}
-      {images.length > 1 && (
-        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-          <button 
-            onClick={handlePrev} 
-            className="w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm transition-all"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={handleNext} 
-            className="w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm transition-all"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
-      )}
-
-
-      {/* Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500 z-10" />
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" style={{ background: 'linear-gradient(135deg, rgba(139,10,26,0.4) 0%, transparent 60%)' }} />
-      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" style={{ boxShadow: 'inset 0 0 0 2px rgba(139,10,26,0.6)' }} />
-      
-      {/* Tag */}
-      <div className="absolute top-6 left-6 flex gap-2 z-20">
-        <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#6B0000]/90 backdrop-blur-md text-white shadow-lg">
-          {post.kategori}
-        </span>
-      </div>
-
-      {/* Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 z-20 flex flex-col justify-end">
-        <p className="text-[#D2AD5C] text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2">
-          {new Date(post.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-        </p>
-        <h3 className={cn("text-white font-bold drop-shadow-lg leading-tight mb-3", isFeatured ? "text-2xl md:text-3xl" : "text-xl md:text-2xl")}>
-          {post.judul}
-        </h3>
-        
-        <p className={cn("text-white/80 transition-all duration-500 line-clamp-2", isFeatured ? "text-sm md:text-base mb-5 opacity-100" : "text-sm mb-0 h-0 opacity-0 group-hover:h-auto group-hover:mb-4 group-hover:opacity-100")}>
-          {post.ringkasan}
-        </p>
-
-        <div className={cn("flex items-center gap-3 transition-opacity duration-500", isFeatured ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
-          <div className="w-8 h-[2px] rounded-full bg-[#D2AD5C]" />
-          <span className="text-white text-[10px] md:text-xs font-bold uppercase tracking-widest group-hover:text-[#D2AD5C] transition-colors">Baca Selengkapnya</span>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 export default function Landing() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [currentDayEventIdx, setCurrentDayEventIdx] = useState(0);
   const [selectedPost, setSelectedPost] = useState<any | null>(null);
   const [modalPhotoIdx, setModalPhotoIdx] = useState(0);
   const [showSplash, setShowSplash] = useState(true);
+  const [isPostDescExpanded, setIsPostDescExpanded] = useState(false);
+
+  useEffect(() => {
+    setCurrentDayEventIdx(0);
+  }, [selectedDate]);
 
   const carouselPlugins = useRef([
-    Autoplay({ delay: 4000, stopOnInteraction: true })
+    Autoplay({ delay: 4000, stopOnInteraction: false })
   ]);
 
   const handleSelectPost = (post: any) => {
     setSelectedPost(post);
     setModalPhotoIdx(0);
+    setIsPostDescExpanded(false);
   };
 
 
@@ -187,10 +91,7 @@ export default function Landing() {
 
   useEffect(() => {
     setIsMounted(true);
-    
-    // Cek sessionStorage untuk Splash Screen
-    const hasSeenSplash = sessionStorage.getItem('hasSeenSplash_landing');
-    if (hasSeenSplash) {
+    if (sessionStorage.getItem('hasSeenSplash')) {
       setShowSplash(false);
     }
 
@@ -201,21 +102,32 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (selectedPost || showSplash) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedPost, showSplash]);
+
   return (
     <>
       {showSplash && (
         <SplashScreen 
           text="PROTOKOLER UNP" 
-          durationMs={2000} 
+          durationMs={2800} 
           onComplete={() => {
-            sessionStorage.setItem('hasSeenSplash_landing', 'true');
             setShowSplash(false);
+            sessionStorage.setItem('hasSeenSplash', 'true');
           }} 
         />
       )}
 
-      {/* Sembunyikan konten web utama selama splash screen aktif agar tidak ada yang bocor (flicker) */}
-      <div className={cn("min-h-screen bg-white text-slate-900 selection:bg-red-100 overflow-x-hidden font-sans", showSplash ? "hidden" : "block")}>
+      {/* Konten web utama tetap di-render di bawah splash screen agar transisi fade-out mulus */}
+      <div className="min-h-screen bg-white text-slate-900 selection:bg-red-100 overflow-x-hidden font-sans">
         {/* Interactive Dynamic Navbar */}
       <LandingNavbar />
 
@@ -288,7 +200,7 @@ export default function Landing() {
         </section>
 
         {/* Profil & Nilai Inti (About Us) */}
-        <section id="profil" className="py-16 md:py-32 relative overflow-hidden bg-white">
+        <section id="profil" className="py-24 md:py-32 relative overflow-hidden bg-white">
           <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
             <div className="flex flex-col-reverse lg:flex-row-reverse items-center gap-12 lg:gap-20">
               
@@ -297,10 +209,10 @@ export default function Landing() {
                 initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={fadeRight}
                 className="w-full lg:w-[45%] relative mt-4 lg:mt-0"
               >
-                <div className="relative w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[500px] aspect-square mx-auto lg:mx-0">
+                <div className="relative w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[600px] xl:max-w-[650px] aspect-square mx-auto lg:ml-auto lg:mr-0">
                    {/* Main Image */}
                    <div className="absolute top-0 right-0 w-[85%] h-[85%] rounded-[2rem] overflow-hidden shadow-2xl">
-                     <Image src="/team-collab.webp" alt="Tim Protokoler" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                     <Image src="/rektorat.webp" alt="Tim Protokoler" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                    </div>
                    {/* Secondary Image */}
@@ -308,7 +220,7 @@ export default function Landing() {
                      whileHover={{ y: -10 }}
                      className="absolute bottom-0 left-0 w-[55%] h-[55%] rounded-3xl overflow-hidden shadow-2xl border-8 border-white"
                    >
-                     <Image src="/rektorat.webp" alt="Rektorat UNP" fill sizes="(max-width: 1024px) 50vw, 30vw" className="object-cover" />
+                     <Image src="/protokoler.webp" alt="Rektorat UNP" fill sizes="(max-width: 1024px) 50vw, 30vw" className="object-cover" />
                    </motion.div>
                 </div>
                 
@@ -383,23 +295,23 @@ export default function Landing() {
         </section>
 
         {/* Jadwal Kegiatan */}
-        <section id="jadwal" className="py-16 md:py-32 relative overflow-hidden bg-slate-50">
+        <section id="jadwal" className="py-24 md:py-32 relative overflow-hidden bg-slate-50">
           {/* Decorative orbs */}
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-[0.07] blur-3xl" style={{ background: 'radial-gradient(circle, #6B0000 0%, transparent 70%)' }} />
           <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full opacity-[0.05] blur-3xl" style={{ background: 'radial-gradient(circle, #D2AD5C 0%, transparent 70%)' }} />
 
           <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
             {/* Header */}
-            <div className="mb-16 text-center">
+            <div className="mb-16 text-center flex flex-col items-center">
+              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4">
+                Kegiatan <span className="text-[#6B0000]">Mendatang</span>
+              </motion.h2>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="flex items-center justify-center gap-3 md:gap-4 mb-4">
                 <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
                 <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#6B0000] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Agenda</span>
                 <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
               </motion.div>
-              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
-                Kegiatan <span className="text-[#6B0000]">Mendatang</span>
-              </motion.h2>
-              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-2 sm:mt-4 text-slate-500 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4 sm:px-0">
+              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-slate-500 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4 sm:px-0">
                 Jadwal kegiatan resmi tingkat universitas yang akan dan sedang berlangsung.
               </motion.p>
             </div>
@@ -407,7 +319,7 @@ export default function Landing() {
             {isLoading ? (
               <div className="grid lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr] gap-5 md:gap-8 animate-pulse">
                 {/* Skeleton Left: Calendar */}
-                <div className="bg-white p-5 sm:p-7 md:p-9 flex flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg w-full h-[400px]">
+                <div className="hidden lg:flex bg-white p-5 sm:p-7 md:p-9 flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg w-full h-[400px]">
                   <div>
                     <div className="h-3 bg-slate-200 rounded w-1/3 mb-3"></div>
                     <div className="h-6 bg-slate-200 rounded w-1/2 mb-6"></div>
@@ -436,7 +348,7 @@ export default function Landing() {
                 className="grid lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr] gap-5 md:gap-8"
               >
                 {/* Left: Calendar Card */}
-                <div className="bg-white p-5 sm:p-7 md:p-9 flex flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg w-full max-w-full overflow-hidden">
+                <div className="hidden lg:flex bg-white p-5 sm:p-7 md:p-9 flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg w-full max-w-full overflow-hidden">
                   <div>
                     <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em] mb-1">Kalender Acara</p>
                     <p className="text-slate-900 font-bold text-xl">Pilih Tanggal</p>
@@ -462,18 +374,66 @@ export default function Landing() {
                 </div>
 
                 {/* Right: Event Details Card */}
-                <div className="bg-white p-6 sm:p-8 md:p-10 flex flex-col rounded-[2rem] border border-slate-200 shadow-lg w-full max-w-full overflow-hidden">
+                <div className="bg-white p-6 sm:p-8 md:p-10 flex flex-col rounded-[2rem] border border-slate-200 shadow-lg w-full max-w-full overflow-hidden h-full">
                   {(() => {
-                    const event = kegiatanPublik?.find((k: any) => selectedDate && new Date(k.tanggal).toDateString() === selectedDate.toDateString());
+                    let nextDateStr = null;
+                    let prevDateStr = null;
 
-                    if (!event) {
+                    if (selectedDate) {
+                       const prev = new Date(selectedDate);
+                       prev.setDate(prev.getDate() - 1);
+                       prevDateStr = prev.toDateString();
+                       
+                       const next = new Date(selectedDate);
+                       next.setDate(next.getDate() + 1);
+                       nextDateStr = next.toDateString();
+                    }
+
+                    const eventsForDay = kegiatanPublik?.filter((k: any) => selectedDate && new Date(k.tanggal).toDateString() === selectedDate.toDateString()) || [];
+
+                    const NavigationButtons = () => {
+                      return (
+                        <div className="flex items-center justify-end gap-2 md:gap-3 shrink-0 ml-2">
+                          <p className="text-[10px] md:text-[11px] font-bold text-slate-400 tracking-wider">
+                            <span className="hidden sm:inline uppercase">Acara </span>{currentDayEventIdx + 1} / {eventsForDay.length}
+                          </p>
+                          <div className="flex items-center gap-0.5 border border-slate-200/60 rounded-lg p-0.5 shadow-sm bg-white">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              disabled={currentDayEventIdx === 0} 
+                              onClick={() => setCurrentDayEventIdx(p => Math.max(0, p - 1))}
+                              className="h-6 w-6 md:h-7 md:w-7 text-slate-500 hover:text-[#6B0000] hover:bg-red-50 rounded-md shrink-0 disabled:opacity-30"
+                            >
+                              <ChevronLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                            </Button>
+                            <div className="w-[1px] h-3.5 bg-slate-200"></div>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              disabled={currentDayEventIdx === eventsForDay.length - 1} 
+                              onClick={() => setCurrentDayEventIdx(p => Math.min(eventsForDay.length - 1, p + 1))}
+                              className="h-6 w-6 md:h-7 md:w-7 text-slate-500 hover:text-[#6B0000] hover:bg-red-50 rounded-md shrink-0 disabled:opacity-30"
+                            >
+                              <ChevronRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    };
+
+                    if (eventsForDay.length === 0) {
                       return (
                         <div className="h-full flex flex-col">
-                          <div>
-                            <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em] mb-1">Detail Acara</p>
-                            <p className="text-slate-900 font-bold text-xl">
-                              {isMounted ? (selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) ?? 'Belum ada tanggal dipilih') : 'Memuat...'}
-                            </p>
+                          <div className="shrink-0 mb-6 border-b border-slate-100 pb-5">
+                            <div className="flex items-center justify-between">
+                              <div className="text-left min-w-0">
+                                <p className="text-[9px] md:text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.2em] md:tracking-[0.3em] mb-0.5 md:mb-1">Detail Acara</p>
+                                <p className="text-slate-900 font-bold text-base sm:text-lg md:text-xl truncate pr-2">
+                                  {isMounted ? (selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) ?? 'Belum ada tanggal dipilih') : 'Memuat...'}
+                                </p>
+                              </div>
+                            </div>
                           </div>
                           <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
                             <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6 bg-slate-50 border border-slate-100 shadow-sm">
@@ -482,105 +442,180 @@ export default function Landing() {
                             <p className="font-bold text-lg text-slate-700">Tidak ada agenda</p>
                             <p className="text-sm mt-2 text-slate-400 max-w-[250px] mx-auto">Tidak ada kegiatan yang dijadwalkan pada tanggal ini.</p>
                           </div>
+                          <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between shrink-0">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              disabled={!prevDateStr} 
+                              onClick={() => prevDateStr && setSelectedDate(new Date(prevDateStr))}
+                              className="text-slate-500 hover:text-slate-900 hover:bg-slate-100 text-[11px] sm:text-sm px-2 sm:px-3"
+                            >
+                              <ChevronLeft className="w-4 h-4 mr-1" /> Hari Sebelumnya
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              disabled={!nextDateStr} 
+                              onClick={() => nextDateStr && setSelectedDate(new Date(nextDateStr))}
+                              className="text-slate-500 hover:text-slate-900 hover:bg-slate-100 text-[11px] sm:text-sm px-2 sm:px-3"
+                            >
+                              Hari Selanjutnya <ChevronRight className="w-4 h-4 ml-1" />
+                            </Button>
+                          </div>
                         </div>
                       );
                     }
 
+                    // Render just the currently selected event for the day
+                    const event = eventsForDay[currentDayEventIdx];
+                    if (!event) return null;
+
                     return (
-                      <div className="flex flex-col h-full">
-                        <div className="mb-6">
-                          <div className="flex items-center justify-between mb-4">
-                             <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em]">Detail Acara</p>
-                             <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${event.status === 'berlangsung' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
-                               {event.status}
-                             </span>
-                          </div>
-                          <h3 className="font-display text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-3">{event.nama_kegiatan}</h3>
-                          <p className="text-slate-500 text-sm flex items-center gap-2">
-                            <CalendarDays className="w-4 h-4 text-slate-400" />
-                            {isMounted ? selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'Memuat...'}
-                          </p>
-                        </div>
-
-                        <div className="w-full h-px bg-slate-100 my-2" />
-
-                        <div className="flex-1 mt-4 grid sm:grid-cols-2 gap-x-6 gap-y-6">
-                          <div className="flex gap-4">
-                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                              <Clock className="w-4 h-4 text-[#6B0000]" />
-                            </div>
-                            <div>
-                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Waktu</p>
-                              <p className="font-bold text-slate-900 text-sm">{event.jam_mulai?.slice(0, 5) || '--:--'} - {event.jam_selesai?.slice(0, 5) || 'Selesai'} WIB</p>
-                            </div>
-                          </div>
-
-                          <div className="flex gap-4">
-                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                              <MapPin className="w-4 h-4 text-[#6B0000]" />
-                            </div>
-                            <div>
-                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Lokasi</p>
-                              <p className="font-bold text-slate-900 text-sm line-clamp-2">{event.lokasi}</p>
-                            </div>
-                          </div>
-
-                          <div className="flex gap-4">
-                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                              <Users className="w-4 h-4 text-[#6B0000]" />
-                            </div>
-                            <div>
-                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tamu / Pimpinan</p>
-                              <p className="font-bold text-slate-900 text-sm line-clamp-2">
-                                {event.tamu_vvip && Array.isArray(event.tamu_vvip) && event.tamu_vvip.length > 0 
-                                  ? event.tamu_vvip.map((t: any) => t.nama_tamu).filter(Boolean).join(', ') 
-                                  : 'Pimpinan Universitas'}
+                      <div className="flex flex-col h-full overflow-hidden">
+                        <div className="shrink-0 mb-6 border-b border-slate-100 pb-4 md:pb-5">
+                          <div className="flex items-center justify-between">
+                            <div className="text-left min-w-0">
+                              <p className="text-[9px] md:text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.2em] md:tracking-[0.3em] mb-0.5 md:mb-1">Detail Acara</p>
+                              <p className="text-slate-900 font-bold text-base sm:text-lg md:text-xl truncate pr-2">
+                                {isMounted ? (selectedDate?.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) ?? 'Belum ada tanggal dipilih') : 'Memuat...'}
                               </p>
                             </div>
+                            <NavigationButtons />
                           </div>
-
-                          <div className="flex gap-4">
-                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                              <Megaphone className="w-4 h-4 text-[#6B0000]" />
-                            </div>
-                            <div>
-                              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bentuk Kegiatan</p>
-                              <p className="font-bold text-slate-900 text-sm capitalize">{event.bentuk_kegiatan ? event.bentuk_kegiatan.replace('_', ' ') : '-'}</p>
-                            </div>
-                          </div>
-
-                          {event.audience && (
-                            <div className="flex gap-4">
-                              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                                <UserCheck className="w-4 h-4 text-[#6B0000]" />
-                              </div>
-                              <div>
-                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Peserta</p>
-                                <p className="font-bold text-slate-900 text-sm line-clamp-2">{event.audience}</p>
-                              </div>
-                            </div>
-                          )}
-
-                          {event.keynote && (
-                            <div className="flex gap-4">
-                              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                                <Mic className="w-4 h-4 text-[#6B0000]" />
-                              </div>
-                              <div>
-                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Narasumber / Keynote</p>
-                                <p className="font-bold text-slate-900 text-sm line-clamp-2">{event.keynote}</p>
-                              </div>
-                            </div>
-                          )}
                         </div>
 
-                        {event.rundown_url && (
-                          <div className="mt-8 pt-4 border-t border-slate-100">
-                             <a href={event.rundown_url} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-sm border border-slate-200 transition-colors">
-                                <ExternalLink className="w-4 h-4" /> Lihat Rundown Acara
-                             </a>
-                          </div>
-                        )}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar pr-3 flex flex-col pb-6">
+                            <div className="flex flex-col relative">
+                              <div className="mb-5 text-center lg:text-left">
+                                <div className="flex items-center justify-center lg:justify-start mb-3">
+                                   <div className="flex gap-2 items-center">
+                                     <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${event.status === 'berlangsung' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+                                       {event.status}
+                                     </span>
+                                   </div>
+                                </div>
+                                <h3 className="font-display text-2xl md:text-3xl font-bold text-slate-900 leading-tight">{event.nama_kegiatan}</h3>
+                              </div>
+
+                              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-3 md:gap-y-6">
+                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                    <Clock className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Waktu</p>
+                                    <p className="font-bold text-slate-900 text-xs md:text-sm">{event.jam_mulai?.slice(0, 5) || '--:--'} - {event.jam_selesai?.slice(0, 5) || 'Selesai'} WIB</p>
+                                  </div>
+                                </div>
+
+                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                    <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Lokasi</p>
+                                    <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">{event.lokasi}</p>
+                                  </div>
+                                </div>
+
+                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                    <Users className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Tamu / Pimpinan</p>
+                                    <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">
+                                      {event.tamu_vvip && Array.isArray(event.tamu_vvip) && event.tamu_vvip.length > 0 
+                                        ? event.tamu_vvip.map((t: any) => t.nama_tamu).filter(Boolean).join(', ') 
+                                        : 'Pimpinan Universitas'}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                    <Megaphone className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Bentuk Kegiatan</p>
+                                    <p className="font-bold text-slate-900 text-xs md:text-sm capitalize">{event.bentuk_kegiatan ? event.bentuk_kegiatan.replace('_', ' ') : '-'}</p>
+                                  </div>
+                                </div>
+
+                                {event.audience && (
+                                  <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                      <UserCheck className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Target Peserta</p>
+                                      <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">{event.audience}</p>
+                                    </div>
+                                  </div>
+                                )}
+
+                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                    <Mic2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">MC / Pembawa Acara</p>
+                                    <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">{event.mc || "-"}</p>
+                                  </div>
+                                </div>
+
+                                {event.keynote && (
+                                  <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                      <Mic className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Narasumber / Keynote</p>
+                                      <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">{event.keynote}</p>
+                                    </div>
+                                  </div>
+                                )}
+
+                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                    <FileText className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Rundown Acara</p>
+                                    {event.rundown_url ? (
+                                      <a href={event.rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs md:text-sm font-bold text-[#6B0000] hover:text-red-700 transition-colors bg-red-50 hover:bg-red-100 px-3 md:px-4 py-1.5 rounded-full mt-0.5">
+                                        <ExternalLink className="w-3 h-3 md:w-3.5 md:h-3.5" /> Buka Rundown
+                                      </a>
+                                    ) : (
+                                      <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">-</p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+
+                            </div>
+                        </div>
+
+                        <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between shrink-0">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            disabled={!prevDateStr} 
+                            onClick={() => prevDateStr && setSelectedDate(new Date(prevDateStr))}
+                            className="text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+                          >
+                            <ChevronLeft className="w-4 h-4 mr-1" /> Hari Sebelumnya
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            disabled={!nextDateStr} 
+                            onClick={() => nextDateStr && setSelectedDate(new Date(nextDateStr))}
+                            className="text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+                          >
+                            Hari Selanjutnya <ChevronRight className="w-4 h-4 ml-1" />
+                          </Button>
+                        </div>
                       </div>
                     );
                   })()}
@@ -591,7 +626,7 @@ export default function Landing() {
         </section>
 
         {/* Regulasi & SOP — Split Layout Style */}
-        <section id="prosedur" className="py-16 md:py-32 relative overflow-hidden bg-slate-50 border-t border-slate-100">
+        <section id="prosedur" className="py-24 md:py-32 relative overflow-hidden bg-slate-50 border-t border-slate-100">
           {/* Decorative mesh */}
           <div className="absolute top-0 right-0 w-full h-full opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#6B0000 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
@@ -665,7 +700,7 @@ export default function Landing() {
         </section>
 
         {/* Testimoni */}
-        <section className="py-16 md:py-32 relative overflow-hidden bg-mesh-dark">
+        <section className="py-24 md:py-32 relative overflow-hidden bg-mesh-dark">
           <div className="absolute inset-0 bg-grid-pattern opacity-[0.03]" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5 blur-3xl" style={{ background: 'radial-gradient(circle, #6B0000 0%, transparent 70%)' }} />
 
@@ -705,16 +740,16 @@ export default function Landing() {
                     opts={{ loop: true, align: 'center' }} 
                     plugins={carouselPlugins.current} 
                     onMouseEnter={() => carouselPlugins.current[0].stop()}
-                    onMouseLeave={() => carouselPlugins.current[0].reset()}
+                    onMouseLeave={() => carouselPlugins.current[0].play()}
                     className="w-full"
                   >
                     <CarouselContent className="ml-0 lg:-ml-4">
                       {[
-                        { name: 'Dr. Ir. Krismadinata, S.T., M.T', role: 'Rektor Universitas Negeri Padang', image: '/tim_pengembang/danu.webp', text: 'Sistem keprotokolan terpadu ini sangat membantu dalam memastikan kelancaran dan standar tinggi pada setiap agenda resmi universitas.' },
-                        { name: 'Prof. Dr. Refnaldi, S.Pd., M.Litt', role: 'Wakil Rektor Bidang Akademik, Kemahasiswaan dan Alumni', image: '/tim_pengembang/danu.webp', text: 'Koordinasi kegiatan kemahasiswaan dan akademik kini menjadi lebih tertata, disiplin, dan profesional berkat inovasi layanan ini.' },
-                        { name: 'Prof. Dr. Ir. Remon Lapisa, S.T., M.T., M.Sc', role: 'Wakil Rektor Bidang Keuangan, Umum dan Usaha', image: '/tim_pengembang/danu.webp', text: 'Efisiensi dan efektivitas dalam pengelolaan acara universitas meningkat signifikan, mendukung tata kelola yang lebih baik secara keseluruhan.' },
-                        { name: 'Prof. Dr. Ir. Anni Faridah, M.Si', role: 'Wakil Rektor Bidang Sumber Daya Manusia dan Inovasi', image: '/tim_pengembang/danu.webp', text: 'Inovasi digital dalam tata keprotokolan mencerminkan komitmen kita dalam pengembangan sumber daya manusia yang adaptif dan modern.' },
-                        { name: 'Dr. rer. nat. Deski Beri, S.Si, M.Si', role: 'Wakil Rektor Bidang Perencanaan, Kerja Sama dan Hubungan Internasional', image: '/tim_pengembang/danu.webp', text: 'Layanan prima yang ditampilkan memberikan impresi positif bagi mitra kerja sama, baik di tingkat nasional maupun internasional.' },
+                        { name: 'Dr. Ir. Krismadinata, S.T., M.T', role: 'Rektor Universitas Negeri Padang', image: '/pimpinan/rektor.webp', text: 'Sistem keprotokolan terpadu ini sangat membantu dalam memastikan kelancaran dan standar tinggi pada setiap agenda resmi universitas.' },
+                        { name: 'Prof. Dr. Refnaldi, S.Pd., M.Litt', role: 'Wakil Rektor Bidang Akademik, Kemahasiswaan dan Alumni', image: '/pimpinan/wr1.webp', text: 'Koordinasi kegiatan kemahasiswaan dan akademik kini menjadi lebih tertata, disiplin, dan profesional berkat inovasi layanan ini.' },
+                        { name: 'Prof. Dr. Ir. Remon Lapisa, S.T., M.T., M.Sc', role: 'Wakil Rektor Bidang Keuangan, Umum dan Usaha', image: '/pimpinan/wr2.webp', text: 'Efisiensi dan efektivitas dalam pengelolaan acara universitas meningkat signifikan, mendukung tata kelola yang lebih baik secara keseluruhan.' },
+                        { name: 'Prof. Dr. Ir. Anni Faridah, M.Si', role: 'Wakil Rektor Bidang Sumber Daya Manusia dan Inovasi', image: '/pimpinan/wr3.webp', text: 'Inovasi digital dalam tata keprotokolan mencerminkan komitmen kita dalam pengembangan sumber daya manusia yang adaptif dan modern.' },
+                        { name: 'Dr. rer. nat. Deski Beri, S.Si, M.Si', role: 'Wakil Rektor Bidang Perencanaan, Kerja Sama dan Hubungan Internasional', image: '/pimpinan/wr4.webp', text: 'Layanan prima yang ditampilkan memberikan impresi positif bagi mitra kerja sama, baik di tingkat nasional maupun internasional.' },
                       ].map((testi, i) => (
                         <CarouselItem key={i} className="pl-0 basis-full lg:pl-4">
                           <div className="w-full px-6 lg:px-0">
@@ -725,11 +760,11 @@ export default function Landing() {
                               <div className="absolute top-4 right-6 lg:right-auto lg:left-8 font-display text-8xl font-black leading-none select-none text-[#D2AD5C]/10 transition-colors duration-300 z-0">&ldquo;</div>
                             
                             {/* Pop-out Image Section */}
-                            <div className="relative w-36 h-36 sm:w-40 sm:h-40 lg:w-64 lg:h-64 shrink-0 z-20 mx-auto lg:mx-0">
-                               <div className="absolute inset-0 bg-[#3A0000] scale-x-[1.15] rounded-[2rem] shadow-inner flex flex-col items-center justify-center border border-white/5 transition-transform duration-500">
+                            <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 shrink-0 z-20 mx-auto lg:mx-0 mt-4 lg:mt-0">
+                               <div className="absolute inset-0 bg-[#3A0000] scale-x-[1.15] rounded-[2rem] sm:rounded-[3rem] shadow-inner flex flex-col items-center justify-center border border-white/5 transition-transform duration-500">
                                  <div className="w-12 h-12 rounded-full border border-white/10 bg-white/5" />
                                </div>
-                               <Image src={testi.image} alt={testi.name} fill sizes="(max-width: 1024px) 160px, 300px" className="object-contain object-bottom relative z-20 grayscale-0 scale-[1.35] lg:scale-[1.45] drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] origin-bottom transition-transform duration-500" />
+                               <Image src={testi.image} alt={testi.name} fill sizes="(max-width: 1024px) 250px, 300px" className="object-contain object-bottom relative z-20 grayscale-0 scale-[1.35] lg:scale-[1.45] drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] origin-bottom transition-transform duration-500" />
                             </div>
 
                             {/* Text Section */}
@@ -737,7 +772,7 @@ export default function Landing() {
                               <p className="text-slate-300/90 leading-relaxed mb-6 text-sm sm:text-base lg:text-lg italic font-medium tracking-wide">&ldquo;{testi.text}&rdquo;</p>
                               <div className="border-t border-white/10 pt-5 mt-auto">
                                 <h4 className="font-bold text-white text-[15px] sm:text-lg tracking-wide">{testi.name}</h4>
-                                <p className="text-[10px] sm:text-xs text-[#D2AD5C] font-bold uppercase tracking-[0.2em] mt-1">{testi.role}</p>
+                                <p className="text-[10px] sm:text-xs text-[#D2AD5C] font-bold tracking-[0.1em] mt-1">{testi.role}</p>
                               </div>
                             </div>
                           </motion.div>
@@ -752,7 +787,7 @@ export default function Landing() {
           </div>
         </section>
         {/* Berita & Dokumentasi (Postingan) */}
-        <section id="postingan" className="py-16 md:py-32 relative overflow-hidden bg-white border-t border-slate-100">
+        <section id="postingan" className="py-24 md:py-32 relative overflow-hidden bg-white border-t border-slate-100">
           <div className="container mx-auto px-6 relative z-10">
             <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 md:mb-16 gap-6 text-center md:text-left">
               <div className="max-w-2xl">
@@ -771,19 +806,28 @@ export default function Landing() {
             </div>
 
             {postinganDokumentasi && postinganDokumentasi.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {postinganDokumentasi.map((post: any, i: number) => {
-                  const isFeatured = i === 0;
-                  return (
-                    <PostCard
-                      key={post.id}
-                      post={post}
-                      isFeatured={isFeatured}
-                      onClick={() => handleSelectPost(post)}
-                    />
-                  );
-                })}
-              </div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {postinganDokumentasi.slice(0, 5).map((post: any, i: number) => {
+                    const isFeatured = i === 0;
+                    return (
+                      <PostCard
+                        key={post.id}
+                        post={post}
+                        isFeatured={isFeatured}
+                        onClick={() => handleSelectPost(post)}
+                      />
+                    );
+                  })}
+                </div>
+                <div className="mt-12 flex justify-center">
+                  <Link href="/postingan">
+                    <Button className="bg-[#6B0000] hover:bg-[#6A0814] text-white rounded-full px-8 py-6 text-sm font-bold tracking-wide shadow-lg shadow-red-900/20 group">
+                      Lihat Semua Postingan <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                </div>
+              </>
             ) : (
               <div className="flex flex-col items-center justify-center py-16 px-6 bg-slate-50 border border-slate-100 rounded-[2rem] text-center">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
@@ -798,116 +842,17 @@ export default function Landing() {
 
 
         {/* Instagram-style Modal for Postingan */}
-        <AnimatePresence>
-          {selectedPost && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-12 bg-black/80 backdrop-blur-sm"
-              onClick={() => setSelectedPost(null)}
-            >
-              <motion.div
-                initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="bg-white w-[95vw] max-w-[1400px] max-h-[90vh] md:h-[85vh] rounded-2xl md:rounded-[2rem] overflow-hidden flex flex-col md:flex-row shadow-2xl relative"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Left Side: Image (Instagram style slideable) */}
-                <div className="w-full md:w-[60%] h-[40%] md:h-full bg-slate-950 relative flex items-center justify-center overflow-hidden group/image">
-                   {/* Blur Background */}
-                   <Image 
-                     src={selectedPost.images?.[modalPhotoIdx] || selectedPost.gambar} 
-                     alt={selectedPost.judul} 
-                     fill 
-                     className="object-cover opacity-30 blur-2xl pointer-events-none scale-110" 
-                   />
-                   {/* Main Image */}
-                   <Image 
-                     src={selectedPost.images?.[modalPhotoIdx] || selectedPost.gambar} 
-                     alt={selectedPost.judul} 
-                     fill 
-                     className="object-contain drop-shadow-2xl z-10" 
-                   />
-
-                   {/* Navigation Arrows for Slider */}
-                   {selectedPost.images && selectedPost.images.length > 1 && (
-                     <>
-                        <button 
-                          onClick={(e) => { 
-                            e.stopPropagation(); 
-                            setModalPhotoIdx((prev) => (prev === 0 ? selectedPost.images.length - 1 : prev - 1)); 
-                          }}
-                          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md animate-in fade-in"
-                        >
-                           <ChevronLeft className="w-6 h-6" />
-                        </button>
-                        <button 
-                          onClick={(e) => { 
-                            e.stopPropagation(); 
-                            setModalPhotoIdx((prev) => (prev === selectedPost.images.length - 1 ? 0 : prev + 1)); 
-                          }}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md animate-in fade-in"
-                        >
-                           <ChevronRight className="w-6 h-6" />
-                        </button>
-                     </>
-                   )}
-                </div>
-
-                {/* Right Side: Content */}
-                <div className="w-full md:w-[40%] h-[60%] md:h-full flex flex-col bg-white overflow-hidden">
-                   {/* Header Sticky */}
-                   <div className="px-6 py-5 md:px-8 md:py-6 border-b border-slate-100 flex items-center justify-between bg-white z-10 shadow-sm">
-                     <div className="flex items-center gap-4">
-                       <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 border border-red-100 overflow-hidden">
-                          <Image src="/logo-protokoler-new.webp" width={28} height={28} alt="Protokoler" className="object-contain" />
-                       </div>
-                       <div>
-                         <p className="font-bold text-sm text-slate-900 leading-tight">Protokoler UNP</p>
-                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{selectedPost.kategori}</p>
-                       </div>
-                     </div>
-                     <button onClick={() => setSelectedPost(null)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors">
-                       <X className="w-4 h-4" />
-                     </button>
-                   </div>
-
-                   {/* Scrollable Content */}
-                   <div className="p-6 md:p-8 flex-1 overflow-y-auto">
-                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
-                       {new Date(selectedPost.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                     </p>
-                     <h2 className="text-2xl font-bold text-slate-900 mb-4 leading-tight">{selectedPost.judul}</h2>
-                     {(() => {
-                       const activePhotoUrl = selectedPost.images?.[modalPhotoIdx];
-                       const activeDoc = (selectedPost.dokumentasi || []).find((d: any) => d.file_url === activePhotoUrl);
-                       const description = activeDoc?.keterangan || selectedPost.ringkasan;
-                       return <p className="text-slate-600 leading-relaxed mb-6 whitespace-pre-wrap">{description}</p>;
-                     })()}
-                     <div className="flex items-center gap-3 py-4 border-y border-slate-100 my-6">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
-                           <Megaphone className="w-4 h-4 text-slate-500" />
-                        </div>
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pengumuman Resmi Divisi Dokumentasi</span>
-                     </div>
-                   </div>
-
-                   {/* Footer Sticky */}
-                   <div className="p-6 md:px-8 md:py-5 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
-                      <span className="text-xs text-slate-400 font-medium">Postingan ini dikelola oleh Dokumentasi</span>
-                      <Button variant="outline" className="rounded-full text-xs h-8 border-slate-200" onClick={() => setSelectedPost(null)}>Tutup</Button>
-                   </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <PostModal 
+          selectedPost={selectedPost} 
+          setSelectedPost={setSelectedPost} 
+          modalPhotoIdx={modalPhotoIdx} 
+          setModalPhotoIdx={setModalPhotoIdx} 
+          isPostDescExpanded={isPostDescExpanded} 
+          setIsPostDescExpanded={setIsPostDescExpanded} 
+        />
 
         {/* Call to Action (Recruitment) */}
-        <section className="relative py-16 md:py-32 overflow-hidden bg-[#5a0000]">
+        <section className="relative py-24 md:py-32 overflow-hidden bg-[#5a0000]">
           {/* Decorative Background Elements */}
           <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-500/20 rounded-full blur-[120px] mix-blend-screen pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
