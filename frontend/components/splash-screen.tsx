@@ -1,5 +1,5 @@
 'use client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -29,7 +29,7 @@ export function SplashScreen({
     return () => clearTimeout(timer);
   }, [onComplete, durationMs]);
 
-  const textVariants = {
+  const textVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1, 
@@ -40,7 +40,7 @@ export function SplashScreen({
     }
   };
 
-  const letterVariants = {
+  const letterVariants: Variants = {
     hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
     visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: 'spring', damping: 12, stiffness: 200 } }
   };
