@@ -36,7 +36,7 @@ export default function TentangKami() {
               <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#D2AD5C] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Mengenal Kami</span>
               <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
-            <motion.h1 variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-4 sm:mb-6 drop-shadow-lg px-4 sm:px-0">
+            <motion.h1 variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-4 sm:mb-6 drop-shadow-md px-4 sm:px-0">
               Garda Terdepan <span className="text-[#D2AD5C]">Institusi</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="text-sm sm:text-base md:text-xl text-slate-300 leading-relaxed text-justify px-4 sm:px-0">
@@ -89,7 +89,7 @@ export default function TentangKami() {
               {/* Kolom Visual (Logo Besar) */}
               <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative h-[400px] lg:h-[500px] flex items-center justify-center">
                  <div className="absolute inset-0 bg-gradient-to-tr from-red-50 to-amber-50 rounded-[3rem] transform rotate-3"></div>
-                 <div className="relative w-64 h-64 md:w-80 md:h-80 drop-shadow-2xl">
+                 <div className="relative w-64 h-64 md:w-80 md:h-80 drop-shadow-md">
                    <Image src="/logo-protokoler-new.webp" alt="Logo Protokoler" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
                  </div>
               </motion.div>
@@ -238,292 +238,279 @@ export default function TentangKami() {
               </motion.div>
             </div>
 
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="w-full pb-16 pt-8 px-4">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="w-full px-4">
               
               {/* DESKTOP LAYOUT (Hidden on Mobile) */}
-              <div className="hidden md:flex flex-col items-center mx-auto select-none font-sans min-w-[1000px] overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                
-                {/* Level 1: Kepala Kantor */}
-                <div className="flex flex-col items-center relative z-20">
-                  <div className="flex flex-col items-center w-[240px] relative px-2 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
-                    <div className="w-[120px] h-[120px] rounded-full overflow-hidden border-[4px] border-primary bg-white shadow-lg z-10 relative">
-                       <Image src="/gallery_1.webp" alt="Kepala Kantor" fill sizes="120px" className="object-cover" />
-                    </div>
-                    <div className="-mt-8 pt-12 pb-5 px-4 w-full flex flex-col items-center justify-center text-center rounded-[1.2rem] bg-primary text-white shadow-md z-0 min-h-[110px] group-hover:shadow-lg transition-shadow">
-                      <h4 className="font-black text-[14px] leading-tight mb-1 uppercase tracking-tight">Nama Kepala, S.E., M.Si.</h4>
-                      <p className="text-[10px] font-bold uppercase opacity-80 leading-tight">Kepala Kantor</p>
-                    </div>
-                  </div>
-                  <div className="w-[3px] h-10 bg-primary"></div>
-                </div>
-            
-                {/* Level 2 & 3 */}
-                <div className="flex w-full justify-center relative">
-                  
-                  {/* Node SEKRETARIS */}
-                  <div className="flex flex-col items-center flex-1 relative">
-                    <div className="absolute top-0 left-1/2 right-0 h-[3px] bg-primary"></div>
-                    <div className="w-[3px] h-8 bg-primary"></div>
-                    <div className="flex flex-col items-center w-[150px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
-                      <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-[4px] border-primary bg-white shadow-md z-10 relative">
-                         <Image src="/gallery_2.webp" alt="Sekretaris" fill sizes="100px" className="object-cover" />
-                      </div>
-                      <div className="-mt-6 pt-10 pb-4 px-2 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-primary text-white shadow-sm z-0 min-h-[90px] group-hover:shadow-md transition-shadow">
-                        <h4 className="font-black text-[12px] leading-tight mb-1 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Sekretaris</p>
-                      </div>
-                    </div>
-                  </div>
-            
-                  {/* Node DIVISI SDM */}
-                  <div className="flex flex-col items-center flex-1 relative">
-                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
-                    <div className="w-[3px] h-8 bg-primary"></div>
-                    <div className="flex flex-col items-center w-[150px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
-                      <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-[4px] border-primary bg-white shadow-md z-10 relative">
-                         <Image src="/gallery_2.webp" alt="Divisi SDM" fill sizes="100px" className="object-cover" />
-                      </div>
-                      <div className="-mt-6 pt-10 pb-4 px-2 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-primary text-white shadow-sm z-0 min-h-[90px] group-hover:shadow-md transition-shadow">
-                        <h4 className="font-black text-[12px] leading-tight mb-1 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Divisi SDM</p>
-                      </div>
-                    </div>
-                  </div>
-            
-                  {/* Node KOORDINATOR */}
-                  <div className="flex flex-col items-center flex-[1.5] relative">
-                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
-                    <div className="w-[3px] h-8 bg-primary"></div>
-                    <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group z-10">
-                      <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-[4px] border-primary bg-white shadow-md z-10 relative">
-                         <Image src="/gallery_2.webp" alt="Koordinator" fill sizes="100px" className="object-cover" />
-                      </div>
-                      <div className="-mt-6 pt-10 pb-4 px-2 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-primary text-white shadow-sm z-0 min-h-[105px] group-hover:shadow-md transition-shadow">
-                        <h4 className="font-black text-[12px] leading-tight mb-1 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Koordinator<br/>Protokoler Mahasiswa</p>
-                      </div>
-                    </div>
-                    <div className="flex w-[180px] -mt-1">
-                      <div className="w-full ml-[50px]">
-                         <div className="flex flex-col pt-6 relative">
-                            <div className="flex items-center relative group">
-                              <div className="absolute top-[-1.5rem] bottom-1/2 left-0 w-[3px] bg-primary"></div>
-                              <div className="w-6 h-[3px] bg-primary"></div>
-                              <div className="flex flex-col items-center w-[140px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
-                                <div className="w-[80px] h-[80px] rounded-full overflow-hidden border-[4px] border-primary bg-white shadow-md z-10 relative">
-                                   <Image src="/gallery_2.webp" alt="Protokoler" fill sizes="80px" className="object-cover" />
-                                </div>
-                                <div className="-mt-5 pt-8 pb-3 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-primary text-white shadow-sm z-0 min-h-[85px] group-hover:shadow-md transition-shadow">
-                                  <h4 className="font-black text-[10px] leading-tight mb-1 uppercase tracking-tight">Nama Lengkap</h4>
-                                  <p className="text-[8px] font-bold uppercase opacity-80 leading-tight">Protokoler<br/>Mahasiswa</p>
-                                </div>
-                              </div>
-                            </div>
-                         </div>
-                      </div>
-                    </div>
-                  </div>
-            
-                  {/* Node DIVISI ACARA */}
-                  <div className="flex flex-col items-center flex-[1.2] relative">
-                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
-                    <div className="w-[3px] h-8 bg-primary"></div>
-                    <div className="flex flex-col items-center w-[150px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group z-10">
-                      <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-[4px] border-primary bg-white shadow-md z-10 relative">
-                         <Image src="/gallery_2.webp" alt="Divisi Acara" fill sizes="100px" className="object-cover" />
-                      </div>
-                      <div className="-mt-6 pt-10 pb-4 px-2 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-primary text-white shadow-sm z-0 min-h-[90px] group-hover:shadow-md transition-shadow">
-                        <h4 className="font-black text-[12px] leading-tight mb-1 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Divisi Acara</p>
-                      </div>
-                    </div>
-                    <div className="flex w-[150px] -mt-1">
-                      <div className="w-full ml-[25px]">
-                         <div className="flex flex-col gap-6 pt-6 relative">
-                            <div className="flex items-center relative group">
-                              <div className="absolute top-[-1.5rem] bottom-[-1.5rem] left-0 w-[3px] bg-primary"></div>
-                              <div className="w-6 h-[3px] bg-primary"></div>
-                              <div className="flex flex-col items-center w-[130px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
-                                <div className="w-[80px] h-[80px] rounded-full overflow-hidden border-[4px] border-primary bg-white shadow-md z-10 relative">
-                                   <Image src="/gallery_2.webp" alt="MC" fill sizes="80px" className="object-cover" />
-                                </div>
-                                <div className="-mt-5 pt-8 pb-3 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-primary text-white shadow-sm z-0 min-h-[75px] group-hover:shadow-md transition-shadow">
-                                  <h4 className="font-black text-[10px] leading-tight mb-1 uppercase tracking-tight">Nama Lengkap</h4>
-                                  <p className="text-[8px] font-bold uppercase opacity-80 leading-tight">MC</p>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex items-center relative group">
-                              <div className="absolute top-0 bottom-1/2 left-0 w-[3px] bg-primary"></div>
-                              <div className="w-6 h-[3px] bg-primary"></div>
-                              <div className="flex flex-col items-center w-[130px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
-                                <div className="w-[80px] h-[80px] rounded-full overflow-hidden border-[4px] border-primary bg-white shadow-md z-10 relative">
-                                   <Image src="/gallery_2.webp" alt="Operator" fill sizes="80px" className="object-cover" />
-                                </div>
-                                <div className="-mt-5 pt-8 pb-3 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-primary text-white shadow-sm z-0 min-h-[75px] group-hover:shadow-md transition-shadow">
-                                  <h4 className="font-black text-[10px] leading-tight mb-1 uppercase tracking-tight">Nama Lengkap</h4>
-                                  <p className="text-[8px] font-bold uppercase opacity-80 leading-tight">Operator</p>
-                                </div>
-                              </div>
-                            </div>
-                         </div>
-                      </div>
-                    </div>
-                  </div>
-            
-                  {/* Node ADMIN */}
-                  <div className="flex flex-col items-center flex-1 relative">
-                    <div className="absolute top-0 left-0 right-1/2 h-[3px] bg-primary"></div>
-                    <div className="w-[3px] h-8 bg-primary"></div>
-                    <div className="flex flex-col items-center w-[150px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
-                      <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-[4px] border-primary bg-white shadow-md z-10 relative">
-                         <Image src="/gallery_2.webp" alt="Admin" fill sizes="100px" className="object-cover" />
-                      </div>
-                      <div className="-mt-6 pt-10 pb-4 px-2 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-primary text-white shadow-sm z-0 min-h-[90px] group-hover:shadow-md transition-shadow">
-                        <h4 className="font-black text-[12px] leading-tight mb-1 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Admin</p>
-                      </div>
-                    </div>
-                  </div>
-            
-                </div>
-              </div>
+ <div className="hidden md:flex flex-col items-center mx-auto select-none font-sans min-w-[1450px] overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-8 pb-16">
+ 
+ {/* Level 1: Kepala Kantor */}
+ <div className="flex flex-col items-center relative z-20">
+ <div className="flex flex-col items-center w-[280px] relative px-2 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
+ <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md">
+ <Image src="/struktur/Hijriyantomi Suyuthie.png" alt="Kepala Kantor" fill sizes="180px" className="object-contain object-bottom" />
+ </div>
+ <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1.2rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
+  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Hijriyantomi Suyuthie</h4>
+ <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Kepala Kantor</p>
+ </div>
+ </div>
+ <div className="w-[3px] h-10 bg-primary"></div>
+ </div>
+ 
+ {/* Level 2 & 3 */}
+ <div className="flex w-full justify-center relative">
+ 
+ {/* Node SEKRETARIS */}
+ <div className="flex flex-col items-center flex-1 relative">
+ <div className="absolute top-0 left-1/2 right-0 h-[3px] bg-primary"></div>
+ <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
+ <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
+ <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Sri Yuningsih S.St.,M.M.png" alt="Sekretaris" fill sizes="180px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
+ </div>
+ <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
+  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Sri Yuningsih S.St.,M.M</h4>
+ <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Sekretaris</p>
+ </div>
+ </div>
+ </div>
+ 
+ {/* Node DIVISI SDM */}
+ <div className="flex flex-col items-center flex-1 relative">
+ <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
+ <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
+ <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
+ <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Dr. Siti Hajar Thaitami, S.St, M.Pd.png" alt="Divisi SDM" fill sizes="180px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
+ </div>
+ <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
+  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Dr. Siti Hajar Thaitami, S.St, M.Pd</h4>
+ <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Divisi SDM</p>
+ </div>
+ </div>
+ </div>
+ 
+ {/* Node KOORDINATOR */}
+ <div className="flex flex-col items-center flex-1 relative">
+ <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
+ <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
+ <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group z-10">
+ <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Dr. Rian Surenda., S.EI.,M.M.png" alt="Koordinator" fill sizes="180px" className="object-contain object-bottom" />
+ </div>
+ <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
+  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Dr. Rian Surenda., S.EI.,M.M</h4>
+ <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Koordinator<br/>Protokoler Mahasiswa</p>
+ </div>
+ </div>
+ <div className="flex w-[280px] -mt-1">
+ <div className="w-full ml-[50px]">
+ <div className="flex flex-col pt-12 relative">
+ <div className="flex items-center relative group">
+ <div className="absolute top-[-3rem] bottom-1/2 left-0 w-[3px] bg-primary"></div>
+ <div className="w-6 h-[3px] bg-primary"></div>
+ <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
+ <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-card z-0 min-h-[55px] border border-white/10 border-l-2 border-l-gold/50 group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
+ <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Protokoler<br/>Mahasiswa</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ {/* Node DIVISI ACARA */}
+ <div className="flex flex-col items-center flex-1 relative">
+ <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
+ <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
+ <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group z-10">
+ <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Samuel Martin Pradana., M.Tr.T.png" alt="Divisi Acara" fill sizes="180px" className="object-contain object-bottom" />
+ </div>
+ <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
+  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Samuel Martin Pradana., M.Tr.T</h4>
+ <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Divisi Acara</p>
+ </div>
+ </div>
+ <div className="flex w-[280px] -mt-1">
+ <div className="w-full ml-[25px]">
+ <div className="flex flex-col gap-12 pt-12 relative">
+ <div className="flex items-center relative group">
+ <div className="absolute top-[-3rem] bottom-[-3rem] left-0 w-[3px] bg-primary"></div>
+ <div className="w-6 h-[3px] bg-primary"></div>
+ <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
+ <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-card z-0 min-h-[55px] border border-white/10 border-l-2 border-l-gold/50 group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
+ <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Master Of Ceremony</p>
+ </div>
+ </div>
+ </div>
+ <div className="flex items-center relative group">
+ <div className="absolute top-0 bottom-1/2 left-0 w-[3px] bg-primary"></div>
+ <div className="w-6 h-[3px] bg-primary"></div>
+ <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
+ <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-card z-0 min-h-[55px] border border-white/10 border-l-2 border-l-gold/50 group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
+ <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Operator</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ {/* Node ADMIN */}
+ <div className="flex flex-col items-center flex-1 relative">
+ <div className="absolute top-0 left-0 right-1/2 h-[3px] bg-primary"></div>
+ <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
+ <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
+ <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Elviza Yeni Putri, M. Pd.png" alt="Admin" fill sizes="180px" className="object-contain object-bottom" />
+ </div>
+ <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
+  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Elviza Yeni Putri, M. Pd</h4>
+ <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Admin</p>
+ </div>
+ </div>
+ </div>
+ 
+ </div>
+ </div>
 
-              {/* MOBILE LAYOUT (Vertical Tree) */}
-              <div className="flex md:hidden flex-col w-full max-w-[340px] mx-auto select-none font-sans mt-2">
-                {/* Kepala Kantor */}
-                <div className="flex items-center relative z-10 mb-8">
-                  <div className="w-[80px] h-[80px] rounded-full overflow-hidden border-[3px] border-primary bg-white shadow-md z-10 flex-shrink-0 relative">
-                     <Image src="/gallery_1.webp" alt="Kepala Kantor" fill sizes="80px" className="object-cover" />
-                  </div>
-                  <div className="ml-4 flex flex-col justify-center bg-primary text-white py-3 px-5 rounded-2xl shadow-md w-full relative group">
-                    <h4 className="font-black text-[12px] leading-tight mb-0.5 uppercase tracking-tight">Nama Kepala, S.E., M.Si.</h4>
-                    <p className="text-[10px] font-bold uppercase opacity-80 leading-tight">Kepala Kantor</p>
-                  </div>
-                </div>
+ {/* MOBILE LAYOUT (Vertical Tree) */}
+ <div className="flex md:hidden flex-col w-full max-w-[340px] mx-auto select-none font-sans mt-2">
+ {/* Kepala Kantor */}
+ <div className="flex flex-col items-center relative z-10 mb-10 w-full px-4">
+  <div className="w-[160px] h-[160px] z-10 relative drop-shadow-xl">
+  <Image src="/struktur/Hijriyantomi Suyuthie.png" alt="Kepala Kantor" fill sizes="160px" className="object-contain object-bottom" />
+  </div>
+  <div className="-mt-[2.5rem] pt-[3.5rem] pb-4 px-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-[1.2rem] shadow-elegant w-full border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+ <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white">Hijriyantomi Suyuthie</h4>
+ <p className="text-[11px] font-bold text-gold/90 leading-tight">Kepala Kantor</p>
+ </div>
+ </div>
 
-                {/* Child nodes container */}
-                <div className="flex flex-col relative ml-[40px] pl-6 pt-6 gap-6">
-                  {/* Main Vertical Stem */}
-                  <div className="absolute left-[-1.5px] top-0 bottom-[30px] w-[3px] bg-primary z-0"></div>
-                  
-                  {/* Node SEKRETARIS */}
-                  <div className="flex flex-col relative w-full">
-                    <div className="flex items-center relative w-full z-10">
-                      <div className="absolute left-[-24px] top-1/2 w-6 h-[3px] bg-primary -translate-y-1/2 z-0"></div>
-                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden border-[3px] border-primary bg-white shadow-sm z-10 flex-shrink-0 relative">
-                         <Image src="/gallery_2.webp" alt="Sekretaris" fill sizes="60px" className="object-cover" />
-                      </div>
-                      <div className="ml-3 flex flex-col justify-center bg-primary text-white py-2 px-4 rounded-xl shadow-sm w-full">
-                        <h4 className="font-black text-[11px] leading-tight mb-0.5 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Sekretaris</p>
-                      </div>
-                    </div>
-                  </div>
+ {/* Child nodes container */}
+ <div className="flex flex-col relative ml-[40px] pl-6 pt-6 gap-6">
+ {/* Main Vertical Stem */}
+ <div className="absolute left-[-1.5px] top-0 bottom-[85px] w-[3px] bg-primary z-0"></div>
+ 
+ {/* Node SEKRETARIS */}
+ <div className="flex flex-col relative w-full">
+ <div className="flex flex-col items-center relative w-full z-10 mb-6">
+  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
+  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
+  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
+  <Image src="/struktur/Sri Yuningsih S.St.,M.M.png" alt="Sekretaris" fill sizes="140px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
+  </div>
+  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+ <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Sri Yuningsih S.St.,M.M</h4>
+ <p className="text-[11px] font-bold text-gold/90 leading-tight">Sekretaris</p>
+ </div>
+ </div>
+ </div>
 
-                  {/* Node DIVISI SDM */}
-                  <div className="flex flex-col relative w-full">
-                    <div className="flex items-center relative w-full z-10">
-                      <div className="absolute left-[-24px] top-1/2 w-6 h-[3px] bg-primary -translate-y-1/2 z-0"></div>
-                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden border-[3px] border-primary bg-white shadow-sm z-10 flex-shrink-0 relative">
-                         <Image src="/gallery_2.webp" alt="Divisi SDM" fill sizes="60px" className="object-cover" />
-                      </div>
-                      <div className="ml-3 flex flex-col justify-center bg-primary text-white py-2 px-4 rounded-xl shadow-sm w-full">
-                        <h4 className="font-black text-[11px] leading-tight mb-0.5 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Divisi SDM</p>
-                      </div>
-                    </div>
-                  </div>
+ {/* Node DIVISI SDM */}
+ <div className="flex flex-col relative w-full">
+ <div className="flex flex-col items-center relative w-full z-10 mb-6">
+  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
+  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
+  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
+  <Image src="/struktur/Dr. Siti Hajar Thaitami, S.St, M.Pd.png" alt="Divisi SDM" fill sizes="140px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
+  </div>
+  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+ <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Dr. Siti Hajar Thaitami, S.St, M.Pd</h4>
+ <p className="text-[11px] font-bold text-gold/90 leading-tight">Divisi SDM</p>
+ </div>
+ </div>
+ </div>
 
-                  {/* Node KOORDINATOR */}
-                  <div className="flex flex-col relative w-full">
-                    <div className="flex items-center relative w-full z-10">
-                      <div className="absolute left-[-24px] top-1/2 w-6 h-[3px] bg-primary -translate-y-1/2 z-0"></div>
-                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden border-[3px] border-primary bg-white shadow-sm z-10 flex-shrink-0 relative">
-                         <Image src="/gallery_2.webp" alt="Koordinator" fill sizes="60px" className="object-cover" />
-                      </div>
-                      <div className="ml-3 flex flex-col justify-center bg-primary text-white py-2 px-4 rounded-xl shadow-sm w-full">
-                        <h4 className="font-black text-[11px] leading-tight mb-0.5 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Koordinator</p>
-                      </div>
-                    </div>
-                    {/* Sub-node Protokoler */}
-                    <div className="flex flex-col relative ml-[30px] pl-5 mt-[-20px] pt-[36px] gap-4 z-0">
-                      <div className="absolute left-[-1.5px] top-0 bottom-[22.5px] w-[3px] bg-primary z-0"></div>
-                      <div className="flex items-center relative w-full z-10">
-                        <div className="absolute left-[-20px] top-1/2 w-5 h-[3px] bg-primary -translate-y-1/2 z-0"></div>
-                        <div className="w-[45px] h-[45px] rounded-full overflow-hidden border-[2px] border-primary bg-white shadow-sm z-10 flex-shrink-0 relative">
-                           <Image src="/gallery_2.webp" alt="Protokoler" fill sizes="45px" className="object-cover" />
-                        </div>
-                        <div className="ml-3 flex flex-col justify-center bg-primary text-white py-1.5 px-3 rounded-lg shadow-sm w-full">
-                          <h4 className="font-black text-[10px] leading-tight mb-0.5 uppercase tracking-tight">Nama Lengkap</h4>
-                          <p className="text-[8px] font-bold uppercase opacity-80 leading-tight">Protokoler Mahasiswa</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+ {/* Node KOORDINATOR */}
+ <div className="flex flex-col relative w-full">
+ <div className="flex flex-col items-center relative w-full z-10 mb-6">
+  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
+  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
+  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
+  <Image src="/struktur/Dr. Rian Surenda., S.EI.,M.M.png" alt="Koordinator" fill sizes="140px" className="object-contain object-bottom" />
+  </div>
+  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+ <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Dr. Rian Surenda., S.EI.,M.M</h4>
+ <p className="text-[11px] font-bold text-gold/90 leading-tight">Koordinator</p>
+ </div>
+ </div>
+ {/* Sub-node Protokoler */}
+ <div className="flex flex-col relative ml-[30px] pl-5 mt-[-20px] pt-[36px] gap-4 z-0">
+ <div className="absolute left-[-1.5px] top-0 bottom-[15px] w-[3px] bg-primary z-0"></div>
+ <div className="flex items-center relative w-full z-10">
+ <div className="absolute left-[-22px] top-1/2 w-[22px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
+ <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-card w-full border border-white/10 border-l-2 border-l-gold/50">
+ <p className="text-[13px] font-bold text-white leading-tight">Protokoler Mahasiswa</p>
+ </div>
+ </div>
+ </div>
+ </div>
 
-                  {/* Node DIVISI ACARA */}
-                  <div className="flex flex-col relative w-full">
-                    <div className="flex items-center relative w-full z-10">
-                      <div className="absolute left-[-24px] top-1/2 w-6 h-[3px] bg-primary -translate-y-1/2 z-0"></div>
-                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden border-[3px] border-primary bg-white shadow-sm z-10 flex-shrink-0 relative">
-                         <Image src="/gallery_2.webp" alt="Divisi Acara" fill sizes="60px" className="object-cover" />
-                      </div>
-                      <div className="ml-3 flex flex-col justify-center bg-primary text-white py-2 px-4 rounded-xl shadow-sm w-full">
-                        <h4 className="font-black text-[11px] leading-tight mb-0.5 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Divisi Acara</p>
-                      </div>
-                    </div>
-                    {/* Sub-node MC & Operator */}
-                    <div className="flex flex-col relative ml-[30px] pl-5 mt-[-20px] pt-[36px] gap-4 z-0">
-                      <div className="absolute left-[-1.5px] top-0 bottom-[22.5px] w-[3px] bg-primary z-0"></div>
-                      <div className="flex items-center relative w-full z-10">
-                        <div className="absolute left-[-20px] top-1/2 w-5 h-[3px] bg-primary -translate-y-1/2 z-0"></div>
-                        <div className="w-[45px] h-[45px] rounded-full overflow-hidden border-[2px] border-primary bg-white shadow-sm z-10 flex-shrink-0 relative">
-                           <Image src="/gallery_2.webp" alt="MC" fill sizes="45px" className="object-cover" />
-                        </div>
-                        <div className="ml-3 flex flex-col justify-center bg-primary text-white py-1.5 px-3 rounded-lg shadow-sm w-full">
-                          <h4 className="font-black text-[10px] leading-tight mb-0.5 uppercase tracking-tight">Nama Lengkap</h4>
-                          <p className="text-[8px] font-bold uppercase opacity-80 leading-tight">MC</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center relative w-full z-10">
-                        <div className="absolute left-[-20px] top-1/2 w-5 h-[3px] bg-primary -translate-y-1/2 z-0"></div>
-                        <div className="w-[45px] h-[45px] rounded-full overflow-hidden border-[2px] border-primary bg-white shadow-sm z-10 flex-shrink-0 relative">
-                           <Image src="/gallery_2.webp" alt="Operator" fill sizes="45px" className="object-cover" />
-                        </div>
-                        <div className="ml-3 flex flex-col justify-center bg-primary text-white py-1.5 px-3 rounded-lg shadow-sm w-full">
-                          <h4 className="font-black text-[10px] leading-tight mb-0.5 uppercase tracking-tight">Nama Lengkap</h4>
-                          <p className="text-[8px] font-bold uppercase opacity-80 leading-tight">Operator</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+ {/* Node DIVISI ACARA */}
+ <div className="flex flex-col relative w-full">
+ <div className="flex flex-col items-center relative w-full z-10 mb-6">
+  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
+  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
+  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
+  <Image src="/struktur/Samuel Martin Pradana., M.Tr.T.png" alt="Divisi Acara" fill sizes="140px" className="object-contain object-bottom" />
+  </div>
+  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+ <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Samuel Martin Pradana., M.Tr.T</h4>
+ <p className="text-[11px] font-bold text-gold/90 leading-tight">Divisi Acara</p>
+ </div>
+ </div>
+ {/* Sub-node MC & Operator */}
+ <div className="flex flex-col relative ml-[30px] pl-5 mt-[-20px] pt-[36px] gap-4 z-0">
+ <div className="absolute left-[-1.5px] top-0 bottom-[15px] w-[3px] bg-primary z-0"></div>
+ <div className="flex items-center relative w-full z-10">
+ <div className="absolute left-[-22px] top-1/2 w-[22px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
+ <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-card w-full border border-white/10 border-l-2 border-l-gold/50">
+ <p className="text-[13px] font-bold text-white leading-tight">Master Of Ceremony</p>
+ </div>
+ </div>
+ <div className="flex items-center relative w-full z-10">
+ <div className="absolute left-[-22px] top-1/2 w-[22px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
+ <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-card w-full border border-white/10 border-l-2 border-l-gold/50">
+ <p className="text-[13px] font-bold text-white leading-tight">Operator</p>
+ </div>
+ </div>
+ </div>
+ </div>
 
-                  {/* Node ADMIN */}
-                  <div className="flex flex-col relative w-full">
-                    <div className="flex items-center relative w-full z-10">
-                      <div className="absolute left-[-24px] top-1/2 w-6 h-[3px] bg-primary -translate-y-1/2 z-0"></div>
-                      <div className="w-[60px] h-[60px] rounded-full overflow-hidden border-[3px] border-primary bg-white shadow-sm z-10 flex-shrink-0 relative">
-                         <Image src="/gallery_2.webp" alt="Admin" fill sizes="60px" className="object-cover" />
-                      </div>
-                      <div className="ml-3 flex flex-col justify-center bg-primary text-white py-2 px-4 rounded-xl shadow-sm w-full">
-                        <h4 className="font-black text-[11px] leading-tight mb-0.5 uppercase tracking-tight">Nama Lengkap</h4>
-                        <p className="text-[9px] font-bold uppercase opacity-80 leading-tight">Admin</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+ {/* Node ADMIN */}
+ <div className="flex flex-col relative w-full">
+ <div className="flex flex-col items-center relative w-full z-10 mb-6">
+  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
+  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
+  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
+  <Image src="/struktur/Elviza Yeni Putri, M. Pd.png" alt="Admin" fill sizes="140px" className="object-contain object-bottom" />
+  </div>
+  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+ <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Elviza Yeni Putri, M. Pd</h4>
+ <p className="text-[11px] font-bold text-gold/90 leading-tight">Admin</p>
+ </div>
+ </div>
+ </div>
+ 
+ </div>
+ </div>
+ </motion.div>
+ </div>
+ </section>
 
-      </main>
+ </main>
 
-      <LandingFooter />
-    </div>
-  );
+ <LandingFooter />
+ </div>
+ );
 }
