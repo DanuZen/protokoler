@@ -36,7 +36,7 @@ export default function TentangKami() {
               <span className="text-[10px] sm:text-xs md:text-sm font-bold text-[#D2AD5C] uppercase tracking-widest md:tracking-[0.25em] whitespace-nowrap">Mengenal Kami</span>
               <div className="w-6 md:w-8 h-[2px] bg-[#D2AD5C]"></div>
             </motion.div>
-            <motion.h1 variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-4 sm:mb-6 drop-shadow-md px-4 sm:px-0">
+            <motion.h1 variants={fadeUp} className="font-display text-3xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-4 sm:mb-6 drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] px-4 sm:px-0">
               Garda Terdepan <span className="text-[#D2AD5C]">Institusi</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="text-sm sm:text-base md:text-xl text-slate-300 leading-relaxed text-justify px-4 sm:px-0">
@@ -89,7 +89,7 @@ export default function TentangKami() {
               {/* Kolom Visual (Logo Besar) */}
               <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative h-[400px] lg:h-[500px] flex items-center justify-center">
                  <div className="absolute inset-0 bg-gradient-to-tr from-red-50 to-amber-50 rounded-[3rem] transform rotate-3"></div>
-                 <div className="relative w-64 h-64 md:w-80 md:h-80 drop-shadow-md">
+                 <div className="relative w-64 h-64 md:w-80 md:h-80 drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
                    <Image src="/logo-protokoler-new.webp" alt="Logo Protokoler" fill sizes="(max-width: 768px) 256px, 320px" className="object-contain" />
                  </div>
               </motion.div>
@@ -245,11 +245,11 @@ export default function TentangKami() {
  
  {/* Level 1: Kepala Kantor */}
  <div className="flex flex-col items-center relative z-20">
- <div className="flex flex-col items-center w-[280px] relative px-2 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
- <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md">
- <Image src="/struktur/Hijriyantomi Suyuthie.png" alt="Kepala Kantor" fill sizes="180px" className="object-contain object-bottom" />
+ <div className="flex flex-col items-center w-[280px] relative px-2 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
+ <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
+ <Image src="/struktur/Hijriyantomi Suyuthie.png" alt="Kepala Kantor" fill sizes="200px" className="object-contain object-bottom scale-[1.20] origin-bottom translate-y-3" />
  </div>
- <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1.2rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+ <div className="-mt-[4rem] py-2 px-4 w-full flex flex-col items-center justify-center text-center rounded-[1.2rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 h-[80px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
   <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Hijriyantomi Suyuthie</h4>
  <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Kepala Kantor</p>
@@ -264,14 +264,14 @@ export default function TentangKami() {
  {/* Node SEKRETARIS */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-1/2 right-0 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
- <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
- <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
- <Image src="/struktur/Sri Yuningsih S.St.,M.M.png" alt="Sekretaris" fill sizes="180px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
+ <div className="w-[3px] h-8 bg-primary relative"></div>
+ <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+ <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Elviza Yeni Putri, M. Pd.png" alt="Sekretaris" fill sizes="200px" className="object-contain object-bottom scale-[1.20] origin-bottom translate-y-3" />
  </div>
- <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+ <div className="-mt-[4rem] py-2 px-4 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 h-[80px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
-  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Sri Yuningsih S.St.,M.M</h4>
+  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Elviza Yeni Putri, M. Pd</h4>
  <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Sekretaris</p>
  </div>
  </div>
@@ -280,12 +280,12 @@ export default function TentangKami() {
  {/* Node DIVISI SDM */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
- <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
- <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
- <Image src="/struktur/Dr. Siti Hajar Thaitami, S.St, M.Pd.png" alt="Divisi SDM" fill sizes="180px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
+ <div className="w-[3px] h-8 bg-primary relative"></div>
+ <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
+ <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Dr. Siti Hajar Thaitami, S.St, M.Pd.png" alt="Divisi SDM" fill sizes="200px" className="object-contain object-bottom scale-[1.35] origin-bottom" />
  </div>
- <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+ <div className="-mt-[4rem] py-2 px-4 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 h-[80px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
   <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Dr. Siti Hajar Thaitami, S.St, M.Pd</h4>
  <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Divisi SDM</p>
@@ -296,12 +296,12 @@ export default function TentangKami() {
  {/* Node KOORDINATOR */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
+ <div className="w-[3px] h-8 bg-primary relative"></div>
  <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group z-10">
- <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
- <Image src="/struktur/Dr. Rian Surenda., S.EI.,M.M.png" alt="Koordinator" fill sizes="180px" className="object-contain object-bottom" />
+ <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Dr. Rian Surenda., S.EI.,M.M.png" alt="Koordinator" fill sizes="200px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
  </div>
- <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+ <div className="-mt-[4rem] py-2 px-4 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 h-[80px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
   <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Dr. Rian Surenda., S.EI.,M.M</h4>
  <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Koordinator<br/>Protokoler Mahasiswa</p>
@@ -313,8 +313,8 @@ export default function TentangKami() {
  <div className="flex items-center relative group">
  <div className="absolute top-[-3rem] bottom-1/2 left-0 w-[3px] bg-primary"></div>
  <div className="w-6 h-[3px] bg-primary"></div>
- <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
- <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-card z-0 min-h-[55px] border border-white/10 border-l-2 border-l-gold/50 group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
+ <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
+ <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 min-h-[55px] border border-white/20 border-l-4 border-l-gold/80 shadow-inner group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
  <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Protokoler<br/>Mahasiswa</p>
  </div>
  </div>
@@ -327,12 +327,12 @@ export default function TentangKami() {
  {/* Node DIVISI ACARA */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
+ <div className="w-[3px] h-8 bg-primary relative"></div>
  <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group z-10">
- <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
- <Image src="/struktur/Samuel Martin Pradana., M.Tr.T.png" alt="Divisi Acara" fill sizes="180px" className="object-contain object-bottom" />
+ <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Samuel Martin Pradana., M.Tr.T.png" alt="Divisi Acara" fill sizes="200px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
  </div>
- <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+ <div className="-mt-[4rem] py-2 px-4 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 h-[80px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
   <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Samuel Martin Pradana., M.Tr.T</h4>
  <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Divisi Acara</p>
@@ -344,8 +344,8 @@ export default function TentangKami() {
  <div className="flex items-center relative group">
  <div className="absolute top-[-3rem] bottom-[-3rem] left-0 w-[3px] bg-primary"></div>
  <div className="w-6 h-[3px] bg-primary"></div>
- <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
- <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-card z-0 min-h-[55px] border border-white/10 border-l-2 border-l-gold/50 group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
+ <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.8s', animationFillMode: 'both' }}>
+ <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 min-h-[55px] border border-white/20 border-l-4 border-l-gold/80 shadow-inner group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
  <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Master Of Ceremony</p>
  </div>
  </div>
@@ -353,8 +353,8 @@ export default function TentangKami() {
  <div className="flex items-center relative group">
  <div className="absolute top-0 bottom-1/2 left-0 w-[3px] bg-primary"></div>
  <div className="w-6 h-[3px] bg-primary"></div>
- <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
- <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-card z-0 min-h-[55px] border border-white/10 border-l-2 border-l-gold/50 group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
+ <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
+ <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 min-h-[55px] border border-white/20 border-l-4 border-l-gold/80 shadow-inner group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
  <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Operator</p>
  </div>
  </div>
@@ -367,14 +367,14 @@ export default function TentangKami() {
  {/* Node ADMIN */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-0 right-1/2 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"><div className="absolute -top-[1.5px] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div></div>
- <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
- <div className="w-[180px] h-[180px] z-10 relative drop-shadow-md group-hover:scale-105 transition-transform duration-500">
- <Image src="/struktur/Elviza Yeni Putri, M. Pd.png" alt="Admin" fill sizes="180px" className="object-contain object-bottom" />
+ <div className="w-[3px] h-8 bg-primary relative"></div>
+ <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
+ <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
+ <Image src="/struktur/Sri Yuningsih S.St.,M.M.png" alt="Admin" fill sizes="200px" className="object-contain object-bottom scale-[1.35] origin-bottom" />
  </div>
- <div className="-mt-[3.5rem] pt-[4.5rem] pb-4 px-4 w-full flex flex-col items-center justify-start text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-elegant z-0 h-[145px] border border-white/10 border-t-2 border-t-gold/50 group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
+ <div className="-mt-[4rem] py-2 px-4 w-full flex flex-col items-center justify-center text-center rounded-[1rem] bg-gradient-to-b from-primary to-[#4a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 h-[80px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner group-hover:border-t-gold group-hover:shadow-[0_0_30px_rgba(210,173,92,0.2)] transition-all duration-500 overflow-hidden relative">
   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
-  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Elviza Yeni Putri, M. Pd</h4>
+  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Sri Yuningsih S.St.,M.M</h4>
  <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Admin</p>
  </div>
  </div>
@@ -386,11 +386,11 @@ export default function TentangKami() {
  {/* MOBILE LAYOUT (Vertical Tree) */}
  <div className="flex md:hidden flex-col w-full max-w-[340px] mx-auto select-none font-sans mt-2">
  {/* Kepala Kantor */}
- <div className="flex flex-col items-center relative z-10 mb-10 w-full px-4">
-  <div className="w-[160px] h-[160px] z-10 relative drop-shadow-xl">
-  <Image src="/struktur/Hijriyantomi Suyuthie.png" alt="Kepala Kantor" fill sizes="160px" className="object-contain object-bottom" />
+ <div className="flex flex-col items-center relative z-10 mb-10 w-full px-4 animate-fade-in-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
+  <div className="w-[160px] h-[160px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
+  <Image src="/struktur/Hijriyantomi Suyuthie.png" alt="Kepala Kantor" fill sizes="160px" className="object-contain object-bottom scale-[1.20] origin-bottom translate-y-3" />
   </div>
-  <div className="-mt-[2.5rem] pt-[3.5rem] pb-4 px-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-[1.2rem] shadow-elegant w-full border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+  <div className="-mt-[3.5rem] py-2 px-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-[1.2rem] shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-t-2 border-t-gold/80 shadow-inner relative z-20">
  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white">Hijriyantomi Suyuthie</h4>
  <p className="text-[11px] font-bold text-gold/90 leading-tight">Kepala Kantor</p>
  </div>
@@ -399,18 +399,22 @@ export default function TentangKami() {
  {/* Child nodes container */}
  <div className="flex flex-col relative ml-[40px] pl-6 pt-6 gap-6">
  {/* Main Vertical Stem */}
- <div className="absolute left-[-1.5px] top-0 bottom-[85px] w-[3px] bg-primary z-0"></div>
+ {/* Top Connectors to Kepala Kantor */}
+  <div className="absolute top-[-40px] left-[128.5px] w-[3px] h-[40px] bg-primary z-0"></div>
+  <div className="absolute top-0 left-0 w-[130px] h-[3px] bg-primary rounded-tl-md z-0"></div>
+  {/* Main Vertical Stem */}
+  <div className="absolute left-0 top-0 bottom-[61.5px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
  
  {/* Node SEKRETARIS */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6">
-  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
-  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
-  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
-  <Image src="/struktur/Sri Yuningsih S.St.,M.M.png" alt="Sekretaris" fill sizes="140px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
+ <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+  
+  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
+  <Image src="/struktur/Elviza Yeni Putri, M. Pd.png" alt="Sekretaris" fill sizes="200px" className="object-contain object-bottom scale-[1.20] origin-bottom translate-y-3" />
   </div>
-  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
- <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Sri Yuningsih S.St.,M.M</h4>
+  <div className="-mt-[3.5rem] py-2 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full h-[75px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner relative z-20">
+ <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Elviza Yeni Putri, M. Pd</h4>
  <p className="text-[11px] font-bold text-gold/90 leading-tight">Sekretaris</p>
  </div>
  </div>
@@ -418,13 +422,13 @@ export default function TentangKami() {
 
  {/* Node DIVISI SDM */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6">
-  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
-  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
-  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
-  <Image src="/struktur/Dr. Siti Hajar Thaitami, S.St, M.Pd.png" alt="Divisi SDM" fill sizes="140px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
+ <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+  
+  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
+  <Image src="/struktur/Dr. Siti Hajar Thaitami, S.St, M.Pd.png" alt="Divisi SDM" fill sizes="200px" className="object-contain object-bottom scale-[1.35] origin-bottom" />
   </div>
-  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+  <div className="-mt-[3.5rem] py-2 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full h-[75px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner relative z-20">
  <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Dr. Siti Hajar Thaitami, S.St, M.Pd</h4>
  <p className="text-[11px] font-bold text-gold/90 leading-tight">Divisi SDM</p>
  </div>
@@ -433,23 +437,23 @@ export default function TentangKami() {
 
  {/* Node KOORDINATOR */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6">
-  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
-  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
-  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
-  <Image src="/struktur/Dr. Rian Surenda., S.EI.,M.M.png" alt="Koordinator" fill sizes="140px" className="object-contain object-bottom" />
+ <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+  
+  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
+  <Image src="/struktur/Dr. Rian Surenda., S.EI.,M.M.png" alt="Koordinator" fill sizes="200px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
   </div>
-  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+  <div className="-mt-[3.5rem] py-2 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full h-[75px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner relative z-20">
  <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Dr. Rian Surenda., S.EI.,M.M</h4>
  <p className="text-[11px] font-bold text-gold/90 leading-tight">Koordinator</p>
  </div>
  </div>
  {/* Sub-node Protokoler */}
- <div className="flex flex-col relative ml-[30px] pl-5 mt-[-20px] pt-[36px] gap-4 z-0">
- <div className="absolute left-[-1.5px] top-0 bottom-[15px] w-[3px] bg-primary z-0"></div>
- <div className="flex items-center relative w-full z-10">
- <div className="absolute left-[-22px] top-1/2 w-[22px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
- <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-card w-full border border-white/10 border-l-2 border-l-gold/50">
+ <div className="flex flex-col relative ml-[30px] pl-5 mt-[-24px] pt-[36px] gap-4 z-0">
+ <div className="absolute left-0 top-0 bottom-[15px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
+ <div className="flex items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.8s', animationFillMode: 'both' }}>
+ <div className="absolute left-[-20px] top-1/2 w-[20px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
+ <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-l-4 border-l-gold/80 shadow-inner">
  <p className="text-[13px] font-bold text-white leading-tight">Protokoler Mahasiswa</p>
  </div>
  </div>
@@ -458,29 +462,29 @@ export default function TentangKami() {
 
  {/* Node DIVISI ACARA */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6">
-  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
-  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
-  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
-  <Image src="/struktur/Samuel Martin Pradana., M.Tr.T.png" alt="Divisi Acara" fill sizes="140px" className="object-contain object-bottom" />
+ <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+  
+  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
+  <Image src="/struktur/Samuel Martin Pradana., M.Tr.T.png" alt="Divisi Acara" fill sizes="200px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
   </div>
-  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
+  <div className="-mt-[3.5rem] py-2 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full h-[75px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner relative z-20">
  <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Samuel Martin Pradana., M.Tr.T</h4>
  <p className="text-[11px] font-bold text-gold/90 leading-tight">Divisi Acara</p>
  </div>
  </div>
  {/* Sub-node MC & Operator */}
- <div className="flex flex-col relative ml-[30px] pl-5 mt-[-20px] pt-[36px] gap-4 z-0">
- <div className="absolute left-[-1.5px] top-0 bottom-[15px] w-[3px] bg-primary z-0"></div>
- <div className="flex items-center relative w-full z-10">
- <div className="absolute left-[-22px] top-1/2 w-[22px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
- <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-card w-full border border-white/10 border-l-2 border-l-gold/50">
+ <div className="flex flex-col relative ml-[30px] pl-5 mt-[-24px] pt-[36px] gap-4 z-0">
+ <div className="absolute left-0 top-0 bottom-[15px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
+ <div className="flex items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
+ <div className="absolute left-[-20px] top-1/2 w-[20px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
+ <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-l-4 border-l-gold/80 shadow-inner">
  <p className="text-[13px] font-bold text-white leading-tight">Master Of Ceremony</p>
  </div>
  </div>
- <div className="flex items-center relative w-full z-10">
- <div className="absolute left-[-22px] top-1/2 w-[22px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
- <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-card w-full border border-white/10 border-l-2 border-l-gold/50">
+ <div className="flex items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '1.0s', animationFillMode: 'both' }}>
+ <div className="absolute left-[-20px] top-1/2 w-[20px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
+ <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-l-4 border-l-gold/80 shadow-inner">
  <p className="text-[13px] font-bold text-white leading-tight">Operator</p>
  </div>
  </div>
@@ -489,14 +493,14 @@ export default function TentangKami() {
 
  {/* Node ADMIN */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6">
-  <div className="absolute left-[-26px] top-[175px] w-[26px] h-[3px] bg-primary z-0"></div>
-  <div className="absolute left-[-29.5px] top-[173.5px] w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(210,173,92,0.8)] z-10"></div>
-  <div className="w-[140px] h-[140px] z-10 relative drop-shadow-xl">
-  <Image src="/struktur/Elviza Yeni Putri, M. Pd.png" alt="Admin" fill sizes="140px" className="object-contain object-bottom" />
+ <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+  
+  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
+  <Image src="/struktur/Sri Yuningsih S.St.,M.M.png" alt="Admin" fill sizes="200px" className="object-contain object-bottom scale-[1.35] origin-bottom" />
   </div>
-  <div className="-mt-[2rem] pt-[2.8rem] pb-3 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-card w-full h-[135px] border border-white/10 border-t-2 border-t-gold/50 relative z-0">
- <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Elviza Yeni Putri, M. Pd</h4>
+  <div className="-mt-[3.5rem] py-2 px-3 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-xl shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full h-[75px] border border-white/20 border-t-2 border-t-gold/80 shadow-inner relative z-20">
+ <h4 className="font-black text-[14px] leading-tight mb-1 tracking-tight text-white">Sri Yuningsih S.St.,M.M</h4>
  <p className="text-[11px] font-bold text-gold/90 leading-tight">Admin</p>
  </div>
  </div>
