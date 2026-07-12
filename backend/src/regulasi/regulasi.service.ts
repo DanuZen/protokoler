@@ -21,25 +21,27 @@ export class RegulasiService {
   async create(
     adminId: string,
     file: any,
-    body: { judul: string; deskripsi?: string; kategori?: string; tahun_terbit?: number },
+    body: { judul: string; deskripsi?: string; kategori?: string; tahun_terbit?: number; file_url?: string },
   ) {
     if (!body.judul) {
       throw new BadRequestException('Judul regulasi wajib diisi');
     }
 
-    const fileExt = file.originalname?.split('.').pop() || 'pdf';
-    const filePath = `regulasi_${Date.now()}.${fileExt}`;
+    let publicUrl = body.file_url || '';
 
-    let publicUrl = '';
-    try {
-      publicUrl = await this.supabase.uploadFile(
-        'regulasi',
-        filePath,
-        file.buffer,
-        file.mimetype || 'application/pdf'
-      );
-    } catch (err) {
-      publicUrl = `https://storage.siproto.ac.id/regulasi/${filePath}`;
+    if (file) {
+      const fileExt = file.originalname?.split('.').pop() || 'pdf';
+      const filePath = `regulasi_${Date.now()}.${fileExt}`;
+      try {
+        publicUrl = await this.supabase.uploadFile(
+          'regulasi',
+          filePath,
+          file.buffer,
+          file.mimetype || 'application/pdf'
+        );
+      } catch (err) {
+        publicUrl = `https://storage.siproto.ac.id/regulasi/${filePath}`;
+      }
     }
 
     const regulasi = await this.prisma.regulasi.create({
@@ -56,6 +58,27 @@ export class RegulasiService {
     return {
       message: 'Dokumen regulasi berhasil diunggah',
       data: regulasi
+    };
+  }
+
+  async update(id: string, body: { judul?: string; deskripsi?: string; file_url?: string }) {
+    const regulasi = await this.prisma.regulasi.findUnique({ where: { id } });
+    if (!regulasi) {
+      throw new BadRequestException('Regulasi tidak ditemukan');
+    }
+
+    const updated = await this.prisma.regulasi.update({
+      where: { id },
+      data: {
+        judul: body.judul !== undefined ? body.judul : regulasi.judul,
+        deskripsi: body.deskripsi !== undefined ? body.deskripsi : regulasi.deskripsi,
+        file_url: body.file_url !== undefined ? body.file_url : regulasi.file_url,
+      }
+    });
+
+    return {
+      message: 'Regulasi berhasil diperbarui',
+      data: updated
     };
   }
 

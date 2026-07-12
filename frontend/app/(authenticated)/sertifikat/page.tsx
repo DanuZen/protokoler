@@ -40,7 +40,7 @@ function AdminSertifikatView() {
   const handleReject = (id: string) => toast.success(`Permintaan sertifikat ditolak.`);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
       {/* HEADER SECTION */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-5 mb-4 pb-4 md:mb-8 md:pb-6 border-b border-slate-200/60">
         <div className="flex items-center gap-4">
@@ -208,7 +208,7 @@ function UserSertifikatView() {
   const displayedSertifikat = data.filter((s: any) => s.kategori === kategori);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4">
       {/* ─── MOBILE COLORED HEADER ─── */}
       <div className="md:hidden -mx-4 -mt-4 mb-0 pb-12 pt-6 px-5 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[1.5rem] relative shadow-lg shrink-0">
         <div className="absolute inset-0 overflow-hidden rounded-b-[1.5rem] pointer-events-none">
@@ -406,7 +406,7 @@ export default function SertifikatPage() {
 
   if (authLoading || isRoleLoading) {
     return (
-      <div className="flex flex-col h-full overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4 animate-pulse">
+      <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 md:px-8 pt-4 animate-pulse">
         {/* MOBILE SKELETON HEADER */}
         <div className="md:hidden -mx-4 -mt-4 mb-0 pb-12 pt-6 px-5 bg-slate-200 rounded-b-[1.5rem] relative shrink-0">
           <div className="h-[40px] mb-4" />

@@ -41,8 +41,8 @@ export function SplashScreen({
   };
 
   const letterVariants: Variants = {
-    hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: 'spring', damping: 12, stiffness: 200 } }
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', damping: 12, stiffness: 200 } }
   };
 
   return (
@@ -54,89 +54,54 @@ export function SplashScreen({
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
           className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#0a0000] overflow-hidden"
         >
-           {/* Dynamic Animated Background */}
-           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#4a0000] via-[#1a0000] to-[#0a0000] opacity-80" />
+           {/* Dynamic Animated Background - Optimized (Removed heavy blurs and mix-blends) */}
+           <div className="absolute inset-0 bg-gradient-to-br from-[#1a0000] via-[#0a0000] to-[#2a0000] opacity-90" />
            
-           <motion.div 
-             animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }} 
-             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} 
-             className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-red-600/40 rounded-full blur-[120px] pointer-events-none mix-blend-screen" 
-           />
-           <motion.div 
-             animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.5, 0.2] }} 
-             transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }} 
-             className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#D2AD5C]/30 rounded-full blur-[120px] pointer-events-none mix-blend-screen" 
-           />
+           {/* Subtle static glowing accents instead of heavy animating blurs */}
+           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-900/10 rounded-full blur-[100px] pointer-events-none transform-gpu" />
+           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#D2AD5C]/10 rounded-full blur-[100px] pointer-events-none transform-gpu" />
            
-           {/* Animated Grid Overlay */}
-           <motion.div 
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 0.15 }}
-             transition={{ duration: 1.5 }}
-             className="absolute inset-0 pointer-events-none"
+           {/* Elegant minimal grid (No heavy mask) */}
+           <div 
+             className="absolute inset-0 pointer-events-none opacity-5"
              style={{ 
                backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-               backgroundSize: '40px 40px',
-               maskImage: 'radial-gradient(circle at center, black, transparent 80%)',
-               WebkitMaskImage: 'radial-gradient(circle at center, black, transparent 80%)'
+               backgroundSize: '40px 40px'
              }} 
            />
            
            {/* Animated Logo */}
-           <div className="relative mb-8">
+           <div className="relative mb-6 md:mb-8">
              <motion.div
-                initial={{ scale: 0.8, opacity: 0, rotateY: 90 }}
-                animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 100, damping: 20 }}
-                className="relative h-28 w-28 md:h-36 md:w-36 drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)] z-10"
+                initial={{ scale: 0.5, rotate: -10, opacity: 0 }}
+                animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                className="relative h-40 w-40 md:h-56 md:w-56 z-10 flex items-center justify-center"
              >
-                <Image 
+                <img 
                   src="/logo-protokoler-new.webp" 
-                  alt="Logo Protokoler" 
-                  fill 
-                  className="object-contain" 
-                  priority 
+                  alt="Logo Protokoler"
+                  className="w-full h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)]"
                 />
              </motion.div>
              {/* Logo Glow Pulse */}
              <motion.div
-               animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
+               animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
                transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-               className="absolute inset-0 bg-[#D2AD5C] blur-[60px] rounded-full z-0"
+               className="absolute inset-0 bg-[#D2AD5C] blur-[50px] md:blur-[60px] rounded-full z-0 pointer-events-none"
              />
            </div>
            
-           {/* Staggered Animated Text */}
+           {/* Animated Text */}
            <motion.div 
-              variants={textVariants}
-              initial="hidden"
-              animate="visible"
-              className="flex justify-center z-10 px-4"
+              initial={{ y: 20 }}
+              animate={{ y: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
+              className="flex justify-center z-10 px-4 mt-2"
            >
-              {text.split("").map((char, index) => (
-                <motion.span 
-                  key={index} 
-                  variants={letterVariants}
-                  className="text-white font-display text-2xl md:text-4xl font-bold tracking-[0.2em] md:tracking-[0.25em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
-                >
-                  {char === " " ? "\u00A0" : char}
-                </motion.span>
-              ))}
-           </motion.div>
-
-           {/* Elegant Loading Line */}
-           <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-              className="mt-12 relative w-48 h-[2px] bg-white/10 rounded-full overflow-hidden z-10"
-           >
-              <motion.div 
-                initial={{ width: "0%", left: "0%" }} 
-                animate={{ width: ["0%", "100%", "0%"], left: ["0%", "0%", "100%"] }} 
-                transition={{ duration: 2, ease: "easeInOut", repeat: Infinity }} 
-                className="absolute top-0 h-full bg-gradient-to-r from-transparent via-[#D2AD5C] to-[#ffeeb0] shadow-[0_0_15px_rgba(210,173,92,1)]" 
-              />
+              <h1 className="text-white font-display text-2xl md:text-4xl font-bold tracking-[0.2em] md:tracking-[0.25em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] text-center">
+                {text}
+              </h1>
            </motion.div>
         </motion.div>
       )}

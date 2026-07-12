@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Param, Body, Req, UseGuards, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Patch, Param, Body, Req, UseGuards, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RegulasiService } from './regulasi.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -22,18 +22,28 @@ export class RegulasiController {
   async createRegulasi(
     @Req() req: any,
     @UploadedFile() file: any,
-    @Body() body: { judul: string; deskripsi?: string; kategori?: string; tahun_terbit?: string },
+    @Body() body: { judul: string; deskripsi?: string; kategori?: string; tahun_terbit?: string; file_url?: string },
   ) {
-    if (!file) {
-      throw new BadRequestException('File regulasi wajib diunggah');
+    if (!file && !body.file_url) {
+      throw new BadRequestException('File regulasi wajib diunggah atau berikan URL file (file_url)');
     }
     const tahunTerbitNum = body.tahun_terbit ? Number(body.tahun_terbit) : undefined;
     return this.regulasiService.create(req.user.id, file, {
       judul: body.judul,
       deskripsi: body.deskripsi,
       kategori: body.kategori,
-      tahun_terbit: tahunTerbitNum
+      tahun_terbit: tahunTerbitNum,
+      file_url: body.file_url,
     });
+  }
+
+  @Patch(':id')
+  @Roles(RoleEnum.admin)
+  async updateRegulasi(
+    @Param('id') id: string,
+    @Body() body: { judul?: string; deskripsi?: string; file_url?: string },
+  ) {
+    return this.regulasiService.update(id, body);
   }
 
   @Delete(':id')

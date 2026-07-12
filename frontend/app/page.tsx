@@ -9,7 +9,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import { kegiatanApi, postinganApi, regulasiMockData } from '@/lib/api';
+import { kegiatanApi, postinganApi, regulasiApi, regulasiMockData } from '@/lib/api';
 import { Calendar } from '@/components/ui/calendar';
 import { id } from 'date-fns/locale';
 import { useAuth, useRole } from '@/hooks/use-auth';
@@ -86,6 +86,11 @@ export default function Landing() {
     queryFn: () => postinganApi.list(),
   });
 
+  const { data: regulasiLanding } = useQuery({
+    queryKey: ['landing-sops'],
+    queryFn: () => regulasiApi.getLandingSOPs(),
+  });
+
   const { scrollYProgress } = useScroll();
   const yHero = useTransform(scrollYProgress, [0, 1], [0, 300]);
 
@@ -138,16 +143,19 @@ export default function Landing() {
           <div className="absolute inset-0 z-0 bg-slate-950">
             <iframe 
               src="https://www.youtube.com/embed/t6gKixOHNuc?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=t6gKixOHNuc&playsinline=1&start=43&cc_load_policy=0&iv_load_policy=3" 
-              className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-60 mix-blend-luminosity"
+              className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 scale-125 pointer-events-none opacity-60 mix-blend-luminosity transform-gpu"
               style={{ border: 'none' }}
             />
             
             {/* Sophisticated Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#4A0000]/80 via-black/60 to-[#020104] pointer-events-none z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#4A0000]/80 via-black/60 to-[#020104] pointer-events-none z-10 transform-gpu"></div>
+            
+            {/* Added Black Gradient Overlay (Top Only) */}
+            <div className="absolute top-0 left-0 right-0 h-40 md:h-56 bg-gradient-to-b from-black/70 to-transparent pointer-events-none z-10 transform-gpu"></div>
             
             {/* Glowing Orbs for Depth */}
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/30 rounded-full blur-[120px] pointer-events-none mix-blend-screen z-10"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#D2AD5C]/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen z-10"></div>
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/30 rounded-full blur-[120px] pointer-events-none mix-blend-screen z-10 transform-gpu will-change-transform"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#D2AD5C]/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen z-10 transform-gpu will-change-transform"></div>
           </div>
 
           <div className="container mx-auto px-6 relative z-20 flex flex-col items-center text-center mt-16 pb-24 md:pb-0">
@@ -650,9 +658,13 @@ export default function Landing() {
 
               {/* Bottom Side: Interactive Cards */}
               <div className="w-full flex flex-col lg:grid lg:grid-cols-3 gap-5 lg:gap-8">
-                {regulasiMockData.map((reg: any, i: number) => (
+                {regulasiMockData.map((reg: any, i: number) => {
+                  const dynamicSop = (regulasiLanding || []).find((r: any) => r.judul === reg.judul && r.kategori === 'SOP_LANDING_PAGE');
+                  const targetLink = dynamicSop?.file_url || reg.link_dokumen;
+                  
+                  return (
                   <motion.a
-                    href={reg.link_dokumen}
+                    href={targetLink}
                     download
                     target="_blank"
                     rel="noopener noreferrer"
@@ -692,7 +704,7 @@ export default function Landing() {
                        <Download className="h-6 w-6 group-hover:-translate-y-1 transition-transform duration-300" />
                     </div>
                   </motion.a>
-                ))}
+                )})}
               </div>
 
             </div>
@@ -700,9 +712,14 @@ export default function Landing() {
         </section>
 
         {/* Testimoni */}
-        <section className="py-24 md:py-32 relative overflow-hidden bg-mesh-dark">
-          <div className="absolute inset-0 bg-grid-pattern opacity-[0.03]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5 blur-3xl" style={{ background: 'radial-gradient(circle, #6B0000 0%, transparent 70%)' }} />
+        <section className="py-24 md:py-32 relative overflow-hidden bg-[#0a0000] bg-[radial-gradient(ellipse_at_top,#1f0000_0%,#0a0000_50%,#020000_100%)]">
+          {/* Enhanced Background Elements */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+          
+          {/* Ambient Glows */}
+          <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[800px] h-[600px] rounded-full opacity-10 blur-[120px] bg-[#D2AD5C] pointer-events-none transform-gpu" />
+          <div className="absolute bottom-0 left-0 translate-y-1/3 -translate-x-1/3 w-[600px] h-[600px] rounded-full opacity-15 blur-[100px] bg-[#6B0000] pointer-events-none transform-gpu" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-5 blur-3xl transform-gpu bg-[radial-gradient(circle,#6B0000_0%,transparent_70%)] pointer-events-none" />
 
           <div className="container mx-auto px-6 relative z-10">
             <div className="grid lg:grid-cols-3 gap-16 items-center">
@@ -755,7 +772,7 @@ export default function Landing() {
                           <div className="w-full px-6 lg:px-0">
                             <motion.div
                               variants={fadeUp}
-                              className="p-6 sm:p-10 lg:p-12 rounded-[2rem] bg-gradient-to-br from-[#2A0000]/90 to-[#1A0000]/90 backdrop-blur-xl border border-white/10 relative shadow-2xl group flex flex-col lg:flex-row-reverse items-center gap-6 lg:gap-12 w-full lg:max-w-5xl lg:mx-auto mt-8 lg:mt-16 transition-all duration-500"
+                              className="p-6 sm:p-10 lg:p-12 rounded-[2rem] bg-gradient-to-br from-[#2A0000]/90 to-[#1A0000]/90 backdrop-blur-xl border border-white/10 relative shadow-2xl group flex flex-col lg:flex-row-reverse items-center gap-6 lg:gap-12 w-full lg:max-w-5xl lg:mx-auto mt-8 lg:mt-16 transition-all duration-500 transform-gpu will-change-transform"
                             >
                               <div className="absolute top-4 right-6 lg:right-auto lg:left-8 font-display text-8xl font-black leading-none select-none text-[#D2AD5C]/10 transition-colors duration-300 z-0">&ldquo;</div>
                             

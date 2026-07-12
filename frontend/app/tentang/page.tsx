@@ -406,17 +406,17 @@ export default function TentangKami() {
  </div>
 
  {/* Child nodes container */}
- <div className="flex flex-col relative ml-[40px] pl-6 pt-6 gap-6">
+ <div className="flex flex-col relative ml-[40px] pl-6 pt-6 gap-16">
  {/* Main Vertical Stem */}
  {/* Top Connectors to Kepala Kantor */}
   <div className="absolute top-[-64px] left-[128.5px] w-[3px] h-[64px] bg-primary z-0"></div>
   <div className="absolute top-0 left-0 w-[130px] h-[3px] bg-primary rounded-tl-md z-0"></div>
   {/* Main Vertical Stem */}
-  <div className="absolute left-0 top-[3px] bottom-[133.5px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
+  <div className="absolute left-0 top-[3px] bottom-[37.5px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
  
  {/* Node SEKRETARIS */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+ <div className="flex flex-col items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
   <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
@@ -431,7 +431,7 @@ export default function TentangKami() {
 
  {/* Node DIVISI SDM */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
+ <div className="flex flex-col items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
   <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
@@ -446,7 +446,7 @@ export default function TentangKami() {
 
  {/* Node KOORDINATOR */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
+ <div className="flex flex-col items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
   <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
@@ -458,8 +458,8 @@ export default function TentangKami() {
  </div>
  </div>
  {/* Sub-node Protokoler */}
- <div className="flex flex-col relative ml-[30px] pl-5 mt-[-24px] pt-[36px] gap-4 z-0">
- <div className="absolute left-0 top-[-72px] bottom-[18px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
+ <div className="flex flex-col relative ml-[30px] pl-5 mt-4 gap-4 z-0">
+ <div className="absolute left-0 top-[-54px] bottom-[18px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
  <div className="flex items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.8s', animationFillMode: 'both' }}>
  <div className="absolute left-[-20px] top-1/2 w-[20px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
  <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-l-4 border-l-gold/80 shadow-inner">
@@ -471,7 +471,7 @@ export default function TentangKami() {
 
  {/* Node DIVISI ACARA */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
+ <div className="flex flex-col items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
   <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
@@ -483,8 +483,8 @@ export default function TentangKami() {
  </div>
  </div>
  {/* Sub-node MC & Operator */}
- <div className="flex flex-col relative ml-[30px] pl-5 mt-[-24px] pt-[36px] gap-4 z-0">
- <div className="absolute left-0 top-[-72px] bottom-[18px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
+ <div className="flex flex-col relative ml-[30px] pl-5 mt-4 gap-4 z-0">
+ <div className="absolute left-0 top-[-54px] bottom-[18px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
  <div className="flex items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
  <div className="absolute left-[-20px] top-1/2 w-[20px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
  <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-l-4 border-l-gold/80 shadow-inner">
@@ -508,7 +508,7 @@ export default function TentangKami() {
 
  {/* Node ADMIN */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
+ <div className="flex flex-col items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
   <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">

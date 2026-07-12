@@ -334,6 +334,10 @@ export const regulasiApi = {
     const res = await apiFetch('/api/regulasi');
     return res.data;
   },
+  getLandingSOPs: async () => {
+    const res = await apiFetch('/api/regulasi');
+    return (res.data || []).filter((r: any) => r.kategori === 'SOP_LANDING_PAGE');
+  },
   create: async (data: any) => {
     if (data instanceof FormData) {
       return apiFetch('/api/regulasi', {
@@ -348,13 +352,23 @@ export const regulasiApi = {
     formData.append('deskripsi', data.konten || '');
     formData.append('tahun_terbit', String(new Date().getFullYear()));
 
-    const mockPdfContent = `%PDF-1.4\n%...\n${data.konten || ''}`;
-    const blob = new Blob([mockPdfContent], { type: 'application/pdf' });
-    formData.append('file', blob, `${data.judul.replace(/\s+/g, '_')}.pdf`);
+    if (data.file_url) {
+       formData.append('file_url', data.file_url);
+    } else {
+       const mockPdfContent = `%PDF-1.4\n%...\n${data.konten || ''}`;
+       const blob = new Blob([mockPdfContent], { type: 'application/pdf' });
+       formData.append('file', blob, `${data.judul.replace(/\s+/g, '_')}.pdf`);
+    }
 
     return apiFetch('/api/regulasi', {
       method: 'POST',
       body: formData,
+    });
+  },
+  update: async (id: string, data: any) => {
+    return apiFetch(`/api/regulasi/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
     });
   },
 };

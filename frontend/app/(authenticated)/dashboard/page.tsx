@@ -198,7 +198,7 @@ export default function Dashboard() {
                   <span>0</span>
                 </div>
                 {/* Chart Bars */}
-                <div className="flex-1 flex items-end justify-between ml-6 md:ml-10 border-b border-slate-100 pb-2 h-full overflow-x-auto hide-scrollbar gap-2 md:gap-0">
+                <div className="flex-1 flex items-end justify-between ml-6 md:ml-10 border-b border-slate-100 pb-2 h-full gap-2 md:gap-0">
                   {isStatsLoading ? (
                     <div className="flex items-end justify-between w-full h-full pb-2">
                       {[1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
@@ -236,7 +236,10 @@ export default function Dashboard() {
   
                             {/* Tooltip */}
                             {isHovered && (
-                              <div className="absolute -top-24 left-1/2 -translate-x-1/2 bg-slate-900 text-white p-3.5 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] w-[140px] z-20 pointer-events-none animate-fade-in-up border border-slate-700/50">
+                              <div 
+                                className="absolute left-1/2 -translate-x-1/2 bg-slate-900 text-white p-3.5 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] w-[140px] z-50 pointer-events-none animate-fade-in-up border border-slate-700/50"
+                                style={{ bottom: `calc(${Math.max(h1, h2)}% + 14px)` }}
+                              >
                                 <div className="text-[11px] text-slate-400 mb-2 font-medium border-b border-slate-700/50 pb-1.5">{m} 2026</div>
                                 <div className="flex justify-between items-center text-xs font-bold mb-2">
                                   <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" /> Internal</span>

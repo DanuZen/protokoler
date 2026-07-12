@@ -50,7 +50,7 @@ export default function BerandaPage() {
   const displayName = protokoler?.nama_lengkap || user?.user_metadata?.nama_lengkap || user?.email?.split('@')[0] || 'Protokoler';
 
   return (
-    <div className="flex flex-col h-full overflow-hidden md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 pt-4 md:px-8 md:pt-4">
+    <div className="flex flex-col h-auto md:h-dvh md:overflow-hidden pb-0 md:pb-6 px-4 pt-4 md:px-8 md:pt-4">
       
       {/* ─── MOBILE COLORED HEADER ─── */}
       <div className="md:hidden -mx-4 -mt-4 mb-0 pb-12 pt-6 px-5 bg-gradient-to-br from-red-800 to-[#5a0000] rounded-b-[1.5rem] relative shadow-lg shrink-0">

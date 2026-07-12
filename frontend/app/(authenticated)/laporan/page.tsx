@@ -117,18 +117,18 @@ export default function Page() {
 
           {/* Kegiatan Table */}
           {tab === "kegiatan" && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex-1 flex flex-col bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden min-h-0">
-            <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
-                  <FileBarChart className="h-4 w-4 md:h-5 md:w-5" />
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex-1 flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden min-h-0">
+            <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100/50 px-4 md:px-8 py-4 md:py-6 bg-white/40">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-red-50 border border-red-100 text-[#6B0000] rounded-[14px] shadow-sm shrink-0">
+                  <FileBarChart className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Laporan Kegiatan</h2>
-                  <p className="text-[11px] text-slate-500 mt-0.5">{kegiatan?.length ?? 0} kegiatan ditemukan</p>
+                  <h2 className="text-base md:text-xl font-bold text-slate-900 leading-tight">Laporan Kegiatan</h2>
+                  <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1">{kegiatan?.length ?? 0} kegiatan ditemukan</p>
                 </div>
               </div>
-              <Button className="rounded-xl bg-red-800 text-white border border-transparent hover:bg-red-900 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-red-700/20" onClick={() => exportCsv(
+              <Button className="rounded-xl bg-red-800 text-white border border-transparent hover:bg-red-900 font-bold gap-2 h-9 md:h-11 px-4 md:px-6 transition-colors shadow-sm shadow-red-700/20" onClick={() => exportCsv(
                 `laporan-kegiatan-${start}-${end}.csv`,
                 [["Tanggal","Nama","Bentuk","Jam","Lokasi","Status"], ...(kegiatan ?? []).map((k: any) => [k.tanggal, k.nama_kegiatan, k.bentuk, `${k.jam_mulai}-${k.jam_selesai}`, k.lokasi, k.status])]
               )}>
@@ -138,7 +138,7 @@ export default function Page() {
             <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
-                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50 sticky top-0 z-10">
+                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-white/60 sticky top-0 z-10">
                   <TableHead className="font-bold text-slate-600 py-4 pl-6 w-[160px]">Tanggal</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Kegiatan</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Bentuk</TableHead>
@@ -182,18 +182,18 @@ export default function Page() {
 
           {/* Rekap Table */}
           {tab === "rekap" && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex-1 flex flex-col bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden min-h-0">
-            <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 px-6 py-4 bg-white">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center h-10 w-10 bg-slate-50 text-slate-600 rounded-xl border border-slate-200">
-                  <Users className="h-4 w-4 md:h-5 md:w-5" />
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex-1 flex flex-col bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[24px] overflow-hidden min-h-0">
+            <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100/50 px-4 md:px-8 py-4 md:py-6 bg-white/40">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-red-50 border border-red-100 text-[#6B0000] rounded-[14px] shadow-sm shrink-0">
+                  <Users className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Rekap Penugasan Mahasiswa</h2>
-                  <p className="text-[11px] text-slate-500 mt-0.5">{rekap.length} mahasiswa dalam periode ini</p>
+                  <h2 className="text-base md:text-xl font-bold text-slate-900 leading-tight">Rekap Penugasan Mahasiswa</h2>
+                  <p className="text-[11px] md:text-sm text-slate-500 mt-0.5 md:mt-1">{rekap.length} mahasiswa dalam periode ini</p>
                 </div>
               </div>
-              <Button className="rounded-xl bg-red-800 text-white border border-transparent hover:bg-red-900 font-bold gap-2 h-9 px-4 transition-colors shadow-sm shadow-red-700/20" onClick={() => exportCsv(
+              <Button className="rounded-xl bg-red-800 text-white border border-transparent hover:bg-red-900 font-bold gap-2 h-9 md:h-11 px-4 md:px-6 transition-colors shadow-sm shadow-red-700/20" onClick={() => exportCsv(
                 `rekap-penugasan-${start}-${end}.csv`,
                 [["NIM","Nama","Prodi","Total Tugas","Dikonfirmasi","Ditolak"], ...rekap.map((r: any) => [r.nim, r.nama_lengkap, r.prodi, r.total_tugas, r.dikonfirmasi, r.ditolak])]
               )}>
@@ -203,7 +203,7 @@ export default function Page() {
             <div className="flex-1 overflow-auto flex flex-col relative min-h-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <Table className="text-sm">
               <TableHeader>
-                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-slate-50 sticky top-0 z-10">
+                <TableRow className="border-b border-slate-200 hover:bg-transparent bg-white/60 sticky top-0 z-10">
                   <TableHead className="font-bold text-slate-600 py-4 pl-6 w-[120px]">NIM</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Nama</TableHead>
                   <TableHead className="font-bold text-slate-600 py-4">Prodi</TableHead>

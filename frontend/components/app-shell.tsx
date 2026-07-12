@@ -21,6 +21,7 @@ const adminItems = [
   { to: '/sertifikat', icon: Award, label: 'Sertifikat' },
   { to: '/evaluasi/dashboard', icon: BarChart3, label: 'Evaluasi' },
   { to: '/laporan', icon: FileBarChart, label: 'Laporan' },
+  { to: '/pengaturan-sop', icon: Settings, label: 'Pengaturan' },
 ];
 
 const mahasiswaItems = [
