@@ -255,7 +255,7 @@ export default function TentangKami() {
  <p className="text-[12px] font-bold text-gold/90 leading-tight relative z-10">Kepala Kantor</p>
  </div>
  </div>
- <div className="w-[3px] h-10 bg-primary"></div>
+ <div className="w-[3px] h-[60px] -mt-[20px] bg-primary z-0"></div>
  </div>
  
  {/* Level 2 & 3 */}
@@ -264,7 +264,7 @@ export default function TentangKami() {
  {/* Node SEKRETARIS */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-1/2 right-0 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"></div>
+ <div className="w-[3px] h-[52px] -mb-[20px] bg-primary relative z-0"></div>
  <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
  <Image src="/struktur/Elviza Yeni Putri, M. Pd.png" alt="Sekretaris" fill sizes="200px" className="object-contain object-bottom scale-[1.20] origin-bottom translate-y-3" />
@@ -280,7 +280,7 @@ export default function TentangKami() {
  {/* Node DIVISI SDM */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"></div>
+ <div className="w-[3px] h-[52px] -mb-[20px] bg-primary relative z-0"></div>
  <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
  <Image src="/struktur/Dr. Siti Hajar Thaitami, S.St, M.Pd.png" alt="Divisi SDM" fill sizes="200px" className="object-contain object-bottom scale-[1.35] origin-bottom" />
@@ -296,7 +296,7 @@ export default function TentangKami() {
  {/* Node KOORDINATOR */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"></div>
+ <div className="w-[3px] h-[52px] -mb-[20px] bg-primary relative z-0"></div>
  <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group z-10">
  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
  <Image src="/struktur/Dr. Rian Surenda., S.EI.,M.M.png" alt="Koordinator" fill sizes="200px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
@@ -310,10 +310,10 @@ export default function TentangKami() {
  <div className="flex w-[280px] -mt-1">
  <div className="w-full ml-[50px]">
  <div className="flex flex-col pt-12 relative">
- <div className="flex items-center relative group">
- <div className="absolute top-[-3rem] bottom-1/2 left-0 w-[3px] bg-primary"></div>
+ <div className="flex items-center relative group animate-fade-in-up" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
+ <div className="absolute top-[-5rem] bottom-1/2 left-0 w-[3px] bg-primary"></div>
  <div className="w-6 h-[3px] bg-primary"></div>
- <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
+ <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
  <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 min-h-[55px] border border-white/20 border-l-4 border-l-gold/80 shadow-inner group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
  <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Protokoler<br/>Mahasiswa</p>
  </div>
@@ -327,7 +327,7 @@ export default function TentangKami() {
  {/* Node DIVISI ACARA */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"></div>
+ <div className="w-[3px] h-[52px] -mb-[20px] bg-primary relative z-0"></div>
  <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group z-10">
  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
  <Image src="/struktur/Samuel Martin Pradana., M.Tr.T.png" alt="Divisi Acara" fill sizes="200px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
@@ -341,24 +341,33 @@ export default function TentangKami() {
  <div className="flex w-[280px] -mt-1">
  <div className="w-full ml-[25px]">
  <div className="flex flex-col gap-12 pt-12 relative">
- <div className="flex items-center relative group">
- <div className="absolute top-[-3rem] bottom-[-3rem] left-0 w-[3px] bg-primary"></div>
+ <div className="flex items-center relative group animate-fade-in-up" style={{ animationDelay: '0.8s', animationFillMode: 'both' }}>
+ <div className="absolute top-[-5rem] bottom-[-3rem] left-0 w-[3px] bg-primary"></div>
  <div className="w-6 h-[3px] bg-primary"></div>
- <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.8s', animationFillMode: 'both' }}>
+ <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
  <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 min-h-[55px] border border-white/20 border-l-4 border-l-gold/80 shadow-inner group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
  <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Master Of Ceremony</p>
  </div>
  </div>
  </div>
- <div className="flex items-center relative group">
- <div className="absolute top-0 bottom-1/2 left-0 w-[3px] bg-primary"></div>
- <div className="w-6 h-[3px] bg-primary"></div>
- <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
- <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 min-h-[55px] border border-white/20 border-l-4 border-l-gold/80 shadow-inner group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
- <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Operator</p>
- </div>
- </div>
- </div>
+ <div className="flex items-center relative group animate-fade-in-up" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
+ <div className="absolute top-[-2rem] bottom-[-3rem] left-0 w-[3px] bg-primary"></div>
+  <div className="w-6 h-[3px] bg-primary"></div>
+  <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
+  <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 min-h-[55px] border border-white/20 border-l-4 border-l-gold/80 shadow-inner group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
+  <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Operator</p>
+  </div>
+  </div>
+  </div>
+  <div className="flex items-center relative group animate-fade-in-up" style={{ animationDelay: '1.0s', animationFillMode: 'both' }}>
+  <div className="absolute top-[-2rem] bottom-1/2 left-0 w-[3px] bg-primary"></div>
+  <div className="w-6 h-[3px] bg-primary"></div>
+  <div className="flex flex-col items-center w-[180px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group">
+  <div className="py-2 px-2 w-full flex flex-col items-center justify-center text-center rounded-xl bg-gradient-to-r from-primary to-[#5a0000] text-white shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] z-20 min-h-[55px] border border-white/20 border-l-4 border-l-gold/80 shadow-inner group-hover:border-l-gold group-hover:shadow-[0_0_20px_rgba(210,173,92,0.15)] transition-all duration-300 relative overflow-hidden">
+  <p className="text-[13px] font-bold leading-tight text-white group-hover:text-gold transition-colors duration-300 relative z-10">Live Streaming</p>
+  </div>
+  </div>
+  </div>
  </div>
  </div>
  </div>
@@ -367,7 +376,7 @@ export default function TentangKami() {
  {/* Node ADMIN */}
  <div className="flex flex-col items-center flex-1 relative">
  <div className="absolute top-0 left-0 right-1/2 h-[3px] bg-primary"></div>
- <div className="w-[3px] h-8 bg-primary relative"></div>
+ <div className="w-[3px] h-[52px] -mb-[20px] bg-primary relative z-0"></div>
  <div className="flex flex-col items-center w-[280px] relative px-1 hover:-translate-y-2 transition-transform duration-300 cursor-pointer group animate-fade-in-up" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
  <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)] group-hover:scale-105 transition-transform duration-500">
  <Image src="/struktur/Sri Yuningsih S.St.,M.M.png" alt="Admin" fill sizes="200px" className="object-contain object-bottom scale-[1.35] origin-bottom" />
@@ -386,9 +395,9 @@ export default function TentangKami() {
  {/* MOBILE LAYOUT (Vertical Tree) */}
  <div className="flex md:hidden flex-col w-full max-w-[340px] mx-auto select-none font-sans mt-2">
  {/* Kepala Kantor */}
- <div className="flex flex-col items-center relative z-10 mb-10 w-full px-4 animate-fade-in-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
+ <div className="flex flex-col items-center relative z-10 mb-16 w-full px-4 animate-fade-in-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
   <div className="w-[160px] h-[160px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
-  <Image src="/struktur/Hijriyantomi Suyuthie.png" alt="Kepala Kantor" fill sizes="160px" className="object-contain object-bottom scale-[1.20] origin-bottom translate-y-3" />
+  <Image src="/struktur/Hijriyantomi Suyuthie.png" alt="Kepala Kantor" fill sizes="160px" className="object-contain object-bottom scale-[1.20] origin-bottom translate-y-0" />
   </div>
   <div className="-mt-[3.5rem] py-2 px-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-primary to-[#4a0000] text-white rounded-[1.2rem] shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-t-2 border-t-gold/80 shadow-inner relative z-20">
  <h4 className="font-black text-[15px] leading-tight mb-1 tracking-tight text-white">Hijriyantomi Suyuthie</h4>
@@ -400,15 +409,15 @@ export default function TentangKami() {
  <div className="flex flex-col relative ml-[40px] pl-6 pt-6 gap-6">
  {/* Main Vertical Stem */}
  {/* Top Connectors to Kepala Kantor */}
-  <div className="absolute top-[-40px] left-[128.5px] w-[3px] h-[40px] bg-primary z-0"></div>
+  <div className="absolute top-[-64px] left-[128.5px] w-[3px] h-[64px] bg-primary z-0"></div>
   <div className="absolute top-0 left-0 w-[130px] h-[3px] bg-primary rounded-tl-md z-0"></div>
   {/* Main Vertical Stem */}
-  <div className="absolute left-0 top-0 bottom-[61.5px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
+  <div className="absolute left-0 top-[3px] bottom-[133.5px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
  
  {/* Node SEKRETARIS */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+ <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
   <Image src="/struktur/Elviza Yeni Putri, M. Pd.png" alt="Sekretaris" fill sizes="200px" className="object-contain object-bottom scale-[1.20] origin-bottom translate-y-3" />
@@ -422,8 +431,8 @@ export default function TentangKami() {
 
  {/* Node DIVISI SDM */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
-  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+ <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
   <Image src="/struktur/Dr. Siti Hajar Thaitami, S.St, M.Pd.png" alt="Divisi SDM" fill sizes="200px" className="object-contain object-bottom scale-[1.35] origin-bottom" />
@@ -437,8 +446,8 @@ export default function TentangKami() {
 
  {/* Node KOORDINATOR */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
-  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+ <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
   <Image src="/struktur/Dr. Rian Surenda., S.EI.,M.M.png" alt="Koordinator" fill sizes="200px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
@@ -450,7 +459,7 @@ export default function TentangKami() {
  </div>
  {/* Sub-node Protokoler */}
  <div className="flex flex-col relative ml-[30px] pl-5 mt-[-24px] pt-[36px] gap-4 z-0">
- <div className="absolute left-0 top-0 bottom-[15px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
+ <div className="absolute left-0 top-[-72px] bottom-[18px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
  <div className="flex items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.8s', animationFillMode: 'both' }}>
  <div className="absolute left-[-20px] top-1/2 w-[20px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
  <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-l-4 border-l-gold/80 shadow-inner">
@@ -462,8 +471,8 @@ export default function TentangKami() {
 
  {/* Node DIVISI ACARA */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
-  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+ <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
   <Image src="/struktur/Samuel Martin Pradana., M.Tr.T.png" alt="Divisi Acara" fill sizes="200px" className="object-contain object-bottom scale-[1.15] origin-bottom" />
@@ -475,7 +484,7 @@ export default function TentangKami() {
  </div>
  {/* Sub-node MC & Operator */}
  <div className="flex flex-col relative ml-[30px] pl-5 mt-[-24px] pt-[36px] gap-4 z-0">
- <div className="absolute left-0 top-0 bottom-[15px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
+ <div className="absolute left-0 top-[-72px] bottom-[18px] w-[3px] bg-primary z-0 rounded-bl-md"></div>
  <div className="flex items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
  <div className="absolute left-[-20px] top-1/2 w-[20px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
  <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-l-4 border-l-gold/80 shadow-inner">
@@ -486,15 +495,21 @@ export default function TentangKami() {
  <div className="absolute left-[-20px] top-1/2 w-[20px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
  <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-l-4 border-l-gold/80 shadow-inner">
  <p className="text-[13px] font-bold text-white leading-tight">Operator</p>
- </div>
- </div>
+  </div>
+  </div>
+  <div className="flex items-center relative w-full z-10 animate-fade-in-up" style={{ animationDelay: '1.1s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-20px] top-1/2 w-[20px] h-[3px] bg-primary -translate-y-1/2 z-0"></div>
+  <div className="flex flex-col justify-center text-center bg-gradient-to-r from-primary to-[#5a0000] text-white py-2 px-3 rounded-lg shadow-[0_15px_40px_-10px_rgba(107,0,0,0.6)] w-full border border-white/20 border-l-4 border-l-gold/80 shadow-inner">
+  <p className="text-[13px] font-bold text-white leading-tight">Live Streaming</p>
+  </div>
+  </div>
  </div>
  </div>
 
  {/* Node ADMIN */}
  <div className="flex flex-col relative w-full">
- <div className="flex flex-col items-center relative w-full z-10 mb-6 animate-fade-in-up" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
-  <div className="absolute left-[-24px] top-[151.5px] w-[24px] h-[3px] bg-primary z-0"></div>
+ <div className="flex flex-col items-center relative w-full z-10 mb-24 animate-fade-in-up" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
+  <div className="absolute left-[-24px] top-[181.5px] w-[24px] h-[3px] bg-primary z-0"></div>
   
   <div className="w-[200px] h-[200px] z-10 relative drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]">
   <Image src="/struktur/Sri Yuningsih S.St.,M.M.png" alt="Admin" fill sizes="200px" className="object-contain object-bottom scale-[1.35] origin-bottom" />
