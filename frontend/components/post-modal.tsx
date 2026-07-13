@@ -267,17 +267,6 @@ export function PostModal({
                       </div>
                     </div>
 
-                    {/* TARGET PESERTA */}
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 mt-0.5">
-                         <UserCheck className="w-4 h-4 text-[#6B0000]" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Peserta</p>
-                        <p className="text-sm text-slate-900 font-semibold capitalize">{selectedPost.audience || '-'}</p>
-                      </div>
-                    </div>
-
                     {/* NARASUMBER / KEYNOTE */}
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 mt-0.5">
@@ -286,6 +275,17 @@ export function PostModal({
                       <div>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Narasumber / Keynote</p>
                         <p className="text-sm text-slate-900 font-semibold capitalize">{selectedPost.keynote || '-'}</p>
+                      </div>
+                    </div>
+
+                    {/* TARGET PESERTA */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 mt-0.5">
+                         <UserCheck className="w-4 h-4 text-[#6B0000]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Peserta</p>
+                        <p className="text-sm text-slate-900 font-semibold capitalize">{selectedPost.audience || '-'}</p>
                       </div>
                     </div>
                  </div>
