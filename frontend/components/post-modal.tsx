@@ -128,7 +128,7 @@ export function PostModal({
              </div>
 
              {/* Scrollable Content */}
-             <div className="px-6 py-5 md:px-8 md:py-6 flex-1 overflow-y-auto bg-slate-50/50 flex flex-col">
+             <div className="px-6 py-5 md:px-8 md:py-6 flex-1 overflow-y-auto bg-slate-50/50 flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                <h2 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-3 leading-tight">{selectedPost.judul}</h2>
                
                <div className="flex flex-wrap items-center gap-4 mb-5">
@@ -224,7 +224,7 @@ export function PostModal({
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Waktu</p>
                         <p className="text-sm text-slate-900 font-semibold">
                           {selectedPost.jam_mulai && selectedPost.jam_selesai 
-                            ? `${String(selectedPost.jam_mulai).slice(0, 5)} - ${String(selectedPost.jam_selesai).slice(0, 5)} WIB` 
+                            ? `${String(selectedPost.jam_mulai).includes('T') ? String(selectedPost.jam_mulai).split('T')[1].substring(0, 5) : String(selectedPost.jam_mulai).substring(0, 5)} - ${String(selectedPost.jam_selesai).includes('T') ? String(selectedPost.jam_selesai).split('T')[1].substring(0, 5) : String(selectedPost.jam_selesai).substring(0, 5)} WIB` 
                             : '-'}
                         </p>
                       </div>
