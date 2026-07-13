@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText, Mail, Lock } from 'lucide-react';
+import { ArrowLeft, Upload, User, BookOpen, ChevronRight, ChevronLeft, Check, Loader2, Clock, Shield, Briefcase, GraduationCap, CalendarDays, Trophy, ScrollText, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { ViewportFitGrid } from '@/components/ViewportFitGrid';
 import { SplashScreen } from '@/components/splash-screen';
@@ -26,6 +26,8 @@ export default function AuthPage() {
   // Login state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Register multi-step state
   const [step, setStep] = useState<RegisterStep>(1);
@@ -35,52 +37,6 @@ export default function AuthPage() {
   });
   const [fotoSetengahPreview, setFotoSetengahPreview] = useState<string | null>(null);
   const [fotoFullPreview, setFotoFullPreview] = useState<string | null>(null);
-
-  const enterDemoRole = async (role: 'admin' | 'dokumentasi' | 'mahasiswa') => {
-    setLoading(true);
-    try {
-      let demoEmail = 'admin@siproto.com';
-      let demoPass = 'admin123';
-      
-      if (role === 'mahasiswa') {
-        demoEmail = 'mhs@siproto.com';
-        demoPass = 'mhs123';
-      } else if (role === 'dokumentasi') {
-        demoEmail = 'dok@siproto.com';
-        demoPass = 'dok123';
-      }
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: demoEmail,
-        password: demoPass,
-      });
-
-      if (error) {
-        toast.error(`Gagal masuk: ${error.message}`);
-        return;
-      }
-
-      // Verifikasi role ke backend
-      const res = await fetch('/api/auth/me', {
-        headers: { Authorization: `Bearer ${data.session!.access_token}` },
-      });
-
-      if (res.ok) {
-        const userMe = await res.json();
-        let route = '/beranda';
-        if (userMe.role === 'admin') route = '/dashboard';
-        else if (userMe.role === 'dokumentasi') route = '/dokumentasi/dashboard';
-        
-        setEnteringDashboard(route);
-      } else {
-        toast.error('Gagal memverifikasi role');
-      }
-    } catch (err) {
-      toast.error('Gagal masuk mode demo');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -224,12 +180,6 @@ export default function AuthPage() {
     { label: 'Buat Password', icon: BookOpen },
   ];
 
-  const roleCards = [
-    { role: 'admin' as const, label: 'Pimpinan', desc: 'Kelola seluruh sistem', icon: Shield, color: 'bg-slate-900 text-white hover:bg-slate-800', iconBg: 'bg-white/10' },
-    { role: 'mahasiswa' as const, label: 'Protokoler', desc: 'Akses tugas & jadwal', icon: GraduationCap, color: 'bg-red-700 text-white hover:bg-red-800', iconBg: 'bg-white/20' },
-    { role: 'dokumentasi' as const, label: 'Dokumentasi', desc: 'Kelola galeri & media', icon: Briefcase, color: 'bg-white text-slate-900 hover:bg-slate-50 border border-slate-200', iconBg: 'bg-slate-100' },
-  ];
-
   return (
     <>
       {enteringDashboard && (
@@ -302,6 +252,17 @@ export default function AuthPage() {
 
       {/* ── Right Panel: Auth Card & Orange Background ── */}
       <div className="flex items-center justify-center h-full p-4 lg:p-6 relative bg-slate-50 lg:bg-red-50/50">
+        {/* Back to Home Button */}
+        <div className="absolute top-4 right-4 lg:top-8 lg:right-8 z-20">
+          <Button
+            variant="outline"
+            onClick={() => router.push('/')}
+            className="bg-white/80 backdrop-blur-md hover:bg-white border-slate-200 text-slate-700 hover:text-red-800 rounded-xl font-bold h-10 px-4 shadow-sm transition-all"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" /> Kembali
+          </Button>
+        </div>
+
         {/* Gradients specific to right panel */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-200/30 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-100/40 rounded-full blur-[100px] pointer-events-none" />
@@ -355,7 +316,10 @@ export default function AuthPage() {
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                           <Lock className="h-4 w-4 text-slate-400" />
                         </div>
-                        <Input type="password" value={password} onChange={e => setPassword(e.target.value)} className="rounded-xl h-11 lg:h-12 pl-10 border-slate-200 text-sm bg-slate-50 focus:bg-white focus:border-red-600 transition-colors shadow-sm" placeholder="Masukkan password Anda" required />
+                        <Input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} className="rounded-xl h-11 lg:h-12 pl-10 pr-10 border-slate-200 text-sm bg-slate-50 focus:bg-white focus:border-red-600 transition-colors shadow-sm" placeholder="Masukkan password Anda" required />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
                       </div>
                     </div>
                     
@@ -496,11 +460,21 @@ export default function AuthPage() {
                         </div>
                         <div className="space-y-1.5">
                           <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Password <span className="text-red-500">*</span></Label>
-                          <Input type="password" className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.password} onChange={(e) => setRegForm({ ...regForm, password: e.target.value })} placeholder="Min. 8 karakter" />
+                          <div className="relative">
+                            <Input type={showPassword ? 'text' : 'password'} className="rounded-xl h-10 border-slate-200 text-sm bg-white pr-10" value={regForm.password} onChange={(e) => setRegForm({ ...regForm, password: e.target.value })} placeholder="Min. 8 karakter" />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors">
+                              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                          </div>
                         </div>
                         <div className="space-y-1.5">
                           <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Konfirmasi Password <span className="text-red-500">*</span></Label>
-                          <Input type="password" className="rounded-xl h-10 border-slate-200 text-sm bg-white" value={regForm.password_confirm} onChange={(e) => setRegForm({ ...regForm, password_confirm: e.target.value })} />
+                          <div className="relative">
+                            <Input type={showConfirmPassword ? 'text' : 'password'} className="rounded-xl h-10 border-slate-200 text-sm bg-white pr-10" value={regForm.password_confirm} onChange={(e) => setRegForm({ ...regForm, password_confirm: e.target.value })} />
+                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors">
+                              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                          </div>
                           {regForm.password && regForm.password_confirm && regForm.password !== regForm.password_confirm && <p className="text-xs text-red-500 font-medium">Password tidak cocok</p>}
                         </div>
                         <div className="flex gap-3 pt-1">
@@ -534,28 +508,6 @@ export default function AuthPage() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-
-          {/* ── QUICK LOGIN DEMO (moved below card) ── */}
-          <div className="mt-6 hidden lg:block">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-px flex-1 bg-slate-200" />
-              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.1em]">Akses Cepat Demo</span>
-              <div className="h-px flex-1 bg-slate-200" />
-            </div>
-            
-            <div className="grid grid-cols-3 gap-2">
-              {roleCards.map(({ role, label, icon: Icon, color }) => (
-                <button
-                  key={role}
-                  onClick={() => enterDemoRole(role)}
-                  className={`flex flex-col items-center justify-center gap-1.5 p-2 py-2.5 rounded-xl font-bold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 shadow-sm ${color}`}
-                >
-                  <Icon className="h-4 w-4 opacity-90" />
-                  <span className="text-[9px] leading-none tracking-wide text-center">{label}</span>
-                </button>
-              ))}
-            </div>
           </div>
 
           <p className="mt-6 text-center text-xs text-slate-400 font-medium lg:hidden">

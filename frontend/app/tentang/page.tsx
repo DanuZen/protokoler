@@ -116,17 +116,17 @@ export default function TentangKami() {
               {/* Kolase Foto Interaktif */}
               <div className="flex flex-col md:flex-row items-center justify-center -space-y-8 md:space-y-0 md:-space-x-8 mb-20 max-w-5xl mx-auto px-4">
                 <motion.div initial={{ opacity: 0, y: 20, rotate: -5 }} whileInView={{ opacity: 1, y: 0, rotate: -3 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="relative w-72 h-52 md:w-64 md:h-48 rounded-3xl overflow-hidden shadow-xl hover:rotate-0 hover:scale-105 hover:z-20 transition-all duration-500 border-4 border-white z-0">
-                  <Image src="/gallery_1.webp" alt="Protokoler 1" fill className="object-cover" />
+                  <Image src="/protokoler1.jpeg" alt="Protokoler 1" fill className="object-cover" />
                   <div className="absolute inset-0 bg-[#6B0000]/10 hover:bg-transparent transition-colors duration-500"></div>
                 </motion.div>
                 
                 <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }} className="relative w-80 h-64 md:w-72 md:h-60 rounded-3xl overflow-hidden shadow-2xl hover:-translate-y-2 hover:scale-105 hover:z-20 transition-all duration-500 border-4 border-white z-10 md:-mt-8">
-                  <Image src="/gallery_2.webp" alt="Protokoler 2" fill className="object-cover" />
+                  <Image src="/protokoler2.jpeg" alt="Protokoler 2" fill className="object-cover" />
                   <div className="absolute inset-0 bg-[#D2AD5C]/10 hover:bg-transparent transition-colors duration-500"></div>
                 </motion.div>
                 
                 <motion.div initial={{ opacity: 0, y: 20, rotate: 5 }} whileInView={{ opacity: 1, y: 0, rotate: 3 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }} className="relative w-72 h-52 md:w-64 md:h-48 rounded-3xl overflow-hidden shadow-xl hover:rotate-0 hover:scale-105 hover:z-20 transition-all duration-500 border-4 border-white z-0">
-                  <Image src="/gallery_3.webp" alt="Protokoler 3" fill className="object-cover" />
+                  <Image src="/protokoler3.jpeg" alt="Protokoler 3" fill className="object-cover" />
                   <div className="absolute inset-0 bg-blue-900/10 hover:bg-transparent transition-colors duration-500"></div>
                 </motion.div>
               </div>

@@ -82,7 +82,7 @@ export default function ManajemenBeritaPage() {
   const [isCompressing, setIsCompressing] = useState(false);
   const [formData, setFormData] = useState({
     kategori: '',
-    gambar: '/gallery_1.webp',
+    gambar: '/protokoler1.jpeg',
     ringkasan: '',
   });
 
@@ -163,7 +163,7 @@ export default function ManajemenBeritaPage() {
           
           setFormData({
             kategori: firstPhotoWithKategori?.kategori || '',
-            gambar: '/gallery_1.webp',
+            gambar: '/protokoler1.jpeg',
             ringkasan: firstPhotoWithKeterangan?.keterangan || '',
           });
           setFiles([]);
@@ -172,7 +172,7 @@ export default function ManajemenBeritaPage() {
         } else {
           setFormData({
             kategori: '',
-            gambar: '/gallery_1.webp',
+            gambar: '/protokoler1.jpeg',
             ringkasan: '',
           });
           setFiles([]);
@@ -189,7 +189,7 @@ export default function ManajemenBeritaPage() {
     
     setFormData({
       kategori: firstPhotoWithKategori?.kategori || '',
-      gambar: '/gallery_1.webp',
+      gambar: '/protokoler1.jpeg',
       ringkasan: firstPhotoWithKeterangan?.keterangan || '',
     });
     setFiles([]);
@@ -211,7 +211,7 @@ export default function ManajemenBeritaPage() {
       queryClient.invalidateQueries({ queryKey: ['postingan-list'] });
       queryClient.invalidateQueries({ queryKey: ['dokumentasi-kegiatan-detail', selectedId] });
       toast.success(`Dokumentasi berhasil dipublikasikan!`);
-      setFormData({ kategori: '', gambar: '/gallery_1.webp', ringkasan: '' });
+      setFormData({ kategori: '', gambar: '/protokoler1.jpeg', ringkasan: '' });
       setFiles([]);
       setMediaType('foto');
       refetchDetail().then(() => {
@@ -261,14 +261,14 @@ export default function ManajemenBeritaPage() {
             files: files,
             judul: selected.nama_kegiatan,
             gambar: formData.gambar,
-            tanggal: new Date().toISOString()
+            tanggal: selected.tanggal ? new Date(selected.tanggal).toISOString() : new Date().toISOString()
           };
           createMutation.mutate(payload);
         } else {
           queryClient.invalidateQueries({ queryKey: ['postingan-list'] });
           queryClient.invalidateQueries({ queryKey: ['dokumentasi-kegiatan-detail', selectedId] });
           toast.success('Postingan dokumentasi berhasil diperbarui!');
-          setFormData({ kategori: '', gambar: '/gallery_1.webp', ringkasan: '' });
+          setFormData({ kategori: '', gambar: '/protokoler1.jpeg', ringkasan: '' });
           setFiles([]);
           setShowUploadForm(false);
         }
@@ -289,7 +289,7 @@ export default function ManajemenBeritaPage() {
         files: files,
         judul: selected.nama_kegiatan,
         gambar: formData.gambar,
-        tanggal: new Date().toISOString()
+        tanggal: selected.tanggal ? new Date(selected.tanggal).toISOString() : new Date().toISOString()
       };
       
       createMutation.mutate(payload);
@@ -325,6 +325,15 @@ export default function ManajemenBeritaPage() {
             <p className="hidden md:block text-xs md:text-base text-slate-500 font-medium max-w-xl leading-relaxed">Pantau status kegiatan dan unggah dokumentasi untuk mempublikasikannya sebagai berita.</p>
           </div>
         </div>
+
+        {/* BUTTON KEMBALI */}
+        {selectedId && (
+          <div className="flex shrink-0">
+            <Button variant="outline" onClick={() => setSelectedId(null)} className="bg-white border-slate-200 text-slate-700 hover:text-red-900 hover:bg-red-50 hover:border-red-200 shadow-sm rounded-xl px-4 h-10 font-bold transition-all">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Kembali
+            </Button>
+          </div>
+        )}
       </motion.div>
 
       {!selectedId && (
@@ -441,7 +450,7 @@ export default function ManajemenBeritaPage() {
                                   setSelectedId(keg.id); 
                                   setIsEditingMode(false);
                                   setShowUploadForm(false); 
-                                  setFormData({ kategori: '', gambar: '/gallery_1.webp', ringkasan: '' });
+                                  setFormData({ kategori: '', gambar: '/protokoler1.jpeg', ringkasan: '' });
                                   setFiles([]);
                                 }}
                                 className="bg-red-900 hover:bg-red-800 text-white rounded-xl h-8 px-4 text-xs font-bold shadow-sm"
@@ -461,11 +470,6 @@ export default function ManajemenBeritaPage() {
         ) : (
 
           <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className="flex flex-col h-full overflow-hidden">
-            <div className="shrink-0 mb-6 flex items-center">
-              <Button variant="outline" onClick={() => setSelectedId(null)} className="bg-white border-slate-200 text-slate-700 hover:text-red-900 hover:bg-red-50 hover:border-red-200 shadow-sm rounded-xl px-4 h-10 font-bold transition-all">
-                <ArrowLeft className="mr-2 h-4 w-4" /> Kembali ke Daftar Acara
-              </Button>
-            </div>
             
             {existingPhotos.length > 0 && !showUploadForm ? (
               // ─── TAMPILAN DETAIL DOKUMENTASI & SLIDER ───

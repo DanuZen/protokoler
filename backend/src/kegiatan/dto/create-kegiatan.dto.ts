@@ -12,6 +12,7 @@ export class CreateKegiatanDto {
   nama_kegiatan!: string;
   bentuk_kegiatan!: BentukKegiatanEnum;
   tanggal!: string; // YYYY-MM-DD
+  tanggal_selesai?: string; // YYYY-MM-DD
   jam_mulai!: string; // HH:MM
   jam_selesai!: string; // HH:MM
   lokasi!: string;

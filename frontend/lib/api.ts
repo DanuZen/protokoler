@@ -4,7 +4,12 @@ import { supabase } from './supabase';
  * Helper to dynamically get the active session token and construct headers.
  */
 async function getAuthHeaders() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session }, error } = await supabase.auth.getSession();
+  
+  if (error && (error.message.includes('Refresh Token Not Found') || error.message.includes('Invalid Refresh Token'))) {
+    await supabase.auth.signOut();
+  }
+
   if (session?.access_token) {
     return {
       'Authorization': `Bearer ${session.access_token}`,
@@ -416,7 +421,7 @@ export const postinganApi = {
       // Map data backend ke format yang dipakai frontend
       return (res.data || []).map((item: any) => {
         const photos = (item.dokumentasi || []).filter((d: any) => d.media_type === 'foto');
-        const defaultImage = '/gallery_1.webp';
+        const defaultImage = '/protokoler1.jpeg';
         
         // Cari keterangan berita riil dari salah satu foto, default ke hitungan berkas jika tidak ada
         const firstPhotoWithKeterangan = (item.dokumentasi || []).find((d: any) => d.keterangan && d.keterangan.trim() !== '');

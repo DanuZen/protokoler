@@ -531,6 +531,9 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                     </div>
                     <p className="font-bold text-slate-800 text-[14px]">
                       {new Date(keg.tanggal).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                      {keg.tanggal_selesai && new Date(keg.tanggal).getTime() !== new Date(keg.tanggal_selesai).getTime() && (
+                        <> - {new Date(keg.tanggal_selesai).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</>
+                      )}
                     </p>
                   </div>
                   <div className="space-y-2 bg-slate-50/50 p-4 rounded-xl border border-slate-100">

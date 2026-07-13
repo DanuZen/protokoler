@@ -56,6 +56,7 @@ model Kegiatan {
   nama_kegiatan                String                @db.VarChar(255)
   bentuk_kegiatan              BentukKegiatanEnum
   tanggal                      DateTime              @db.Date
+  tanggal_selesai              DateTime?             @db.Date
   jam_mulai                    DateTime              @db.Time(6)
   jam_selesai                  DateTime              @db.Time(6)
   lokasi                       String                @db.VarChar(255)

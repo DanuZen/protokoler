@@ -46,6 +46,7 @@ export class KegiatanService {
         nama_kegiatan: dto.nama_kegiatan,
         bentuk_kegiatan: dto.bentuk_kegiatan,
         tanggal: new Date(dto.tanggal),
+        tanggal_selesai: dto.tanggal_selesai ? new Date(dto.tanggal_selesai) : null,
         jam_mulai: start,
         jam_selesai: end,
         lokasi: dto.lokasi,
@@ -235,6 +236,7 @@ export class KegiatanService {
     if (dto.nama_kegiatan !== undefined) updateData.nama_kegiatan = dto.nama_kegiatan;
     if (dto.bentuk_kegiatan !== undefined) updateData.bentuk_kegiatan = dto.bentuk_kegiatan;
     if (dto.tanggal !== undefined) updateData.tanggal = new Date(dto.tanggal);
+    if (dto.tanggal_selesai !== undefined) updateData.tanggal_selesai = dto.tanggal_selesai ? new Date(dto.tanggal_selesai) : null;
     if (dto.jam_mulai !== undefined) updateData.jam_mulai = this.parseTimeToDate(dto.jam_mulai);
     if (dto.jam_selesai !== undefined) updateData.jam_selesai = this.parseTimeToDate(dto.jam_selesai);
     if (dto.lokasi !== undefined) updateData.lokasi = dto.lokasi;

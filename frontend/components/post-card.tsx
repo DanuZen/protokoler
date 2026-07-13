@@ -12,7 +12,7 @@ interface PostCardProps {
 
 export function PostCard({ post, isFeatured, onClick }: PostCardProps) {
   const [activeIdx, setActiveIdx] = useState(0);
-  const images = post.images || [post.gambar || '/gallery_1.webp'];
+  const images = post.images || [post.gambar || '/protokoler1.jpeg'];
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();

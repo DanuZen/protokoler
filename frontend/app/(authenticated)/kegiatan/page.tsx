@@ -65,9 +65,15 @@ export default function KegiatanPage() {
   });
 
   const kegiatanByDate = ((kegiatan || []) as any[]).reduce((acc: Record<string, any[]>, k) => {
-    const d = getLocalISODate(new Date(k.tanggal));
-    if (!acc[d]) acc[d] = [];
-    acc[d].push(k);
+    const startDate = new Date(k.tanggal);
+    const endDate = k.tanggal_selesai ? new Date(k.tanggal_selesai) : startDate;
+    let current = new Date(startDate);
+    while (current <= endDate) {
+      const d = getLocalISODate(current);
+      if (!acc[d]) acc[d] = [];
+      acc[d].push(k);
+      current.setDate(current.getDate() + 1);
+    }
     return acc;
   }, {});
 
@@ -219,10 +225,17 @@ export default function KegiatanPage() {
                     >
                       {day}
                       {hasEvent && (
-                        <span className={cn(
-                          "absolute bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full",
-                          isSelected ? "bg-white" : "bg-red-900"
-                        )} />
+                        <div className="absolute bottom-1 flex gap-0.5 items-center justify-center w-full">
+                          {kegiatanByDate[dateStr].slice(0, 3).map((_: any, idx: number) => (
+                            <span key={idx} className={cn(
+                              "h-1 w-1 rounded-full",
+                              isSelected ? "bg-white" : "bg-red-900"
+                            )} />
+                          ))}
+                          {kegiatanByDate[dateStr].length > 3 && (
+                            <span className={cn("text-[7px] leading-none ml-px font-bold", isSelected ? "text-white" : "text-red-900")}>+</span>
+                          )}
+                        </div>
                       )}
                     </button>
                   );
@@ -338,12 +351,25 @@ export default function KegiatanPage() {
 
                                   {/* Date block */}
                                   <div className="hidden md:flex flex-col items-center justify-center bg-slate-50 text-slate-500 w-14 h-14 rounded-xl shrink-0 border border-slate-200 group-hover:bg-red-700 group-hover:text-white group-hover:border-red-700 transition-colors shadow-sm order-1">
-                                    <span className="text-xl font-bold leading-none">
-                                      {new Date(k.tanggal).getDate()}
-                                    </span>
-                                    <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5 font-semibold">
-                                      {MONTHS[new Date(k.tanggal).getMonth()].slice(0, 3)}
-                                    </span>
+                                    {k.tanggal_selesai && getLocalISODate(new Date(k.tanggal)) !== getLocalISODate(new Date(k.tanggal_selesai)) ? (
+                                      <>
+                                        <span className="text-[13px] font-bold leading-none">
+                                          {new Date(k.tanggal).getDate()}-{new Date(k.tanggal_selesai).getDate()}
+                                        </span>
+                                        <span className="text-[9px] uppercase tracking-widest opacity-80 mt-1 font-semibold">
+                                          {MONTHS[new Date(k.tanggal).getMonth()].slice(0, 3)}
+                                        </span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <span className="text-xl font-bold leading-none">
+                                          {new Date(k.tanggal).getDate()}
+                                        </span>
+                                        <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5 font-semibold">
+                                          {MONTHS[new Date(k.tanggal).getMonth()].slice(0, 3)}
+                                        </span>
+                                      </>
+                                    )}
                                   </div>
 
                                   {/* Title & type */}
@@ -447,10 +473,17 @@ export default function KegiatanPage() {
                     >
                       {day}
                       {hasEvent && (
-                        <span className={cn(
-                          "absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full",
-                          isSelected ? "bg-white" : "bg-red-600"
-                        )} />
+                        <div className="absolute bottom-1.5 flex gap-0.5 items-center justify-center w-full">
+                          {kegiatanByDate[dateStr].slice(0, 3).map((_: any, idx: number) => (
+                            <span key={idx} className={cn(
+                              "h-1 w-1 rounded-full",
+                              isSelected ? "bg-white" : "bg-red-600"
+                            )} />
+                          ))}
+                          {kegiatanByDate[dateStr].length > 3 && (
+                            <span className={cn("text-[7px] leading-none ml-px font-bold", isSelected ? "text-white" : "text-red-600")}>+</span>
+                          )}
+                        </div>
                       )}
                     </button>
                   );

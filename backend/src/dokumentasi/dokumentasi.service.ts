@@ -14,6 +14,17 @@ export class DokumentasiService {
     private configService: ConfigService,
   ) {}
 
+  private formatTimeField(timeField: Date | string | null): string | null {
+    if (!timeField) return null;
+    const d = new Date(timeField);
+    if (isNaN(d.getTime())) return null;
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    const s = String(d.getSeconds()).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+
+
   async getKegiatanList(params: { status?: string; search?: string; page?: number; limit?: number }) {
     const page = Number(params.page) || 1;
     const limit = Number(params.limit) || 20;
@@ -56,8 +67,8 @@ export class DokumentasiService {
       kegiatan_id: k.id,
       nama_kegiatan: k.nama_kegiatan,
       tanggal: k.tanggal,
-      jam_mulai: k.jam_mulai,
-      jam_selesai: k.jam_selesai,
+      jam_mulai: this.formatTimeField(k.jam_mulai),
+      jam_selesai: this.formatTimeField(k.jam_selesai),
       tempat: k.lokasi,
       status: k.status,
       bentuk_kegiatan: k.bentuk_kegiatan,

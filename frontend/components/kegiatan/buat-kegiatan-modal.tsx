@@ -53,6 +53,7 @@ const initialForm = {
   nama_kegiatan: "",
   bentuk_kegiatan: "lainnya",
   tanggal: "",
+  tanggal_selesai: "",
   jam_mulai: "",
   jam_selesai: "",
   lokasi: "",
@@ -74,6 +75,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
   const [tamuVvip, setTamuVvip] = useState<any[]>([]);
   const [timeView, setTimeView] = useState<"date" | "start" | "end">("date");
   const [isAddingTamu, setIsAddingTamu] = useState(false);
+  const [isMultiDay, setIsMultiDay] = useState(false);
   const [newTamu, setNewTamu] = useState({ nama_tamu: "", jabatan: "", instansi: "", tipe: "eksternal", jumlah_rombongan: 1 });
 
   // Load data for editing if editId is provided
@@ -91,6 +93,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
           nama_kegiatan: editData.nama_kegiatan || "",
           bentuk_kegiatan: editData.bentuk_kegiatan || "lainnya",
           tanggal: editData.tanggal ? new Date(editData.tanggal).toISOString().split("T")[0] : "",
+          tanggal_selesai: editData.tanggal_selesai ? new Date(editData.tanggal_selesai).toISOString().split("T")[0] : "",
           jam_mulai: editData.jam_mulai || "",
           jam_selesai: editData.jam_selesai || "",
           lokasi: editData.lokasi || "",
@@ -106,12 +109,14 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
         setTamuVvip(editData.tamu_vvip || []);
         setTimeView("date");
         setIsAddingTamu(false);
+        setIsMultiDay(!!editData.tanggal_selesai);
       } else if (!editId) {
         setStep(1);
         setForm(initialForm);
         setTamuVvip([]);
         setTimeView("date");
         setIsAddingTamu(false);
+        setIsMultiDay(false);
       }
     }
   }, [isOpen, editId, editData]);
@@ -140,6 +145,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
         status: editId && editData ? editData.status : "terjadwal",
         tamu_vvip: tamuVvip,
         tanggal: form.tanggal ? new Date(form.tanggal).toISOString() : "",
+        tanggal_selesai: form.tanggal_selesai ? new Date(form.tanggal_selesai).toISOString() : undefined,
       };
       if (editId) {
         return kegiatanApi.update(editId, payload);
@@ -268,18 +274,49 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                       <FieldGroup label="Waktu Pelaksanaan" required>
                         <div className="border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm flex flex-col md:flex-row w-full">
                           {/* Kiri: Kalender Selalu Terlihat */}
-                          <div className="border-b md:border-b-0 md:border-r border-slate-100 bg-white p-1 md:p-4 flex-1 flex justify-center items-center">
+                          <div className="border-b md:border-b-0 md:border-r border-slate-100 bg-white p-1 md:p-4 flex-1 flex flex-col justify-center items-center">
+                            <div className="flex items-center justify-between w-full px-2 mb-2 pb-2 border-b border-slate-100">
+                              <span className="text-xs font-bold text-slate-600">Beberapa Hari?</span>
+                              <Switch checked={isMultiDay} onCheckedChange={(v) => {
+                                setIsMultiDay(v);
+                                if (!v) setForm({...form, tanggal_selesai: ""});
+                              }} className="data-[state=checked]:bg-[#6B0000]" />
+                            </div>
                             <Calendar
-                              mode="single"
+                              mode={isMultiDay ? "range" : "single"}
                               className="p-1 [--cell-size:1.6rem] md:[--cell-size:1.8rem]"
-                              selected={form.tanggal ? new Date(form.tanggal) : undefined}
-                              onSelect={(date) => {
-                                if (date) {
-                                  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-                                  setForm({ ...form, tanggal: localDate.toISOString().split("T")[0] });
-                                  setTimeView("start");
+                              selected={
+                                isMultiDay
+                                  ? {
+                                      from: form.tanggal ? new Date(form.tanggal) : undefined,
+                                      to: form.tanggal_selesai ? new Date(form.tanggal_selesai) : undefined,
+                                    }
+                                  : form.tanggal
+                                  ? new Date(form.tanggal)
+                                  : undefined
+                              }
+                              onSelect={(val: any) => {
+                                if (isMultiDay) {
+                                  if (val?.from) {
+                                    const f = new Date(val.from.getTime() - val.from.getTimezoneOffset() * 60000);
+                                    const t = val?.to ? new Date(val.to.getTime() - val.to.getTimezoneOffset() * 60000) : undefined;
+                                    setForm({
+                                      ...form,
+                                      tanggal: f.toISOString().split("T")[0],
+                                      tanggal_selesai: t ? t.toISOString().split("T")[0] : "",
+                                    });
+                                    if (t) setTimeView("start");
+                                  } else {
+                                    setForm({ ...form, tanggal: "", tanggal_selesai: "" });
+                                  }
                                 } else {
-                                  setForm({ ...form, tanggal: "" });
+                                  if (val) {
+                                    const d = new Date(val.getTime() - val.getTimezoneOffset() * 60000);
+                                    setForm({ ...form, tanggal: d.toISOString().split("T")[0], tanggal_selesai: "" });
+                                    setTimeView("start");
+                                  } else {
+                                    setForm({ ...form, tanggal: "", tanggal_selesai: "" });
+                                  }
                                 }
                               }}
                             />
@@ -296,7 +333,8 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                                     </div>
                                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Waktu Terpilih</span>
                                     <span className="text-sm font-semibold text-slate-800 mb-0.5">
-                                      {format(new Date(form.tanggal), "PPP", { locale: id })}
+                                      {format(new Date(form.tanggal), "PPP", { locale: id })} 
+                                      {form.tanggal_selesai && form.tanggal_selesai !== form.tanggal ? ` - ${format(new Date(form.tanggal_selesai), "PPP", { locale: id })}` : ''}
                                     </span>
                                     <span className="text-lg font-bold text-[#6B0000] mb-4">
                                       {form.jam_mulai} - {form.jam_selesai}

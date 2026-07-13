@@ -224,7 +224,7 @@ export function PostModal({
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Waktu</p>
                         <p className="text-sm text-slate-900 font-semibold">
                           {selectedPost.jam_mulai && selectedPost.jam_selesai 
-                            ? `${new Date(selectedPost.jam_mulai).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})} - ${new Date(selectedPost.jam_selesai).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})} WIB` 
+                            ? `${String(selectedPost.jam_mulai).slice(0, 5)} - ${String(selectedPost.jam_selesai).slice(0, 5)} WIB` 
                             : '-'}
                         </p>
                       </div>

@@ -9,7 +9,10 @@ export function useAuth() {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
+      if (error && (error.message.includes('Refresh Token Not Found') || error.message.includes('Invalid Refresh Token'))) {
+        await supabase.auth.signOut();
+      }
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -45,8 +48,11 @@ export function useRole(user?: User | null) {
       try {
         let activeSession = currentSession;
         if (activeSession === undefined) {
-          const { data } = await supabase.auth.getSession();
-          activeSession = data.session;
+          const { data, error } = await supabase.auth.getSession();
+          if (error && (error.message.includes('Refresh Token Not Found') || error.message.includes('Invalid Refresh Token'))) {
+            await supabase.auth.signOut();
+          }
+          activeSession = data?.session;
         }
 
         if (!activeSession) {
