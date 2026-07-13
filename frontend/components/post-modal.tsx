@@ -40,7 +40,7 @@ export function PostModal({
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: 20 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="bg-white w-[95vw] max-w-[1400px] max-h-[90vh] md:h-[85vh] rounded-2xl md:rounded-[2rem] overflow-hidden flex flex-col md:flex-row shadow-2xl relative"
+          className="bg-white w-[95vw] lg:w-[90vw] max-w-[1500px] max-h-[90vh] md:h-[85vh] rounded-2xl md:rounded-[2rem] overflow-hidden flex flex-col md:flex-row shadow-2xl relative"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Mobile Header Sticky */}
@@ -64,7 +64,7 @@ export function PostModal({
           </div>
 
           {/* Left Side: Image (Instagram style slideable) */}
-          <div className={cn("w-full md:w-[60%] aspect-square md:aspect-auto md:h-full shrink-0 bg-slate-950 relative flex items-center justify-center overflow-hidden group/image", isPostDescExpanded ? "hidden md:flex" : "flex")}>
+          <div className={cn("w-full md:w-[55%] aspect-square md:aspect-auto md:h-full shrink-0 bg-slate-950 relative flex items-center justify-center overflow-hidden group/image", isPostDescExpanded ? "hidden md:flex" : "flex")}>
              {/* Blur Background */}
              <Image 
                src={selectedPost.images?.[modalPhotoIdx] || selectedPost.gambar} 
@@ -106,7 +106,7 @@ export function PostModal({
           </div>
 
           {/* Right Side: Content */}
-          <div className="w-full md:w-[40%] h-[60%] md:h-full flex flex-col bg-white overflow-hidden">
+          <div className="w-full md:w-[45%] h-[60%] md:h-full flex flex-col bg-white overflow-hidden">
              {/* Header Sticky */}
              <div className="hidden md:flex px-6 py-4 md:px-8 md:py-4 border-b border-red-100/60 items-center justify-between bg-gradient-to-r from-red-50/80 via-white to-amber-50/50 z-10 shadow-sm relative">
                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#6B0000] via-[#8f0000] to-[#D2AD5C]" />
@@ -248,11 +248,17 @@ export function PostModal({
                       </div>
                       <div>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tamu / Pimpinan</p>
-                        <p className="text-sm text-slate-900 font-semibold capitalize">
+                        <div className="text-sm text-slate-900 font-semibold capitalize">
                           {selectedPost.tamu_vvip && selectedPost.tamu_vvip.length > 0
-                            ? selectedPost.tamu_vvip.map((t: any) => t.nama_tamu).join(', ')
+                            ? (
+                              <ul className="list-disc pl-4 space-y-1 mt-0.5">
+                                {selectedPost.tamu_vvip.map((t: any, idx: number) => (
+                                  <li key={idx}><span className="line-clamp-2">{t.nama_tamu}</span></li>
+                                ))}
+                              </ul>
+                            )
                             : '-'}
-                        </p>
+                        </div>
                       </div>
                     </div>
 
@@ -274,7 +280,15 @@ export function PostModal({
                       </div>
                       <div>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Narasumber / Keynote</p>
-                        <p className="text-sm text-slate-900 font-semibold capitalize">{selectedPost.keynote || '-'}</p>
+                        <div className="text-sm text-slate-900 font-semibold capitalize">
+                          {selectedPost.keynote ? (
+                            <ul className="list-disc pl-4 space-y-1 mt-0.5">
+                              {selectedPost.keynote.split(' | ').map((k: string, idx: number) => (
+                                <li key={idx}><span className="line-clamp-2">{k}</span></li>
+                              ))}
+                            </ul>
+                          ) : '-'}
+                        </div>
                       </div>
                     </div>
 

@@ -142,6 +142,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
     mutationFn: async () => {
       const payload = {
         ...form,
+        keynote: form.keynote ? form.keynote.split(' | ').map(k => k.trim()).filter(Boolean).join(' | ') : "",
         status: editId && editData ? editData.status : "terjadwal",
         tamu_vvip: tamuVvip,
         tanggal: form.tanggal ? new Date(form.tanggal).toISOString() : "",
@@ -399,15 +400,41 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                         <FieldGroup label="Target Peserta / Audiens" hint="Contoh: Mahasiswa Baru 2026">
                           <Input className={stepInputCls} placeholder="Mahasiswa dan Dosen UNP" value={form.audience} onChange={e => setForm({ ...form, audience: e.target.value })} />
                         </FieldGroup>
-                        <FieldGroup label="Keynote / Narasumber Utama" hint="Opsional">
-                          <Input className={stepInputCls} placeholder="Contoh: Prof. Dr. Rektor UNP" value={form.keynote} onChange={e => setForm({ ...form, keynote: e.target.value })} />
+                        <FieldGroup label="MC yang Bertugas" hint="Opsional — Master of Ceremony untuk acara ini">
+                          <div className="relative">
+                            <Mic className="absolute left-3.5 top-[15px] h-4 w-4 text-slate-400" />
+                            <Input className={`${stepInputCls} pl-10`} placeholder="Contoh: Dandi & Nisa" value={form.mc} onChange={e => setForm({ ...form, mc: e.target.value })} />
+                          </div>
                         </FieldGroup>
                       </div>
                       
-                      <FieldGroup label="MC yang Bertugas" hint="Opsional — Master of Ceremony untuk acara ini">
-                        <div className="relative">
-                          <Mic className="absolute left-3.5 top-[15px] h-4 w-4 text-slate-400" />
-                          <Input className={`${stepInputCls} pl-10`} placeholder="Contoh: Dandi & Nisa" value={form.mc} onChange={e => setForm({ ...form, mc: e.target.value })} />
+                      <FieldGroup label="Keynote / Narasumber Utama" hint="Opsional">
+                        <div className="space-y-2">
+                          {(form.keynote ? form.keynote.split(' | ') : [""]).map((k, idx) => (
+                            <div key={idx} className="flex items-center gap-2">
+                              <Input className={stepInputCls} placeholder="Contoh: Prof. Dr. Rektor UNP" value={k} onChange={e => {
+                                const newKeynotes = form.keynote ? form.keynote.split(' | ') : [""];
+                                newKeynotes[idx] = e.target.value;
+                                setForm({ ...form, keynote: newKeynotes.join(' | ') });
+                              }} />
+                              {(form.keynote ? form.keynote.split(' | ') : [""]).length > 1 && (
+                                <Button type="button" variant="outline" size="icon" onClick={() => {
+                                  const newKeynotes = form.keynote.split(' | ');
+                                  newKeynotes.splice(idx, 1);
+                                  setForm({ ...form, keynote: newKeynotes.join(' | ') });
+                                }} className="shrink-0 h-[46px] w-[46px] rounded-[14px] border-slate-200 text-slate-400 hover:text-red-500 hover:bg-red-50 hover:border-red-200 transition-colors">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                          <Button type="button" variant="outline" onClick={() => {
+                            const newKeynotes = form.keynote ? form.keynote.split(' | ') : [""];
+                            newKeynotes.push("");
+                            setForm({ ...form, keynote: newKeynotes.join(' | ') });
+                          }} className="w-full h-[46px] rounded-[14px] border-dashed border-slate-300 text-slate-500 hover:bg-slate-50 hover:text-[#6B0000] hover:border-red-200 transition-all font-bold text-xs mt-2">
+                            <Plus className="h-4 w-4 mr-2" /> Tambah Narasumber
+                          </Button>
                         </div>
                       </FieldGroup>
 

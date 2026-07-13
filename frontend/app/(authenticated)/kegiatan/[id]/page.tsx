@@ -607,7 +607,11 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                               <Star className="h-4 w-4 text-amber-600" />
                               <p className="text-[11px] font-bold uppercase tracking-wider">Keynote / Narasumber Utama</p>
                             </div>
-                            <p className="font-bold text-amber-900 text-[14px]">{(keg as any).keynote}</p>
+                            <ul className="list-disc pl-4 space-y-0.5 mt-1">
+                              {(keg as any).keynote.split(' | ').map((k: string, idx: number) => (
+                                <li key={idx}><span className="font-bold text-amber-900 text-[14px]">{k}</span></li>
+                              ))}
+                            </ul>
                           </div>
                         )}
                         

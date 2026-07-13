@@ -532,11 +532,17 @@ export default function Landing() {
                                   </div>
                                   <div>
                                     <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Tamu / Pimpinan</p>
-                                    <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">
+                                    <div className="font-bold text-slate-900 text-xs md:text-sm">
                                       {event.tamu_vvip && Array.isArray(event.tamu_vvip) && event.tamu_vvip.length > 0 
-                                        ? event.tamu_vvip.map((t: any) => t.nama_tamu).filter(Boolean).join(', ') 
+                                        ? (
+                                          <ul className="list-disc pl-4 md:pl-5 space-y-1 mt-0.5">
+                                            {event.tamu_vvip.map((t: any, idx: number) => (
+                                              <li key={idx}><span className="line-clamp-2">{t.nama_tamu}</span></li>
+                                            ))}
+                                          </ul>
+                                        )
                                         : 'Pimpinan Universitas'}
-                                    </p>
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="flex gap-3 md:gap-4 items-center sm:items-start">
@@ -578,7 +584,13 @@ export default function Landing() {
                                     </div>
                                     <div>
                                       <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Narasumber / Keynote</p>
-                                      <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">{event.keynote}</p>
+                                      <div className="font-bold text-slate-900 text-xs md:text-sm">
+                                        <ul className="list-disc pl-4 md:pl-5 space-y-1 mt-0.5">
+                                          {event.keynote.split(' | ').map((k: string, idx: number) => (
+                                            <li key={idx}><span className="line-clamp-2">{k}</span></li>
+                                          ))}
+                                        </ul>
+                                      </div>
                                     </div>
                                   </div>
                                 )}
