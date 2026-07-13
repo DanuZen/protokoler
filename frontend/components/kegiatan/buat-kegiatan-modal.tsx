@@ -283,6 +283,7 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                                 if (!v) setForm({...form, tanggal_selesai: ""});
                               }} className="data-[state=checked]:bg-[#6B0000]" />
                             </div>
+                            {/* @ts-ignore - react-day-picker conditional mode types */}
                             <Calendar
                               mode={isMultiDay ? "range" : "single"}
                               className="p-1 [--cell-size:1.6rem] md:[--cell-size:1.8rem]"
