@@ -4,6 +4,7 @@ import { RegulasiService } from './regulasi.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 import { RoleEnum } from '@prisma/client';
 
 @Controller('regulasi')
@@ -12,6 +13,7 @@ export class RegulasiController {
   constructor(private readonly regulasiService: RegulasiService) {}
 
   @Get()
+  @Public()
   async getRegulasiList() {
     return this.regulasiService.findAll();
   }

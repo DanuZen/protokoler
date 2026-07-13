@@ -17,8 +17,8 @@ export class SertifikatController {
       return this.sertifikatService.findAll();
     } else {
       if (!req.user.protokolerId) {
-        // User tanpa protokolerId (bukan protokoler) - kembalikan array kosong
-        return [];
+        // User tanpa protokolerId (bukan protokoler) - kembalikan data kosong
+        return { data: [] };
       }
       return this.sertifikatService.findByProtokoler(req.user.protokolerId);
     }
