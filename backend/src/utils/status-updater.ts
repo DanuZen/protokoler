@@ -19,22 +19,28 @@ export async function autoUpdateStatuses(prisma: any) {
   });
 
   for (const keg of events) {
-    const year = keg.tanggal.getFullYear();
-    const month = keg.tanggal.getMonth();
-    const date = keg.tanggal.getDate();
+    const startYear = keg.tanggal.getUTCFullYear();
+    const startMonth = keg.tanggal.getUTCMonth();
+    const startDate = keg.tanggal.getUTCDate();
 
-    const startHours = keg.jam_mulai.getHours();
-    const startMinutes = keg.jam_mulai.getMinutes();
+    const endDateRef = keg.tanggal_selesai ? keg.tanggal_selesai : keg.tanggal;
+    const endYear = endDateRef.getUTCFullYear();
+    const endMonth = endDateRef.getUTCMonth();
+    const endDate = endDateRef.getUTCDate();
 
-    const endHours = keg.jam_selesai.getHours();
-    const endMinutes = keg.jam_selesai.getMinutes();
+    const startHours = keg.jam_mulai.getUTCHours();
+    const startMinutes = keg.jam_mulai.getUTCMinutes();
 
-    const startDateTime = new Date(year, month, date, startHours, startMinutes, 0);
-    let endDateTime = new Date(year, month, date, endHours, endMinutes, 0);
+    const endHours = keg.jam_selesai.getUTCHours();
+    const endMinutes = keg.jam_selesai.getUTCMinutes();
 
-    // If end time is earlier than or equal to start time, the event crosses midnight (ends on the next day)
+    // Event is in WIB (+07:00), so we subtract 7 hours from the constructed UTC timestamp to get correct UTC Date
+    const startDateTime = new Date(Date.UTC(startYear, startMonth, startDate, startHours, startMinutes, 0) - 7 * 60 * 60 * 1000);
+    let endDateTime = new Date(Date.UTC(endYear, endMonth, endDate, endHours, endMinutes, 0) - 7 * 60 * 60 * 1000);
+
+    // If end time is earlier than or equal to start time and dates are the same, the event crosses midnight (ends on the next day)
     if (endDateTime <= startDateTime) {
-      endDateTime.setDate(endDateTime.getDate() + 1);
+      endDateTime.setUTCDate(endDateTime.getUTCDate() + 1);
     }
 
     let newStatus: StatusKegiatanEnum | null = null;

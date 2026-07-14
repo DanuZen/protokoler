@@ -16,11 +16,20 @@ export class DokumentasiService {
 
   private formatTimeField(timeField: Date | string | null): string | null {
     if (!timeField) return null;
-    const d = new Date(timeField);
+    let d: Date;
+    if (typeof timeField === 'string') {
+      if (timeField.includes('T')) {
+        d = new Date(timeField);
+      } else {
+        d = new Date(`1970-01-01T${timeField}Z`);
+      }
+    } else {
+      d = timeField;
+    }
     if (isNaN(d.getTime())) return null;
-    const h = String(d.getHours()).padStart(2, '0');
-    const m = String(d.getMinutes()).padStart(2, '0');
-    const s = String(d.getSeconds()).padStart(2, '0');
+    const h = String(d.getUTCHours()).padStart(2, '0');
+    const m = String(d.getUTCMinutes()).padStart(2, '0');
+    const s = String(d.getUTCSeconds()).padStart(2, '0');
     return `${h}:${m}:${s}`;
   }
 
