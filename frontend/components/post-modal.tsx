@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { 
   X, ShieldCheck, ChevronLeft, ChevronRight, 
-  CalendarDays, FileText, Clock, MapPin, Users, Megaphone, UserCheck, Mic, Star 
+  CalendarDays, FileText, Clock, MapPin, Users, Megaphone, UserCheck, Mic, Star, ExternalLink 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -241,24 +241,14 @@ export function PostModal({
                       </div>
                     </div>
 
-                    {/* TAMU / PIMPINAN */}
+                    {/* TARGET PESERTA */}
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 mt-0.5">
-                         <Users className="w-4 h-4 text-[#6B0000]" />
+                         <UserCheck className="w-4 h-4 text-[#6B0000]" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tamu / Pimpinan</p>
-                        <div className="text-sm text-slate-900 font-semibold capitalize">
-                          {selectedPost.tamu_vvip && selectedPost.tamu_vvip.length > 0
-                            ? (
-                              <ul className="list-disc pl-4 space-y-1 mt-0.5">
-                                {selectedPost.tamu_vvip.map((t: any, idx: number) => (
-                                  <li key={idx}><span className="line-clamp-2">{t.nama_tamu}</span></li>
-                                ))}
-                              </ul>
-                            )
-                            : '-'}
-                        </div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Peserta</p>
+                        <p className="text-sm text-slate-900 font-semibold capitalize">{selectedPost.audience || '-'}</p>
                       </div>
                     </div>
 
@@ -270,6 +260,28 @@ export function PostModal({
                       <div>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bentuk Kegiatan</p>
                         <p className="text-sm text-slate-900 font-semibold capitalize">{selectedPost.bentuk_kegiatan ? selectedPost.bentuk_kegiatan.replace(/_/g, ' ') : '-'}</p>
+                      </div>
+                    </div>
+
+                    {/* Operator Acara */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 mt-0.5">
+                         <UserCheck className="w-4 h-4 text-[#6B0000]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Operator Acara</p>
+                        <p className="text-sm text-slate-900 font-semibold capitalize">{selectedPost.operator_acara || '-'}</p>
+                      </div>
+                    </div>
+
+                    {/* MC / Pembawa Acara */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 mt-0.5">
+                         <Mic className="w-4 h-4 text-[#6B0000]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">MC / Pembawa Acara</p>
+                        <p className="text-sm text-slate-900 font-semibold capitalize">{selectedPost.mc || '-'}</p>
                       </div>
                     </div>
 
@@ -292,14 +304,60 @@ export function PostModal({
                       </div>
                     </div>
 
-                    {/* TARGET PESERTA */}
+
+
+                    {/* TAMU / PIMPINAN */}
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 mt-0.5">
-                         <UserCheck className="w-4 h-4 text-[#6B0000]" />
+                         <Users className="w-4 h-4 text-[#6B0000]" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Peserta</p>
-                        <p className="text-sm text-slate-900 font-semibold capitalize">{selectedPost.audience || '-'}</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tamu / Pimpinan</p>
+                        <div className="text-sm text-slate-900 font-semibold capitalize">
+                          {selectedPost.tamu_vvip && selectedPost.tamu_vvip.length > 0
+                            ? (
+                              <ul className="list-disc pl-4 space-y-1 mt-0.5">
+                                {selectedPost.tamu_vvip.map((t: any, idx: number) => (
+                                  <li key={idx}><span className="line-clamp-2">{t.nama_tamu}</span></li>
+                                ))}
+                              </ul>
+                            )
+                            : '-'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Rundown Acara */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 mt-0.5">
+                         <FileText className="w-4 h-4 text-[#6B0000]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Rundown Acara</p>
+                        {selectedPost.rundown_url ? (
+                          <a href={selectedPost.rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#6B0000] hover:text-red-700 transition-colors bg-red-50 hover:bg-red-100 px-3 py-1 rounded-full mt-0.5 border border-red-100">
+                            <ExternalLink className="w-3.5 h-3.5" /> Buka Rundown
+                          </a>
+                        ) : (
+                          <p className="text-sm text-slate-900 font-semibold">-</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Materi Narasumber */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0 border border-red-100 mt-0.5">
+                         <FileText className="w-4 h-4 text-[#6B0000]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Materi Narasumber</p>
+                        {selectedPost.materi_url ? (
+                          <a href={selectedPost.materi_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#6B0000] hover:text-red-700 transition-colors bg-red-50 hover:bg-red-100 px-3 py-1 rounded-full mt-0.5 border border-red-100">
+                            <ExternalLink className="w-3.5 h-3.5" /> Buka Materi
+                          </a>
+                        ) : (
+                          <p className="text-sm text-slate-900 font-semibold">-</p>
+                        )}
                       </div>
                     </div>
                  </div>

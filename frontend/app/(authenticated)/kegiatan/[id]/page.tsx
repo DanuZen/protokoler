@@ -570,7 +570,7 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                 </div>
                 
                 <div className="flex-1 flex flex-col">
-                  {!((keg as any).audience || (keg as any).keynote || (keg as any).mc || (keg as any).rundown_url || (keg as any).peserta || (keg as any).deskripsi || (keg as any).catatan) ? (
+                  {!((keg as any).audience || (keg as any).keynote || (keg as any).mc || (keg as any).operator_acara || (keg as any).rundown_url || (keg as any).materi_url || (keg as any).peserta || (keg as any).deskripsi || (keg as any).catatan) ? (
                     <div className="flex flex-col flex-1 items-center justify-center py-8 px-6 text-center bg-slate-50 rounded-xl border border-slate-100 border-dashed">
                       <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-100 mb-4 text-slate-400">
                         <FileText className="h-6 w-6" />
@@ -591,15 +591,13 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                           </div>
                         )}
 
-                        {(keg as any).mc && (
                           <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center">
                             <div className="flex items-center gap-2 text-slate-500 mb-1">
                               <Mic className="h-4 w-4 text-red-700" />
                               <p className="text-[11px] font-bold uppercase tracking-wider">MC / Pembawa Acara</p>
                             </div>
-                            <p className="font-bold text-slate-800 text-[14px]">{(keg as any).mc}</p>
+                            <p className="font-bold text-slate-800 text-[14px]">{(keg as any).mc || "-"}</p>
                           </div>
-                        )}
 
                         {(keg as any).keynote && (
                           <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50 flex flex-col justify-center">
@@ -614,18 +612,42 @@ export default function KegiatanDetailPage({ params }: { params: Promise<{ id: s
                             </ul>
                           </div>
                         )}
+
+                          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center">
+                            <div className="flex items-center gap-2 text-slate-500 mb-1">
+                              <UserCheck className="h-4 w-4 text-red-700" />
+                              <p className="text-[11px] font-bold uppercase tracking-wider">Operator Acara</p>
+                            </div>
+                            <p className="font-bold text-slate-800 text-[14px]">{(keg as any).operator_acara || "-"}</p>
+                          </div>
                         
-                        {(keg as any).rundown_url && (
                           <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center">
                             <div className="flex items-center gap-2 text-slate-500 mb-2">
                               <FileText className="h-4 w-4 text-red-700" />
                               <p className="text-[11px] font-bold uppercase tracking-wider">Rundown Acara</p>
                             </div>
-                            <a href={(keg as any).rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-1.5 w-fit bg-red-50 hover:bg-red-100 text-red-800 font-bold text-[12px] px-3 py-1.5 rounded-lg border border-red-100 transition-colors">
-                              <ExternalLink className="h-3.5 w-3.5" /> Buka Rundown
-                            </a>
+                            {(keg as any).rundown_url ? (
+                              <a href={(keg as any).rundown_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-1.5 w-fit bg-red-50 hover:bg-red-100 text-red-800 font-bold text-[12px] px-3 py-1.5 rounded-lg border border-red-100 transition-colors">
+                                <ExternalLink className="h-3.5 w-3.5" /> Buka Rundown
+                              </a>
+                            ) : (
+                              <p className="font-bold text-slate-800 text-[14px]">-</p>
+                            )}
                           </div>
-                        )}
+
+                          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center">
+                            <div className="flex items-center gap-2 text-slate-500 mb-2">
+                              <FileText className="h-4 w-4 text-red-700" />
+                              <p className="text-[11px] font-bold uppercase tracking-wider">Materi Narasumber</p>
+                            </div>
+                            {(keg as any).materi_url ? (
+                              <a href={(keg as any).materi_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-1.5 w-fit bg-red-50 hover:bg-red-100 text-red-800 font-bold text-[12px] px-3 py-1.5 rounded-lg border border-red-100 transition-colors">
+                                <ExternalLink className="h-3.5 w-3.5" /> Buka Materi
+                              </a>
+                            ) : (
+                              <p className="font-bold text-slate-800 text-[14px]">-</p>
+                            )}
+                          </div>
 
                         <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center">
                           <div className="flex items-center gap-2 text-slate-500 mb-2">

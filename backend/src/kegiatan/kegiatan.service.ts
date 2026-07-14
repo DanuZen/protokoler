@@ -62,6 +62,9 @@ export class KegiatanService {
         audience: dto.audience,
         keynote: dto.keynote,
         mc: dto.mc,
+        operator_acara: (dto as any).operator_acara,
+        rundown_url: (dto as any).rundown_url,
+        materi_url: (dto as any).materi_url,
         status: dto.status || StatusKegiatanEnum.draf,
         jumlah_protokoler_dibutuhkan: dto.jumlah_protokoler_dibutuhkan || 0,
         jumlah_lo_dibutuhkan: dto.jumlah_lo_dibutuhkan || 0,
@@ -252,7 +255,9 @@ export class KegiatanService {
     if (dto.audience !== undefined) updateData.audience = dto.audience;
     if (dto.keynote !== undefined) updateData.keynote = dto.keynote;
     if (dto.mc !== undefined) updateData.mc = dto.mc;
+    if ((dto as any).operator_acara !== undefined) updateData.operator_acara = (dto as any).operator_acara;
     if ((dto as any).rundown_url !== undefined) updateData.rundown_url = (dto as any).rundown_url;
+    if ((dto as any).materi_url !== undefined) updateData.materi_url = (dto as any).materi_url;
     if (dto.status !== undefined) updateData.status = dto.status;
     if (dto.jumlah_protokoler_dibutuhkan !== undefined) updateData.jumlah_protokoler_dibutuhkan = dto.jumlah_protokoler_dibutuhkan;
     if (dto.jumlah_lo_dibutuhkan !== undefined) updateData.jumlah_lo_dibutuhkan = dto.jumlah_lo_dibutuhkan;

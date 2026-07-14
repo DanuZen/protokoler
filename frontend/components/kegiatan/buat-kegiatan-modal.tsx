@@ -60,7 +60,9 @@ const initialForm = {
   audience: "",
   keynote: "",
   mc: "",
+  operator_acara: "",
   rundown_url: "",
+  materi_url: "",
   jumlah_protokoler_dibutuhkan: 1,
   jumlah_lo_dibutuhkan: 1,
   jumlah_dokumentasi_dibutuhkan: 1,
@@ -100,7 +102,9 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
           audience: editData.audience || "",
           keynote: editData.keynote || "",
           mc: editData.mc || "",
+          operator_acara: editData.operator_acara || "",
           rundown_url: editData.rundown_url || "",
+          materi_url: editData.materi_url || "",
           jumlah_protokoler_dibutuhkan: editData.jumlah_protokoler_dibutuhkan || 1,
           jumlah_lo_dibutuhkan: editData.jumlah_lo_dibutuhkan || 1,
           jumlah_dokumentasi_dibutuhkan: 1,
@@ -407,6 +411,12 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                             <Input className={`${stepInputCls} pl-10`} placeholder="Contoh: Dandi & Nisa" value={form.mc} onChange={e => setForm({ ...form, mc: e.target.value })} />
                           </div>
                         </FieldGroup>
+                        <FieldGroup label="Operator Acara" hint="Opsional — Operator pemandu sistem">
+                          <div className="relative">
+                            <UserCheck className="absolute left-3.5 top-[15px] h-4 w-4 text-slate-400" />
+                            <Input className={`${stepInputCls} pl-10`} placeholder="Contoh: Budi" value={form.operator_acara} onChange={e => setForm({ ...form, operator_acara: e.target.value })} />
+                          </div>
+                        </FieldGroup>
                       </div>
                       
                       <FieldGroup label="Keynote / Narasumber Utama" hint="Opsional">
@@ -439,12 +449,20 @@ export function BuatKegiatanModal({ isOpen, onClose, editId }: { isOpen: boolean
                         </div>
                       </FieldGroup>
 
-                      <FieldGroup label="Link Rundown Acara" hint="Opsional — tautan ke dokumen Google Drive, PDF, dll.">
-                        <div className="relative">
-                          <FileText className="absolute left-3.5 top-[15px] h-4 w-4 text-slate-400" />
-                          <Input type="url" className={`${stepInputCls} pl-10`} placeholder="https://drive.google.com/..." value={form.rundown_url} onChange={e => setForm({ ...form, rundown_url: e.target.value })} />
-                        </div>
-                      </FieldGroup>
+                      <div className="grid md:grid-cols-2 gap-5">
+                        <FieldGroup label="Link Rundown Acara" hint="Opsional — tautan ke dokumen Google Drive, PDF, dll.">
+                          <div className="relative">
+                            <FileText className="absolute left-3.5 top-[15px] h-4 w-4 text-slate-400" />
+                            <Input type="url" className={`${stepInputCls} pl-10`} placeholder="https://drive.google.com/..." value={form.rundown_url} onChange={e => setForm({ ...form, rundown_url: e.target.value })} />
+                          </div>
+                        </FieldGroup>
+                        <FieldGroup label="Link Materi Narasumber" hint="Opsional — tautan materi pembicara">
+                          <div className="relative">
+                            <FileText className="absolute left-3.5 top-[15px] h-4 w-4 text-slate-400" />
+                            <Input type="url" className={`${stepInputCls} pl-10`} placeholder="https://drive.google.com/..." value={form.materi_url} onChange={e => setForm({ ...form, materi_url: e.target.value })} />
+                          </div>
+                        </FieldGroup>
+                      </div>
                     </motion.div>
                   )}
 

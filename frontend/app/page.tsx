@@ -356,7 +356,7 @@ export default function Landing() {
                 className="grid lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr] gap-5 md:gap-8"
               >
                 {/* Left: Calendar Card */}
-                <div className="hidden lg:flex bg-white p-5 sm:p-7 md:p-9 flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg w-full max-w-full overflow-hidden">
+                <div className="hidden lg:flex bg-white p-5 sm:p-7 md:p-9 flex-col gap-5 rounded-3xl border border-slate-200 shadow-lg w-full max-w-full overflow-hidden h-full lg:min-h-[650px]">
                   <div>
                     <p className="text-[10px] font-bold text-[#6B0000] uppercase tracking-[0.3em] mb-1">Kalender Acara</p>
                     <p className="text-slate-900 font-bold text-xl">Pilih Tanggal</p>
@@ -382,7 +382,7 @@ export default function Landing() {
                 </div>
 
                 {/* Right: Event Details Card */}
-                <div className="bg-white p-6 sm:p-8 md:p-10 flex flex-col rounded-[2rem] border border-slate-200 shadow-lg w-full max-w-full overflow-hidden h-full">
+                <div className="bg-white p-6 sm:p-8 md:p-10 flex flex-col rounded-[2rem] border border-slate-200 shadow-lg w-full max-w-full overflow-hidden h-full lg:min-h-[650px]">
                   {(() => {
                     let nextDateStr = null;
                     let prevDateStr = null;
@@ -526,35 +526,6 @@ export default function Landing() {
                                   </div>
                                 </div>
 
-                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
-                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                                    <Users className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
-                                  </div>
-                                  <div>
-                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Tamu / Pimpinan</p>
-                                    <div className="font-bold text-slate-900 text-xs md:text-sm">
-                                      {event.tamu_vvip && Array.isArray(event.tamu_vvip) && event.tamu_vvip.length > 0 
-                                        ? (
-                                          <ul className="list-disc pl-4 md:pl-5 space-y-1 mt-0.5">
-                                            {event.tamu_vvip.map((t: any, idx: number) => (
-                                              <li key={idx}><span className="line-clamp-2">{t.nama_tamu}</span></li>
-                                            ))}
-                                          </ul>
-                                        )
-                                        : 'Pimpinan Universitas'}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
-                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                                    <Megaphone className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
-                                  </div>
-                                  <div>
-                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Bentuk Kegiatan</p>
-                                    <p className="font-bold text-slate-900 text-xs md:text-sm capitalize">{event.bentuk_kegiatan ? event.bentuk_kegiatan.replace('_', ' ') : '-'}</p>
-                                  </div>
-                                </div>
-
                                 {event.audience && (
                                   <div className="flex gap-3 md:gap-4 items-center sm:items-start">
                                     <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
@@ -566,6 +537,25 @@ export default function Landing() {
                                     </div>
                                   </div>
                                 )}
+                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                    <Megaphone className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Bentuk Kegiatan</p>
+                                    <p className="font-bold text-slate-900 text-xs md:text-sm capitalize">{event.bentuk_kegiatan ? event.bentuk_kegiatan.replace('_', ' ') : '-'}</p>
+                                  </div>
+                                </div>
+
+                                  <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                      <UserCheck className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Operator Acara</p>
+                                      <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">{event.operator_acara || "-"}</p>
+                                    </div>
+                                  </div>
 
                                 <div className="flex gap-3 md:gap-4 items-center sm:items-start">
                                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
@@ -597,6 +587,26 @@ export default function Landing() {
 
                                 <div className="flex gap-3 md:gap-4 items-center sm:items-start">
                                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                    <Users className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Tamu / Pimpinan</p>
+                                    <div className="font-bold text-slate-900 text-xs md:text-sm">
+                                      {event.tamu_vvip && Array.isArray(event.tamu_vvip) && event.tamu_vvip.length > 0 
+                                        ? (
+                                          <ul className="list-disc pl-4 md:pl-5 space-y-1 mt-0.5">
+                                            {event.tamu_vvip.map((t: any, idx: number) => (
+                                              <li key={idx}><span className="line-clamp-2">{t.nama_tamu}</span></li>
+                                            ))}
+                                          </ul>
+                                        )
+                                        : 'Pimpinan Universitas'}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
                                     <FileText className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
                                   </div>
                                   <div>
@@ -610,6 +620,22 @@ export default function Landing() {
                                     )}
                                   </div>
                                 </div>
+
+                                  <div className="flex gap-3 md:gap-4 items-center sm:items-start">
+                                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                      <FileText className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#6B0000]" />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">Materi Narasumber</p>
+                                      {event.materi_url ? (
+                                        <a href={event.materi_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs md:text-sm font-bold text-[#6B0000] hover:text-red-700 transition-colors bg-red-50 hover:bg-red-100 px-3 md:px-4 py-1.5 rounded-full mt-0.5">
+                                          <ExternalLink className="w-3 h-3 md:w-3.5 md:h-3.5" /> Buka Materi
+                                        </a>
+                                      ) : (
+                                        <p className="font-bold text-slate-900 text-xs md:text-sm line-clamp-2">-</p>
+                                      )}
+                                    </div>
+                                  </div>
                               </div>
 
 

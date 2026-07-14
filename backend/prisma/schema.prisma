@@ -63,7 +63,9 @@ model Kegiatan {
   audience                     String?
   keynote                      String?               @db.VarChar(255)
   mc                           String?               @db.VarChar(255)
+  operator_acara               String?               @db.VarChar(255)
   rundown_url                  String?
+  materi_url                   String?
   status                       StatusKegiatanEnum    @default(draf)
   is_open_recruitment          Boolean               @default(true)
   jumlah_protokoler_dibutuhkan Int                   @default(0)

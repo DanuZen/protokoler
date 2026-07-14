@@ -66,7 +66,9 @@ export default function KegiatanPage() {
 
   const kegiatanByDate = ((kegiatan || []) as any[]).reduce((acc: Record<string, any[]>, k) => {
     const startDate = new Date(k.tanggal);
-    const endDate = k.tanggal_selesai ? new Date(k.tanggal_selesai) : startDate;
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = k.tanggal_selesai ? new Date(k.tanggal_selesai) : new Date(startDate);
+    endDate.setHours(0, 0, 0, 0);
     let current = new Date(startDate);
     while (current <= endDate) {
       const d = getLocalISODate(current);
@@ -79,7 +81,22 @@ export default function KegiatanPage() {
 
   const filtered = ((kegiatan || []) as any[]).filter((k) => {
     const matchSearch = k.nama_kegiatan.toLowerCase().includes(search.toLowerCase()) || k.lokasi.toLowerCase().includes(search.toLowerCase());
-    if (selectedDate) return matchSearch && getLocalISODate(new Date(k.tanggal)) === selectedDate;
+    if (selectedDate) {
+      const startDate = new Date(k.tanggal);
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = k.tanggal_selesai ? new Date(k.tanggal_selesai) : new Date(startDate);
+      endDate.setHours(0, 0, 0, 0);
+      let isDateMatch = false;
+      let current = new Date(startDate);
+      while (current <= endDate) {
+        if (getLocalISODate(current) === selectedDate) {
+          isDateMatch = true;
+          break;
+        }
+        current.setDate(current.getDate() + 1);
+      }
+      return matchSearch && isDateMatch;
+    }
     return matchSearch;
   });
 

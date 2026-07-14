@@ -207,7 +207,10 @@ _Data kegiatan protokoler_
 | `lokasi`                       | VARCHAR(255)         | NOT NULL                 | Tempat kegiatan                    |
 | `audience`                     | TEXT                 |                          | Deskripsi peserta/hadirin          |
 | `keynote`                      | VARCHAR(255)         |                          | Narasumber/pembicara utama         |
+| `mc`                           | VARCHAR(255)         |                          | MC/Pembawa acara                   |
+| `operator_acara`               | VARCHAR(255)         |                          | Operator acara                     |
 | `rundown_url`                  | TEXT                 |                          | URL file rundown acara             |
+| `materi_url`                   | TEXT                 |                          | URL file materi narasumber         |
 | `status`                       | status_kegiatan_enum | NOT NULL, DEFAULT 'draf' | Status kegiatan                    |
 | `jumlah_protokoler_dibutuhkan` | INTEGER              | NOT NULL, DEFAULT 0      | Kuota protokoler                   |
 | `jumlah_lo_dibutuhkan`         | INTEGER              | NOT NULL, DEFAULT 0      | Kuota LO                           |
@@ -229,7 +232,10 @@ CREATE TABLE kegiatan (
   lokasi VARCHAR(255) NOT NULL,
   audience TEXT,
   keynote VARCHAR(255),
+  mc VARCHAR(255),
+  operator_acara VARCHAR(255),
   rundown_url TEXT,
+  materi_url TEXT,
   status status_kegiatan_enum NOT NULL DEFAULT 'draf',
   jumlah_protokoler_dibutuhkan INTEGER NOT NULL DEFAULT 0,
   jumlah_lo_dibutuhkan INTEGER NOT NULL DEFAULT 0,
