@@ -43,22 +43,25 @@ export class AbsensiService {
 
     // 3. Time Validation
     const now = new Date();
-    const kegiatanDate = new Date(kegiatan.tanggal);
     
-    // Normalize dates to check if they are the same calendar day
-    const isSameDay = 
-      now.getFullYear() === kegiatanDate.getFullYear() &&
-      now.getMonth() === kegiatanDate.getMonth() &&
-      now.getDate() === kegiatanDate.getDate();
+    // Normalize dates to check if now falls within [tanggal, tanggal_selesai] range
+    const nowLocalDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startDate = new Date(kegiatan.tanggal);
+    const startLocalDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    const endDate = kegiatan.tanggal_selesai ? new Date(kegiatan.tanggal_selesai) : startDate;
+    const endLocalDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
 
-    if (process.env.NODE_ENV === 'production' && !isSameDay) {
+    const isWithinEventDates = nowLocalDate >= startLocalDate && nowLocalDate <= endLocalDate;
+
+    if (process.env.NODE_ENV === 'production' && !isWithinEventDates) {
       throw new BadRequestException('Kegiatan tidak dilaksanakan hari ini');
     }
 
     // Compare times
-    const currentHours = now.getHours();
-    const currentMinutes = now.getMinutes();
-    const nowTimeMs = new Date(1970, 0, 1, currentHours, currentMinutes, 0).getTime();
+    const wibTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    const wibHours = wibTime.getUTCHours();
+    const wibMinutes = wibTime.getUTCMinutes();
+    const nowTimeMs = Date.UTC(1970, 0, 1, wibHours, wibMinutes, 0);
     
     const startTimeMs = new Date(kegiatan.jam_mulai).getTime();
     const endTimeMs = new Date(kegiatan.jam_selesai).getTime();

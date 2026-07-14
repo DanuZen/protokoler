@@ -151,10 +151,19 @@ startxref
       const activeKegiatan = reg.status === StatusPendaftaranEnum.dialihkan ? reg.kegiatan_dialihkan : reg.kegiatan;
       if (!activeKegiatan) continue;
 
-      const date1 = new Date(activeKegiatan.tanggal).toDateString();
-      const date2 = new Date(kegiatan.tanggal).toDateString();
+      const s1 = new Date(activeKegiatan.tanggal);
+      s1.setHours(0, 0, 0, 0);
+      const e1 = activeKegiatan.tanggal_selesai ? new Date(activeKegiatan.tanggal_selesai) : new Date(activeKegiatan.tanggal);
+      e1.setHours(0, 0, 0, 0);
 
-      if (date1 === date2) {
+      const s2 = new Date(kegiatan.tanggal);
+      s2.setHours(0, 0, 0, 0);
+      const e2 = kegiatan.tanggal_selesai ? new Date(kegiatan.tanggal_selesai) : new Date(kegiatan.tanggal);
+      e2.setHours(0, 0, 0, 0);
+
+      const datesOverlap = s1 <= e2 && s2 <= e1;
+
+      if (datesOverlap) {
         const start1 = activeKegiatan.jam_mulai.getTime();
         const end1 = activeKegiatan.jam_selesai.getTime();
         const start2 = kegiatan.jam_mulai.getTime();
@@ -409,10 +418,19 @@ startxref
       const activeKegiatan = reg.status === StatusPendaftaranEnum.dialihkan ? reg.kegiatan_dialihkan : reg.kegiatan;
       if (!activeKegiatan) continue;
 
-      const date1 = new Date(activeKegiatan.tanggal).toDateString();
-      const date2 = new Date(kegiatan.tanggal).toDateString();
+      const s1 = new Date(activeKegiatan.tanggal);
+      s1.setHours(0, 0, 0, 0);
+      const e1 = activeKegiatan.tanggal_selesai ? new Date(activeKegiatan.tanggal_selesai) : new Date(activeKegiatan.tanggal);
+      e1.setHours(0, 0, 0, 0);
 
-      if (date1 === date2) {
+      const s2 = new Date(kegiatan.tanggal);
+      s2.setHours(0, 0, 0, 0);
+      const e2 = kegiatan.tanggal_selesai ? new Date(kegiatan.tanggal_selesai) : new Date(kegiatan.tanggal);
+      e2.setHours(0, 0, 0, 0);
+
+      const datesOverlap = s1 <= e2 && s2 <= e1;
+
+      if (datesOverlap) {
         const start1 = activeKegiatan.jam_mulai.getTime();
         const end1 = activeKegiatan.jam_selesai.getTime();
         const start2 = kegiatan.jam_mulai.getTime();

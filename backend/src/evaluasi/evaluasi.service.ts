@@ -99,17 +99,19 @@ startxref
 
     // 3. Time validation: 24h limit after event ends
     const now = new Date();
-    const kegiatanDate = new Date(kegiatan.tanggal);
+    const endDateRef = kegiatan.tanggal_selesai ? new Date(kegiatan.tanggal_selesai) : new Date(kegiatan.tanggal);
     const endTime = new Date(kegiatan.jam_selesai);
     
-    const actualEnd = new Date(
-      kegiatanDate.getFullYear(),
-      kegiatanDate.getMonth(),
-      kegiatanDate.getDate(),
-      endTime.getHours(),
-      endTime.getMinutes(),
-      endTime.getSeconds()
-    );
+    // Construct actualEnd in WIB (+07:00), subtracting 7 hours to get the correct UTC timestamp
+    const actualEnd = new Date(Date.UTC(
+      endDateRef.getUTCFullYear(),
+      endDateRef.getUTCMonth(),
+      endDateRef.getUTCDate(),
+      endTime.getUTCHours(),
+      endTime.getUTCMinutes(),
+      endTime.getUTCSeconds()
+    ) - 7 * 60 * 60 * 1000);
+    
     const deadline = new Date(actualEnd.getTime() + 24 * 60 * 60 * 1000);
 
     if (process.env.NODE_ENV === 'production' && now > deadline) {
